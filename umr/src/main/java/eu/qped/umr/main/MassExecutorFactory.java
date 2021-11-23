@@ -1,8 +1,8 @@
 package eu.qped.umr.main;
 
-import eu.qped.umr.chekcers.semanticChecker.SemanticChecker;
-import eu.qped.umr.chekcers.styleChecker.StyleChecker;
-import eu.qped.umr.chekcers.syntaxChecker.SyntaxErrorChecker;
+import eu.qped.umr.checkers.semanticChecker.SemanticChecker;
+import eu.qped.umr.checkers.styleChecker.StyleChecker;
+import eu.qped.umr.checkers.syntaxChecker.SyntaxErrorChecker;
 
 public class MassExecutorFactory {
 

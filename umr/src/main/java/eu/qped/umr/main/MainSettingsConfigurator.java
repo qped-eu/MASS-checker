@@ -3,7 +3,7 @@ package eu.qped.umr.main;
 
 
 import eu.qped.umr.model.CheckLevel;
-import eu.qped.umr.chekcers.styleChecker.configs.ConfiguratorUtility;
+import eu.qped.umr.checkers.styleChecker.configs.ConfiguratorUtility;
 import eu.qped.umr.qf.QFMainSettings;
 
 import java.util.Map;

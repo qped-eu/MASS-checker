@@ -1,14 +1,14 @@
 package eu.qped.umr.main;
 
-import eu.qped.umr.chekcers.styleChecker.StyleCheckerFactory;
+import eu.qped.umr.checkers.styleChecker.StyleCheckerFactory;
 import eu.qped.umr.helpers.Logger;
 import eu.qped.umr.helpers.Translator;
 import eu.qped.umr.model.*;
-import eu.qped.umr.chekcers.styleChecker.StyleChecker;
-import eu.qped.umr.chekcers.semanticChecker.SemanticChecker;
-import eu.qped.umr.chekcers.syntaxChecker.SyntaxErrorChecker;
-import eu.qped.umr.chekcers.semanticChecker.config.SemanticConfigurator;
-import eu.qped.umr.chekcers.styleChecker.configs.StyleConfigurator;
+import eu.qped.umr.checkers.styleChecker.StyleChecker;
+import eu.qped.umr.checkers.semanticChecker.SemanticChecker;
+import eu.qped.umr.checkers.syntaxChecker.SyntaxErrorChecker;
+import eu.qped.umr.checkers.semanticChecker.config.SemanticConfigurator;
+import eu.qped.umr.checkers.styleChecker.configs.StyleConfigurator;
 import eu.qped.umr.qf.QFSemSettings;
 import eu.qped.umr.qf.QFStyleSettings;
 
