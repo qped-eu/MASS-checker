@@ -1,0 +1,26 @@
+{
+  "formatVersion": 0,
+  "pmdVersion": "6.33.0",
+  "timestamp": "2021-09-13T11:10:46.804+02:00",
+  "files": [
+    {
+      "filename": "C:\\Users\\Basel Alaktaa\\Desktop\\BachelorArbeit\\Repo\\o3-prototyping\\umr\\TestClass.java",
+      "violations": [
+        {
+          "beginline": 1,
+          "begincolumn": 55,
+          "endline": 3,
+          "endcolumn": 5,
+          "description": "The instance method name \u0027rec\u0027 doesn\u0027t match \u0027[AA]\u0027",
+          "rule": "MethodNamingConventions",
+          "ruleset": "Code Style",
+          "priority": 1,
+          "externalInfoUrl": "https://pmd.github.io/pmd-6.33.0/pmd_rules_java_codestyle.html#methodnamingconventions"
+        }
+      ]
+    }
+  ],
+  "suppressedViolations": [],
+  "processingErrors": [],
+  "configurationErrors": []
+}

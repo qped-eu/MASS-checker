@@ -1,0 +1,50 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class GrayCode {
+
+    /*Die main Methode gibt einen GrayCode der laenge 2 aus
+     */
+    public static void main(String[] args) {
+        System.out.println(grayCodeStrings(2));
+    }
+    /*Die Methode grayCode(int n erzeugt einen GrayCode in beliebiger laenge
+     *@param n ist die gewuenschte laenge
+     * @return gibt den GrayCode als eine Integer Liste aus
+     */
+    public static List<Integer> grayCode(int n) {
+        if (n == 0) return Arrays.asList(0);
+        List<String> grayCodes = grayCodeStrings(n);
+        List<Integer> solution = new ArrayList<>();
+        for (String s : grayCodes) {
+            solution.add(Integer.parseInt(s, 2));
+        }
+        return solution;
+    }
+    /*Die Methode grayCodeStrings(int n) wandelt die Integer Liste aus der Methode grayCode in
+     *eine String Liste um
+     * @param n die Laenge des GrayCodes
+     * @return gibt den GrayCode als eine String Liste aus
+     */
+    public static List<String> grayCodeStrings(int n) {
+        List<String> list = new ArrayList<>();
+        if (n == 0) {
+            list.add("");
+            return list;
+        } else if (n == 1) {
+            list.add("0");
+            list.add("1");
+            return list;
+        } else {
+            List<String> prev = grayCodeStrings(n - 1);
+            list.addAll(prev);
+            for (int i = prev.size() - 1; i >= 0; i--) {
+                String bits = list.get(i);
+                list.set(i, "0" + bits);
+                list.add("1" + bits);
+            }
+            return list;
+        }
+    }
+}

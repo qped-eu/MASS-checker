@@ -1,0 +1,16 @@
+public class emi {
+    public static int emi(double interest, int payments, int loan) {
+
+        double up = interest * Math.pow(1 + interest, payments);
+        double down = Math.pow(1 + interest, payments) - 1;
+        double fraction;
+        fraction = up / down;
+        int rate = (int) Math.round(loan * fraction);
+        System.out.println(rate + " Cent");
+        return rate;
+    }
+
+    public static void main(String[] args) {
+        emi(0.07, 10, 120000);
+    }
+}

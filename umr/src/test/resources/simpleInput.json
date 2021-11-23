@@ -1,0 +1,26 @@
+{
+   "attemptCount":1,
+   "feedback":[
+      
+   ],
+   "showSolution":false,
+   "user":{
+      "id":"5fd0de0f30795372827b0f2a",
+      "firstName":"Christoph",
+      "lastName":"Bockisch"
+   },
+   "assignment":{
+      "id":"604f7d7ea2a93773c04b7c1a",
+      "title":"How low can you go?"
+   },
+   "block":{
+      "id":"604f7d93a2a93756b64b7c2b",
+      "text":"Write something that contains \"simple\".",
+      "solution":"simple",
+      "programmingLanguage":"java"
+   },
+   "answers":[
+      "this is simple"
+   ],
+   "answer":"this is simple"
+}

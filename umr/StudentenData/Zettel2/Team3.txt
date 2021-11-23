@@ -1,0 +1,50 @@
+int predecessor(int Zahl)
+
+{
+
+	return Zahl - 1;
+
+}
+
+double square(double Zahl)
+
+{
+
+	return Zahl * Zahl;
+
+}
+boolean isEqual(String S1, String S2)
+
+{
+
+	return S1 == S2;
+}
+
+void echo(String St)
+
+{
+
+	System.out.println(St);
+
+}
+
+
+void wechselgeld(int geld)
+{
+	int[] betraege = {200,100,50,20,10,5,2,1};
+	for(int i : betraege)
+	{
+		while(geld>=i)
+		{
+			if(i >= 100)
+			{
+				System.out.print(i/100 + "€ ");
+			}
+			else
+			{
+				System.out.print(i + "ct ");
+			}
+			geld -= i;
+		}
+	}
+}

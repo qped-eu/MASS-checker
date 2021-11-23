@@ -1,0 +1,22 @@
+int predecessor(int number){
+	number = number - 1;
+	return number;
+}
+
+double square(double number){
+	number = number * number;
+	return number;
+}
+
+boolean isEqual(String string1, String string2){
+	if (string1 == string2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void echo(String string1){
+	System.out.println(string1);
+}

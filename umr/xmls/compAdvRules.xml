@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<ruleset name="rulesetlevel4"
+		 xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+	<description>Quickstart configuration of PMD. Includes the rules that are most likely to apply everywhere.
+	</description>
+	<!-- CodeStyle -->
+
+	<rule name="ControlStatementBraces" ref="category/java/codestyle.xml/ControlStatementBraces">
+		<properties>
+			<property name="checkIfElseStmt" value="true" />
+			<property name="checkSingleIfStmt" value="true" />
+			<property name="checkWhileStmt" value="true" />
+			<property name="checkForStmt" value="true" />
+			<property name="checkDoWhileStmt" value="true" />
+			<property name="checkCaseStmt" value="true" />
+			<property name="allowEmptyLoop" value="true" />
+		</properties>
+	</rule>
+
+
+
+	<rule name="CollapsibleIfStatements" ref="category/java/design.xml/CollapsibleIfStatements" />
+
+	<rule name="ExcessiveClassLength" ref="category/java/design.xml/ExcessiveClassLength">
+		<properties>
+			<property name="minimum" value="500.0" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessiveMethodLength" ref="category/java/design.xml/ExcessiveMethodLength">
+		<properties>
+			<property name="minimum" value="75.0" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessiveParameterList" ref="category/java/design.xml/ExcessiveParameterList">
+		<properties>
+			<property name="minimum" value="10.0" />
+		</properties>
+	</rule>
+
+	<rule name="TooManyFields" ref="category/java/design.xml/TooManyFields">
+		<properties>
+			<property name="maxfields" value="15" />
+		</properties>
+	</rule>
+
+	<rule name="TooManyMethods" ref="category/java/design.xml/TooManyMethods">
+		<properties>
+			<property name="maxmethods" value="30" />
+		</properties>
+	</rule>
+
+
+	<rule name="CyclomaticComplexity" ref="category/java/design.xml/CyclomaticComplexity">
+		<properties>
+			<property name="classReportLevel" value="80" />
+			<property name="methodReportLevel" value="13" />
+			<property name="cycloOptions" value="" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessiveImports" ref="category/java/design.xml/ExcessiveImports">
+		<properties>
+			<property name="minimum" value="20.0" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessivePublicCount" ref="category/java/design.xml/ExcessivePublicCount">
+		<properties>
+			<property name="minimum" value="30.0" />
+		</properties>
+	</rule>
+
+
+	<rule name="UselessParentheses" ref="category/java/codestyle.xml/UselessParentheses" />
+
+
+
+
+
+	<!-- Level 4-->
+	<rule name="DontImportJavaLang" ref="category/java/codestyle.xml/DontImportJavaLang" />
+	<rule name="DuplicateImports" ref="category/java/codestyle.xml/DuplicateImports" />
+	<rule name="ExtendsObject" ref="category/java/codestyle.xml/ExtendsObject" />
+
+
+	<rule name="UnnecessaryModifier" ref="category/java/codestyle.xml/UnnecessaryModifier" />
+
+
+
+	<rule name="SimplifyBooleanExpressions" ref="category/java/design.xml/SimplifyBooleanExpressions" />
+	<rule name="SimplifyBooleanReturns" ref="category/java/design.xml/SimplifyBooleanReturns" />
+
+
+	<!-- Level 2-->
+	<rule name="AvoidDeeplyNestedIfStmts" ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
+		<properties>
+			<property name="problemDepth" value="5" />
+		</properties>
+	</rule>
+	<rule name="AvoidThrowingNullPointerException" ref="category/java/design.xml/AvoidThrowingNullPointerException" />
+
+
+
+
+
+
+	<rule name="SignatureDeclareThrowsException" ref="category/java/design.xml/SignatureDeclareThrowsException" />
+	<rule name="SimplifiedTernary" ref="category/java/design.xml/SimplifiedTernary" />
+
+
+	<!-- Level 3-->
+	<rule name="AvoidCatchingGenericException" ref="category/java/design.xml/AvoidCatchingGenericException" />
+	<rule name="AvoidRethrowingException" ref="category/java/design.xml/AvoidRethrowingException" />
+	<rule name="AvoidThrowingRawExceptionTypes" ref="category/java/design.xml/AvoidThrowingRawExceptionTypes" />
+	<rule name="AvoidUncheckedExceptionsInSignatures" ref="category/java/design.xml/AvoidUncheckedExceptionsInSignatures" />
+	<rule name="DoNotExtendJavaLangError" ref="category/java/design.xml/DoNotExtendJavaLangError" />
+	<rule name="SimplifyBooleanAssertion" ref="category/java/design.xml/SimplifyBooleanAssertion" />
+	<rule name="UseObjectForClearerAPI" ref="category/java/design.xml/UseObjectForClearerAPI" />
+
+
+	<!-- Peroformence -->
+	<!-- level 2 -->
+	<rule name="AddEmptyString" ref="category/java/performance.xml/AddEmptyString" />
+	<rule name="AppendCharacterWithChar" ref="category/java/performance.xml/AppendCharacterWithChar" />
+	<rule name="AvoidUsingShortType" ref="category/java/performance.xml/AvoidUsingShortType" />
+	<!-- Level 3-->
+	<rule name="AvoidArrayLoops" ref="category/java/performance.xml/AvoidArrayLoops" />
+	<rule name="AvoidInstantiatingObjectsInLoops" ref="category/java/performance.xml/AvoidInstantiatingObjectsInLoops" />
+	<rule name="BooleanInstantiation" ref="category/java/performance.xml/BooleanInstantiation" />
+	<rule name="ByteInstantiation" ref="category/java/performance.xml/ByteInstantiation" />
+	<rule name="ConsecutiveAppendsShouldReuse" ref="category/java/performance.xml/ConsecutiveAppendsShouldReuse" />
+	<rule name="IntegerInstantiation" ref="category/java/performance.xml/IntegerInstantiation" />
+	<rule name="LongInstantiation" ref="category/java/performance.xml/LongInstantiation" />
+	<rule name="StringInstantiation" ref="category/java/performance.xml/StringInstantiation" />
+
+
+
+
+
+</ruleset>

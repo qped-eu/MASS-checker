@@ -1,0 +1,52 @@
+import java.lang.Math;
+import java.util.*;
+
+public class javaAPI {
+
+    public static void main(String[] args) {
+        tossCoin();
+        getTimeDifference(Calendar.getInstance(), Calendar.getInstance());
+        emi(0.08,12,6000);
+    }
+    // a)
+    /** Simulation eines Münzwurfes
+     *
+     */
+    public static void tossCoin() {
+
+        double zufallszahl = Math.random();
+
+        if (zufallszahl <= 0.49) {
+            System.out.println("Kopf");
+        } else {
+            System.out.println("Zahl");
+        }
+    }
+
+    // b)
+    /** Berechnet die Differenz zwischen zwei Daten in Stunden
+     * @param a ist das erste Datum
+     * @param b ist das zweite Datum
+     * @return gibt die Differenz in Stunden zurück
+     */
+    public static int getTimeDifference(Calendar a, Calendar b) {
+        long seconds = (a.getTimeInMillis() - b.getTimeInMillis());
+        int hours = (int) (seconds / 3600);
+        return hours;
+    }
+
+    // c)
+    /** Berechnet die Raten für einen Kredit
+     * @param interest ist der Zinssatz
+     * @param payments ist die Laufzeit
+     * @param loan ist der Geldbetrag
+     * @return gibt die Rate in Cents zurück
+     */
+    public static int emi(double interest, int payments, int loan) {
+        int rate = (int) (loan*(interest*Math.pow(1+interest, payments))/Math.pow(1+interest, payments)-1);
+        System.out.println(rate);
+        return rate;
+    }
+
+    // d)
+}

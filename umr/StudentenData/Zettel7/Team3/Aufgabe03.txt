@@ -1,0 +1,31 @@
+public class StringUtil {
+
+	public static void main(String[] args) {
+		System.out.println(substring("Hallo", 0, 3));
+	}
+
+	/**
+	 * The method substring splits the given string at the given points.
+	 * @param string is the index the substring will be created from
+	 * @param startIndex is the index of the first character in the substring
+	 * @param endIndex is the index of the first character that will not be in the substring
+	 * @return a new string that is substring of the given string
+	 */
+	public static String substring(String string, int startIndex, int endIndex) {
+		if (string == null) {
+			return null;
+		}
+		if (startIndex > string.length() - 1 || startIndex < 0) {
+			return "";
+		}
+		if (endIndex > string.length()) {
+			endIndex = string.length();
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = startIndex; i < endIndex; i++) {
+			sb.append(string.charAt(i));
+		}
+		return sb.toString();
+	}
+
+}

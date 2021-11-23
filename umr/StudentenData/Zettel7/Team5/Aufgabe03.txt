@@ -1,0 +1,25 @@
+import java.lang.Math;
+
+public class tossCoin {
+
+    public static String tossCoin() {
+
+        double randomNumber = Math.random();
+        String as = "";
+        if (randomNumber < 0.5) {
+            as = "Kopf";
+            System.out.println(as);
+            return as;
+
+        } else {
+            as = "Zahl";
+            System.out.println(as);
+            return as;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        tossCoin();
+    }
+}

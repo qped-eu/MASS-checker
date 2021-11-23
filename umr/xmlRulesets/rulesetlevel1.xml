@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<ruleset name="rulesetlevel1"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Quickstart configuration of PMD. Includes the rules that are most likely to apply everywhere.
+	</description>
+	<!-- CodeStyle -->
+	<rule ref="category/java/codestyle.xml/ShortVariable" />
+	<rule ref="category/java/codestyle.xml/MethodNamingConventions"/>
+	<rule ref="category/java/codestyle.xml/VariableNamingConventions" />
+	<rule ref="category/java/codestyle.xml/FieldNamingConventions" />
+	<rule ref="category/java/codestyle.xml/IfElseStmtsMustUseBraces" />
+	<rule ref="category/java/codestyle.xml/IfStmtsMustUseBraces" />
+	<rule ref="category/java/codestyle.xml/WhileLoopsMustUseBraces" />
+	<rule ref="category/java/codestyle.xml/ForLoopsMustUseBraces" />
+	<rule ref="category/java/codestyle.xml/BooleanGetMethodName" />
+	<rule ref="category/java/codestyle.xml/ClassNamingConventions" />
+<!--	<rule ref="category/java/codestyle.xml/ShortMethodName" />-->
+	<rule ref="category/java/codestyle.xml/ShortMethodName">
+    <properties>
+        <property name="minimum" value="3" />
+    </properties>
+    </rule>
+	<rule ref="category/java/codestyle.xml/UselessParentheses" />
+
+
+	<!-- Design -->
+	<rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod" />
+	<rule ref="category/java/design.xml/LogicInversion" />
+	<rule ref="category/java/design.xml/SimplifyBooleanExpressions" />
+	<rule ref="category/java/design.xml/SimplifyBooleanReturns" />
+
+	<!-- Dokumentation -->
+<!--	<rule ref="category/java/documentation.xml/CommentRequired" />-->
+	<!-- @basel mayar-->
+	<rule ref="category/java/documentation.xml/CommentRequired">
+		<properties>
+			<property name="methodWithOverrideCommentRequirement" value="Ignored" />
+			<property name="accessorCommentRequirement" value="Ignored" />
+			<property name="classCommentRequirement" value="Required" />
+			<property name="fieldCommentRequirement" value="Required" />
+			<property name="publicMethodCommentRequirement" value="Required" />
+			<property name="protectedMethodCommentRequirement" value="Required" />
+			<property name="enumCommentRequirement" value="Required" />
+			<property name="serialVersionUIDCommentRequired" value="Ignored" />
+			<property name="serialPersistentFieldsCommentRequired" value="Ignored" />
+		</properties>
+	</rule>
+<!--	<rule ref="category/java/documentation.xml/CommentContent" />-->
+	<!-- @basel mayar-->
+	<rule ref="category/java/documentation.xml/CommentContent">
+		<properties>
+			<property name="caseSensitive" value="false" />
+			<property name="disallowedTerms" value="idiot|jerk" />
+		</properties>
+	</rule>
+
+<!--	<rule ref="category/java/documentation.xml/CommentSize" />-->
+	<!-- @basel mayar-->
+	<rule ref="category/java/documentation.xml/CommentSize">
+		<properties>
+			<property name="maxLines" value="6" />
+			<property name="maxLineLength" value="80" />
+		</properties>
+	</rule>
+<!--	<rule ref="category/java/documentation.xml/UncommentedEmptyConstructor" />-->
+	<!-- @basel mayar-->
+	<rule ref="category/java/documentation.xml/UncommentedEmptyConstructor">
+		<properties>
+			<property name="ignoreExplicitConstructorInvocation" value="false" />
+		</properties>
+	</rule>
+
+	<rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody" />
+
+	<!-- Error Prone -->
+	<rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName" />
+	<rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName" />
+	<rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />
+	<rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
+	<rule ref="category/java/errorprone.xml/EmptyIfStmt" />
+	<rule ref="category/java/errorprone.xml/EmptyStatementBlock" />
+	<rule ref="category/java/errorprone.xml/EmptyStatementNotInLoop" />
+	<rule ref="category/java/errorprone.xml/EmptySwitchStatements" />
+	<rule ref="category/java/errorprone.xml/EmptyTryBlock" />
+	<rule ref="category/java/errorprone.xml/EmptyWhileStmt" />
+	<rule ref="category/java/errorprone.xml/EqualsNull" />
+	<rule ref="category/java/errorprone.xml/IdempotentOperations" />
+	<rule ref="category/java/errorprone.xml/ImportFromSamePackage" />
+	<rule ref="category/java/errorprone.xml/JumbledIncrementer" />
+	<rule ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
+	<rule ref="category/java/errorprone.xml/MisplacedNullCheck" />
+	<rule ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" />
+	<rule ref="category/java/errorprone.xml/UnconditionalIfStatement" />
+
+
+
+	</ruleset>

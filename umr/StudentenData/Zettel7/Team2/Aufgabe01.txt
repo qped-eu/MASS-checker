@@ -1,0 +1,23 @@
+public class GrayCode {
+
+    // Datenfelder
+    int laenge;
+    public static String[] codes;
+
+    // Konstruktoren
+    GrayCode(int laenge){
+        this.laenge = laenge;
+        String codes[] = new String[(int) Math.pow(2, laenge)];
+        this.codes = codes;
+    }
+
+    // Methoden
+    /** Gibt den Gray-Code in einer Zeile auf der Konsole aus
+     */
+    static void print(){
+        for(int a = 0; a < codes.length; a++) {
+            System.out.print(codes[a]);
+        }
+    }
+
+}

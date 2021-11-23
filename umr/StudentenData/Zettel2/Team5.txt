@@ -1,0 +1,61 @@
+
+int predecessor(int number) {
+number--;
+return number;
+}
+
+
+double square(double number) {
+number = number * number;
+return number;
+}
+
+
+boolean isEqual(String textOne, String textTwo) {
+	if (textOne==textTwo) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+void echo(String text) {
+System.out.println(text);
+}
+
+
+void change(int moneyInput){
+	while (moneyInput >= 200) {
+	moneyInput -= 200;
+	System.out.println("200");
+	}
+	while (moneyInput >= 100) {
+	moneyInput -= 100;
+	System.out.println("100");
+	}
+	while (moneyInput >= 50) {
+	moneyInput -= 50;
+	System.out.println("50");
+	}
+	while (moneyInput >= 20) {
+	moneyInput -= 20;
+	System.out.println("20");
+	}
+	while (moneyInput >=10) {
+	moneyInput -= 10;
+	System.out.println("10");
+	}
+	while (moneyInput >=5) {
+	moneyInput -= 5;
+	System.out.println("5");
+	}
+	while (moneyInput >=2) {
+	moneyInput -= 2;
+	System.out.println("2");
+	}
+	while (moneyInput >=1) {
+	moneyInput -= 1;
+	System.out.println("1");
+	} 
+}

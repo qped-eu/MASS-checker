@@ -1,0 +1,47 @@
+pub449799c class GrayCode {
+
+    public String[] codes;
+
+    public GrayCode(int laenge) {
+        int num = (int) Math.round(Math.pow(2, laenge));
+        int count = 0;
+        codes = new String[num];
+
+        if (laenge > 1) {
+            GrayCode gcodes = new GrayCode(laenge - 1);
+
+            for (int i = 0; i < gcodes.codes.length; i++) {
+                codes[i] = "0" + gcodes.codes[i];
+                count = i;
+            }
+            for (int j = gcodes.codes.length - 1; j >= 0; j--) {
+                count++;
+                codes[count] = "1" + gcodes.codes[j];
+            }
+        } else {
+            codes[0] = "0";
+            codes[1] = "1";
+
+        }
+    }
+
+    public void print() {
+        String ausgabe = "";
+        for (int i = 0; i < codes.length; i++) {
+            ausgabe = ausgabe + codes[i];
+        }
+        System.out.println("Ausgabe:" + ausgabe);
+    }
+
+    public void printArray() {
+        for (int i = 0; i < codes.length; i++) {
+            System.out.println(codes[i]);
+        }
+    }
+
+    public static void main(String[] args) {
+        GrayCode gcodes = new GrayCode(6);
+        gcodes.printArray();
+        gcodes.print();
+    }
+}
