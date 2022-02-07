@@ -16,11 +16,4 @@
 #mvn validate compile exec:java -Dexec.mainClass="eu.qped.umr.CheckerRunner"
 #mvn -e exec:java -Dexec.mainClass="eu.qped.umr.CheckerRunner"
 
-// qf.json laden
-// darin url auslesen
-mkdir extrasrc
-grep url
-
-
-
 gradle runWithJavaExec
