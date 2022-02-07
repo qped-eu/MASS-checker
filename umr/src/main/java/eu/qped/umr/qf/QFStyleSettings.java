@@ -1,13 +1,6 @@
 package eu.qped.umr.qf;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public class QFStyleSettings {
+public class QFStyleSettings extends QfObjectBase {
 
     private String mainLevel;
 
@@ -23,30 +16,6 @@ public class QFStyleSettings {
     private String varName;
     private String methodName;
     private String className;
-
-
-	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<>();
-
-	@JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return additionalProperties;
-    }
-
-
-
-	public boolean hasProperty(String property) {
-		return additionalProperties.containsKey(property);
-	}
-
-
-
-	@JsonAnySetter
-	public void setAdditionalProperty(String property, String value){
-		additionalProperties.put(property, value);
-	}
-
-
 
     public String getBasisLevel() {
         return basisLevel;

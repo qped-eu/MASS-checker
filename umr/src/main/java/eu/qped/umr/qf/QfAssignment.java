@@ -1,37 +1,10 @@
 package eu.qped.umr.qf;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public class QfAssignment {
+public class QfAssignment extends QfObjectBase {
 	private String id;
 	private String title;
+	private String[] files;
 	
-	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<>();
-
-	@JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return additionalProperties;
-    }
-
-
-
-	public boolean hasProperty(String property) {
-		return additionalProperties.containsKey(property);
-	}
-
-
-
-	@JsonAnySetter
-	public void setAdditionalProperty(String property, String value){
-		additionalProperties.put(property, value);
-	}
-
 	public String getId() {
 		return id;
 	}
@@ -44,6 +17,19 @@ public class QfAssignment {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
+
+
+	public String[] getFiles() {
+		return files;
+	}
+
+
+
+	public void setFiles(String[] files) {
+		this.files = files;
+	}
+	
 
 	
 }

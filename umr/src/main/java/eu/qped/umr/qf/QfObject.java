@@ -1,15 +1,10 @@
 package eu.qped.umr.qf;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.HashMap;
-import java.util.Map;
 
 
-
-public class QfObject {
+public class QfObject extends QfObjectBase {
 
 	private String answer;
 	private QFMainSettings qfMainSettings;
@@ -24,6 +19,7 @@ public class QfObject {
 	private QfAssignment assignment;
 	private QfBlock block;
 
+	private QfObjectBase question;
 
 	private String checkerClass;
 
@@ -31,10 +27,6 @@ public class QfObject {
 
 	private String[] settings;
 
-	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<>();
-
-	
 	public int getAttemptCount() {
 		return attemptCount;
 	}
@@ -97,72 +89,24 @@ public class QfObject {
 		this.qfStyleSettings = qfStyleSettings;
 	}
 
-
-	@JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return additionalProperties;
-    }
-
-
-
-	public boolean hasProperty(String property) {
-		return additionalProperties.containsKey(property);
-	}
-
-
-
-	@JsonAnySetter
-	public void setAdditionalProperty(String property, String value){
-		additionalProperties.put(property, value);
-	}
-
 	@JsonIgnore
 	public void setCondition(String condition, boolean satisfied) {
-		additionalProperties.put(condition, satisfied);
+		setAdditionalProperty(condition, satisfied);
 	}
 
 	@JsonIgnore
 	public boolean isConditionSatisfied(String condition) {
-		return (Boolean) additionalProperties.get(condition);
+		return getAdditionalProperty(condition);
 	}
 
 	@JsonIgnore
 	public void setMessage(String key, String msg) {
-		additionalProperties.put(key, msg);
+		setAdditionalProperty(key, msg);
 	}
 
 	@JsonIgnore
 	public String getMessage(String key) {
-		return (String) additionalProperties.get(key);
-	}
-
-	@JsonIgnore
-	public Integer getAdditionalIntProperty(String property) {
-		Object value = additionalProperties.get(property);
-		return Integer.parseInt(value.toString());
-	}
-	@JsonIgnore
-	public String[] getAdditionalSettingArrProperty(String property) {
-		Object value =  additionalProperties.get(property);
-		return (String[]) value;
-	}
-
-	@JsonIgnore
-	public String getAdditionalStringProperty(String property) {
-		Object value = additionalProperties.get(property);
-		return value.toString();
-	}
-
-	@JsonIgnore
-	public boolean getAdditionalBooleanProperty(String property) {
-		Object value = additionalProperties.get(property);
-		return Boolean.getBoolean(value.toString());
-	}
-
-	@JsonIgnore
-	public double getAdditionalDoubleProperty(String property) {
-		Object value = additionalProperties.get(property);
-		return Double.parseDouble(value.toString());
+		return getAdditionalProperty(key);
 	}
 
 	public String[] getSettings() {
@@ -189,6 +133,12 @@ public class QfObject {
 
 	public void setQfMainSettings(QFMainSettings qfMainSettings) {
 		this.qfMainSettings = qfMainSettings;
+	}
+	public QfObjectBase getQuestion() {
+		return question;
+	}
+	public void setQuestion(QfObjectBase question) {
+		this.question = question;
 	}
 
 

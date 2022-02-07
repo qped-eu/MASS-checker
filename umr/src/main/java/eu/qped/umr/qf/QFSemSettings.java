@@ -1,13 +1,6 @@
 package eu.qped.umr.qf;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-public class QFSemSettings {
+public class QFSemSettings extends QfObjectBase {
     //todo rec muss und rec allowed
 
     private String methodName;
@@ -18,28 +11,6 @@ public class QFSemSettings {
     private String ifElseStmt;
     private String doWhileLoop;
     private String returnType;
-
-	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<>();
-
-	@JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return additionalProperties;
-    }
-
-
-
-	public boolean hasProperty(String property) {
-		return additionalProperties.containsKey(property);
-	}
-
-
-
-	@JsonAnySetter
-	public void setAdditionalProperty(String property, String value){
-		additionalProperties.put(property, value);
-	}
-
 
     public String getMethodName() {
         return methodName;

@@ -37,26 +37,38 @@ public class CheckerRunner {
 	private final Checker checker;
 	
 	public CheckerRunner() throws IOException {
-		this(FileUtils.readFileToString(QF_OBJECT_JSON_FILE, Charset.defaultCharset()));
+		this((Checker) null);
+	}
+
+	public CheckerRunner(Checker checker) throws IOException {
+		this(FileUtils.readFileToString(QF_OBJECT_JSON_FILE, Charset.defaultCharset()), checker);
+	}
+
+	public CheckerRunner(String qfObjectJsonString) throws JsonMappingException, JsonProcessingException {
+		this(qfObjectJsonString, null);
 	}
 	
-	public CheckerRunner(String qfObjectJsonString) throws JsonMappingException, JsonProcessingException {
+	public CheckerRunner(String qfObjectJsonString, Checker checker) throws JsonMappingException, JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 
 		qfObject = mapper.readValue(qfObjectJsonString, new TypeReference<QfObject>(){});
 		
 		String checkerClassName = qfObject.getCheckerClass();
 		if (checkerClassName != null) {
+			if (checker != null) {
+				throw new IllegalArgumentException("Checker is ambiguous. A checker was provided to the CheckerRunner constructor and a checker class was specified in the Qf obejct.");
+			}
 			try {
 				@SuppressWarnings("unchecked")
 				Class<Checker> cls = (Class<Checker>) Class.forName(checkerClassName);
-				checker = cls.getDeclaredConstructor().newInstance();
+				this.checker = cls.getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 				throw new IllegalArgumentException("Illegal checker class specified", e);
 			}
-		}
-		else {
+		} else if (checker != null) {
+			this.checker = checker;
+		} else {
 			throw new IllegalArgumentException("No checker class specified");
 		}
 	}
