@@ -1,21 +1,54 @@
 {
   "formatVersion": 0,
   "pmdVersion": "6.33.0",
-  "timestamp": "2021-09-13T11:10:46.804+02:00",
+  "timestamp": "2022-02-07T22:51:55.055+01:00",
   "files": [
     {
-      "filename": "C:\\Users\\Basel Alaktaa\\Desktop\\BachelorArbeit\\Repo\\o3-prototyping\\umr\\TestClass.java",
+      "filename": "/Users/bockisch/git/QPED-O3/umr/TestClass.java",
       "violations": [
         {
           "beginline": 1,
-          "begincolumn": 55,
+          "begincolumn": 79,
+          "endline": 1,
+          "endcolumn": 95,
+          "description": "Parameter \u0027IAmAParameter\u0027 is not assigned and could be declared final",
+          "rule": "MethodArgumentCouldBeFinal",
+          "ruleset": "Code Style",
+          "priority": 3,
+          "externalInfoUrl": "https://pmd.github.io/pmd-6.33.0/pmd_rules_java_codestyle.html#methodargumentcouldbefinal"
+        },
+        {
+          "beginline": 1,
+          "begincolumn": 61,
           "endline": 3,
-          "endcolumn": 5,
-          "description": "The instance method name \u0027rec\u0027 doesn\u0027t match \u0027[AA]\u0027",
+          "endcolumn": 1,
+          "description": "Public method and constructor comments are required",
+          "rule": "CommentRequired",
+          "ruleset": "Documentation",
+          "priority": 3,
+          "externalInfoUrl": "https://pmd.github.io/pmd-6.33.0/pmd_rules_java_documentation.html#commentrequired"
+        },
+        {
+          "beginline": 1,
+          "begincolumn": 61,
+          "endline": 3,
+          "endcolumn": 1,
+          "description": "The instance method name \u0027IAmAFunction\u0027 doesn\u0027t match \u0027[A]*\u0027",
           "rule": "MethodNamingConventions",
           "ruleset": "Code Style",
           "priority": 1,
           "externalInfoUrl": "https://pmd.github.io/pmd-6.33.0/pmd_rules_java_codestyle.html#methodnamingconventions"
+        },
+        {
+          "beginline": 2,
+          "begincolumn": 6,
+          "endline": 2,
+          "endcolumn": 17,
+          "description": "The local variable name \u0027IAmAVariable\u0027 doesn\u0027t match \u0027[a-z][a-zA-Z0-9]*\u0027",
+          "rule": "LocalVariableNamingConventions",
+          "ruleset": "Code Style",
+          "priority": 1,
+          "externalInfoUrl": "https://pmd.github.io/pmd-6.33.0/pmd_rules_java_codestyle.html#localvariablenamingconventions"
         }
       ]
     }

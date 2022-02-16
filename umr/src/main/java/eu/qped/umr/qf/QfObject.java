@@ -142,7 +142,28 @@ public class QfObject extends QfObjectBase {
 	}
 
 
-
+/* TODO add specific support for files. This is how it looks in JSON:
+ * 
+  "files":[
+      {
+         "id":"620199e86364f5b97c3341fa",
+         "label":"Demo",
+         "extension":".java",
+         "path":"submission/6201996717ef31555f7a06b9/files",
+         "mimetype":"application/octet-stream",
+         "url":"https://upload.quarterfall.com/submission/6201996717ef31555f7a06b9/files/620199e86364f5b97c3341fa.java"
+      }
+   ],
+   "file":{
+      "id":"620199e86364f5b97c3341fa",
+      "label":"Demo",
+      "extension":".java",
+      "path":"submission/6201996717ef31555f7a06b9/files",
+      "mimetype":"application/octet-stream",
+      "url":"https://upload.quarterfall.com/submission/6201996717ef31555f7a06b9/files/620199e86364f5b97c3341fa.java"
+   },
+ * 
+ */
 
 
 
