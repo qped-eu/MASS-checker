@@ -16,12 +16,8 @@ public class XmlParser {
 
     private final String path;
 
-    private XmlParser(String path){
+    public XmlParser(String path){
         this.path = path;
-    }
-
-    public static XmlParser createXmlParser(String path){
-        return new XmlParser(path);
     }
 
     public NodeList parse () {
@@ -37,16 +33,16 @@ public class XmlParser {
             Document inputDom;
 
             if (path != null){
-               inputDom  = db.parse(path);
+               inputDom  = db.parse(ClassLoader.getSystemResourceAsStream(path));
                Element doc = inputDom.getDocumentElement();
                nodeList = doc.getElementsByTagName("rule");
             }
             else {
-            	LogManager.getLogger((Class<?>) getClass()).error("No such rule: "  + path);
+            	LogManager.getLogger(getClass()).error("No such ruleset: "  + path);
             }
 
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            LogManager.getLogger((Class<?>) getClass()).throwing(e);
+            LogManager.getLogger(getClass()).throwing(e);
         }
         return nodeList;
     }

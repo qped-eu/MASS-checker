@@ -1,6 +1,8 @@
 package eu.qped.java.checkers.style.pmd;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -8,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -16,71 +19,57 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class XmlFileManager {
 
+	private static final String MAIN_RULESET_TEMPLATE =
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			+ "<ruleset xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+			+ "	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" name=\"ruleset\"\n"
+			+ "	xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+			+ "	<description>\n"
+			+ "	Effective MASS ruleset.\n"
+			+ "	</description>\n"
+			+ "</ruleset>";
+	private Document document;
+	private File mainRulesetFile;
 
-    private XmlFileManager(){
-    }
-
-    public static XmlFileManager createXmlFileManager() {
-        return new XmlFileManager();
+    public XmlFileManager() {
+        try {
+        	DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        	DocumentBuilder db = dbf.newDocumentBuilder();
+			document = db.parse(new InputSource(new StringReader(MAIN_RULESET_TEMPLATE)));
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			LogManager.getLogger(getClass()).throwing(e);
+			throw new RuntimeException(e);
+		}
     }
 
     public void addToMainRuleset(String path) {
-        XmlParser xmlParser = XmlParser.createXmlParser(path);
+        XmlParser xmlParser = new XmlParser(path);
         NodeList rules = xmlParser.parse();
         writeIntoMainRuleset(rules);
     }
 
     private void writeIntoMainRuleset(NodeList nodeList) {
-        Document document;
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    	Element root = document.getDocumentElement();
+    	int length = nodeList.getLength();
 
-        try {
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            document = db.parse("xmls/mainRuleset.xml");
-
-            Element root = document.getDocumentElement();
-            int length = nodeList.getLength();
-
-            for (int i = 0; i < length; i++) {
-                Node node = nodeList.item(i);
-                Node copy = document.importNode(node, true);
-                root.appendChild(copy);
-            }
-
-            transform(document);
-
-        } catch (ParserConfigurationException | IOException | SAXException | TransformerException e) {
-            LogManager.getLogger((Class<?>) getClass()).throwing(e);
-        }
+    	for (int i = 0; i < length; i++) {
+    		Node node = nodeList.item(i);
+    		Node copy = document.importNode(node, true);
+    		root.appendChild(copy);
+    	}
     }
 
-    private void transform(Document document) throws TransformerException {
-        document.normalize();
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource domSource = new DOMSource(document);
-
-        StreamResult streamResult = new StreamResult("xmls/mainRuleset.xml");
-        transformer.transform(domSource, streamResult);
-    }
-
-    public void editProperty(String xmlPath, String ruleName, String newValue, String propName)
+    public void editProperty(String ruleName, String newValue, String propName)
             throws PmdConfigException {
 
-        if (xmlPath == null || ruleName == null || propName == null) {
-            throw new PmdConfigException(xmlPath, ruleName, propName);
+        if (ruleName == null || propName == null) {
+            throw new PmdConfigException(ruleName, propName);
         }
-
-        Document document;
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        try {
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            document = db.parse(xmlPath);
 
             NodeList allNodes = document.getElementsByTagName("rule");
             Node searchedNode = null;
@@ -93,7 +82,7 @@ public class XmlFileManager {
                 }
             }
             if (searchedNode == null) {
-                throw new PmdConfigException("Rule not found.", xmlPath, ruleName, propName);
+                throw new PmdConfigException("Rule not found.", ruleName, propName);
             }
 
             NodeList allProperties = searchedNode.getChildNodes();
@@ -114,41 +103,60 @@ public class XmlFileManager {
                 }
             }
             if (!propFound) {
-                throw new PmdConfigException("Property not found.", xmlPath, ruleName, propName);
+                throw new PmdConfigException("Property not found.", ruleName, propName);
             }
 
-            transform(xmlPath, document);
-
-        } catch (ParserConfigurationException | SAXException | IOException | TransformerException e) {
-            LogManager.getLogger((Class<?>) getClass()).throwing(e);
-        }
     }
 
-    public void clearXmlFile() {
-        Document document;
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        try {
-            DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-            document = documentBuilder.parse("xmls/mainRuleset.xml");
-            Node root = document.getDocumentElement();
-            while (root.hasChildNodes()) {
-                root.removeChild(root.getFirstChild());
-            }
-            transform("xmls/mainRuleset.xml", document);
+	public String getFilename() {
+		if (mainRulesetFile == null) {
+			try {
+				document.normalize();
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-        } catch (ParserConfigurationException | IOException | SAXException | TransformerException e) {
-            LogManager.getLogger((Class<?>) getClass()).throwing(e);
-        }
-    }
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource domSource = new DOMSource(document);
 
-    private void transform(String xmlPath, Document document) throws TransformerException {
-        document.normalize();
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				mainRulesetFile = File.createTempFile("mainRuleset", ".xml");
 
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource domSource = new DOMSource(document);
+				StreamResult streamResult = new StreamResult(mainRulesetFile.getPath());
+				transformer.transform(domSource, streamResult);
 
-        StreamResult streamResult = new StreamResult(xmlPath);
-        transformer.transform(domSource, streamResult);
-    }
+				// make sure that the document is not edited anymore.
+				document = null;
+			} catch (TransformerFactoryConfigurationError | IOException | TransformerException e) {
+				LogManager.getLogger(getClass()).throwing(e);
+				throw new RuntimeException(e);
+			}
+		}
+		return mainRulesetFile.getPath();
+	}
+
+//    public void clearXmlFile() {
+//        Document document;
+//        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+//        try {
+//            DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+//            document = documentBuilder.parse("pmd-rulesets/mainRuleset.xml");
+//            Node root = document.getDocumentElement();
+//            while (root.hasChildNodes()) {
+//                root.removeChild(root.getFirstChild());
+//            }
+//            transform("pmd-rulesets/mainRuleset.xml", document);
+//
+//        } catch (ParserConfigurationException | IOException | SAXException | TransformerException e) {
+//            LogManager.getLogger((Class<?>) getClass()).throwing(e);
+//        }
+//    }
+
+//    private void transform(String xmlPath, Document document) throws TransformerException {
+//        document.normalize();
+//        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+//
+//        Transformer transformer = transformerFactory.newTransformer();
+//        DOMSource domSource = new DOMSource(document);
+//
+//        StreamResult streamResult = new StreamResult(xmlPath);
+//        transformer.transform(domSource, streamResult);
+//    }
 }
