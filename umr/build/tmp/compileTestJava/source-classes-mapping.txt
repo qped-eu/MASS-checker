@@ -1,4 +1,0 @@
-eu/qped/umr/simple/SimpleTest.java
- eu.qped.umr.simple.SimpleTest
-eu/qped/umr/simple/QfDeserializeTest.java
- eu.qped.umr.simple.QfDeserializeTest
