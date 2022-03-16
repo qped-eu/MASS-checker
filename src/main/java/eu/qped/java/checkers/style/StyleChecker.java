@@ -118,7 +118,7 @@ public class StyleChecker {
         configuration.setRuleSets(MAIN_RULESET_PATH);
         configuration.setReportFormat("json");
         configuration.setReportFile("report.json");
-        PMD.doPMD(configuration);
+        PMD.runPmd(configuration);
     }
 
     public ArrayList<StyleFeedback> getStyleFeedbacks() {

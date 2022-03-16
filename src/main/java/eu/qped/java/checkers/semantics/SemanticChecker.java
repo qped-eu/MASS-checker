@@ -11,8 +11,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
 
-import eu.qped.framework.Feedback;
-
 
 public class SemanticChecker {
 
@@ -204,14 +202,6 @@ public class SemanticChecker {
 
         }
 
-    }
-
-    private void printFeedbacks(){
-        System.out.println("feedbacks");
-        for (Feedback feedback : feedbacks) {
-            System.out.println(feedback.getBody());
-        }
-        System.out.println("feedbacks");
     }
 
     public String getSource() {

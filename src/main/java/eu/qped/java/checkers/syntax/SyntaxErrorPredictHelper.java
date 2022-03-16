@@ -96,29 +96,4 @@ public class SyntaxErrorPredictHelper {
         return openCounter == closedCounter;
     }
 
-
-    public static void main(String[] args) {
-
-
-        String code = " private void ttt (){\\n\" +\n" +
-                "{"+
-                "                \"        private int x = 3;\\n\" +\n" +
-                "                \"\\n\" +\n" +
-                "                \"    }"+
-                "}";
-
-
-
-
-//        ErrorPredictor errorPredictor = new ErrorPredictor( "compiler.err.illegal.start.of.expr" , " void xxx (){\n" +
-//                "             \n" +
-//                "        }\n" +
-//                "\n" +
-//                "    }}");
-
-//        System.out.println(errorPredictor.hasEqualNumberOfBraces(code));
-
-
-    }
-
 }

@@ -28,9 +28,8 @@ public class ViolationsFromReportParser {
      */
     public ArrayList<StyleViolation> parse () {
         ArrayList<StyleViolation> violations = new ArrayList<>();
-        JsonParser jsonParser = new JsonParser();
         try {
-            Object obj = jsonParser.parse(new FileReader("report.json"));
+            Object obj = JsonParser.parseReader(new FileReader("report.json"));
             JsonObject jsonObject = (JsonObject) obj;
             JsonArray files = (JsonArray) jsonObject.get("files");
             for (int i = 0; i < files.size(); i++) {

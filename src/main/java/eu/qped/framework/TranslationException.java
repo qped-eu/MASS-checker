@@ -2,6 +2,8 @@ package eu.qped.framework;
 
 public class TranslationException extends Exception {
 
+	private static final long serialVersionUID = 5546869454773307895L;
+	
 	private String fromLanguage;
 	private String toLanguage;
 

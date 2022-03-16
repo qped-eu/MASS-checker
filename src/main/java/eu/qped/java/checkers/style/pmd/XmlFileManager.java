@@ -1,8 +1,6 @@
 package eu.qped.java.checkers.style.pmd;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
