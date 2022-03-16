@@ -1,6 +1,6 @@
 package eu.qped.example;
 
-import eu.qped.framework.checker.Checker;
+import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
 
 public class SimpleChecker implements Checker {

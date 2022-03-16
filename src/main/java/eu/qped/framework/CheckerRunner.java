@@ -1,4 +1,4 @@
-package eu.qped.framework.checker;
+package eu.qped.framework;
 
 import java.io.File;
 import java.io.IOException;

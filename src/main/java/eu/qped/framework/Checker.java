@@ -1,4 +1,4 @@
-package eu.qped.framework.checker;
+package eu.qped.framework;
 
 import eu.qped.framework.qf.QfObject;
 

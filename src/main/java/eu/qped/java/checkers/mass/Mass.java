@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.qped.framework.checker.Checker;
+import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QFMainSettings;
 import eu.qped.framework.qf.QFSemSettings;
 import eu.qped.framework.qf.QFStyleSettings;

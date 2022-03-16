@@ -1,6 +1,6 @@
 package eu.qped.java;
 
-import eu.qped.framework.checker.Checker;
+import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
 
 public class MyPythonChecker implements Checker {
