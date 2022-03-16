@@ -7,20 +7,6 @@
 	</description>
 	<!-- CodeStyle -->
 
-	<rule name="ControlStatementBraces" ref="category/java/codestyle.xml/ControlStatementBraces">
-		<properties>
-			<property name="checkIfElseStmt" value="true" />
-			<property name="checkSingleIfStmt" value="true" />
-			<property name="checkWhileStmt" value="true" />
-			<property name="checkForStmt" value="true" />
-			<property name="checkDoWhileStmt" value="true" />
-			<property name="checkCaseStmt" value="true" />
-			<property name="allowEmptyLoop" value="true" />
-		</properties>
-	</rule>
-
-
-
 	<rule name="CollapsibleIfStatements" ref="category/java/design.xml/CollapsibleIfStatements" />
 
 	<rule name="ExcessiveClassLength" ref="category/java/design.xml/ExcessiveClassLength">

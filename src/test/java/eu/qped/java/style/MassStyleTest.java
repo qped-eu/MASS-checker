@@ -35,7 +35,7 @@ class MassStyleTest {
 		mainSettingsConfiguratorConf = new MainSettings(mainSettings);
 		
 		QFStyleSettings qfStyleSettings = new QFStyleSettings();
-		qfStyleSettings.setNamesLevel("adv");
+		qfStyleSettings.setNamesLevel(CheckLevel.ADVANCED.name());
 		qfStyleSettings.setMethodName("[a-z][a-zA-Z0-9_]*");
 
 		styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);

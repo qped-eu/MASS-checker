@@ -56,9 +56,10 @@ public class StyleChecker {
             applySettingsOnMainRuleset();
             executePMD();
             prepareFeedbacks();
-            xmlFileManager.clearXmlFile();
         } catch (Exception e) {
             LogManager.getLogger((Class<?>) getClass()).throwing(e);
+        }
+        finally {
             xmlFileManager.clearXmlFile();
         }
     }

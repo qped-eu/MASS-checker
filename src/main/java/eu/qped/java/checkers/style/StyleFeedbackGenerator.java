@@ -87,11 +87,9 @@ public class StyleFeedbackGenerator {
         feedbacks.put("\"EmptyWhileStmt\"" , new String[]{ "" , ""});
         feedbacks.put("\"EqualsNull\"" , new String[]{ "" , ""});
         feedbacks.put("\"IdempotentOperations\"" , new String[]{ "" , ""});
-        feedbacks.put("\"ImportFromSamePackage\"" , new String[]{ "" , ""});
         feedbacks.put("\"JumbledIncrementer\"" , new String[]{ "" , ""});
         feedbacks.put("\"MethodWithSameNameAsEnclosingClass\"" , new String[]{ "" , ""});
         feedbacks.put("\"MisplacedNullCheck\"" , new String[]{ "" , ""});
-        feedbacks.put("\"ReturnEmptyArrayRatherThanNull\"" , new String[]{ "" , ""});
         feedbacks.put("\"UnconditionalIfStatement\"" , new String[]{ "" , ""});
         feedbacks.put("\"OnlyOneReturn\"" ,new String[]{ "it's easy to write [if( condition ) return true; else return false] as [return condition]" , ""} );
     }

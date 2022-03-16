@@ -8,9 +8,18 @@
 
 
 	<!-- Level 2-->
-	<rule name="AvoidFinalLocalVariable" ref="category/java/codestyle.xml/AvoidFinalLocalVariable" />
 	<rule name="CommentDefaultAccessModifier" ref="category/java/codestyle.xml/CommentDefaultAccessModifier" />
-	<rule name="ControlStatementBraces" ref="category/java/codestyle.xml/ControlStatementBraces" />
+    <rule name="ControlStatementBraces" ref="category/java/codestyle.xml/ControlStatementBraces">
+        <properties>
+            <property name="checkIfElseStmt" value="true" />
+            <property name="checkSingleIfStmt" value="true" />
+            <property name="checkWhileStmt" value="true" />
+            <property name="checkForStmt" value="true" />
+            <property name="checkDoWhileStmt" value="true" />
+            <property name="checkCaseStmt" value="true" />
+            <property name="allowEmptyLoop" value="true" />
+        </properties>
+    </rule>
 
 	<rule name="MethodArgumentCouldBeFinal" ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal" />
 	<rule name="UnnecessaryCast" ref="category/java/codestyle.xml/UnnecessaryCast" />
@@ -55,11 +64,9 @@
 	<rule name="EmptyWhileStmt" ref="category/java/errorprone.xml/EmptyWhileStmt" />
 	<rule name="EqualsNull" ref="category/java/errorprone.xml/EqualsNull" />
 	<rule name="IdempotentOperations" ref="category/java/errorprone.xml/IdempotentOperations" />
-	<rule name="ImportFromSamePackage" ref="category/java/errorprone.xml/ImportFromSamePackage" />
 	<rule name="JumbledIncrementer" ref="category/java/errorprone.xml/JumbledIncrementer" />
 	<rule name="MethodWithSameNameAsEnclosingClass" ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
 	<rule name="MisplacedNullCheck" ref="category/java/errorprone.xml/MisplacedNullCheck" />
-	<rule name="ReturnEmptyArrayRatherThanNull" ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" />
 	<rule name="UnconditionalIfStatement" ref="category/java/errorprone.xml/UnconditionalIfStatement" />
 	<!-- Level 2-->
 	<rule name="AvoidBranchingStatementAsLastInLoop" ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
@@ -72,7 +79,7 @@
 	<rule name="DetachedTestCase" ref="category/java/errorprone.xml/DetachedTestCase" />
 	<rule name="EmptyCatchBlock" ref="category/java/errorprone.xml/EmptyCatchBlock" />
 	<rule name="EmptyFinallyBlock" ref="category/java/errorprone.xml/EmptyFinallyBlock" />
-	<rule name="MissingBreakInSwitch" ref="category/java/errorprone.xml/MissingBreakInSwitch" />
+    <rule name="ImplicitSwitchFallThrough" ref="category/java/errorprone.xml/ImplicitSwitchFallThrough" />
 	<rule name="NullAssignment" ref="category/java/errorprone.xml/NullAssignment" />
 	<rule name="ReturnFromFinallyBlock" ref="category/java/errorprone.xml/ReturnFromFinallyBlock" />
 	<rule name="SuspiciousEqualsMethodName" ref="category/java/errorprone.xml/SuspiciousEqualsMethodName" />

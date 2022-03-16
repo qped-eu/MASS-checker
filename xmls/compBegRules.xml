@@ -7,20 +7,6 @@
 	</description>
 	<!-- CodeStyle -->
 
-	<rule name="ControlStatementBraces" ref="category/java/codestyle.xml/ControlStatementBraces">
-		<properties>
-			<property name="checkIfElseStmt" value="false" />
-			<property name="checkSingleIfStmt" value="false" />
-			<property name="checkWhileStmt" value="false" />
-			<property name="checkForStmt" value="false" />
-			<property name="checkDoWhileStmt" value="false" />
-			<property name="checkCaseStmt" value="false" />
-			<property name="allowEmptyLoop" value="false" />
-		</properties>
-	</rule>
-
-
-
 	<rule name="CollapsibleIfStatements" ref="category/java/design.xml/CollapsibleIfStatements" />
 
 	<rule  name="ExcessiveClassLength" ref="category/java/design.xml/ExcessiveClassLength">
@@ -74,19 +60,6 @@
 		</properties>
 	</rule>
 
-	<rule name="DontUseFloatTypeForLoopIndices" ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
-	<rule name="EmptyIfStmt" ref="category/java/errorprone.xml/EmptyIfStmt" />
-	<rule name="EmptyStatementBlock" ref="category/java/errorprone.xml/EmptyStatementBlock" />
-	<rule name="EmptyStatementNotInLoop" ref="category/java/errorprone.xml/EmptyStatementNotInLoop" />
-	<rule name="EmptySwitchStatements" ref="category/java/errorprone.xml/EmptySwitchStatements" />
-	<rule name="EmptyTryBlock" ref="category/java/errorprone.xml/EmptyTryBlock" />
-	<rule name="EmptyWhileStmt" ref="category/java/errorprone.xml/EmptyWhileStmt" />
-	<rule name="EqualsNull" ref="category/java/errorprone.xml/EqualsNull" />
-
-
-	<rule name="MisplacedNullCheck" ref="category/java/errorprone.xml/MisplacedNullCheck" />
-	<rule name="ReturnEmptyArrayRatherThanNull" ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" />
-	<rule name="UnconditionalIfStatement" ref="category/java/errorprone.xml/UnconditionalIfStatement" />
 	<!-- Level 2-->
 	<rule name="MethodArgumentCouldBeFinal" ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal" />
 
