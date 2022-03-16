@@ -33,7 +33,9 @@ class MassSyntaxTest {
 	@Test
 	void testMethodNoError() {
 
-		String code = " void rec (){\n" + "        System.out.println(\"pretty\");\n" + "    }";
+		String code = "void rec (){\n"
+				+ "System.out.println(\"pretty\");\n"
+				+ "}";
 
 		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
 
