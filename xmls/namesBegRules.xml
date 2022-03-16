@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<ruleset name="ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Quickstart configuration of PMD. Includes the rules that are most likely to apply everywhere.</description>
+
+
+    <rule name="BooleanGetMethodName" ref="category/java/codestyle.xml/BooleanGetMethodName">
+        <properties>
+            <property name="checkParameterizedMethods" value="true" />
+        </properties>
+    </rule>
+
+
+
+    <rule name="ClassNamingConventions" ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="classPattern" value="[a-zA-Z0-9]*" />
+            <property name="abstractClassPattern" value="[a-zA-Z0-9]*" />
+            <property name="interfacePattern" value="[a-zA-Z0-9]*" />
+            <property name="enumPattern" value="[a-zA-Z0-9]*" />
+            <property name="annotationPattern" value="[a-zA-Z0-9]*" />
+            <property name="utilityClassPattern"
+                      value="[a-zA-Z0-9]+(Utils?|Helper|Constants)" />
+        </properties>
+    </rule>
+
+
+
+    <!--  varNamesRegEx  -->
+    <rule name="LocalVariableNamingConventions" ref="category/java/codestyle.xml/LocalVariableNamingConventions">
+        <properties>
+            <property name="localVarPattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="finalVarPattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="catchParameterPattern" value="[a-z][a-zA-Z0-9]*" />
+        </properties>
+    </rule>
+
+    <rule name="LongVariable" ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="minimum" value="17" />
+        </properties>
+    </rule>
+
+    <rule name="MethodNamingConventions" ref="category/java/codestyle.xml/MethodNamingConventions">
+        <properties>
+            <property name="methodPattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="staticPattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="nativePattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="junit3TestPattern" value="test[A-Z0-9][a-zA-Z0-9]*"/>
+            <property name="junit4TestPattern" value="[a-z][a-zA-Z0-9]*" />
+            <property name="junit5TestPattern" value="[a-z][a-zA-Z0-9]*" />
+        </properties>
+    </rule>
+
+    <rule name="ShortMethodName"  ref="category/java/codestyle.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" value="2" />
+        </properties>
+    </rule>
+
+    <rule name="ShortVariable" ref="category/java/codestyle.xml/ShortVariable">
+        <properties>
+            <property name="minimum" value="1" />
+        </properties>
+    </rule>
+
+
+    <!--mayae-->
+    <rule name="CommentRequired" ref="category/java/documentation.xml/CommentRequired">
+        <properties>
+            <property name="methodWithOverrideCommentRequirement" value="Ignored"
+            />
+            <property name="accessorCommentRequirement" value="Ignored" />
+            <property name="classCommentRequirement" value="Ignored" />
+            <property name="fieldCommentRequirement" value="Ignored" />
+            <property name="publicMethodCommentRequirement" value="Required" />
+            <property name="protectedMethodCommentRequirement" value="Required"
+            />
+            <property name="enumCommentRequirement" value="Ignored" />
+            <property name="serialVersionUIDCommentRequired" value="Ignored" />
+            <property name="serialPersistentFieldsCommentRequired"
+                      value="Ignored" />
+        </properties>
+    </rule>
+
+    <rule name="CommentSize" ref="category/java/documentation.xml/CommentSize">
+        <properties>
+            <property name="maxLines" value="8" />
+            <property name="maxLineLength" value="150" />
+        </properties>
+    </rule>
+
+    <!--comments-->
+<!--    <rule name = "comment1 " ref="category/java/documentation.xml/CommentRequired">-->
+<!--        <properties>-->
+<!--            <property name="methodWithOverrideCommentRequirement" value="Ignored"-->
+<!--            />-->
+<!--            <property name="accessorCommentRequirement" value="Ignored" />-->
+<!--            <property name="classCommentRequirement" value="Ignored" />-->
+<!--            <property name="fieldCommentRequirement" value="Ignored" />-->
+<!--            <property name="publicMethodCommentRequirement" value="Required" />-->
+<!--            <property name="protectedMethodCommentRequirement" value="Required"-->
+<!--            />-->
+<!--            <property name="enumCommentRequirement" value="Ignored" />-->
+<!--            <property name="serialVersionUIDCommentRequired" value="Ignored" />-->
+<!--            <property name="serialPersistentFieldsCommentRequired"-->
+<!--                      value="Ignored" />-->
+<!--        </properties>-->
+<!--    </rule>-->
+
+<!--    <rule  name="comment2" ref="category/java/documentation.xml/CommentSize">-->
+<!--        <properties>-->
+<!--            <property name="maxLines" value="8" />-->
+<!--            <property name="maxLineLength" value="150" />-->
+<!--        </properties>-->
+<!--    </rule>-->
+
+
+</ruleset>

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<ruleset name="rulesetlevel4"
+		 xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+	<description>Quickstart configuration of PMD. Includes the rules that are most likely to apply everywhere.
+	</description>
+
+
+	<!-- Level 2-->
+	<rule name="AvoidFinalLocalVariable" ref="category/java/codestyle.xml/AvoidFinalLocalVariable" />
+	<rule name="ControlStatementBraces" ref="category/java/codestyle.xml/ControlStatementBraces" />
+
+
+	<rule name="UnnecessaryCast" ref="category/java/codestyle.xml/UnnecessaryCast" />
+	<rule name="UnnecessaryConstructor" ref="category/java/codestyle.xml/UnnecessaryConstructor" />
+	<rule name="UnnecessaryLocalBeforeReturn" ref="category/java/codestyle.xml/UnnecessaryLocalBeforeReturn" />
+	<rule name="UselessQualifiedThis" ref="category/java/codestyle.xml/UselessQualifiedThis" />
+	<rule name="UseShortArrayInitializer" ref="category/java/codestyle.xml/UseShortArrayInitializer" />
+
+
+
+	<!-- Error Prone -->
+	<rule name="AvoidFieldNameMatchingMethodName" ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName" />
+	<rule name="AvoidFieldNameMatchingTypeName" ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName" />
+	<rule name="AvoidMultipleUnaryOperators" ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators" />
+	<rule name="DontUseFloatTypeForLoopIndices" ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices" />
+	<rule name="EmptyIfStmt" ref="category/java/errorprone.xml/EmptyIfStmt" />
+	<rule name="EmptyStatementBlock" ref="category/java/errorprone.xml/EmptyStatementBlock" />
+	<rule name="EmptyStatementNotInLoop" ref="category/java/errorprone.xml/EmptyStatementNotInLoop" />
+	<rule name="EmptySwitchStatements" ref="category/java/errorprone.xml/EmptySwitchStatements" />
+	<rule name="EmptyTryBlock" ref="category/java/errorprone.xml/EmptyTryBlock" />
+	<rule name="EmptyWhileStmt" ref="category/java/errorprone.xml/EmptyWhileStmt" />
+	<rule name="EqualsNull" ref="category/java/errorprone.xml/EqualsNull" />
+	<rule name="IdempotentOperations" ref="category/java/errorprone.xml/IdempotentOperations" />
+	<rule name="ImportFromSamePackage" ref="category/java/errorprone.xml/ImportFromSamePackage" />
+	<rule name="JumbledIncrementer" ref="category/java/errorprone.xml/JumbledIncrementer" />
+	<rule name="MethodWithSameNameAsEnclosingClass" ref="category/java/errorprone.xml/MethodWithSameNameAsEnclosingClass" />
+	<rule name="MisplacedNullCheck" ref="category/java/errorprone.xml/MisplacedNullCheck" />
+	<rule name="ReturnEmptyArrayRatherThanNull" ref="category/java/errorprone.xml/ReturnEmptyArrayRatherThanNull" />
+	<rule name="UnconditionalIfStatement" ref="category/java/errorprone.xml/UnconditionalIfStatement" />
+	<!-- Level 2-->
+	<rule name="AvoidBranchingStatementAsLastInLoop" ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop" />
+	<rule name="AssignmentInOperand" ref="category/java/errorprone.xml/AssignmentInOperand" />
+	<rule name="BrokenNullCheck" ref="category/java/errorprone.xml/BrokenNullCheck" />
+	<rule name="CompareObjectsWithEquals" ref="category/java/errorprone.xml/CompareObjectsWithEquals" />
+	<rule name="EmptyCatchBlock" ref="category/java/errorprone.xml/EmptyCatchBlock" />
+	<rule name="EmptyFinallyBlock" ref="category/java/errorprone.xml/EmptyFinallyBlock" />
+	<rule name="MissingBreakInSwitch" ref="category/java/errorprone.xml/MissingBreakInSwitch" />
+	<rule name="NullAssignment" ref="category/java/errorprone.xml/NullAssignment" />
+	<rule name="ReturnFromFinallyBlock" ref="category/java/errorprone.xml/ReturnFromFinallyBlock" />
+	<rule name="SuspiciousEqualsMethodName" ref="category/java/errorprone.xml/SuspiciousEqualsMethodName" />
+	<rule name="UnnecessaryBooleanAssertion" ref="category/java/errorprone.xml/UnnecessaryBooleanAssertion" />
+	<rule name="UnnecessaryCaseChange" ref="category/java/errorprone.xml/UnnecessaryCaseChange" />
+	<rule name="UseEqualsToCompareStrings" ref="category/java/errorprone.xml/UseEqualsToCompareStrings" />
+	<rule name="AvoidLiteralsInIfCondition" ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition" />
+
+
+</ruleset>
