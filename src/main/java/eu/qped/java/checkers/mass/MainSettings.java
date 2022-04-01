@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.qf.QFMainSettings;
 
 /**
  * class to read the Setting from Quarterfall and

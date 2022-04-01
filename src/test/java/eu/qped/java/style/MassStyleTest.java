@@ -9,9 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.qf.QFStyleSettings;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
+import eu.qped.java.checkers.mass.QFStyleSettings;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleConfigurator;
 import eu.qped.java.checkers.syntax.SyntaxErrorChecker;

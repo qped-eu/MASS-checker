@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.qped.framework.Checker;
-import eu.qped.framework.qf.QFMainSettings;
-import eu.qped.framework.qf.QFSemSettings;
-import eu.qped.framework.qf.QFStyleSettings;
+import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticConfigurator;
@@ -20,6 +18,16 @@ import eu.qped.java.checkers.syntax.SyntaxFeedback;
 
 
 public class Mass implements Checker {
+	
+	@QfProperty
+	private QFMainSettings mainSettings;
+	
+	@QfProperty
+	private QFStyleSettings styleSettings;
+
+	@QfProperty
+	private QFSemSettings semSettings;
+
     private final static String NEW_LINE = "\n" + "\n";
 
     @Override
@@ -28,15 +36,11 @@ public class Mass implements Checker {
         Map<String, String> styleSettings = new HashMap<>();
         Map<String , String> mainSettings = new HashMap<>();
 
-        QFStyleSettings qfStyleSettings = qfObject.getQfStyleConf();
 
-
-        qfObject.setSettings(qfObject.getSettings());
-        QFSemSettings qfSemSettings = qfObject.getQfSemConfigs();
         /*
         main settings
          */
-        QFMainSettings qfMainSettings = qfObject.getQfMainSettings();
+        QFMainSettings qfMainSettings = this.mainSettings;
         mainSettings.put("syntaxLevel" , qfMainSettings.getSyntaxLevel());
         mainSettings.put("preferredLanguage" , qfMainSettings.getPreferredLanguage());
         mainSettings.put("styleNeeded" , qfMainSettings.getStyleNeeded());
@@ -45,19 +49,19 @@ public class Mass implements Checker {
         /*
         Style Configs
          */
-        styleSettings.put("mainLevel" , qfStyleSettings.getMainLevel());
-        styleSettings.put("maxClassLength" , qfStyleSettings.getClassLength());
-        styleSettings.put("maxMethodLength", qfStyleSettings.getMethodLength());
-        styleSettings.put("maxFieldsCount", qfStyleSettings.getFieldsCount());
-        styleSettings.put("maxCycloComplexity", qfStyleSettings.getCycloComplexity());
-        styleSettings.put("varNamesRegEx", qfStyleSettings.getVarName());
-        styleSettings.put("methodNamesRegEx", qfStyleSettings.getMethodName());
-        styleSettings.put("classNameRegEx", qfStyleSettings.getClassName());
-        styleSettings.put("basisLevel", qfStyleSettings.getBasisLevel());
-        styleSettings.put("namesLevel", qfStyleSettings.getNamesLevel());
-        styleSettings.put("compLevel", qfStyleSettings.getCompLevel());
+        styleSettings.put("mainLevel" , this.styleSettings.getMainLevel());
+        styleSettings.put("maxClassLength" , this.styleSettings.getClassLength());
+        styleSettings.put("maxMethodLength", this.styleSettings.getMethodLength());
+        styleSettings.put("maxFieldsCount", this.styleSettings.getFieldsCount());
+        styleSettings.put("maxCycloComplexity", this.styleSettings.getCycloComplexity());
+        styleSettings.put("varNamesRegEx", this.styleSettings.getVarName());
+        styleSettings.put("methodNamesRegEx", this.styleSettings.getMethodName());
+        styleSettings.put("classNameRegEx", this.styleSettings.getClassName());
+        styleSettings.put("basisLevel", this.styleSettings.getBasisLevel());
+        styleSettings.put("namesLevel", this.styleSettings.getNamesLevel());
+        styleSettings.put("compLevel", this.styleSettings.getCompLevel());
 
-        StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);
+        StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(this.styleSettings);
 
         StyleChecker styleChecker = new StyleChecker(styleConfigurator);
 
@@ -70,14 +74,14 @@ public class Mass implements Checker {
         Semantic Configs
          */
 
-        semanticSettings.put("methodName" , qfSemSettings.getMethodName());
-        semanticSettings.put("recursionAllowed" , qfSemSettings.getRecursionAllowed());
-        semanticSettings.put("whileLoop" , qfSemSettings.getWhileLoop());
-        semanticSettings.put("forLoop" , qfSemSettings.getForLoop());
-        semanticSettings.put("forEachLoop" , qfSemSettings.getForEachLoop());
-        semanticSettings.put("ifElseStmt" , qfSemSettings.getIfElseStmt());
-        semanticSettings.put("doWhileLoop" , qfSemSettings.getDoWhileLoop());
-        semanticSettings.put("returnType" , qfSemSettings.getReturnType());
+        semanticSettings.put("methodName" , this.semSettings.getMethodName());
+        semanticSettings.put("recursionAllowed" , this.semSettings.getRecursionAllowed());
+        semanticSettings.put("whileLoop" , this.semSettings.getWhileLoop());
+        semanticSettings.put("forLoop" , this.semSettings.getForLoop());
+        semanticSettings.put("forEachLoop" , this.semSettings.getForEachLoop());
+        semanticSettings.put("ifElseStmt" , this.semSettings.getIfElseStmt());
+        semanticSettings.put("doWhileLoop" , this.semSettings.getDoWhileLoop());
+        semanticSettings.put("returnType" , this.semSettings.getReturnType());
 
         MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
         SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(new QFSemSettings());
@@ -140,4 +144,5 @@ public class Mass implements Checker {
 
         qfObject.setFeedback(result);
     }
+
 }

@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.semantics;
 
-import eu.qped.framework.qf.QFSemSettings;
+import eu.qped.java.checkers.mass.QFSemSettings;
 
 
 public class SemanticConfigurator {

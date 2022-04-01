@@ -2,16 +2,15 @@ package eu.qped.framework.qf;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import eu.qped.framework.Checker;
+
 
 
 public class QfObject extends QfObjectBase {
 
 	private String answer;
-	private QFMainSettings qfMainSettings;
-	private QFStyleSettings qfStyleSettings;
 	private String[] feedback;
 
-	private QFSemSettings qfSemSettings;
 	private String[] answers;
 	private int attemptCount;
 	private boolean showSolution;
@@ -19,13 +18,16 @@ public class QfObject extends QfObjectBase {
 	private QfAssignment assignment;
 	private QfBlock block;
 
-	private QfObjectBase question;
+	private QFQuestion question;
 
 	private String checkerClass;
 
 
 
 	private String[] settings;
+	
+	@JsonIgnore
+	private Checker checker;
 
 	public int getAttemptCount() {
 		return attemptCount;
@@ -81,13 +83,6 @@ public class QfObject extends QfObjectBase {
 	public void setCheckerClass(String checkerClass) {
 		this.checkerClass = checkerClass;
 	}
-	public QFStyleSettings getQfStyleConf() {
-		return qfStyleSettings;
-	}
-
-	public void setQfStyleConf(QFStyleSettings qfStyleSettings) {
-		this.qfStyleSettings = qfStyleSettings;
-	}
 
 	@JsonIgnore
 	public void setCondition(String condition, boolean satisfied) {
@@ -117,27 +112,11 @@ public class QfObject extends QfObjectBase {
 		this.settings = settings;
 	}
 
-
-
-	public QFSemSettings getQfSemConfigs() {
-		return qfSemSettings;
-	}
-
-	public void setQfSemConfigs(QFSemSettings qfSemSettings) {
-		this.qfSemSettings = qfSemSettings;
-	}
-
-	public QFMainSettings getQfMainSettings() {
-		return qfMainSettings;
-	}
-
-	public void setQfMainSettings(QFMainSettings qfMainSettings) {
-		this.qfMainSettings = qfMainSettings;
-	}
-	public QfObjectBase getQuestion() {
+	public QFQuestion getQuestion() {
 		return question;
 	}
-	public void setQuestion(QfObjectBase question) {
+	
+	public void setQuestion(QFQuestion question) {
 		this.question = question;
 	}
 

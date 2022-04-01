@@ -1,4 +1,6 @@
-package eu.qped.framework.qf;
+package eu.qped.java.checkers.mass;
+
+import eu.qped.framework.qf.QfObjectBase;
 
 public class QFStyleSettings extends QfObjectBase {
 

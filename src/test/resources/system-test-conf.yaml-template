@@ -1,0 +1,2 @@
+mavenLocation: "/usr/local/bin"
+cloudCheckRuner: "./run.sh"

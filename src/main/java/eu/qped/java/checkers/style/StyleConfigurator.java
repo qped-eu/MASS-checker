@@ -3,7 +3,7 @@ package eu.qped.java.checkers.style;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.qf.QFStyleSettings;
+import eu.qped.java.checkers.mass.QFStyleSettings;
 
 /**
  * Style checker configs manager.

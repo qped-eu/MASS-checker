@@ -1,0 +1,127 @@
+package eu.qped.framework;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.rules.Timeout;
+
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import ro.skyah.comparator.JSONCompare;
+
+public class SystemTests {
+
+	private static final String SYSTEM_TEST_CONF_YAML = "system-test-conf.yaml";
+	private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
+	private static final int TIMEOUT_AMOUNT = 30;
+	private static final String QF_INPUT_FILE_NAME = "qf-input.json";
+	private static final String QF_EXPECTED_FILE_NAME = "qf-expected.json";
+	private static final String DESCRIPTION_FILE_NAME = "description.txt";
+	private static final String SYSTEM_TESTS_FOLDER_NAME = "system-tests";
+	private static final File QF_OBJECT_FILE = new File("qf.json");
+	private static SystemTestConf systemTestConf;
+	
+	@BeforeAll
+	public static void setup() throws StreamReadException, DatabindException, IOException {
+		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+		systemTestConf = mapper.readValue(ClassLoader.getSystemResourceAsStream(SYSTEM_TEST_CONF_YAML), SystemTestConf.class);
+	}
+
+	@DisplayName("QPED Checkers System Tests")
+	@ParameterizedTest(name = "{0}")
+	@MethodSource("provideStringsSystemTest")
+	public void systemTests(String name, String description, String input, String expected, Exception exception) throws IOException, InterruptedException, AssertionError {
+		System.out.println(description);
+		if (exception != null) {
+			throw new AssertionError(exception);
+		} else {
+			FileUtils.writeStringToFile(QF_OBJECT_FILE, input, Charset.defaultCharset());
+
+			
+			ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
+			pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
+			Process process = pb.start();
+			if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
+				throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
+			}
+			
+			String actual = FileUtils.readFileToString(QF_OBJECT_FILE, Charset.defaultCharset());
+			JSONCompare.assertEquals(expected, actual);
+		}
+
+	}
+
+	private static Stream<Arguments> provideStringsSystemTest() {
+		File systemTestsFolder = new File(ClassLoader.getSystemResource(SYSTEM_TESTS_FOLDER_NAME).getPath());
+		List<Arguments> arguments = new ArrayList<>();
+		scanForSystemTests(systemTestsFolder.getPath(), systemTestsFolder, arguments);
+
+		return arguments.stream().sorted((o1, o2) -> ((String) o1.get()[0]).compareTo(((String) o2.get()[0])));
+	}
+
+	private static void scanForSystemTests(String systemTestsFolderPath, File currentFolder,
+			List<Arguments> arguments) {
+		if (!currentFolder.isDirectory()) {
+			return;
+		}
+
+		String name = currentFolder.getPath().substring(systemTestsFolderPath.length());
+		String description = "";
+		String qfExpected = null;
+		String qfInput = null;
+		Exception exception = null;
+
+		File descriptionFile = new File(currentFolder, DESCRIPTION_FILE_NAME);
+
+		if (descriptionFile.exists()) {
+			try {
+				description = FileUtils.readFileToString(descriptionFile, Charset.defaultCharset()).trim();
+				if (!description.isEmpty()) {
+					try (Scanner s = new Scanner(description)) {
+						name = s.nextLine();
+					}
+				}
+			} catch (IOException e) {
+				exception = e;
+			}
+		}
+
+		File qfExpectedFile = new File(currentFolder, QF_EXPECTED_FILE_NAME);
+		File qfInputFile = new File(currentFolder, QF_INPUT_FILE_NAME);
+
+		if (qfExpectedFile.exists() && qfInputFile.exists()) {
+			try {
+				qfExpected = FileUtils.readFileToString(qfExpectedFile, Charset.defaultCharset());
+				qfInput = FileUtils.readFileToString(qfInputFile, Charset.defaultCharset());
+			} catch (IOException e) {
+				exception = e;
+			}
+			arguments.add(Arguments.of(name, description, qfInput, qfExpected, exception));
+		}
+
+		for (File child : currentFolder.listFiles()) {
+			if (child.isDirectory()) {
+				scanForSystemTests(systemTestsFolderPath, child, arguments);
+			}
+		}
+	}
+
+}

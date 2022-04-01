@@ -10,5 +10,5 @@ public class FailChecker implements Checker {
 		throw new Error("This is what happens, when an uncaught exception occurs.");
 		
 	}
-	
+
 }

@@ -1,0 +1,38 @@
+{
+   "attemptCount":1,
+   "feedback":[
+      "Hello World!"
+   ],
+   "showSolution":false,
+   "user":{
+      "id":"5fd0de0f30795372827b0f2a",
+      "firstName":"Christoph",
+      "lastName":"Bockisch",
+      "language":"en"
+   },
+   "assignment":{
+      "id":"61f415dabd866710cad58ff2",
+      "title":"Feedback on Style",
+      "files":[
+         
+      ]
+   },
+   "question":{
+      "id":"61f415e0bd866710cad59054",
+      "text":"Please update the code such that it fulfills common coding conventions. The functionality must not change.",
+      "solution":"```Java\npublic int faculty(int n) {\n if (n == 0) {\n return 1;\n } else {\n return n * Faculty(n - 1);\n }\n}\n```",
+      "programmingLanguage":"java"
+   },
+   "files":[
+      
+   ],
+   "comment":"",
+   "score":null,
+   "stop":false,
+   "answers":[
+      "public int Faculty(int n) {\n if (n == 0)\n return 1;\n else\n return n * Faculty(n - 1);\n}"
+   ],
+   "answer":"public int Faculty(int n) {\n if (n == 0)\n return 1;\n else\n return n * Faculty(n - 1);\n}",
+   "message" : "Hello World!",
+   "checkerClass" : "eu.qped.example.MessageChecker"
+}
