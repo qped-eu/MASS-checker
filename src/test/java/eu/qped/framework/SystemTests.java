@@ -34,22 +34,24 @@ public class SystemTests {
 	private static final int TIMEOUT_AMOUNT = 30;
 	private static final String QF_INPUT_FILE_NAME = "qf-input.json";
 	private static final String QF_EXPECTED_FILE_NAME = "qf-expected.json";
-	private static final String DESCRIPTION_FILE_NAME = "description.txt";
+	private static final String DESCRIPTION_FILE_NAME = "description.yaml";
 	private static final String SYSTEM_TESTS_FOLDER_NAME = "system-tests";
 	private static final File QF_OBJECT_FILE = new File("qf.json");
 	private static SystemTestConf systemTestConf;
+	private static ObjectMapper yamlMapper;
 	
 	@BeforeAll
 	public static void setup() throws StreamReadException, DatabindException, IOException {
-		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		systemTestConf = mapper.readValue(ClassLoader.getSystemResourceAsStream(SYSTEM_TEST_CONF_YAML), SystemTestConf.class);
+		yamlMapper = new ObjectMapper(new YAMLFactory());
+		systemTestConf = yamlMapper.readValue(ClassLoader.getSystemResourceAsStream(SYSTEM_TEST_CONF_YAML), SystemTestConf.class);
 	}
 
 	@DisplayName("QPED Checkers System Tests")
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("provideStringsSystemTest")
-	public void systemTests(String name, String description, String input, String expected, Exception exception) throws IOException, InterruptedException, AssertionError {
-		System.out.println(description);
+	public void systemTests(String name, SystemTestDescription description, String input, String expected, Exception exception) throws IOException, InterruptedException, AssertionError {
+		if (description != null)
+			System.out.println(description.getDescription());
 		if (exception != null) {
 			throw new AssertionError(exception);
 		} else {
@@ -84,21 +86,18 @@ public class SystemTests {
 		}
 
 		String name = currentFolder.getPath().substring(systemTestsFolderPath.length());
-		String description = "";
 		String qfExpected = null;
 		String qfInput = null;
 		Exception exception = null;
 
 		File descriptionFile = new File(currentFolder, DESCRIPTION_FILE_NAME);
 
+		SystemTestDescription description = null;
 		if (descriptionFile.exists()) {
+			
 			try {
-				description = FileUtils.readFileToString(descriptionFile, Charset.defaultCharset()).trim();
-				if (!description.isEmpty()) {
-					try (Scanner s = new Scanner(description)) {
-						name = s.nextLine();
-					}
-				}
+				description  = yamlMapper.readValue(descriptionFile, SystemTestDescription.class);
+				name = description.getTitle();
 			} catch (IOException e) {
 				exception = e;
 			}
