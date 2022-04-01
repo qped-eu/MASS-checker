@@ -47,7 +47,6 @@ public class CheckerRunner {
 	
 	private static void cleanupTempFiles() {
 		for (File file : tempFiles) {
-			System.out.println("deleting : " + file);
 			if (file.isDirectory()) {
 				try {
 					FileUtils.deleteDirectory(file);
