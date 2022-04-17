@@ -14,8 +14,8 @@ public class SemanticConfigurator {
 
     private String methodName;
     private String recursionAllowed;
-    private String whileLoop;
-    private String forLoop;
+    private Integer whileLoop;
+    private Integer forLoop;
     private String forEachLoop;
     private String ifElseStmt;
     private String doWhileLoop;
@@ -37,8 +37,8 @@ public class SemanticConfigurator {
     private void setDefaults(){
         setMethodName("undefined");
         setRecursionAllowed("false");
-        setWhileLoop("-1");
-        setForLoop("-1");
+        setWhileLoop(-1);
+        setForLoop(-1);
         setForEachLoop("-1");
         setIfElseStmt("-1");
         setDoWhileLoop("-1");
@@ -54,10 +54,10 @@ public class SemanticConfigurator {
             setRecursionAllowed(qfSemSettings.getRecursionAllowed());
         }
         if(qfSemSettings.getDoWhileLoop()!=null){
-            setWhileLoop(qfSemSettings.getWhileLoop());
+            setWhileLoop(Integer.parseInt(qfSemSettings.getWhileLoop()));
         }
         if(qfSemSettings.getForLoop()!=null){
-            setForLoop(qfSemSettings.getForLoop());
+            setForLoop(Integer.parseInt(qfSemSettings.getForLoop()));
         }
         if(qfSemSettings.getForEachLoop()!=null){
             setForEachLoop(qfSemSettings.getForEachLoop());

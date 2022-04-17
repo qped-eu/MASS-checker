@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
 import lombok.Data;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,14 +47,11 @@ public class SemanticChecker {
 
     public void check(){
         parseCompUnit();
-        executeStmtVisitor();
         checkReturnTyp();
-        if (Boolean.parseBoolean(semanticConfigurator.getRecursionAllowed())){
-            try {
+        if(checkMethodExist()) {
+            executeStmtVisitor();
+            if (Boolean.parseBoolean(semanticConfigurator.getRecursionAllowed())){
                 executeRecursionChecker();
-            }
-            catch (Exception e){
-//                Logger.getInstance().log(e.getMessage());
             }
         }
     }
@@ -75,7 +73,8 @@ public class SemanticChecker {
 
     private BlockStmt getTargetedMethod (String targetedMethodName) throws NoSuchMethodException {
         final BlockStmt[] result = {new BlockStmt()};
-        final boolean[] methodFound = {false};
+//        final boolean[] methodFound = {false};
+        MutableBoolean methodFound = new MutableBoolean(false);
 
         for (int i = 0; i < compilationUnit.getChildNodes().size(); i++) {
             /*
@@ -93,11 +92,10 @@ public class SemanticChecker {
                     currentNode.accept(new VoidVisitorWithDefaults<Void>() {
                         @Override
                         public void visit(MethodDeclaration n, Void arg) {
-
-
                             if (n.getName().toString().equals(targetedMethodName)){
                                 returnType = n.getType().toString();
-                                methodFound[0] = true;
+//                                methodFound[0] = true;
+                                methodFound.setTrue();
                                 if (n.getBody().isPresent()){
                                     result[0] = n.getBody().get().asBlockStmt();
                                 }
@@ -108,88 +106,77 @@ public class SemanticChecker {
                 }
             }
         }
-        if (!methodFound[0]){
+//        if (!methodFound[0]){
+        if (!methodFound.getValue()){
             throw new NoSuchMethodException(NoSuchMethodException.class.getName() + " the Method: " + targetedMethodName + " not found!");
         }
         return result[0];
     }
 
     private void executeStmtVisitor()  {
+        try {
+            String methodName = semanticConfigurator.getMethodName();
+            StatementsVisitorHelper statementsVisitorHelper = new StatementsVisitorHelper(getTargetedMethod(methodName));
 
-        String methodName = semanticConfigurator.getMethodName();
-
-        if (methodName == null || methodName.equals("undefined")){
-            feedbacks.add(new SemanticFeedback("Method not found"));
-        }
-        else {
-            try {
-                StatementsVisitorHelper statementsVisitorHelper = new StatementsVisitorHelper(getTargetedMethod(methodName));
-
-//                checkReturnTyp();
-
-                int targetedWhile = Integer.parseInt(semanticConfigurator.getWhileLoop());
-                int targetedFor = Integer.parseInt(semanticConfigurator.getForLoop());
-                int targetedForEach = Integer.parseInt(semanticConfigurator.getForEachLoop());
-                int targetedIfElse = Integer.parseInt(semanticConfigurator.getIfElseStmt());
-                int targetedDoWhile = Integer.parseInt(semanticConfigurator.getDoWhileLoop());
+            int targetedWhile = semanticConfigurator.getWhileLoop();
+            int targetedFor = semanticConfigurator.getForLoop();
+            int targetedForEach = Integer.parseInt(semanticConfigurator.getForEachLoop());
+            int targetedIfElse = Integer.parseInt(semanticConfigurator.getIfElseStmt());
+            int targetedDoWhile = Integer.parseInt(semanticConfigurator.getDoWhileLoop());
 
 
-                usedALoop = statementsVisitorHelper.getWhileCounter() > 0
-                        || statementsVisitorHelper.getDoCounter() >0
-                        || statementsVisitorHelper.getForEachCounter() >0
-                        || statementsVisitorHelper.getForCounter() > 0;
+            usedALoop = statementsVisitorHelper.getWhileCounter() > 0
+                    || statementsVisitorHelper.getDoCounter() >0
+                    || statementsVisitorHelper.getForEachCounter() >0
+                    || statementsVisitorHelper.getForCounter() > 0;
 
-                if (statementsVisitorHelper.getWhileCounter() > targetedWhile && targetedWhile != -1){
-                    feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedWhile+" while loop in your code, but you've used "+ statementsVisitorHelper.getWhileCounter()+" while loop "));
-                    //feedbacks.add("to much while loop ");
-                }
-                if (statementsVisitorHelper.getForCounter() > targetedFor && targetedFor != -1){
-                    feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedFor+" for loop in your code, but you've used "+ statementsVisitorHelper.getForCounter()+"  for loop "));
-                    //feedbacks.add("to much for loop ");
-                }
-                if (statementsVisitorHelper.getForEachCounter() > targetedForEach && targetedForEach != -1){
-                    feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedForEach+" forEach loop in your code, but you've used "+ statementsVisitorHelper.getForEachCounter()+"  forEach loop "));
-                   // feedbacks.add("to much forEach loop ");
-                }
-                if ( statementsVisitorHelper.getIfElseCounter()  > targetedIfElse && targetedIfElse != -1){
-                    feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedIfElse+" IfElse Statement in your code, but you've used "+ statementsVisitorHelper.getIfElseCounter()+"  ifElse Statment "));
-                   // feedbacks.add("to much ifElse  ");
-                }
-                if (statementsVisitorHelper.getDoCounter() > targetedDoWhile && targetedDoWhile != -1){
-                    feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedDoWhile+" doWhile loop in your code, but you've used "+ statementsVisitorHelper.getForCounter()+"  doWhile loop "));
-                    //feedbacks.add("to much do loop ");
-                }
+            if (statementsVisitorHelper.getWhileCounter() > targetedWhile && targetedWhile != -1){
+                feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedWhile+" while loop in your code, but you've used "+ statementsVisitorHelper.getWhileCounter()+" while loop "));
             }
-            catch (Exception e){
-                System.out.println(e.getMessage() + " " + e.getCause());
+            if (statementsVisitorHelper.getForCounter() > targetedFor && targetedFor != -1){
+                feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedFor+" for loop in your code, but you've used "+ statementsVisitorHelper.getForCounter()+"  for loop "));
+            }
+            if (statementsVisitorHelper.getForEachCounter() > targetedForEach && targetedForEach != -1){
+                feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedForEach+" forEach loop in your code, but you've used "+ statementsVisitorHelper.getForEachCounter()+"  forEach loop "));
+            }
+            if ( statementsVisitorHelper.getIfElseCounter()  > targetedIfElse && targetedIfElse != -1){
+                feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedIfElse+" IfElse Statement in your code, but you've used "+ statementsVisitorHelper.getIfElseCounter()+"  ifElse Statment "));
+            }
+            if (statementsVisitorHelper.getDoCounter() > targetedDoWhile && targetedDoWhile != -1){
+                feedbacks.add(new SemanticFeedback("You should not use no more than "+targetedDoWhile+" doWhile loop in your code, but you've used "+ statementsVisitorHelper.getForCounter()+"  doWhile loop "));
             }
         }
+        catch (Exception e){
+            System.out.println(e.getMessage() + " " + e.getCause());
+        }
+
     }
 
-    private void executeRecursionChecker() throws Exception {
+    private boolean checkMethodExist() {
         String methodName = semanticConfigurator.getMethodName();
-        boolean mustRec =Boolean.parseBoolean(semanticConfigurator.getRecursionAllowed());
-
         if (methodName == null || methodName.equals("undefined")){
-            feedbacks.add(new SemanticFeedback("not found"));
+            feedbacks.add(new SemanticFeedback("Method not found"));
+            return false;
         }
-        else {
-            RecursiveCheckHelper recursiveCheckHelper = new RecursiveCheckHelper(getTargetedMethod(methodName) , methodName);
-            if ((!recursiveCheckHelper.check() && mustRec && !usedALoop)){
+        return true;
+    }
+    private void executeRecursionChecker()  {
+        try {
+            String methodName = semanticConfigurator.getMethodName();
+            boolean mustRec = Boolean.parseBoolean(semanticConfigurator.getRecursionAllowed());
+            RecursiveCheckHelper recursiveCheckHelper = new RecursiveCheckHelper(getTargetedMethod(methodName), methodName);
+            if ((!recursiveCheckHelper.check() && mustRec && !usedALoop)) {
                 feedbacks.add(new SemanticFeedback("you have to solve the method recursive"));
-            }
-            else if (mustRec && usedALoop && recursiveCheckHelper.check()){
+            } else if (mustRec && usedALoop && recursiveCheckHelper.check()) {
                 feedbacks.add(new SemanticFeedback("you have used a Loop with your recursive Call"));
-            }
-            else if (mustRec && usedALoop && !recursiveCheckHelper.check()){
+            } else if (mustRec && usedALoop && !recursiveCheckHelper.check()) {
                 feedbacks.add(new SemanticFeedback("you have used a Loop without a recursive Call, you have to solve it just recursive"));
-            }
-            else {
+            } else {
                 feedbacks.add(new SemanticFeedback("well done!"));
             }
-
+        } catch (Exception e){
+            System.out.println(e.getMessage() + " " + e.getCause());
         }
-
     }
 
     public static void main(String[] args) throws Exception {
