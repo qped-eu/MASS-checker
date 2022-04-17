@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.utils.compiler;
 
 
 
@@ -25,28 +25,25 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import eu.qped.java.checkers.syntax.SyntaxError;
+import lombok.*;
 import org.apache.logging.log4j.LogManager;
 
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Compiler {
 
+    private String code;
     private StringBuilder javaFileContent;
-
-    private String input;
-    private final ArrayList<SyntaxError> syntaxErrors = new ArrayList<>();
-
-
+    private ArrayList<SyntaxError> syntaxErrors;
+    private boolean canCompile;
+    private String fullSourceCode;
 
 
-    private boolean canCompile = false;
-
-    private String source;
-
-
-
-
-    public Compiler (String input){
-        this.input = input;
+    public Compiler (String code){
+        this.code = code;
     }
 
     //todo: Java Doc @later
@@ -59,26 +56,7 @@ public class Compiler {
      */
     public SimpleJavaFileObject getJavaFileContentFromString() {
         javaFileContent = new StringBuilder();
-        boolean isClassOrInterface = input.contains("class") || input.contains("interface");
-        boolean isPublic = false;
-        if (isClassOrInterface) {
-            String classDeclaration = input.substring(0, input.indexOf("class"));
-            isPublic = classDeclaration.contains("public");
-        }
-        if (isPublic) {
-            input = input.substring(input.indexOf("public") + "public".length());
-        }
-        if (isClassOrInterface) {
-            javaFileContent.append(input);
-        } else {
-            javaFileContent.append("/**" +
-                    "* Test class" +
-                    "*/" +
-                    "import java.util.*;" +
-                    "class TestClass {").append(input).append("}");
-        }
-
-
+        writeCodeAsClass();
         JavaObjectFromString javaObjectFromString = null;
         try {
             javaObjectFromString = new JavaObjectFromString("TestClass", javaFileContent.toString());
@@ -86,6 +64,27 @@ public class Compiler {
             e.printStackTrace(); //todo
         }
         return javaObjectFromString;
+    }
+
+    private void writeCodeAsClass() {
+        boolean isClassOrInterface = code.contains("class") || code.contains("interface");
+        boolean isPublic = false;
+        if (isClassOrInterface) {
+            String classDeclaration = code.substring(0, code.indexOf("class"));
+            isPublic = classDeclaration.contains("public");
+        }
+        if (isPublic) {
+            code = code.substring(code.indexOf("public") + "public".length());
+        }
+        if (isClassOrInterface) {
+            javaFileContent.append(code);
+        } else {
+            javaFileContent.append("/**" +
+                    "* Test class" +
+                    "*/" +
+                    "import java.*;" +
+                    "class TestClass {").append(code).append("}");
+        }
     }
 
     private void writeJavaFileContent() {
@@ -112,25 +111,25 @@ public class Compiler {
         JavaCompiler.CompilationTask task = compiler.getTask(output, standardJavaFileManager, diagnosticCollector, null, null, fileObjects);
 
         Boolean result = task.call();
-        source = "";
+        fullSourceCode = "";
 
         List<Diagnostic< ? extends JavaFileObject> > diagnostics = diagnosticCollector.getDiagnostics();
         for (Diagnostic< ? extends JavaFileObject>  diagnostic : diagnostics) {
 
             try {
-                source = diagnostic.getSource().getCharContent(true).toString();
+                fullSourceCode = diagnostic.getSource().getCharContent(true).toString();
             }
             catch (IOException e){
                 LogManager.getLogger((Class<?>) getClass()).throwing(e);
-                source = diagnostic.getSource().toString();
+                fullSourceCode = diagnostic.getSource().toString();
             }
 
             //System.out.println(source);
             String errorSource;
             try {
-                errorSource = source.substring((int) diagnostic.getStartPosition());
+                errorSource = fullSourceCode.substring((int) diagnostic.getStartPosition());
             } catch (StringIndexOutOfBoundsException e) {
-                errorSource = source.substring((int) diagnostic.getStartPosition() + 1);
+                errorSource = fullSourceCode.substring((int) diagnostic.getStartPosition() + 1);
             }
             String[] splitSource = errorSource.split(";");
 
@@ -149,7 +148,7 @@ public class Compiler {
             setCanCompile(true);
             try {
                 writeJavaFileContent();
-                source = javaFileContent.toString();
+                fullSourceCode = javaFileContent.toString();
             }
             catch (Exception e){
                 LogManager.getLogger((Class<?>) getClass()).throwing(e);
@@ -160,19 +159,8 @@ public class Compiler {
             setCanCompile(false);
         }
     }
-    public boolean canCompile() {
-        return canCompile;
-    }
 
-    public void setCanCompile(boolean canCompile) {
-        this.canCompile = canCompile;
-    }
 
-    public String getSource() {
-        return source;
-    }
-
-    public ArrayList<SyntaxError> getSyntaxErrors() {
-        return syntaxErrors;
+    public static void main(String[] args) {
     }
 }

@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.utils.compiler;
 
 import java.net.URI;
 import java.net.URISyntaxException;

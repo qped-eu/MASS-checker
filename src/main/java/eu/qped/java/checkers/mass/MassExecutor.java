@@ -77,7 +77,7 @@ public class MassExecutor {
                 violations = styleChecker.getStyleViolationsList();
             }
             if (semanticNeeded) {
-                final String source = syntaxErrorChecker.getCompiler().getSource();
+                final String source = syntaxErrorChecker.getCompiler().getFullSourceCode();
                 semanticChecker.setSource(source);
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();

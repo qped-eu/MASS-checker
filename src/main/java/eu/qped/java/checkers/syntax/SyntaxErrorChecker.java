@@ -3,6 +3,7 @@ package eu.qped.java.checkers.syntax;
 import java.util.ArrayList;
 
 import eu.qped.framework.CheckLevel;
+import eu.qped.java.utils.compiler.Compiler;
 
 /**
  * Syntax checker
@@ -13,7 +14,7 @@ import eu.qped.framework.CheckLevel;
 
 public class SyntaxErrorChecker {
 
-    private eu.qped.java.checkers.syntax.Compiler compiler;
+    private Compiler compiler;
 
     private final String answer;
 
@@ -44,10 +45,10 @@ public class SyntaxErrorChecker {
     }
 
     public void check(){
-        compiler = new eu.qped.java.checkers.syntax.Compiler(answer);
+        compiler = new Compiler(answer);
         compiler.compile();
         this.setSyntaxErrors(compiler.getSyntaxErrors());
-        this.setSourceCode(compiler.getSource());
+        this.setSourceCode(compiler.getFullSourceCode());
     }
 
     public void analyze(){
@@ -85,7 +86,7 @@ public class SyntaxErrorChecker {
         this.syntaxErrors = syntaxErrors;
     }
 
-    public eu.qped.java.checkers.syntax.Compiler getCompiler() {
+    public Compiler getCompiler() {
         return compiler;
     }
 
