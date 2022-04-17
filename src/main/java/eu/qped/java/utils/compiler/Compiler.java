@@ -35,6 +35,7 @@ public class Compiler {
 
     /**
      * die Methode konvertiert ein String-Source zu einem {@link JavaFileObject}
+     *
      * @return SimpleJavaFileObject
      */
     public SimpleJavaFileObject getJavaFileObjectFromString() {

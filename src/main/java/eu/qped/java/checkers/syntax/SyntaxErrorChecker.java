@@ -115,13 +115,8 @@ public class SyntaxErrorChecker {
         this.sourceCode = sourceCode;
     }
 
-    public void setSyntaxErrors(ArrayList<SyntaxError> syntaxErrors) {
-        this.syntaxErrors = syntaxErrors;
-    }
 
-    public Compiler getCompiler() {
-        return compiler;
-    }
+
 
     public ArrayList<SyntaxError> getSyntaxErrors() {
         return syntaxErrors;

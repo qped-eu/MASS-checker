@@ -13,6 +13,10 @@ import eu.qped.java.checkers.style.StyleViolation;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxErrorChecker;
 import eu.qped.java.checkers.syntax.SyntaxFeedback;
+import eu.qped.java.utils.compiler.Compiler;
+
+import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 /**
  * Executor class, execute all components of the System to analyze the code
@@ -65,7 +69,6 @@ public class MassExecutor {
         boolean styleNeeded = Boolean.parseBoolean(mainSettingsConfigurator.getRunStyle());
         boolean semanticNeeded = Boolean.parseBoolean(mainSettingsConfigurator.getSemanticNeeded());
 
-        syntaxErrorChecker.check();
 
         if (syntaxErrorChecker.canCompile()) {
 
@@ -77,7 +80,7 @@ public class MassExecutor {
                 violations = styleChecker.getStyleViolationsList();
             }
             if (semanticNeeded) {
-                final String source = syntaxErrorChecker.getCompiler().getFullSourceCode();
+                final String source = syntaxErrorChecker.getSourceCode();
                 semanticChecker.setSource(source);
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
