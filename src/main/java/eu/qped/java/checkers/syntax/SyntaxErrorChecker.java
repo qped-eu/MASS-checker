@@ -1,8 +1,12 @@
 package eu.qped.java.checkers.syntax;
 
-import java.util.ArrayList;
+import java.util.*;
 
 import eu.qped.framework.CheckLevel;
+import eu.qped.java.utils.compiler.Compiler;
+
+import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
 
 /**
  * Syntax checker
@@ -13,7 +17,7 @@ import eu.qped.framework.CheckLevel;
 
 public class SyntaxErrorChecker {
 
-    private eu.qped.java.checkers.syntax.Compiler compiler;
+    private Compiler compiler;
 
     private final String answer;
 
@@ -44,10 +48,10 @@ public class SyntaxErrorChecker {
     }
 
     public void check(){
-        compiler = new eu.qped.java.checkers.syntax.Compiler(answer);
-        compiler.compile();
-        this.setSyntaxErrors(compiler.getSyntaxErrors());
-        this.setSourceCode(compiler.getSource());
+        compiler = Compiler.builder().answer(answer).build();
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.compile();
+        analyseDiagnostics(diagnostics);
+        this.setSourceCode(compiler.getFullSourceCode());
     }
 
     public void analyze(){
@@ -58,7 +62,37 @@ public class SyntaxErrorChecker {
     }
 
     public boolean canCompile (){
-        return compiler.canCompile();
+        return compiler.isCompilable();
+    }
+
+    private void analyseDiagnostics(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
+        for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
+            String errorSource;
+            try {
+                errorSource = compiler.getFullSourceCode().substring((int) diagnostic.getStartPosition());
+            } catch (StringIndexOutOfBoundsException e) {
+                errorSource = compiler.getFullSourceCode().substring((int) diagnostic.getStartPosition() + 1);
+            }
+            String[] splitSource = errorSource.split(";");
+
+            Map<String, String> addProp = new HashMap<>();
+
+            if (diagnostic.getCode().equals("compiler.err.expected")) {
+                String forExpected = errorSource.split("[{]")[0];
+                addProp.put("forSemExpected", forExpected);
+            }
+
+            String errorTrigger = splitSource[0];
+            syntaxErrors = new ArrayList<>();
+            syntaxErrors
+                    .add(new SyntaxError(diagnostic.getCode(),
+                            diagnostic.getMessage(Locale.GERMAN),
+                            diagnostic.getLineNumber(),
+                            errorTrigger,
+                            addProp,
+                            diagnostic.getStartPosition(),
+                            diagnostic.getEndPosition()));
+        }
     }
 
     public ArrayList<SyntaxFeedback> getFeedbacks() {
@@ -81,15 +115,20 @@ public class SyntaxErrorChecker {
         this.sourceCode = sourceCode;
     }
 
-    public void setSyntaxErrors(ArrayList<SyntaxError> syntaxErrors) {
-        this.syntaxErrors = syntaxErrors;
-    }
 
-    public eu.qped.java.checkers.syntax.Compiler getCompiler() {
-        return compiler;
-    }
+
 
     public ArrayList<SyntaxError> getSyntaxErrors() {
         return syntaxErrors;
+    }
+
+    public static void main(String[] args) {
+        SyntaxErrorChecker checker = new SyntaxErrorChecker("public void print() {\n" +
+                "    System.out.println(\"hallo\")\n" +
+                "}");
+        checker.check();
+        for (SyntaxError syntaxError: checker.getSyntaxErrors()){
+            System.out.println(syntaxError.getErrorMsg());
+        }
     }
 }
