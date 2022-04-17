@@ -1,17 +1,18 @@
 package eu.qped.java.checkers.semantics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
+import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+@Data
 public class SemanticChecker {
 
     private  String source;
@@ -39,16 +40,9 @@ public class SemanticChecker {
         settings = new HashMap<>();
     }
 
-//    public static SemanticChecker createSemanticChecker(String source, SemanticConfigurator semanticConfigurator) {
-//        return new SemanticChecker(source, semanticConfigurator);
-//    }
-
-
-
     public static SemanticChecker createSemanticMassChecker(SemanticConfigurator semanticConfigurator) {
         return new SemanticChecker(semanticConfigurator);
     }
-
 
     public void check(){
         parseCompUnit();
@@ -64,7 +58,6 @@ public class SemanticChecker {
         }
     }
 
-
     private void checkReturnTyp(){
         boolean result = false;
         targetReturnType = semanticConfigurator.getReturnType();
@@ -76,14 +69,9 @@ public class SemanticChecker {
         }
     }
 
-
-
-
-
     private void parseCompUnit (){
         this.compilationUnit = StaticJavaParser.parse(this.source);
     }
-
 
     private BlockStmt getTargetedMethod (String targetedMethodName) throws NoSuchMethodException {
         final BlockStmt[] result = {new BlockStmt()};
@@ -204,24 +192,6 @@ public class SemanticChecker {
 
     }
 
-    public String getSource() {
-        return source;
-    }
-
-
-    public ArrayList<SemanticFeedback> getFeedbacks() {
-        return feedbacks;
-    }
-
-    public SemanticConfigurator getSemanticConfigurator() {
-        return semanticConfigurator;
-    }
-
-    public CompilationUnit getCompilationUnit() {
-        return compilationUnit;
-    }
-
-
     public static void main(String[] args) throws Exception {
 //
 //        long start = System.nanoTime();
@@ -260,13 +230,5 @@ public class SemanticChecker {
 //
 //        long end = System.nanoTime() -start;
 //        System.out.println(end * Math.pow(10 , -9));
-    }
-
-    public Map<String, String> getSettings() {
-        return settings;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 }

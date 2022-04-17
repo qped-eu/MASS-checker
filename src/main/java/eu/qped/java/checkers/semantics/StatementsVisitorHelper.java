@@ -13,8 +13,15 @@ import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.WhileStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class StatementsVisitorHelper {
     private int whileCounter = 0;
     private int forEachCounter = 0;
@@ -34,32 +41,6 @@ public class StatementsVisitorHelper {
     public StatementsVisitorHelper(BlockStmt methodBody) {
         this.methodBody = methodBody;
         execute();
-    }
-
-
-
-    public String getSource() {
-        return source;
-    }
-
-    public int getIfElseCounter() {
-        return ifElseCounter;
-    }
-
-    public int getWhileCounter() {
-        return whileCounter;
-    }
-
-    public int getForEachCounter() {
-        return forEachCounter;
-    }
-
-    public int getForCounter() {
-        return forCounter;
-    }
-
-    public int getDoCounter() {
-        return doCounter;
     }
 
     static class State {
