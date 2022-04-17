@@ -1,11 +1,20 @@
 package eu.qped.java.checkers.syntax;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SyntaxFeedbackGenerator {
 
 
@@ -15,8 +24,6 @@ public class SyntaxFeedbackGenerator {
     private final static String FEEDBACK_CONS = " Feedback: ";
     private final static String NEW_LINE = "\n\n";
     private final static ArrayList<String> TYPES = new ArrayList<>();
-    private String example;
-
 
     static {
         TYPES.add("for");
@@ -30,13 +37,19 @@ public class SyntaxFeedbackGenerator {
         TYPES.add("case");
     }
 
-
-    private final CheckLevel level;
-
-    private final String sourceCode;
+    private List<SyntaxError> syntaxErrors;
+    private CheckLevel level;
+    private String sourceCode;
+    private String example;
 
 
     private final StringBuilder result = new StringBuilder();
+
+    public List<SyntaxFeedback> generateFeedbacks(List<SyntaxError> syntaxErrors){
+        List<SyntaxFeedback> result = new ArrayList<>();
+        syntaxErrors.forEach(this::getFeedback);
+        return result;
+    }
 
     public SyntaxFeedbackGenerator(String sourceCode, CheckLevel level) {
         this.level = level;
@@ -321,16 +334,5 @@ public class SyntaxFeedbackGenerator {
         }
     }
 
-    public String getSourceCode() {
-        return sourceCode;
-    }
-
-    public String getExample() {
-        return example;
-    }
-
-    public void setExample(String example) {
-        this.example = example;
-    }
 }
 

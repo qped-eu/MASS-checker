@@ -29,7 +29,6 @@ import java.util.Locale;
 @Builder
 public class Compiler {
 
-    private String answer;
     private boolean isCompilable;
     private String fullSourceCode;
 
@@ -38,8 +37,8 @@ public class Compiler {
      *
      * @return SimpleJavaFileObject
      */
-    public SimpleJavaFileObject getJavaFileObjectFromString() {
-        String javaFileContent = writeCodeAsClass();
+    public SimpleJavaFileObject getJavaFileObjectFromString(String answer) {
+        String javaFileContent = writeCodeAsClass(answer);
         JavaObjectFromString javaObjectFromString = null;
         try {
             javaObjectFromString = new JavaObjectFromString("TestClass", javaFileContent);
@@ -49,12 +48,12 @@ public class Compiler {
         return javaObjectFromString;
     }
 
-    public List<Diagnostic<? extends JavaFileObject>> compile() {
+    public List<Diagnostic<? extends JavaFileObject>> compile(String answer) {
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> diagnosticCollector = new DiagnosticCollector<>();
         StandardJavaFileManager standardJavaFileManager = compiler.getStandardFileManager(diagnosticCollector, Locale.GERMANY, Charset.defaultCharset());
-        JavaFileObject javaFileObjectFromString = getJavaFileObjectFromString();
+        JavaFileObject javaFileObjectFromString = getJavaFileObjectFromString(answer);
         Iterable<JavaFileObject> fileObjects = Collections.singletonList(javaFileObjectFromString);
 
         StringWriter output = new StringWriter();
@@ -79,7 +78,7 @@ public class Compiler {
         return diagnostics;
     }
 
-    private String writeCodeAsClass() {
+    private String writeCodeAsClass(String answer) {
         StringBuilder javaFileContent = new StringBuilder();
         boolean isClassOrInterface = answer.contains("class") || answer.contains("interface");
         boolean isPublic = false;

@@ -12,7 +12,7 @@ import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.syntax.SyntaxError;
-import eu.qped.java.checkers.syntax.SyntaxErrorChecker;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 
 class MassSyntaxTest {
 
@@ -37,9 +37,9 @@ class MassSyntaxTest {
 				+ "System.out.println(\"pretty\");\n"
 				+ "}";
 
-		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
+		SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
 
-		MassExecutor massE = new MassExecutor(null, null, syntaxErrorChecker,
+		MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
 				mainSettingsConfiguratorConf);
 
 		massE.execute();
@@ -54,9 +54,9 @@ class MassSyntaxTest {
 				+ "System.out.println(\"pretty\")\n"
 				+ "}";
 
-		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
+		SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
 
-		MassExecutor massE = new MassExecutor(null, null, syntaxErrorChecker,
+		MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
 				mainSettingsConfiguratorConf);
 
 		massE.execute();
@@ -71,9 +71,9 @@ class MassSyntaxTest {
 
 		String code = "class Simple {}";
 
-		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
+		SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
 
-		MassExecutor massE = new MassExecutor(null, null, syntaxErrorChecker,
+		MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
 				mainSettingsConfiguratorConf);
 
 		massE.execute();
