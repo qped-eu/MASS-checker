@@ -38,9 +38,13 @@ public class StatementsVisitorHelper {
 
     }
 
-    public StatementsVisitorHelper(BlockStmt methodBody) {
+    private StatementsVisitorHelper(BlockStmt methodBody) {
         this.methodBody = methodBody;
         execute();
+    }
+
+    public static StatementsVisitorHelper createStatementsVisitorHelper(BlockStmt methodBody) {
+        return new StatementsVisitorHelper(methodBody);
     }
 
     static class State {

@@ -8,20 +8,20 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class RecursiveCheckHelper {
 
-
     private final BlockStmt methodBody;
     private final ArrayList<String> calledMethods;
-    private final String methodName;
 
-    public RecursiveCheckHelper(BlockStmt methodBody , String methodName) {
+    private RecursiveCheckHelper(BlockStmt methodBody) {
         this.methodBody = methodBody;
         this.calledMethods = new ArrayList<>();
-        this.methodName = methodName;
         walk();
     }
 
+    public static RecursiveCheckHelper createRecursiveCheckHelper(BlockStmt methodBody){
+        return new RecursiveCheckHelper(methodBody);
+    }
 
-    public boolean check(){
+    public boolean check(String methodName){
         return calledMethods.contains(methodName);
     }
 

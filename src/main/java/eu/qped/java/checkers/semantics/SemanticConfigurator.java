@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 public class SemanticConfigurator {
 
     private String methodName;
-    private String recursionAllowed;
+    private Boolean recursionAllowed;
     private Integer whileLoop;
     private Integer forLoop;
-    private String forEachLoop;
-    private String ifElseStmt;
-    private String doWhileLoop;
+    private Integer forEachLoop;
+    private Integer ifElseStmt;
+    private Integer doWhileLoop;
     private String returnType;
 
     private QFSemSettings qfSemSettings;
@@ -36,13 +36,13 @@ public class SemanticConfigurator {
 
     private void setDefaults(){
         setMethodName("undefined");
-        setRecursionAllowed("false");
+        setRecursionAllowed(false);
+        setReturnType("undefined");
         setWhileLoop(-1);
         setForLoop(-1);
-        setForEachLoop("-1");
-        setIfElseStmt("-1");
-        setDoWhileLoop("-1");
-        setReturnType("undefined");
+        setForEachLoop(-1);
+        setIfElseStmt(-1);
+        setDoWhileLoop(-1);
     }
 
     private void applySettings(){
@@ -51,7 +51,7 @@ public class SemanticConfigurator {
             setMethodName(qfSemSettings.getMethodName());
         }
         if(qfSemSettings.getRecursionAllowed()!=null){
-            setRecursionAllowed(qfSemSettings.getRecursionAllowed());
+            setRecursionAllowed(Boolean.parseBoolean(qfSemSettings.getRecursionAllowed()));
         }
         if(qfSemSettings.getDoWhileLoop()!=null){
             setWhileLoop(Integer.parseInt(qfSemSettings.getWhileLoop()));
@@ -60,13 +60,13 @@ public class SemanticConfigurator {
             setForLoop(Integer.parseInt(qfSemSettings.getForLoop()));
         }
         if(qfSemSettings.getForEachLoop()!=null){
-            setForEachLoop(qfSemSettings.getForEachLoop());
+            setForEachLoop(Integer.parseInt(qfSemSettings.getForEachLoop()));
         }
         if(qfSemSettings.getIfElseStmt()!=null){
-            setIfElseStmt(qfSemSettings.getIfElseStmt());
+            setIfElseStmt(Integer.parseInt(qfSemSettings.getIfElseStmt()));
         }
         if(qfSemSettings.getDoWhileLoop()!=null){
-            setDoWhileLoop(qfSemSettings.getDoWhileLoop());
+            setDoWhileLoop(Integer.parseInt(qfSemSettings.getDoWhileLoop()));
         }
         if(qfSemSettings.getReturnType()!=null){
             setReturnType(qfSemSettings.getReturnType());
