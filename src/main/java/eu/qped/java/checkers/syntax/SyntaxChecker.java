@@ -3,6 +3,7 @@ package eu.qped.java.checkers.syntax;
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.utils.compiler.Compiler;
 import lombok.*;
+import lombok.Data;
 
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
@@ -65,15 +66,29 @@ public class SyntaxChecker {
 
             String errorTrigger = splitSource[0];
             syntaxErrors = new ArrayList<>();
-            syntaxErrors
-                    .add(new SyntaxError(diagnostic.getCode(),
-                            diagnostic.getMessage(Locale.GERMAN),
-                            diagnostic.getLineNumber(),
-                            errorTrigger,
-                            addProp,
-                            diagnostic.getStartPosition(),
-                            diagnostic.getEndPosition()));
+            syntaxErrors.add(
+                    SyntaxError.builder()
+                            .errorCode(diagnostic.getCode())
+                            .errorMsg(diagnostic.getMessage(Locale.GERMAN))
+                            .startPos(diagnostic.getStartPosition())
+                            .endPos(diagnostic.getEndPosition())
+                            .line(diagnostic.getLineNumber())
+                            .additionalProperties(addProp)
+                            .errorTrigger(errorTrigger)
+                            .build()
+            );
         }
     }
+//    private void print() {
+//        System.out.println()
+//    }
 
+    public static void main(String[] args) {
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer("   private void print() {\n" +
+                "        System.out.println()\n" +
+                "    }").build();
+
+        syntaxChecker.check();
+        System.out.println(syntaxChecker.getFeedbacks().get(0));
+    }
 }

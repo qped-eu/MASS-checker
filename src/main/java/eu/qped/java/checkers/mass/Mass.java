@@ -135,9 +135,9 @@ public class Mass implements Checker {
         }
 
         for (SyntaxFeedback syntax: syntaxFeedbacks){
-            result[i+1] = syntax.getHead() + NEW_LINE
+            result[i+1] = syntax.getFeedbackContent() + NEW_LINE
             + syntax.getBody() + NEW_LINE +
-                    syntax.getExample() + NEW_LINE
+                    syntax.getSolutionExample() + NEW_LINE
                     +"--------------------------------------------------";
             i = i+2;
         }

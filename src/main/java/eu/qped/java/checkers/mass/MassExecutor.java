@@ -115,7 +115,7 @@ public class MassExecutor {
         Translator translator = new Translator();
 
         //List is Empty when the syntax is correct
-        for (Feedback feedback : syntaxFeedbacks) {
+        for (SyntaxFeedback feedback : syntaxFeedbacks) {
             translator.translateBody(prefLanguage, feedback);
         }
         if (semanticNeeded) {
