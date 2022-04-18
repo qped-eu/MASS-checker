@@ -55,10 +55,10 @@ public class SemanticChecker {
                 calculateUsedLoop(statementsVisitorHelper);
                 generateSemanticStatementsFeedback(statementsVisitorHelper);
                 if (semanticConfigurator.getRecursionAllowed()){
-                    RecursiveCheckHelper recursiveCheckHelper = RecursiveCheckHelper.createRecursiveCheckHelper(targetedMethod);
+                    MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
                     generateSemanticRecursionFeedback(recursiveCheckHelper);
                 }
-            } catch (Exception e){
+            } catch (NoSuchMethodException e){
                 System.out.println(e.getMessage() + " " + e.getCause());
             }
         }
@@ -152,7 +152,7 @@ public class SemanticChecker {
         return true;
     }
 
-    private void generateSemanticRecursionFeedback(RecursiveCheckHelper recursiveCheckHelper)  {
+    private void generateSemanticRecursionFeedback(MethodCalledChecker recursiveCheckHelper)  {
         if ((!recursiveCheckHelper.check(semanticConfigurator.getMethodName()) && semanticConfigurator.getRecursionAllowed() && !usedALoop)) {
             feedbacks.add(new SemanticFeedback("you have to solve the method recursive"));
         } else if (semanticConfigurator.getRecursionAllowed() && usedALoop && recursiveCheckHelper.check(semanticConfigurator.getMethodName())) {

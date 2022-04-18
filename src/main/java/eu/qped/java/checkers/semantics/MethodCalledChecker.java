@@ -6,19 +6,19 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
-public class RecursiveCheckHelper {
+public class MethodCalledChecker {
 
     private final BlockStmt methodBody;
     private final ArrayList<String> calledMethods;
 
-    private RecursiveCheckHelper(BlockStmt methodBody) {
+    private MethodCalledChecker(BlockStmt methodBody) {
         this.methodBody = methodBody;
         this.calledMethods = new ArrayList<>();
         walk();
     }
 
-    public static RecursiveCheckHelper createRecursiveCheckHelper(BlockStmt methodBody){
-        return new RecursiveCheckHelper(methodBody);
+    public static MethodCalledChecker createRecursiveCheckHelper(BlockStmt methodBody){
+        return new MethodCalledChecker(methodBody);
     }
 
     public boolean check(String methodName){
