@@ -1,7 +1,9 @@
 package eu.qped.java.checkers.mass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
@@ -11,17 +13,14 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.style.StyleViolation;
 import eu.qped.java.checkers.syntax.SyntaxError;
-import eu.qped.java.checkers.syntax.SyntaxErrorChecker;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxFeedback;
-import eu.qped.java.utils.compiler.Compiler;
-
-import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
 
 /**
  * Executor class, execute all components of the System to analyze the code
- * @version 1.0
+ *
  * @author Basel Alaktaa & Mayar Hamdash
+ * @version 1.0
  * @since 19.08.2021
  */
 
@@ -39,23 +38,24 @@ public class MassExecutor {
 
     private final StyleChecker styleChecker;
     private final SemanticChecker semanticChecker;
-    private final SyntaxErrorChecker syntaxErrorChecker;
+    private final SyntaxChecker syntaxChecker;
 
 
     /**
      * To create an Object use the factory Class @MassExecutorFactory
-     * @param styleChecker style checker component
-     * @param semanticChecker semantic checker component
-     * @param syntaxErrorChecker syntax checker component
+     *
+     * @param styleChecker             style checker component
+     * @param semanticChecker          semantic checker component
+     * @param syntaxChecker            syntax checker component
      * @param mainSettingsConfigurator settings
      */
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
-                           final SyntaxErrorChecker syntaxErrorChecker, final MainSettings mainSettingsConfigurator) {
+                        final SyntaxChecker syntaxChecker, final MainSettings mainSettingsConfigurator) {
 
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
-        this.syntaxErrorChecker = syntaxErrorChecker;
+        this.syntaxChecker = syntaxChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
     }
 
@@ -70,7 +70,9 @@ public class MassExecutor {
         boolean semanticNeeded = Boolean.parseBoolean(mainSettingsConfigurator.getSemanticNeeded());
 
 
-        if (syntaxErrorChecker.canCompile()) {
+        syntaxChecker.check();
+
+        if (syntaxChecker.isErrorOccurred()) {
 
             if (styleNeeded) {
                 styleChecker.check();
@@ -80,18 +82,17 @@ public class MassExecutor {
                 violations = styleChecker.getStyleViolationsList();
             }
             if (semanticNeeded) {
-                final String source = syntaxErrorChecker.getSourceCode();
+                final String source = syntaxChecker.getSourceCode();
                 semanticChecker.setSource(source);
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
         } else {
-            syntaxErrorChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
-            syntaxErrorChecker.analyze();
-            syntaxFeedbacks = syntaxErrorChecker.getFeedbacks();
+            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
+            syntaxFeedbacks = syntaxChecker.getFeedbacks();
 
             //auto checker
-            syntaxErrors = syntaxErrorChecker.getSyntaxErrors();
+            syntaxErrors = syntaxChecker.getSyntaxErrors();
         }
 
         // translate Feedback body if needed
@@ -114,7 +115,7 @@ public class MassExecutor {
         Translator translator = new Translator();
 
         //List is Empty when the syntax is correct
-        for (Feedback feedback : syntaxFeedbacks) {
+        for (SyntaxFeedback feedback : syntaxFeedbacks) {
             translator.translateBody(prefLanguage, feedback);
         }
         if (semanticNeeded) {
@@ -253,6 +254,24 @@ public class MassExecutor {
 //        long end = System.nanoTime() - start;
 //        System.out.println("Feedback generated in: " + end * Math.pow(10.0, -9.0) + " sec");
 //    }
+
+    public static void main(String[] args) {
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer("public void print() {\n" +
+                "    System.out.println(\"hallo\")\n" +
+                "}").build();
+
+        Map<String, String> mainSettings = new HashMap<>();
+        mainSettings.put("semanticNeeded", "false");
+        mainSettings.put("syntaxLevel", "2");
+        mainSettings.put("preferredLanguage", "en");
+        mainSettings.put("styleNeeded", "false");
+
+        MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
+
+        MassExecutor massExecutor = new MassExecutor(null, null, syntaxChecker, mainSettingsConfiguratorConf);
+        massExecutor.execute();
+        System.out.println(massExecutor.getSyntaxErrors().size());
+    }
 
 
 }

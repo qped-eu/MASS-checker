@@ -13,7 +13,7 @@ import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleConfigurator;
 import eu.qped.java.checkers.style.StyleFeedback;
-import eu.qped.java.checkers.syntax.SyntaxErrorChecker;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxFeedback;
 
 
@@ -90,9 +90,9 @@ public class Mass implements Checker {
 
 
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
-        SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(qfObject.getAnswer());
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(qfObject.getAnswer()).build();
 
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxErrorChecker, mainSettingsConfiguratorConf);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);
 
         massExecutor.execute();
 
@@ -135,9 +135,9 @@ public class Mass implements Checker {
         }
 
         for (SyntaxFeedback syntax: syntaxFeedbacks){
-            result[i+1] = syntax.getHead() + NEW_LINE
+            result[i+1] = syntax.getFeedbackContent() + NEW_LINE
             + syntax.getBody() + NEW_LINE +
-                    syntax.getExample() + NEW_LINE
+                    syntax.getSolutionExample() + NEW_LINE
                     +"--------------------------------------------------";
             i = i+2;
         }
