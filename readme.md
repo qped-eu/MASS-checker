@@ -23,3 +23,7 @@ This project is meant to interface specifically with the Quarterfall plattform i
 We interface with Quarterfall by using a JSON configuration that is done in Quarterfall and submitted to this software.
 The output is also generated as a JSON-object.
 However, the feedback itself is formatted in markdown.
+
+Licence
+----------
+TBA

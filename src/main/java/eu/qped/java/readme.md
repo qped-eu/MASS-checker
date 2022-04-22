@@ -101,7 +101,3 @@ qf.qfStyleConf= {
     "className":"undefined"
 };
 ```
-
-Licence
-----------
-To be discussed
