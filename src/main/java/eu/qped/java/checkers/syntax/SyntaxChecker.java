@@ -34,9 +34,9 @@ public class SyntaxChecker {
 
     public void check() {
         Compiler compiler = Compiler.builder().build();
-        List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.compile(answer);
+        this.errorOccurred = compiler.compile(answer);
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.getCollectedDiagnostics();
         this.setSourceCode(compiler.getFullSourceCode());
-        this.errorOccurred = compiler.isCompilable();
         if (!diagnostics.isEmpty()) {
             analyseDiagnostics(diagnostics);
             SyntaxFeedbackGenerator feedbackGenerator = new SyntaxFeedbackGenerator(this.getSourceCode(), this.getLevel());
@@ -48,6 +48,7 @@ public class SyntaxChecker {
     }
 
     private void analyseDiagnostics(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
+        syntaxErrors = new ArrayList<>();
         for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
             String errorSource;
             try {
@@ -63,9 +64,7 @@ public class SyntaxChecker {
                 String forExpected = errorSource.split("[{]")[0];
                 addProp.put("forSemExpected", forExpected);
             }
-
             String errorTrigger = splitSource[0];
-            syntaxErrors = new ArrayList<>();
             syntaxErrors.add(
                     SyntaxError.builder()
                             .errorCode(diagnostic.getCode())
@@ -78,17 +77,5 @@ public class SyntaxChecker {
                             .build()
             );
         }
-    }
-//    private void print() {
-//        System.out.println()
-//    }
-
-    public static void main(String[] args) {
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer("   private void print() {\n" +
-                "        System.out.println()\n" +
-                "    }").build();
-
-        syntaxChecker.check();
-        System.out.println(syntaxChecker.getFeedbacks().get(0));
     }
 }

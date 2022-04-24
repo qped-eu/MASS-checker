@@ -5,20 +5,21 @@ import lombok.*;
 
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class SyntaxError {
+
+    private Map<String, String> additionalProperties;
+
     private String errorCode;
     private String errorMsg;
-    private long line;
     private String errorTrigger;
 
+    private long line;
     private long startPos;
     private long endPos;
-    private Map<String, String> additionalProperties;
 
     @Override
     public boolean equals(Object o){
