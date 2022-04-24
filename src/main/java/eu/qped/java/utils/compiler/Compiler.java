@@ -109,7 +109,7 @@ public class Compiler {
             LogManager.getLogger(getClass()).throwing(e);
         }
     }
-//"TestProject"
+
     public List<Diagnostic<? extends JavaFileObject>> compileFiles(String filePath,String answer) throws IOException {
         List<File> files = new ArrayList<>();
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -121,7 +121,7 @@ public class Compiler {
             createJavaClass(writeCodeAsClass(answer));
             files.add(new File("TestClass.java"));
         } else {
-            // directory Name
+            // directory Name("TestProject")
             ExtractJavaFilesFromDirectory extractJavaFilesFromDirectory = ExtractJavaFilesFromDirectory.builder().filePath(filePath).build();
             files = extractJavaFilesFromDirectory.filesWithJavaExtension();
 
