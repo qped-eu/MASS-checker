@@ -1,1 +1,4 @@
-mvn compile exec:java -Dexec.mainClass=eu.qped.framework.CheckerRunner
+# use the following line to run Maven in debug mode
+# mvn -X exec:java@CheckerRunner
+
+mvn exec:java@CheckerRunner
