@@ -68,7 +68,6 @@ public class MassExecutor {
         syntaxErrorChecker.check();
 
         if (syntaxErrorChecker.canCompile()) {
-
             if (styleNeeded) {
                 styleChecker.check();
                 styleFeedbacks = styleChecker.getStyleFeedbacks();

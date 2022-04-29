@@ -14,6 +14,8 @@ public class MessageChecker implements Checker {
 		System.out.println("Hello");
 		System.out.println(message);
 		
+		qfObject.getAnswer();
+		
 		String[] feedback = new String[1];
 		feedback[0] = message;
 		qfObject.setFeedback(feedback);
