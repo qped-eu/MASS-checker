@@ -40,26 +40,29 @@ public class Mass implements Checker {
         /*
         main settings
          */
-        QFMainSettings qfMainSettings = this.mainSettings;
-        mainSettings.put("syntaxLevel" , qfMainSettings.getSyntaxLevel());
-        mainSettings.put("preferredLanguage" , qfMainSettings.getPreferredLanguage());
-        mainSettings.put("styleNeeded" , qfMainSettings.getStyleNeeded());
-        mainSettings.put("semanticNeeded" , qfMainSettings.getSemanticNeeded());
-
+        if (this.mainSettings != null) {
+        	mainSettings.put("syntaxLevel" , this.mainSettings.getSyntaxLevel());
+	        mainSettings.put("preferredLanguage" , this.mainSettings.getPreferredLanguage());
+	        mainSettings.put("styleNeeded" , this.mainSettings.getStyleNeeded());
+	        mainSettings.put("semanticNeeded" , this.mainSettings.getSemanticNeeded());
+        }
+        
         /*
         Style Configs
          */
-        styleSettings.put("mainLevel" , this.styleSettings.getMainLevel());
-        styleSettings.put("maxClassLength" , this.styleSettings.getClassLength());
-        styleSettings.put("maxMethodLength", this.styleSettings.getMethodLength());
-        styleSettings.put("maxFieldsCount", this.styleSettings.getFieldsCount());
-        styleSettings.put("maxCycloComplexity", this.styleSettings.getCycloComplexity());
-        styleSettings.put("varNamesRegEx", this.styleSettings.getVarName());
-        styleSettings.put("methodNamesRegEx", this.styleSettings.getMethodName());
-        styleSettings.put("classNameRegEx", this.styleSettings.getClassName());
-        styleSettings.put("basisLevel", this.styleSettings.getBasisLevel());
-        styleSettings.put("namesLevel", this.styleSettings.getNamesLevel());
-        styleSettings.put("compLevel", this.styleSettings.getCompLevel());
+        if (this.styleSettings != null) {
+	        styleSettings.put("mainLevel" , this.styleSettings.getMainLevel());
+	        styleSettings.put("maxClassLength" , this.styleSettings.getClassLength());
+	        styleSettings.put("maxMethodLength", this.styleSettings.getMethodLength());
+	        styleSettings.put("maxFieldsCount", this.styleSettings.getFieldsCount());
+	        styleSettings.put("maxCycloComplexity", this.styleSettings.getCycloComplexity());
+	        styleSettings.put("varNamesRegEx", this.styleSettings.getVarName());
+	        styleSettings.put("methodNamesRegEx", this.styleSettings.getMethodName());
+	        styleSettings.put("classNameRegEx", this.styleSettings.getClassName());
+	        styleSettings.put("basisLevel", this.styleSettings.getBasisLevel());
+	        styleSettings.put("namesLevel", this.styleSettings.getNamesLevel());
+	        styleSettings.put("compLevel", this.styleSettings.getCompLevel());
+        }
 
         StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(this.styleSettings);
 
@@ -73,16 +76,17 @@ public class Mass implements Checker {
         /*
         Semantic Configs
          */
-
-        semanticSettings.put("methodName" , this.semSettings.getMethodName());
-        semanticSettings.put("recursionAllowed" , this.semSettings.getRecursionAllowed());
-        semanticSettings.put("whileLoop" , this.semSettings.getWhileLoop());
-        semanticSettings.put("forLoop" , this.semSettings.getForLoop());
-        semanticSettings.put("forEachLoop" , this.semSettings.getForEachLoop());
-        semanticSettings.put("ifElseStmt" , this.semSettings.getIfElseStmt());
-        semanticSettings.put("doWhileLoop" , this.semSettings.getDoWhileLoop());
-        semanticSettings.put("returnType" , this.semSettings.getReturnType());
-
+        if (this.semSettings != null) {
+	        semanticSettings.put("methodName" , this.semSettings.getMethodName());
+	        semanticSettings.put("recursionAllowed" , this.semSettings.getRecursionAllowed());
+	        semanticSettings.put("whileLoop" , this.semSettings.getWhileLoop());
+	        semanticSettings.put("forLoop" , this.semSettings.getForLoop());
+	        semanticSettings.put("forEachLoop" , this.semSettings.getForEachLoop());
+	        semanticSettings.put("ifElseStmt" , this.semSettings.getIfElseStmt());
+	        semanticSettings.put("doWhileLoop" , this.semSettings.getDoWhileLoop());
+	        semanticSettings.put("returnType" , this.semSettings.getReturnType());
+        }
+        
         MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
         SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(new QFSemSettings());
 

@@ -59,9 +59,7 @@ public class MainSettings {
 
     public MainSettings(Map<String, String> settings) {
         this.settings = settings;
-        if (settings == null){
-            this.setUpDefaults();
-        }
+        this.setUpDefaults();
         if (settings != null){
             this.setUp();
         }
