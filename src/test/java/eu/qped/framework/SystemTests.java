@@ -47,7 +47,7 @@ public class SystemTests {
 	@BeforeAll
 	public static void setup() throws StreamReadException, DatabindException, IOException {
 		yamlMapper = new ObjectMapper(new YAMLFactory());
-		systemTestConf = yamlMapper.readValue(ClassLoader.getSystemResourceAsStream(SYSTEM_TEST_CONF_YAML), SystemTestConf.class);
+		systemTestConf = yamlMapper.readValue(SystemTests.class.getClassLoader().getResourceAsStream(SYSTEM_TEST_CONF_YAML), SystemTestConf.class);
 	}
 
 	@DisplayName("QPED Checkers System Tests")

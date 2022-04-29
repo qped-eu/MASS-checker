@@ -50,10 +50,14 @@ public class MainSettings {
     }
     private void setUpDefaults() {
 
-        settings.put("syntaxLevel", DEFAULT_CHECK_LEVEL.name());
-        settings.put("preferredLanguage", "en");
-        settings.put("styleNeeded", "true");
-        settings.put("semanticNeeded", "false");
+    	if (!settings.containsKey("syntaxLevel"))
+    		settings.put("syntaxLevel", DEFAULT_CHECK_LEVEL.name());
+    	if (!settings.containsKey("preferredLanguage"))
+    		settings.put("preferredLanguage", "en");
+    	if (!settings.containsKey("styleNeeded"))
+    		settings.put("styleNeeded", "true");
+    	if (!settings.containsKey("semanticNeeded"))
+    		settings.put("semanticNeeded", "false");
     }
 
 
