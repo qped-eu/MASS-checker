@@ -28,10 +28,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import ro.skyah.comparator.JSONCompare;
 
 public class SystemTests {
-	
-	// By setting this to true, the Checker runner is executed in the same process
-	// as the system test runner. This can be used for debugging processes.
-	public static final boolean IN_PROCESS = false;
 
 	private static final String SYSTEM_TEST_CONF_YAML = "system-test-conf.yaml";
 	private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
@@ -59,16 +55,12 @@ public class SystemTests {
 		} else {
 			FileUtils.writeStringToFile(QF_OBJECT_FILE, input, Charset.defaultCharset());
 
-			if (IN_PROCESS) {
-				CheckerRunner.main(new String[0]);
-			}
-			else {
-				ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
-				pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
-				Process process = pb.start();
-				if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
-					throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
-				}
+			
+			ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
+			pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
+			Process process = pb.start();
+			if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
+				throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
 			}
 			
 			String actual = FileUtils.readFileToString(QF_OBJECT_FILE, Charset.defaultCharset());
@@ -112,7 +104,7 @@ public class SystemTests {
 		File qfExpectedFile = new File(currentFolder, QF_EXPECTED_FILE_NAME);
 		File qfInputFile = new File(currentFolder, QF_INPUT_FILE_NAME);
 
-		if (qfExpectedFile.exists() && qfInputFile.exists() && !description.isDisabled()) {
+		if (qfExpectedFile.exists() && qfInputFile.exists()) {
 			try {
 				qfExpected = FileUtils.readFileToString(qfExpectedFile, Charset.defaultCharset());
 				qfInput = FileUtils.readFileToString(qfInputFile, Charset.defaultCharset());
