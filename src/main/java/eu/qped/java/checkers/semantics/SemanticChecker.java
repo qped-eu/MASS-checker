@@ -35,6 +35,7 @@ public class SemanticChecker {
 //        check();
 //    }
 
+
     private SemanticChecker(SemanticConfigurator semanticConfigurator){
         this.feedbacks = new ArrayList<>();
         this.semanticConfigurator = semanticConfigurator;

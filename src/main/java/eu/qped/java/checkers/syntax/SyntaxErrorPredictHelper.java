@@ -22,26 +22,6 @@ public class SyntaxErrorPredictHelper {
     private String errorMsg;
 
 
-    public SyntaxFeedback predictFeedbackForExpected(List<SyntaxFeedback> feedbacks, SyntaxError syntaxError) {
-        String forSemExp = syntaxError.getAdditionalProperties().get("forSemExpected");
-        List<SyntaxFeedback> filterFeedbacks =
-                feedbacks.stream().filter(
-                        syntaxFeedback -> syntaxFeedback.getErrorMessage().equalsIgnoreCase(syntaxError.getErrorMsg())
-                ).collect(Collectors.toList());
-
-        if (this.hasBraces(forSemExp)) {
-            return filterFeedbacks
-                    .stream()
-                    .filter(syntaxFeedback -> syntaxFeedback.getErrorInfo().getErrorKey().equals("braces_expected"))
-                    .collect(Collectors.toList()).get(0);
-        }
-        else {
-            return filterFeedbacks
-                    .stream()
-                    .filter(syntaxFeedback -> syntaxFeedback.getErrorInfo().getErrorKey().equals("semi_expected"))
-                    .collect(Collectors.toList()).get(0);
-        }
-    }
 
     public String getErrorKind() {
         String errorKind = "";
