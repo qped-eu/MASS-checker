@@ -71,36 +71,7 @@ public class SyntaxFeedbackGenerator {
     }
 
 
-    public void createFeedback(SyntaxError syntaxError){
-        SyntaxFeedbackDao dao = SyntaxFeedbackDao.builder().build();
 
-        List<SyntaxFeedback> potentialFeedbacks = dao.fetchPotentialFeedbacks(syntaxError.getErrorCode());
-
-        for (SyntaxFeedback feedback: potentialFeedbacks){
-            System.out.println("---------------------");
-            feedback.setSyntaxError(syntaxError);
-            System.out.println(feedback.getSyntaxError().getErrorMsg());
-            System.out.println(feedback.getFeedbackContent());
-            System.out.println("---------------------");
-        }
-
-        System.out.println();
-        SyntaxErrorPredictHelper errorPredictHelper = new SyntaxErrorPredictHelper();
-        System.out.println(errorPredictHelper.predictFeedbackForExpected(potentialFeedbacks, syntaxError).getFeedbackContent());
-    }
-
-
-    public static void main(String[] args) {
-        SyntaxFeedbackGenerator syntaxFeedbackGenerator = new SyntaxFeedbackGenerator();
-        syntaxFeedbackGenerator.createFeedback(
-                SyntaxError.builder()
-                        .errorCode("compiler.err.expected")
-                        .errorMsg("';' expected")
-                        .additionalProperties(Map.of("forSemExpected", "int x = 2"))
-                        .errorTrigger("")
-                        .startPos(11L)
-                        .build());
-    }
 
 
     public SyntaxFeedback getFeedback(SyntaxError syntaxError)  {
