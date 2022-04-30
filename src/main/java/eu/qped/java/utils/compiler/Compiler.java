@@ -31,6 +31,7 @@ import java.util.Locale;
 public class Compiler {
 
     private static final String DEFAULT_CLASS_PATH = "TestClass.java";
+    private static final String DEFAULT_DIR_PATH = "exam-results";
 
     private List<Diagnostic<? extends JavaFileObject>> collectedDiagnostics;
     private String fullSourceCode;
@@ -46,7 +47,13 @@ public class Compiler {
             createJavaClass(writeCodeAsClass(answer));
             files.add(new File(DEFAULT_CLASS_PATH));
         } else {
-            ExtractJavaFilesFromDirectory extractJavaFilesFromDirectory = ExtractJavaFilesFromDirectory.builder().dirPath(targetProjectPath).build();
+            ExtractJavaFilesFromDirectory.ExtractJavaFilesFromDirectoryBuilder extractJavaFilesFromDirectoryBuilder = ExtractJavaFilesFromDirectory.builder();
+            ExtractJavaFilesFromDirectory extractJavaFilesFromDirectory;
+            if (targetProjectPath == null || targetProjectPath.equals("")){
+                extractJavaFilesFromDirectoryBuilder.dirPath(DEFAULT_DIR_PATH);
+            }
+            else extractJavaFilesFromDirectoryBuilder.dirPath(targetProjectPath);
+            extractJavaFilesFromDirectory = extractJavaFilesFromDirectoryBuilder.build();
             files = extractJavaFilesFromDirectory.filesWithJavaExtension();
             if (files.size() == 0){
                 return false;
