@@ -30,7 +30,6 @@ public class DesignFeedbackGenerator {
         feedbackMap.put(DesignViolation.MISSING_ABSTRACT_CLASS_IMPLEMENTATION, "Abstract Class has not been extended");
         feedbackMap.put(DesignViolation.MISSING_CLASS_IMPLEMENTATION, "Class has not been extended");
         feedbackMap.put(DesignViolation.WRONG_CLASS_TYPE, "Wrong Class Type has been used.");
-        feedbackMap.put(DesignViolation.EXPECTED_DIFF_CLASS_TYPE, "Expected different class or interface type.");
     }
 
     public String getFeedbackBody(String violationType) {

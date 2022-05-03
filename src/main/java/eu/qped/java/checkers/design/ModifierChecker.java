@@ -63,10 +63,10 @@ public class ModifierChecker<T extends Node> {
 
         List<NodeWithModifiers<T>> elementsWithModifiers = getAllFieldsOrMethods();
 
-        //Check if all required fields are there
+        //Check if all required fields or methods are there
         checkIfLessThanExpectedPresent(expectedKeywords);
 
-        //Remove all correct fields
+        //Match and remove all correct fields or methods
         removeExactMatches(elementsWithModifiers, expectedAccessModifiers, expectedNonAccessModifiers);
 
         //Remaining elements cannot be matched up properly, so find the appropriate violations
@@ -176,6 +176,7 @@ public class ModifierChecker<T extends Node> {
      * @param expectedKeywords expected keywords, gives the size of the expected elements
      */
     private void checkIfLessThanExpectedPresent(List<String> expectedKeywords) {
+        //TODO: Specify exactly which ones are missing or just keep it general?
         List<NodeWithModifiers<T>> presentElements = getAllFieldsOrMethods();
         if(expectedKeywords.size() > presentElements.size()) {
             if(fieldOrMethod.equals("field")) {
