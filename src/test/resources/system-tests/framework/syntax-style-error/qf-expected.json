@@ -1,0 +1,40 @@
+{
+   "attemptCount":1,
+   "feedback":[
+      
+   ],
+   "showSolution":false,
+   "user":{
+      "id":"5fd0de0f30795372827b0f2a",
+      "language":"en"
+   },
+   "assignment":{
+      "id":"6261560949496205f2430680",
+      "title":"PG Bag",
+      "files":[
+         
+      ]
+   },
+   "question":{
+      "id":"626aa854769943907f5506ea",
+      "text":"Below you find the External Specification of the ADT _Bag_ in terms of a stub implementation of the `adt.Bag`. It contains all required public methods together with a specification of the class's and methods's invariants, pre and post-conditions.\n\nFollowing the Procedural Guidance, your task is to implement a test class using JUnit 5 (Jupiter) that can be used to check whether an actual implementation of this class satisfies the full specification. This test class should be called `adt.test.BagTest`. Fill in the template for this class below.\n\n```java\npackage adt;\n/**\n * This class represents a bag of integers. A bag can contain duplicate elements.\n * The bag is not limited in the number of elements it can hold.\n * The number of elements in the bag is represented by its length. \n * @inv Number of elements >= 0\n */\npublic class Bag {\n\n /**\n * @ensures A new bag is instantiated, with length = 0. \n */\n public Bag() {}\n\n /**\n * @ensures new cardinality = old cardinality + 1\n * @ensures the new length is the old length plus 1\n * @ensures returns true \n */\n\n public boolean add(int elem) {\n\t return false;\n\t}\n\t\n /**\n * @sub Happy-path {\n * @requires length > 0 and the bag contains n elements of elem, with n > 0\n * @ensures new cardinality(elem) = old cardinality(elem) - 1\n * @ensures length is old length minus 1\n * @ensures returns true\n * }\n * @sub Non-happy-path {\n * @requires length = 0 or the bag does not contain element elem\n * @ensures the bag is not changed\n * @ensures length is old length\n * @ensures returns false\n * }\n */\n public boolean remove(int elem) {\n\t return false;\n\t}\n \n /**\n * @ensures returns the number of elements \n */\n public int length() {\n\t return 0;\n\t}\n\n /**\n * @ensures true if they contain the same elements otherwise false \n */\n public boolean equals(Object obj) {\n\t return false;\n\t}\n\n /**\n * @ensures returns the elements in the bag\n */\n public int[] getElems() {\n\t return null;\n\t}\n\n /**\n * @ensures returns the number of elem in the bag\n */\n public int cardinality(int elem) {\n\t return 0;\n\t}\n}\n```",
+      "programmingLanguage":"java"
+   },
+   "files":[
+      
+   ],
+   "comment":"",
+   "score":null,
+   "stop":false,
+   "answers":[
+      "package adt.test;\n\nimport static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class BagTest {+\n \n}"
+   ],
+   "answer":"package adt.test;\n\nimport static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class BagTest {\n \n}",
+   "checkerClass":"eu.qped.java.checkers.mass.Mass",
+   "mainSettings":{
+      "syntaxLevel":"BEGINNER",
+      "preferredLanguage":"en",
+      "styleNeeded":false,
+      "semanticNeeded":false
+   }
+}

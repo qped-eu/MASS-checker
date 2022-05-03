@@ -28,6 +28,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import ro.skyah.comparator.JSONCompare;
 
 public class SystemTests {
+	
+	// By setting this to true, the Checker runner is executed in the same process
+	// as the system test runner. This can be used for debugging processes.
+	public static final boolean IN_PROCESS = false;
 
 	private static final String SYSTEM_TEST_CONF_YAML = "system-test-conf.yaml";
 	private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
@@ -43,26 +47,28 @@ public class SystemTests {
 	@BeforeAll
 	public static void setup() throws StreamReadException, DatabindException, IOException {
 		yamlMapper = new ObjectMapper(new YAMLFactory());
-		systemTestConf = yamlMapper.readValue(ClassLoader.getSystemResourceAsStream(SYSTEM_TEST_CONF_YAML), SystemTestConf.class);
+		systemTestConf = yamlMapper.readValue(SystemTests.class.getClassLoader().getResourceAsStream(SYSTEM_TEST_CONF_YAML), SystemTestConf.class);
 	}
 
 	@DisplayName("QPED Checkers System Tests")
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("provideStringsSystemTest")
 	public void systemTests(String name, SystemTestDescription description, String input, String expected, Exception exception) throws IOException, InterruptedException, AssertionError {
-		if (description != null)
-			System.out.println(description.getDescription());
 		if (exception != null) {
 			throw new AssertionError(exception);
 		} else {
 			FileUtils.writeStringToFile(QF_OBJECT_FILE, input, Charset.defaultCharset());
 
-			
-			ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
-			pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
-			Process process = pb.start();
-			if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
-				throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
+			if (IN_PROCESS) {
+				CheckerRunner.main(new String[0]);
+			}
+			else {
+				ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
+				pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
+				Process process = pb.start();
+				if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
+					throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
+				}
 			}
 			
 			String actual = FileUtils.readFileToString(QF_OBJECT_FILE, Charset.defaultCharset());
@@ -106,7 +112,7 @@ public class SystemTests {
 		File qfExpectedFile = new File(currentFolder, QF_EXPECTED_FILE_NAME);
 		File qfInputFile = new File(currentFolder, QF_INPUT_FILE_NAME);
 
-		if (qfExpectedFile.exists() && qfInputFile.exists()) {
+		if (qfExpectedFile.exists() && qfInputFile.exists() && !description.isDisabled()) {
 			try {
 				qfExpected = FileUtils.readFileToString(qfExpectedFile, Charset.defaultCharset());
 				qfInput = FileUtils.readFileToString(qfInputFile, Charset.defaultCharset());

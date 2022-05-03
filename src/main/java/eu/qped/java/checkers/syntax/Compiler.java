@@ -88,6 +88,7 @@ public class Compiler {
         return javaObjectFromString;
     }
 
+    //TODO: don't write into project folder. Rather write to temp folder
     private void writeJavaFileContent() {
         try (OutputStream output = Files.newOutputStream(Paths.get("TestClass.java"))) {
             output.write(javaFileContent.toString().getBytes(StandardCharsets.UTF_8));
@@ -97,6 +98,7 @@ public class Compiler {
     }
 
 
+    //TODO: don't compile class file into project folder. Rather write to temp folder
     public void compile()  {
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();

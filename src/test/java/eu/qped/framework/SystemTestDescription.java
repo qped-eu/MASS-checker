@@ -15,6 +15,16 @@ public class SystemTestDescription {
 	
 	private String author;
 	
+	private boolean disabled;
+	
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -56,7 +66,5 @@ public class SystemTestDescription {
     public Object getAdditionalProperty(String propertyKey) {
     	return additionalProperties.get(propertyKey);
     }
-
-	
 	
 }
