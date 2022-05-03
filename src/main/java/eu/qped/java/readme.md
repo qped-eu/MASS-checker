@@ -38,7 +38,7 @@ Object: qfMainSettings
 | preferredLanguage | Google language codes (e.g. en, de, etc)| false |
 
 
-### Syntax Checker
+### Syntax Checker Configuration
 To be added: short description on what can be configured
 
 Object: 
@@ -46,7 +46,7 @@ Object:
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
 
-### Style Checker
+### Style Checker Configuration
 To be added: short description on what can be configured
 
 Object: qfStyleConf
@@ -54,7 +54,7 @@ Object: qfStyleConf
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
 
-### Semantics Checker
+### Semantics Checker Configuration
 To be added: short description on what can be configured
 
 Object: qfSemConfigs
@@ -62,7 +62,7 @@ Object: qfSemConfigs
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
 
-### Class Checker WIP
+### Class Checker Configuration WIP
 To be added: short description on what can be configured
 
 Object: 
@@ -70,7 +70,7 @@ Object:
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
 
-### Test Checker WIP
+### Test Checker Configuration WIP
 To be added: short description on what can be configured
 
 Object: 
@@ -88,7 +88,7 @@ qf.qfMainSettings = {
     "semanticNeeded":"true"  
 };
 qf.qfStyleConf= {
-    "mainLevel":"profi",
+    "mainLevel":"ADVANCED",
     "compLevel":null,
     "namesLevel":null,
     "basisLevel":null,
