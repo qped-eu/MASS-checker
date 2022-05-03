@@ -1,11 +1,24 @@
 QPED - Feedback tools for Java and Python
 ========================
-To be added - short description of QPED
+What is QPED?
+-----------
+QPED is a project that has seen life as an Erasmus+ project funded by the European government.
+It is a combined venture of four different universities (Open Universiteit Nederland, Fundacio per a la Universitat oberta de Catalunya, Philipps Universität Marburg and Technische Universiteit Eindhoven) and the Quarterfall-organisation.
+For more information about Quarterfall please refer to [their website](https://www.quarterfall.com/).
 
-What is this project about?
+QPED aims to improve the quality of software by improving the written code underneath.
+Our philosophy is that if the quality and readability of the underlying code improves, then the software itself will become higher quality.
+In order to achieve that, we focus on improving the quality mindedness of early learners in a university context.
+
+Since in the beginning of their studies, students mostly learn about programming and language features, more meta-topics like testing or readability are mostly sidelined or "to be learned later".
+QPED wants to teach the importance of high quality code and testing to students early so that they write their code adhering to standards from the start instead of having to relearn how to code correctly a few semesters later.
+However, detailed feedback on code can be quite tedious for teachers to provide since at any given point during a semester they are vastly outnumbered by the students.
+Because of this, we provide teachers with this particular piece of software.
+
+What is this software about?
 ------------
 ### General
-With this project, you can analyze and automatically generate feedback for learners of computer science.
+With this software, you can analyze and automatically generate feedback for learners of computer science.
 This project is aimed at early learners beginning their education by learning the JAVA and Python programming language.
 For the respective versions of this project, please refer to their respective folder.
 
