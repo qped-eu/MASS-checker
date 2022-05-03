@@ -72,7 +72,7 @@ public class ClassChecker {
                 break;
             case "InnerClass":
                 if(!classDecl.isInnerClass()) {
-                    //TODO
+                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, classDecl.getNameAsString());
                 }
         }
     }
@@ -185,14 +185,14 @@ public class ClassChecker {
         switch (expectedInheritedType) {
             case "Interface":
                 if(findExpectedDiffClassType(extendedClasses, expectedInheritedName)) {
-                    designChecker.addFeedback(DesignViolation.EXPECTED_DIFF_CLASS_TYPE, expectedInheritedName);
+                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, expectedInheritedName);
                 } else {
                     designChecker.addFeedback(DesignViolation.MISSING_INTERFACE_IMPLEMENTATION, expectedInheritedName);
                 }
                 break;
             case "AbstractClass":
                 if(findExpectedDiffClassType(implementedInterfaces, expectedInheritedName)) {
-                    designChecker.addFeedback(DesignViolation.EXPECTED_DIFF_CLASS_TYPE, expectedInheritedName);
+                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, expectedInheritedName);
                 } else {
                     designChecker.addFeedback(DesignViolation.MISSING_ABSTRACT_CLASS_IMPLEMENTATION, expectedInheritedName);
                 }
@@ -200,7 +200,7 @@ public class ClassChecker {
                 break;
             case "Class":
                 if(findExpectedDiffClassType(implementedInterfaces, expectedInheritedName)) {
-                    designChecker.addFeedback(DesignViolation.EXPECTED_DIFF_CLASS_TYPE, expectedInheritedName);
+                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, expectedInheritedName);
                 } else {
                     designChecker.addFeedback(DesignViolation.MISSING_CLASS_IMPLEMENTATION, expectedInheritedName);
                 }

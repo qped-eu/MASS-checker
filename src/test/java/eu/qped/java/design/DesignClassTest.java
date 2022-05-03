@@ -205,7 +205,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.EXPECTED_DIFF_CLASS_TYPE, "Number");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_CLASS_TYPE, "Number");
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
