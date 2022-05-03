@@ -17,6 +17,14 @@ Furthermore, it is possible to require a learner to use a specific loop within t
 It is also possible to use different metrics and mutation testing to evaluate the test-quality of the submitted code and give the learner helpfull feedback.
 For a full list of possible configurations, please refer to the section below.
 
+### How can I interface with this programme?
+Interfacing with this programme works solely via a JSON-Object.
+For specific instructions, please refer to the documentation of the [framework](./src/main/java/eu/qped/framework/readme.md).
+
+### How can it be configured?
+Configuration is also done via different JSON-Objects.
+For specific properties and objects that can be used for configuration, please refer to the documentation of the [checkers](./src/main/java/eu/qped/java/readme.md).
+
 Requirements
 ------------
 This project is meant to interface specifically with the Quarterfall plattform in the form of a cloud-check, though it can be used with other plattforms.
