@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,8 +33,7 @@ public class SyntaxErrorPredictHelper {
                     .stream()
                     .filter(syntaxFeedback -> syntaxFeedback.getErrorInfo().getErrorKey().equals("braces_expected"))
                     .collect(Collectors.toList()).get(0);
-        }
-        else {
+        } else {
             return filterFeedbacks
                     .stream()
                     .filter(syntaxFeedback -> syntaxFeedback.getErrorInfo().getErrorKey().equals("semi_expected"))

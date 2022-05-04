@@ -36,7 +36,12 @@ public class Compiler {
     private String fullSourceCode;
     private String targetProjectPath;
 
-    public boolean compile(String answer){
+    /**
+     * @param answer can be either FilePath or the code as a string
+     * @return if the code is compilable
+     */
+
+    public boolean compile(String answer) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnosticsCollector, Locale.GERMANY, Charset.defaultCharset());
@@ -48,7 +53,7 @@ public class Compiler {
         } else {
             ExtractJavaFilesFromDirectory extractJavaFilesFromDirectory = ExtractJavaFilesFromDirectory.builder().dirPath(targetProjectPath).build();
             files = extractJavaFilesFromDirectory.filesWithJavaExtension();
-            if (files.size() == 0){
+            if (files.size() == 0) {
                 return false;
             }
         }
@@ -76,6 +81,10 @@ public class Compiler {
     }
 
 
+    /**
+     * @param answer the code
+     * @return If the code does not contain a class, a default class is created and return it
+     */
     private String writeCodeAsClass(String answer) {
         StringBuilder javaFileContent = new StringBuilder();
         boolean isClassOrInterface = answer.contains("class") || answer.contains("interface");
