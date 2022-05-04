@@ -255,23 +255,5 @@ public class MassExecutor {
 //        System.out.println("Feedback generated in: " + end * Math.pow(10.0, -9.0) + " sec");
 //    }
 
-    public static void main(String[] args) {
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer("public void print() {\n" +
-                "    System.out.println(\"hallo\")\n" +
-                "}").build();
-
-        Map<String, String> mainSettings = new HashMap<>();
-        mainSettings.put("semanticNeeded", "false");
-        mainSettings.put("syntaxLevel", "2");
-        mainSettings.put("preferredLanguage", "en");
-        mainSettings.put("styleNeeded", "false");
-
-        MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
-
-        MassExecutor massExecutor = new MassExecutor(null, null, syntaxChecker, mainSettingsConfiguratorConf);
-        massExecutor.execute();
-        System.out.println(massExecutor.getSyntaxErrors().size());
-    }
-
 
 }
