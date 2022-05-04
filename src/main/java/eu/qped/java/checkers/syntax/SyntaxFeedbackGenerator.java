@@ -69,14 +69,7 @@ public class SyntaxFeedbackGenerator {
     }
 
 
-    public void createFeedback(SyntaxError syntaxError) {
-        SyntaxFeedbackDao dao = SyntaxFeedbackDao.builder().build();
-        List<SyntaxFeedback> potentialFeedbacks = dao.fetchPotentialFeedbacks(syntaxError.getErrorCode());
 
-        for (SyntaxFeedback feedback : potentialFeedbacks) {
-            feedback.setSyntaxError(syntaxError);
-        }
-    }
 
 
     public SyntaxFeedback getFeedback(SyntaxError syntaxError) {
