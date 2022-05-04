@@ -15,7 +15,7 @@ import eu.qped.java.checkers.style.StyleFeedback;
 public class Translator {
 
 
-    public String translate(String langFrom, String langTo, String text) throws IOException, TranslationException {
+    public String translate(String langFrom, String langTo, String text) throws TranslationException {
         String result = "";
         try {
             // INSERT YOU URL HERE

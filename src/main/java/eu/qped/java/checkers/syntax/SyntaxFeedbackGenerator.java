@@ -82,6 +82,20 @@ public class SyntaxFeedbackGenerator {
     public SyntaxFeedback getFeedback(SyntaxError syntaxError) {
         example = "";
 
+        StringBuilder header = new StringBuilder();
+
+        header = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), header);
+
+        //result = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), result);
+
+
+//        List<String> potentialFeedbacks = SyntaxFeedbackDao.data.get(syntaxError.getErrorCode());
+//        String helper = potentialFeedbacks.get(0);
+//        String formatter = potentialFeedbacks.get(0).toLowerCase(Locale.ROOT);
+
+
+
+
         SyntaxErrorPredictHelper syntaxErrorPredictHelper = new SyntaxErrorPredictHelper(syntaxError.getErrorCode(), syntaxError.getErrorMsg(), syntaxError.getErrorTrigger());
         switch (syntaxError.getErrorCode()) {
             case "compiler.err.expected":
@@ -89,13 +103,18 @@ public class SyntaxFeedbackGenerator {
             case "compiler.err.expected1":
             case "compiler.err.expected2": {
                 expectedSubSwitch(result, syntaxErrorPredictHelper, syntaxError);
+                //System.out.println(syntaxError.getErrorTrigger());
                 break;
             }
             case "compiler.err.var.might.not.have.been.initialized": {
                 result.append("The variable not only had to be declared but also initialized").append(NEW_LINE);
                 setExample("(Declaration) int number = (Initialising) 10");
+//                        .append(NEW_LINE)
+//                        .append("The variable must be initialized and not just declared,for Example: ").append(NEW_LINE)
+//                        .append("(Declaration) int number = (Initialising) 10;");
                 break;
             }
+            //isMatch maybe
             case "compiler.err.already.defined": {
                 result
                         .append("You already have a variable or a method in the common scope with the same name")
@@ -105,6 +124,7 @@ public class SyntaxFeedbackGenerator {
                 break;
             }
             case "compiler.err.cant.resolve.location": {
+                //for var
                 result.append("You have called an undefined symbol (variable), at the above-mentioned position")
                         .append(NEW_LINE)
                         .append("it could be that you made a typo with the name or forgot to define the symbol.");
