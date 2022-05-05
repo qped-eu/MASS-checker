@@ -1,6 +1,8 @@
 package eu.qped.java.checkers.style.pmd;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,9 +35,9 @@ public class XmlParser {
             Document inputDom;
 
             if (path != null){
-               inputDom  = db.parse(ClassLoader.getSystemResourceAsStream(path));
-               Element doc = inputDom.getDocumentElement();
-               nodeList = doc.getElementsByTagName("rule");
+            	inputDom  = db.parse(this.getClass().getClassLoader().getResourceAsStream(path));
+            	Element doc = inputDom.getDocumentElement();
+            	nodeList = doc.getElementsByTagName("rule");
             }
             else {
             	LogManager.getLogger(getClass()).error("No such ruleset: "  + path);
