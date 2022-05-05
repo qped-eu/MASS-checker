@@ -27,6 +27,7 @@ public class DesignMethodTest {
     @Test
     public void maxRestrictedTest() {
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
 
         classInfos.add(classInfo);
         qfDesignSettings.setClassInfos(classInfos);
@@ -43,7 +44,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -64,6 +65,7 @@ public class DesignMethodTest {
         methodModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -80,7 +82,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -98,6 +100,7 @@ public class DesignMethodTest {
         methodModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -111,7 +114,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -135,6 +138,7 @@ public class DesignMethodTest {
         methodModifiers.add("public static");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -152,7 +156,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -176,6 +180,7 @@ public class DesignMethodTest {
         ArrayList<String> methodModifiers = new ArrayList<>();
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -192,7 +197,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -210,6 +215,7 @@ public class DesignMethodTest {
         methodModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -226,7 +232,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -250,6 +256,7 @@ public class DesignMethodTest {
         methodModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -266,7 +273,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -284,6 +291,7 @@ public class DesignMethodTest {
         methodModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -300,7 +308,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -322,6 +330,7 @@ public class DesignMethodTest {
         methodModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -338,7 +347,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);

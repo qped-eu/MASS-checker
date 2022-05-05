@@ -2,29 +2,26 @@ package eu.qped.java.checkers.design;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
 
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class DesignChecker implements Checker {
 
-    private String source;
+    private final List<CompilationUnit> compilationUnits;
+    private final Map<CompilationUnit, ClassInfo> compUnitToClassInfoMap;
     private DesignConfigurator designConfigurator;
-    private CompilationUnit compilationUnit;
     private List<DesignFeedback> designFeedbacks;
     private final DesignFeedbackGenerator designFeedbackGenerator;
 
     public DesignChecker(DesignConfigurator designConfigurator) {
         designFeedbacks = new ArrayList<>();
+        compilationUnits = new ArrayList<>();
+        compUnitToClassInfoMap = new HashMap<>();
         this.designConfigurator = designConfigurator;
         designFeedbackGenerator = DesignFeedbackGenerator.createDesignFeedbackGenerator();
     }
@@ -34,12 +31,7 @@ public class DesignChecker implements Checker {
         if(designConfigurator == null) {
             designConfigurator = DesignConfigurator.createDefaultDesignConfigurator();
         }
-        parseCompUnit();
         checkDesign();
-    }
-
-    private void parseCompUnit (){
-        this.compilationUnit = StaticJavaParser.parse(this.source);
     }
 
     /**
@@ -47,13 +39,22 @@ public class DesignChecker implements Checker {
      * and classes from source
      */
     private void checkDesign() {
+        //TODO: Figure out what each class is and how they are in relation to each other
+        //Check class type match and inheritance match
+        ClassChecker classChecker = new ClassChecker(new ArrayList<>(compilationUnits),
+                new ArrayList<>(designConfigurator.getClassInfos()),
+                this);
 
-        //TODO: Look at all the different classes
-        for (ClassInfo classInfo: designConfigurator.getClassInfos()) {
+        classChecker.checkClassDeclaration();
+
+        for(Map.Entry<CompilationUnit, ClassInfo> entry :compUnitToClassInfoMap.entrySet()) {
+            CompilationUnit compUnit = entry.getKey();
+            ClassInfo classInfo = entry.getValue();
+
             //check field modifiers
             //Create Copy so that we can delete matching elements in the list
             ArrayList<String> expectedFieldKeywords = new ArrayList<>(classInfo.getFieldKeywords());
-            ModifierChecker<FieldDeclaration> fieldChecker = new ModifierChecker<>(compilationUnit, this, "field");
+            ModifierChecker<FieldDeclaration> fieldChecker = new ModifierChecker<>(compUnit, this, "field");
             if(designConfigurator.isModifierMaxRestrictive()) {
                 fieldChecker.checkModifierMaxRestrictive();
             } else {
@@ -63,20 +64,23 @@ public class DesignChecker implements Checker {
 
             //Check method modifiers
             ArrayList<String> expectedMethodKeywords = new ArrayList<>(classInfo.getMethodKeywords());
-            ModifierChecker<MethodDeclaration> methodChecker = new ModifierChecker<>(compilationUnit, this, "method");
+            ModifierChecker<MethodDeclaration> methodChecker = new ModifierChecker<>(compUnit, this, "method");
             if(designConfigurator.isModifierMaxRestrictive()) {
                 methodChecker.checkModifierMaxRestrictive();
             } else {
                 methodChecker.checkModifiers(expectedMethodKeywords);
             }
-
-            //Check class type match and inheritance match
-            String expectedClassTypeName = classInfo.getClassTypeName();
-            ClassChecker classChecker = new ClassChecker(compilationUnit, this);
-            ArrayList<String> expectedInheritsFrom = new ArrayList<>(classInfo.getInheritsFrom());
-
-            classChecker.checkClassDeclaration(expectedClassTypeName, expectedInheritsFrom);
         }
+
+
+    }
+
+    public Map<CompilationUnit, ClassInfo> getCompUnitToClassInfoMap() {
+        return compUnitToClassInfoMap;
+    }
+
+    public void addCompUnitToMap(CompilationUnit compilationUnit, ClassInfo classInfo) {
+        getCompUnitToClassInfoMap().put(compilationUnit, classInfo);
     }
 
     /**
@@ -89,12 +93,14 @@ public class DesignChecker implements Checker {
         designFeedbacks.add(designFeedback);
     }
 
-    public String getSource() {
-        return source;
+
+
+    public void addSourceCode(String source) {
+        compilationUnits.add(parseCompUnit(source));
     }
 
-    public void setSource(String source) {
-        this.source = source;
+    private CompilationUnit parseCompUnit (String source){
+        return StaticJavaParser.parse(source);
     }
 
     public List<DesignFeedback> getDesignFeedbacks() {

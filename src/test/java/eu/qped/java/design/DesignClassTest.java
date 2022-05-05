@@ -24,6 +24,79 @@ public class DesignClassTest {
     }
 
     @Test
+    public void multipleClassTest() {
+        //Expected Interface Infos
+        ClassInfo interfaceInfo = new ClassInfo();
+        interfaceInfo.setClassTypeName("Interface:Number");
+        ArrayList<String> methodKeywords = new ArrayList<>();
+        methodKeywords.add("private");
+        methodKeywords.add("private");
+        methodKeywords.add("default");
+        methodKeywords.add("default");
+        methodKeywords.add("default");
+        methodKeywords.add("default");
+        interfaceInfo.setMethodKeywords(methodKeywords);
+
+
+        //Expected Class Infos
+        ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:HexaDecimal");
+
+        ArrayList<String> inheritsFrom = new ArrayList<>();
+        inheritsFrom.add("Interface:Number");
+        classInfo.setInheritsFrom(inheritsFrom);
+
+        ArrayList<String> fieldKeywords = new ArrayList<>();
+        fieldKeywords.add("private");
+        classInfo.setFieldKeywords(fieldKeywords);
+        ArrayList<String> classMethodKeywords = new ArrayList<>();
+        classMethodKeywords.add("private");
+        classMethodKeywords.add("private");
+        classInfo.setMethodKeywords(classMethodKeywords);
+
+        classInfos.add(interfaceInfo);
+        classInfos.add(classInfo);
+        qfDesignSettings.setClassInfos(classInfos);
+
+        String interfaceSource = "public interface Number {" +
+                "private int toIntValue();"+
+                "private void fromIntValue(int value){" +
+                "}"+
+                "default void add(Number number){" +
+                "}"+
+                "default void subtract(Number number){" +
+                "}"+
+                "default void divide(Number number){" +
+                "}"+
+                "default void multiply(Number number){" +
+                "}"+
+                "}";
+
+        String classSource = "public class HexaDecimal implements Number {" +
+                "private String value;"+
+                "private int toIntValue() {" +
+                "}"+
+                "}";
+
+        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
+        DesignChecker designChecker = new DesignChecker(designConfigurator);
+        designChecker.addSourceCode(interfaceSource);
+        designChecker.addSourceCode(classSource);
+
+        try {
+            designChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.MISSING_METHODS, "HexaDecimal");
+        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        expectedFeedback.add(fb1);
+
+        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+    }
+
+    @Test
     public void classRightClassImplementedTest() {
         String expectedClassTypeName = "Class:TestClass";
         String implementsInterface = "Class:Number";
@@ -42,7 +115,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -72,7 +145,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -102,7 +175,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -128,7 +201,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -163,7 +236,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -197,7 +270,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -205,7 +278,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.EXPECTED_DIFF_CLASS_TYPE, "Number");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_CLASS_TYPE, "Number");
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 

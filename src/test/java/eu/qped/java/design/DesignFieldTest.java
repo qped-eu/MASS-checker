@@ -27,6 +27,7 @@ public class DesignFieldTest {
     @Test
     public void maxRestrictedTest() {
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
 
         classInfos.add(classInfo);
         qfDesignSettings.setClassInfos(classInfos);
@@ -39,7 +40,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -60,6 +61,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -72,7 +74,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -90,6 +92,7 @@ public class DesignFieldTest {
         fieldModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -102,7 +105,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -119,6 +122,7 @@ public class DesignFieldTest {
         fieldModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -130,7 +134,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -155,6 +159,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public final");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -167,7 +172,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -190,6 +195,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -201,7 +207,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -224,6 +230,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -236,7 +243,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -264,6 +271,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public static final");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -277,7 +285,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -304,6 +312,7 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -316,7 +325,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
@@ -334,6 +343,7 @@ public class DesignFieldTest {
         fieldModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
+        classInfo.setClassTypeName("Class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -346,7 +356,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.setSource(source);
+        designChecker.addSourceCode(source);
 
         try {
             designChecker.check(null);
