@@ -1,11 +1,20 @@
 package eu.qped.java.checkers.syntax;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SyntaxFeedbackGenerator {
 
 
@@ -15,8 +24,6 @@ public class SyntaxFeedbackGenerator {
     private final static String FEEDBACK_CONS = " Feedback: ";
     private final static String NEW_LINE = "\n\n";
     private final static ArrayList<String> TYPES = new ArrayList<>();
-    private String example;
-
 
     static {
         TYPES.add("for");
@@ -30,13 +37,19 @@ public class SyntaxFeedbackGenerator {
         TYPES.add("case");
     }
 
-
-    private final CheckLevel level;
-
-    private final String sourceCode;
+    private List<SyntaxError> syntaxErrors;
+    private CheckLevel level;
+    private String sourceCode;
+    private String example;
 
 
     private final StringBuilder result = new StringBuilder();
+
+    public List<SyntaxFeedback> generateFeedbacks(List<SyntaxError> syntaxErrors) {
+        List<SyntaxFeedback> result = new ArrayList<>();
+        syntaxErrors.forEach(syntaxError -> result.add(this.getFeedback(syntaxError)));
+        return result;
+    }
 
     public SyntaxFeedbackGenerator(String sourceCode, CheckLevel level) {
         this.level = level;
@@ -55,7 +68,11 @@ public class SyntaxFeedbackGenerator {
                 .append(FEEDBACK_CONS);
     }
 
-    public SyntaxFeedback getFeedback(SyntaxError syntaxError)  {
+
+
+
+
+    public SyntaxFeedback getFeedback(SyntaxError syntaxError) {
         example = "";
 
         StringBuilder header = new StringBuilder();
@@ -63,6 +80,11 @@ public class SyntaxFeedbackGenerator {
         header = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), header);
 
         //result = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), result);
+
+
+//        List<String> potentialFeedbacks = SyntaxFeedbackDao.data.get(syntaxError.getErrorCode());
+//        String helper = potentialFeedbacks.get(0);
+//        String formatter = potentialFeedbacks.get(0).toLowerCase(Locale.ROOT);
 
 
 
@@ -103,17 +125,14 @@ public class SyntaxFeedbackGenerator {
             }
             case "compiler.err.abstract.cant.be.instantiated": {
                 result.append("No object could be created from abstract classes")
-                .append(NEW_LINE)
-                .append("it is possible to create an object of a subclass of an abstract class");
-//                .append(NEW_LINE)
-//                .append("ClassAbstract className = new SubClassFromClassAbstract();");
+                        .append(NEW_LINE)
+                        .append("it is possible to create an object of a subclass of an abstract class");
                 break;
             }
             case "compiler.err.repeated.modifier": {
                 try {
                     result.append("Dont repeat modifiers");
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     LogManager.getLogger((Class<?>) getClass()).throwing(e);
                 }
             }
@@ -124,12 +143,12 @@ public class SyntaxFeedbackGenerator {
                         .append(NEW_LINE)
                         .append("you can also combine them but unfortunately not like what you have done")
                         .append(NEW_LINE);
-                        setExample("You can combine almost all modifiers with static, but you are not allowed to combine it public with itself or with private or protected");
+                setExample("You can combine almost all modifiers with static, but you are not allowed to combine it public with itself or with private or protected");
                 break;
             }
             case "compiler.err.illegal.start.of.expr": {
                 String kind = syntaxErrorPredictHelper.getErrorKind();
-                String feedbackForVar = "Visibility Modifiers must not be used within the method with local variables, as their method area defines their accessibility";
+                String feedbackForVar = "Access Modifiers must not be used within the method with local variables, as their method area defines their accessibility";
                 String feedbackForMethod = "A method cannot have another method within its scope";
                 String feedbackForStrLit = "String Character Without Double Quotes E.g";
                 setExample("String = \"a\";");
@@ -179,15 +198,14 @@ public class SyntaxFeedbackGenerator {
                         .append(NEW_LINE)
                         .append("1) Expression Statments: to change the values of a data field or to load methods or to create an object")
                         .append("2) Declaration Statment: to declare variables E.g.: int <varName>;");
-                        setExample("int <varName> = value1;" + " " + "<varName> = value2;");
+                setExample("int <varName> = value1;" + " " + "<varName> = value2;");
                 break;
             }
             case "compiler.err.unclosed.str.lit": {
-                // str x = "x;
                 result.append("If you want to define a character string with the Java language")
-                .append(NEW_LINE)
-                .append("it would be correct if you wrote within two quotation marks")
-                .append(NEW_LINE);
+                        .append(NEW_LINE)
+                        .append("it would be correct if you wrote within two quotation marks")
+                        .append(NEW_LINE);
                 setExample("like: String <var name> =\"value\" ");
                 break;
             }
@@ -199,35 +217,31 @@ public class SyntaxFeedbackGenerator {
             case "compiler.err.cant.resolve.location.args":
             case "compiler.err.cant.apply.symbol":
             case "compiler.err.generic.array.creation": {
-                try{
-                    result.append( syntaxError.getErrorMsg());
-                }
-                catch (Exception e){
+                try {
+                    result.append(syntaxError.getErrorMsg());
+                } catch (Exception e) {
                     LogManager.getLogger((Class<?>) getClass()).throwing(e);
                 }
                 break;
             }
             case "compiler.err.prob.found.req": {
                 if (syntaxError.getErrorMsg().equals("incompatible types: int cannot be converted to boolean")) {
-                    try{
+                    try {
                         result.append(syntaxError.getErrorMsg());
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         LogManager.getLogger((Class<?>) getClass()).throwing(e);
                     }
 
                 } else if (syntaxError.getErrorMsg().equals("incompatible types: possible lossy conversion from double to int")) {
-                    try{
-                        result.append( syntaxError.getErrorMsg());
-                    }
-                    catch (Exception e){
+                    try {
+                        result.append(syntaxError.getErrorMsg());
+                    } catch (Exception e) {
                         LogManager.getLogger((Class<?>) getClass()).throwing(e);
                     }
-                } else{
-                    try{
+                } else {
+                    try {
                         result.append(syntaxError.getErrorMsg());
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         LogManager.getLogger((Class<?>) getClass()).throwing(e);
                     }
                 }
@@ -239,24 +253,21 @@ public class SyntaxFeedbackGenerator {
                 break;
             }
             case "compiler.err.missing.ret.stmt": {
-                //non-void method without return.
                 result.append("Every method whose return type is not void needs a \"return\" at the end.");
                 break;
             }
             case "compiler.err.unreachable.stmt": {
-                //stmt after return
                 result.append("Return always closes a method, so you cannot pass statements after a return");
                 break;
             }
             case "compiler.err.missing.meth.body.or.decl.abstract": {
-                //put a ; just before the first {
                 result.append("The declaration of a method consists of 2 steps:")
                         .append(NEW_LINE)
                         .append("Method header: <return type> methodName ()")
                         .append(NEW_LINE)
                         .append("Method body: {code block and a return if necessary}");
-                if(!level.equals(CheckLevel.BEGINNER)){
-                    result .append(NEW_LINE)
+                if (!level.equals(CheckLevel.BEGINNER)) {
+                    result.append(NEW_LINE)
                             .append("In the abstract class you can declare a method head without a method body but with the keyword \"abstract\"");
                 }
 
@@ -267,7 +278,7 @@ public class SyntaxFeedbackGenerator {
                 result.append(syntaxError.getErrorMsg()).append(LINE_NUMBER_CONS).append(syntaxError.getLine());
         }
         result.append(NEW_LINE);
-        return new SyntaxFeedback(header.toString() , result.toString() , example);
+        return new SyntaxFeedback(result.toString(), syntaxError.getErrorCode(), "", null, null);
     }
 
 
@@ -285,7 +296,7 @@ public class SyntaxFeedbackGenerator {
                         result
                                 .append("Every java statement must end with a Semicolon. ")
                                 .append(NEW_LINE);
-                                setExample(" for example :int oddNumber = 7;");
+                        setExample(" for example :int oddNumber = 7;");
                     }
                 }
                 break;
@@ -293,10 +304,9 @@ public class SyntaxFeedbackGenerator {
             case "= expected":
             case "'.class' expected":
             case "'[' expected":
-                try{
+                try {
                     result.append(syntaxError.getErrorMsg());
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     LogManager.getLogger((Class<?>) getClass()).throwing(e);
                 }
                 break;
@@ -321,16 +331,5 @@ public class SyntaxFeedbackGenerator {
         }
     }
 
-    public String getSourceCode() {
-        return sourceCode;
-    }
-
-    public String getExample() {
-        return example;
-    }
-
-    public void setExample(String example) {
-        this.example = example;
-    }
 }
 

@@ -1,20 +1,21 @@
 package eu.qped.java.checkers.semantics;
 
 
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.DoStmt;
-import com.github.javaparser.ast.stmt.ForEachStmt;
-import com.github.javaparser.ast.stmt.ForStmt;
-import com.github.javaparser.ast.stmt.IfStmt;
-import com.github.javaparser.ast.stmt.Statement;
-import com.github.javaparser.ast.stmt.WhileStmt;
-import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
-
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class StatementsVisitorHelper {
     private int whileCounter = 0;
     private int forEachCounter = 0;
@@ -31,35 +32,13 @@ public class StatementsVisitorHelper {
 
     }
 
-    public StatementsVisitorHelper(BlockStmt methodBody) {
+    private StatementsVisitorHelper(BlockStmt methodBody) {
         this.methodBody = methodBody;
         execute();
     }
 
-
-
-    public String getSource() {
-        return source;
-    }
-
-    public int getIfElseCounter() {
-        return ifElseCounter;
-    }
-
-    public int getWhileCounter() {
-        return whileCounter;
-    }
-
-    public int getForEachCounter() {
-        return forEachCounter;
-    }
-
-    public int getForCounter() {
-        return forCounter;
-    }
-
-    public int getDoCounter() {
-        return doCounter;
+    public static StatementsVisitorHelper createStatementsVisitorHelper(BlockStmt methodBody) {
+        return new StatementsVisitorHelper(methodBody);
     }
 
     static class State {

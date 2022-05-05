@@ -15,7 +15,7 @@ import eu.qped.java.checkers.mass.QFSemSettings;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
-import eu.qped.java.checkers.syntax.SyntaxErrorChecker;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 
 class MassSemanticsTest {
 
@@ -65,9 +65,10 @@ class MassSemanticsTest {
 				+ "System.out.println(\"pretty\");\n"
 				+ "}";
 
-		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
+		SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
 
-		MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxErrorChecker,
+
+		MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker,
 				mainSettingsConfiguratorConf);
 
 		massE.execute();
