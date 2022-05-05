@@ -30,6 +30,7 @@ public class DesignFeedbackGenerator {
         feedbackMap.put(DesignViolation.MISSING_ABSTRACT_CLASS_IMPLEMENTATION, "Abstract Class has not been extended");
         feedbackMap.put(DesignViolation.MISSING_CLASS_IMPLEMENTATION, "Class has not been extended");
         feedbackMap.put(DesignViolation.WRONG_CLASS_TYPE, "Wrong Class Type has been used.");
+        feedbackMap.put(DesignViolation.WRONG_INHERITED_CLASS_TYPE, "Wrong Class Type has been inherited.");
         feedbackMap.put(DesignViolation.WRONG_CLASS_NAME, "Wrong Class Name has been used.");
     }
 
@@ -37,8 +38,8 @@ public class DesignFeedbackGenerator {
         return feedbackMap.get(violationType);
     }
 
-    public DesignFeedback generateFeedback(String violationType, String identifier) {
-        return new DesignFeedback(violationType, identifier, getFeedbackBody(violationType));
+    public DesignFeedback generateFeedback(String className, String elementName, String violationType) {
+        return new DesignFeedback(className, elementName, violationType, getFeedbackBody(violationType));
     }
 
 }

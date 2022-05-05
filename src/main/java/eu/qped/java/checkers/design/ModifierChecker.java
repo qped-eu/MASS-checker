@@ -3,6 +3,7 @@ package eu.qped.java.checkers.design;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
@@ -19,6 +20,7 @@ public class ModifierChecker<T extends Node> {
     private final DesignChecker designChecker;
     private final List<String> possibleAccessModifiers;
     private final String fieldOrMethod;
+    private String currentClassName;
 
 
     public ModifierChecker(CompilationUnit compilationUnit, DesignChecker designChecker, String fieldOrMethod) {
@@ -26,6 +28,13 @@ public class ModifierChecker<T extends Node> {
         this.designChecker = designChecker;
         this.fieldOrMethod = fieldOrMethod;
         possibleAccessModifiers = createPossibleAccessModifiersList();
+        getCurrentClassName();
+    }
+
+    //TODO: Inner Classes
+    private void getCurrentClassName() {
+        List<ClassOrInterfaceDeclaration> classDecls = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
+        this.currentClassName = classDecls.get(0).getNameAsString();
     }
 
     /**
@@ -37,9 +46,9 @@ public class ModifierChecker<T extends Node> {
 
         if(!allElements.containsAll(privateElements) || !privateElements.containsAll(allElements)) {
             if(fieldOrMethod.equals("field")) {
-                designChecker.addFeedback(DesignViolation.FIELDS_NOT_RESTRICTIVE_ENOUGH,"");
+                designChecker.addFeedback(currentClassName, "", DesignViolation.FIELDS_NOT_RESTRICTIVE_ENOUGH);
             } else {
-                designChecker.addFeedback(DesignViolation.METHODS_NOT_RESTRICTIVE_ENOUGH, "");
+                designChecker.addFeedback(currentClassName, "", DesignViolation.METHODS_NOT_RESTRICTIVE_ENOUGH);
             }
         }
     }
@@ -152,7 +161,7 @@ public class ModifierChecker<T extends Node> {
                 String accessModifier = accessIterator.next();
                 if(element.getAccessSpecifier().asString().equals(accessModifier)) {
                     //if we are here, there must have been an error the expectedNonAccessModifiers
-                    designChecker.addFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, elementName);
+                    designChecker.addFeedback(currentClassName, elementName, DesignViolation.WRONG_NON_ACCESS_MODIFIER);
 
                     expectedNonAccessModifiers.remove(idx);
                     accessIterator.remove();
@@ -164,7 +173,7 @@ public class ModifierChecker<T extends Node> {
             }
 
             if(!oneMatchFound) {
-                designChecker.addFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, elementName);
+                designChecker.addFeedback(currentClassName, elementName, DesignViolation.WRONG_ACCESS_MODIFIER);
             }
 
             elemIterator.remove();
@@ -179,9 +188,9 @@ public class ModifierChecker<T extends Node> {
         List<NodeWithModifiers<T>> presentElements = getAllFieldsOrMethods();
         if(expectedKeywords.size() > presentElements.size()) {
             if(fieldOrMethod.equals("field")) {
-                designChecker.addFeedback(DesignViolation.MISSING_FIELDS, "");
+                designChecker.addFeedback(currentClassName, "", DesignViolation.MISSING_FIELDS);
             } else {
-                designChecker.addFeedback(DesignViolation.MISSING_METHODS, "");
+                designChecker.addFeedback(currentClassName, "", DesignViolation.MISSING_METHODS);
             }
         }
     }

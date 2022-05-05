@@ -27,7 +27,7 @@ public class DesignFieldTest {
     @Test
     public void maxRestrictedTest() {
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
 
         classInfos.add(classInfo);
         qfDesignSettings.setClassInfos(classInfos);
@@ -48,7 +48,7 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.FIELDS_NOT_RESTRICTIVE_ENOUGH, "");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "", DesignViolation.FIELDS_NOT_RESTRICTIVE_ENOUGH);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -61,7 +61,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -92,7 +92,7 @@ public class DesignFieldTest {
         fieldModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -122,7 +122,7 @@ public class DesignFieldTest {
         fieldModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -142,7 +142,7 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "name");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name", DesignViolation.WRONG_ACCESS_MODIFIER);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -159,7 +159,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public final");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -180,7 +180,7 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, "year");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "year", DesignViolation.WRONG_NON_ACCESS_MODIFIER);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -195,7 +195,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -215,7 +215,7 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.MISSING_FIELDS, "");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "", DesignViolation.MISSING_FIELDS);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -230,7 +230,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -251,8 +251,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "name1");
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "name2");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name1", DesignViolation.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "name2", DesignViolation.WRONG_ACCESS_MODIFIER);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -271,7 +271,7 @@ public class DesignFieldTest {
         fieldModifiers.add("public static final");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -293,9 +293,9 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, "name1");
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, "name2");
-        DesignFeedback fb3 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, "name3");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name1", DesignViolation.WRONG_NON_ACCESS_MODIFIER);
+        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "name2", DesignViolation.WRONG_NON_ACCESS_MODIFIER);
+        DesignFeedback fb3 = designFeedbackGenerator.generateFeedback("TestClass", "name3", DesignViolation.WRONG_NON_ACCESS_MODIFIER);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -312,7 +312,7 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -343,7 +343,7 @@ public class DesignFieldTest {
         fieldModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -364,8 +364,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "name");
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "year");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name", DesignViolation.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "year", DesignViolation.WRONG_ACCESS_MODIFIER);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);

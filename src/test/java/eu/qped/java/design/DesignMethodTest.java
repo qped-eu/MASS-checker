@@ -27,7 +27,7 @@ public class DesignMethodTest {
     @Test
     public void maxRestrictedTest() {
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
 
         classInfos.add(classInfo);
         qfDesignSettings.setClassInfos(classInfos);
@@ -52,7 +52,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.METHODS_NOT_RESTRICTIVE_ENOUGH, "");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass",
+                "", DesignViolation.METHODS_NOT_RESTRICTIVE_ENOUGH);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -65,7 +66,7 @@ public class DesignMethodTest {
         methodModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -100,7 +101,7 @@ public class DesignMethodTest {
         methodModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -122,7 +123,7 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.MISSING_METHODS, "");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "", DesignViolation.MISSING_METHODS);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -138,7 +139,7 @@ public class DesignMethodTest {
         methodModifiers.add("public static");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -164,8 +165,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, "add");
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, "subtract");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "add", DesignViolation.WRONG_NON_ACCESS_MODIFIER);
+        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "subtract", DesignViolation.WRONG_NON_ACCESS_MODIFIER);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -180,7 +181,7 @@ public class DesignMethodTest {
         ArrayList<String> methodModifiers = new ArrayList<>();
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -215,7 +216,7 @@ public class DesignMethodTest {
         methodModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -240,8 +241,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "add");
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "subtract");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "add", DesignViolation.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "subtract", DesignViolation.WRONG_ACCESS_MODIFIER);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -256,7 +257,7 @@ public class DesignMethodTest {
         methodModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -291,7 +292,7 @@ public class DesignMethodTest {
         methodModifiers.add("private");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -316,7 +317,7 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_ACCESS_MODIFIER, "subtract");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "subtract", DesignViolation.WRONG_ACCESS_MODIFIER);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -330,7 +331,7 @@ public class DesignMethodTest {
         methodModifiers.add("public");
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("Class:TestClass");
+        classInfo.setClassTypeName("class:TestClass");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);
@@ -355,7 +356,7 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_NON_ACCESS_MODIFIER, "subtract");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "subtract", DesignViolation.WRONG_NON_ACCESS_MODIFIER);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);

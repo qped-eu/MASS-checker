@@ -2,7 +2,6 @@ package eu.qped.java.checkers.design;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import eu.qped.framework.Checker;
@@ -13,7 +12,11 @@ import java.util.*;
 public class DesignChecker implements Checker {
 
     private final List<CompilationUnit> compilationUnits;
+
+    //TODO: Instead of Compilation Unit, this should be a Class Declaration
     private final Map<CompilationUnit, ClassInfo> compUnitToClassInfoMap;
+
+
     private DesignConfigurator designConfigurator;
     private List<DesignFeedback> designFeedbacks;
     private final DesignFeedbackGenerator designFeedbackGenerator;
@@ -39,12 +42,10 @@ public class DesignChecker implements Checker {
      * and classes from source
      */
     private void checkDesign() {
-        //TODO: Figure out what each class is and how they are in relation to each other
         //Check class type match and inheritance match
-        ClassChecker classChecker = new ClassChecker(new ArrayList<>(compilationUnits),
-                new ArrayList<>(designConfigurator.getClassInfos()),
-                this);
+        ClassChecker classChecker = new ClassChecker(this);
 
+        classChecker.matchCompUnitAndClassInfo(new ArrayList<>(compilationUnits), new ArrayList<>(designConfigurator.getClassInfos()));
         classChecker.checkClassDeclaration();
 
         for(Map.Entry<CompilationUnit, ClassInfo> entry :compUnitToClassInfoMap.entrySet()) {
@@ -85,11 +86,11 @@ public class DesignChecker implements Checker {
 
     /**
      * Adds generated Feedback to the complete list
-     * @param name identifies the violating element of the class
+     * @param elementName identifies the violating element of the class
      * @param violationType violation identifier for the map in designFeedbackGenerator
      */
-    public void addFeedback(String violationType, String name) {
-        DesignFeedback designFeedback = designFeedbackGenerator.generateFeedback(violationType, name);
+    public void addFeedback(String className, String elementName, String violationType) {
+        DesignFeedback designFeedback = designFeedbackGenerator.generateFeedback(className, elementName, violationType);
         designFeedbacks.add(designFeedback);
     }
 

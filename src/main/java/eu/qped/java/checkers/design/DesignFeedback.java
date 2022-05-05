@@ -4,25 +4,20 @@ import eu.qped.framework.Feedback;
 
 public class DesignFeedback extends Feedback {
 
-    private String name;
+    private String className;
+    private String elementName;
     private String violationType;
 
-    public DesignFeedback(String violationType, String name, String body) {
+
+    public DesignFeedback(String className, String elementName, String violationType,  String body) {
         super(body);
-        this.name = name;
-        this.violationType = violationType;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        setClassName(className);
+        setElementName(elementName);
+        setViolationType(violationType);
     }
 
     public String toString() {
-        return violationType+":"+name+":"+super.getBody();
+        return className+":"+elementName+":"+violationType+":"+super.getBody();
     }
 
     public boolean equals(Object obj) {
@@ -40,5 +35,27 @@ public class DesignFeedback extends Feedback {
         return isEqual;
     }
 
+    public String getElementName() {
+        return elementName;
+    }
 
+    public void setElementName(String elementName) {
+        this.elementName = elementName;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getViolationType() {
+        return violationType;
+    }
+
+    public void setViolationType(String violationType) {
+        this.violationType = violationType;
+    }
 }

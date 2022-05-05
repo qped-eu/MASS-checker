@@ -19,5 +19,6 @@ public class DesignViolation {
     public final static String MISSING_ABSTRACT_CLASS_IMPLEMENTATION = "MISSING_ABSTRACT_CLASS_IMPLEMENTATION";
     public final static String MISSING_CLASS_IMPLEMENTATION = "MISSING_CLASS_IMPLEMENTATION";
     public final static String WRONG_CLASS_TYPE = "WRONG_CLASS_TYPE";
+    public final static String WRONG_INHERITED_CLASS_TYPE = "WRONG_INHERITED_CLASS_TYPE";
     public final static String WRONG_CLASS_NAME = "WRONG_CLASS_NAME";
 }
