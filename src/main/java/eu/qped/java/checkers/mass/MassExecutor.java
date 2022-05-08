@@ -1,9 +1,7 @@
 package eu.qped.java.checkers.mass;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
@@ -14,7 +12,8 @@ import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.style.StyleViolation;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.SyntaxFeedback;
+import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback;
+import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedbackGenerator;
 
 /**
  * Executor class, execute all components of the System to analyze the code
@@ -89,10 +88,11 @@ public class MassExecutor {
             }
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
-            syntaxFeedbacks = syntaxChecker.getFeedbacks();
+            SyntaxFeedbackGenerator feedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+            syntaxErrors = syntaxChecker.getSyntaxErrors();
+            syntaxFeedbacks = feedbackGenerator.generateFeedbacks(syntaxErrors);
 
             //auto checker
-            syntaxErrors = syntaxChecker.getSyntaxErrors();
         }
 
         // translate Feedback body if needed
@@ -129,6 +129,7 @@ public class MassExecutor {
             }
         }
     }
+
 
     public List<StyleFeedback> getStyleFeedbacks() {
         return styleFeedbacks;
