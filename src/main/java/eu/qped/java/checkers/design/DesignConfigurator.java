@@ -10,13 +10,10 @@ import java.util.ArrayList;
  */
 public class DesignConfigurator {
 
-    private final QFDesignSettings qfDesignSettings;
     private ArrayList<ClassInfo> classInfos;
     private boolean modifierMaxRestrictive;
 
-
     public DesignConfigurator(QFDesignSettings qfDesignSettings) {
-        this.qfDesignSettings = qfDesignSettings;
         setDefaultValues();
         if(qfDesignSettings != null) {
             setClassInfos(qfDesignSettings.getClassInfos());

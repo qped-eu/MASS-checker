@@ -1,102 +1,41 @@
 package eu.qped.java.checkers.design;
-
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ClassChecker {
 
-    private final CompilationUnit compilationUnit;
     private final DesignChecker designChecker;
 
-    public ClassChecker(CompilationUnit compilationUnit, DesignChecker designChecker) {
-        this.compilationUnit = compilationUnit;
+    public ClassChecker(DesignChecker designChecker) {
         this.designChecker = designChecker;
     }
 
     /**
-     * Check if the class given has the expected type and if it implements the expected super classes
-     * @param expectedClassTypeName expected classType and className in the format ClassType:ClassName
-     * @param expectedInheritsFrom  expected super classes in the format ClassType:ClassName, if it exists
+     * Go through all matched up classes and check if their super classes match up with the expected super classes
      */
-    public void checkClassDeclaration(String expectedClassTypeName, ArrayList<String> expectedInheritsFrom) {
+    public void checkSuperClassDeclaration(ClassOrInterfaceDeclaration classDecl, ClassInfo classInfo) {
         //TODO: Generic Types?
+        String expectedClassTypeName = classInfo.getClassTypeName();
 
         if(expectedClassTypeName.isBlank()) {
             return;
         }
 
-        List<ClassOrInterfaceDeclaration> classDeclarations = compilationUnit.findAll(ClassOrInterfaceDeclaration.class);
-
-        String[] splitExpectedClassTypeName = expectedClassTypeName.split(":");
-        String expectedClassType = splitExpectedClassTypeName[0];
-        String expectedClassName = splitExpectedClassTypeName[1];
-
-        for (ClassOrInterfaceDeclaration classDecl: classDeclarations) {
-
-            //Does the expected class type fit the actual class type?
-            checkClassTypeMatch(expectedClassType, classDecl);
-            //Does the expected class name fit the actual class name?
-            checkClassNameMatch(expectedClassName, classDecl);
-            //Does the expected super class match the actual super class?
-            checkSuperClassMatch(expectedInheritsFrom, classDecl);
-
-        }
-    }
-
-    /**
-     * Checks if the expected class type matches up with the actual class type
-     * @param expectedClassType expected class type
-     * @param classDecl class declaration to check the class type from
-     */
-    private void checkClassTypeMatch(String expectedClassType, ClassOrInterfaceDeclaration classDecl) {
-        switch (expectedClassType) {
-            case "Interface":
-                if(!classDecl.isInterface()) {
-                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, classDecl.getNameAsString());
-                }
-                break;
-            case "Class":
-                if(classDecl.isInterface() || classDecl.isAbstract()) {
-                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, classDecl.getNameAsString());
-                }
-                break;
-            case "AbstractClass":
-                if(!classDecl.isAbstract()) {
-                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, classDecl.getNameAsString());
-                }
-                break;
-            case "InnerClass":
-                if(!classDecl.isInnerClass()) {
-                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, classDecl.getNameAsString());
-                }
-        }
-    }
-
-
-    /**
-     * Checks if the expected class name matches up with the actual class name
-     * @param expectedClassName expected class name
-     * @param classDecl class declaration to check name from
-     */
-    private void checkClassNameMatch(String expectedClassName, ClassOrInterfaceDeclaration classDecl) {
-        //Check if the class has the expected name
-        if(!expectedClassName.equals(classDecl.getNameAsString())) {
-            //TODO
-        }
+        //Does the expected super class match the actual super class?
+        String currentClassName = classDecl.getNameAsString();
+        checkSuperClassMatch(currentClassName, classInfo.getInheritsFrom(), classDecl);
     }
 
 
     /**
      * Checks if the expected inherited class is also the actual inherited class with matching type
+     * @param currentClassName name of the currently looked at class
      * @param expectedInheritsFrom expected inherited class
      * @param classDecl class declaration to match with expectedInheritsFrom
      */
-    private void checkSuperClassMatch(List<String> expectedInheritsFrom, ClassOrInterfaceDeclaration classDecl) {
+    private void checkSuperClassMatch(String currentClassName, List<String> expectedInheritsFrom, ClassOrInterfaceDeclaration classDecl) {
         if(expectedInheritsFrom.isEmpty()) {
             return;
         }
@@ -113,7 +52,7 @@ public class ClassChecker {
             boolean matchFound = checkMatchInterfaceOrClass(extendedClasses, implementedInterfaces, expectedInheritedType, expectedInheritedName);
 
             if (!matchFound) {
-                findViolation(extendedClasses, implementedInterfaces, expectedInheritedType, expectedInheritedName);
+                findViolation(currentClassName, extendedClasses, implementedInterfaces, expectedInheritedType, expectedInheritedName);
             }
         }
     }
@@ -129,10 +68,10 @@ public class ClassChecker {
     private boolean checkMatchInterfaceOrClass(List<ClassOrInterfaceType> extendedClasses, List<ClassOrInterfaceType> implementedInterfaces,
                                                String expectedInheritedType, String expectedInheritedName) {
         switch(expectedInheritedType) {
-            case "Interface":
+            case DesignChecker.INTERFACE_TYPE:
                 return inheritedNameMatches(implementedInterfaces, expectedInheritedName);
-            case "AbstractClass":
-            case "Class":
+            case DesignChecker.ABSTRACT_CLASS_TYPE:
+            case DesignChecker.DEFAULT_CLASS_TYPE:
                 return inheritedNameMatches(extendedClasses, expectedInheritedName);
         }
         return false;
@@ -173,40 +112,40 @@ public class ClassChecker {
 
     /**
      * Couldn't find a match for this expectedInheritedType, so we generate feedback based on what is missing
+     * @param currentClassName name of the currently looked at class
      * @param expectedInheritedType expected Class Type of the inherited class
      * @param expectedInheritedName expected class name of the inherited class
      */
-    private void findViolation(List<ClassOrInterfaceType> extendedClasses, List<ClassOrInterfaceType> implementedInterfaces,
-            String expectedInheritedType, String expectedInheritedName) {
+    private void findViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses, List<ClassOrInterfaceType> implementedInterfaces,
+                               String expectedInheritedType, String expectedInheritedName) {
 
         //Since we know that there has to be a type mismatch here (otherwise they would have been removed above)
         //we only check the other implemented / extended classes to find a fault
         //If we can't find that, we can conclude that its simply missing from the declaration
         switch (expectedInheritedType) {
-            case "Interface":
+            case DesignChecker.INTERFACE_TYPE:
+                //TODO: Should be actual Inherited Name and not actual
                 if(findExpectedDiffClassType(extendedClasses, expectedInheritedName)) {
-                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, expectedInheritedName);
+                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
                 } else {
-                    designChecker.addFeedback(DesignViolation.MISSING_INTERFACE_IMPLEMENTATION, expectedInheritedName);
+                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
                 }
                 break;
-            case "AbstractClass":
+            case DesignChecker.ABSTRACT_CLASS_TYPE:
                 if(findExpectedDiffClassType(implementedInterfaces, expectedInheritedName)) {
-                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, expectedInheritedName);
+                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
                 } else {
-                    designChecker.addFeedback(DesignViolation.MISSING_ABSTRACT_CLASS_IMPLEMENTATION, expectedInheritedName);
+                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
                 }
 
                 break;
-            case "Class":
+            case DesignChecker.DEFAULT_CLASS_TYPE:
                 if(findExpectedDiffClassType(implementedInterfaces, expectedInheritedName)) {
-                    designChecker.addFeedback(DesignViolation.WRONG_CLASS_TYPE, expectedInheritedName);
+                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
                 } else {
-                    designChecker.addFeedback(DesignViolation.MISSING_CLASS_IMPLEMENTATION, expectedInheritedName);
+                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
                 }
                 break;
         }
     }
-
-
 }
