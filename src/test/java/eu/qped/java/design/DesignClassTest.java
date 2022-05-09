@@ -88,11 +88,11 @@ public class DesignClassTest {
         }
 
 
-//        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_CLASS_TYPE, "Number");
-//        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_INHERITED_CLASS_TYPE, "Number");
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("Number", "", DesignViolation.WRONG_CLASS_TYPE);
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("Number2", "", DesignViolation.WRONG_CLASS_NAME);
-        //DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignViolation.WRONG_INHERITED_CLASS_TYPE, "Number");
+//        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignFeedbackGenerator.WRONG_CLASS_TYPE, "Number");
+//        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE, "Number");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("Number", "", DesignFeedbackGenerator.WRONG_CLASS_TYPE);
+        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("Number2", "", DesignFeedbackGenerator.WRONG_CLASS_NAME);
+        //DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE, "Number");
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -215,7 +215,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "", DesignViolation.WRONG_CLASS_TYPE);
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.WRONG_CLASS_TYPE);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -251,7 +251,7 @@ public class DesignClassTest {
         }
 
         DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass",
-                "Number", DesignViolation.MISSING_INTERFACE_IMPLEMENTATION);
+                "Number", DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -285,7 +285,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "Number", DesignViolation.WRONG_INHERITED_CLASS_TYPE);
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "Number", DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
