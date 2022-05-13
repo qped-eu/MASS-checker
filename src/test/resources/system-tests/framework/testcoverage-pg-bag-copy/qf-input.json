@@ -1,20 +1,7 @@
 {
    "answer":"package adt.test;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertFalse;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\nimport static org.junit.jupiter.api.Assertions.assertArrayEquals;\n\nimport org.junit.jupiter.api.Test;\n\nimport adt.Bag;\n\npublic class BagTest {\n \n @Test\n\tvoid testCreat() {\n\t\tBag bag = new Bag();\n\t\tassertEquals(0, bag.length(), \"A new bag in instantiated, with length = 0\");\n\t}\n\n}",
    "feedback":[
-      "Test too weak\n\nAdd method: You have not tested the add method with an empty bag.\n\n---",
-      "Test too weak\n\nAdd method: You have not tested the add method with a non empty bag.\n\n---",
-      "Test too weak\n\nRemove method: You have not tested the requirement `length > 0' and a bag containing elem (happy-path scenario).\n\n---",
-      "Test too weak\n\nRemove method: You have not tested the requirement `length = 0' of the non-happy-path.\n\n---",
-      "Test too weak\n\nRemove method: You have not tested the requirement `the bag does not contain element elem' of the non-happy path.\n\n---",
-      "Test too weak\n\nEquals method: You have not tested the equals method with an empty bag as this.\n\n---",
-      "Test too weak\n\nEquals method: You have not tested the equals method with an empty bag as parameter.\n\n---",
-      "Test too weak\n\nEquals method: You have not tested the equals method with an non-empty bag as this.\n\n---",
-      "Test too weak\n\nEquals method: You have not tested the equals method with an non-empty bag as parameter.\n\n---",
-      "Test too weak\n\nEquals method: You have not tested the equals method with two bags of equal length.\n\n---",
-      "Test too weak\n\nEquals method: You have not tested the equals method with two bags of unequal length.\n\n---",
-      "Test too weak\n\nMethod cardinality: You have not tested with an empty bag.\n\n---",
-      "Test too weak\n\nMethod cardinality: You have not tested with non-empty bag and cardinality zero.\n\n---",
-      "Test too weak\n\nMethod cardinality: You have not tested with non-empty bag and cardinality > zero.\n\n---"
+      "Equals method: You have not tested the equals method with an empty bag as parameter."
    ],
    "answers":[
       "package adt.test;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertFalse;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\nimport static org.junit.jupiter.api.Assertions.assertArrayEquals;\n\nimport org.junit.jupiter.api.Test;\n\nimport adt.Bag;\n\npublic class BagTest {\n \n @Test\n\tvoid testCreat() {\n\t\tBag bag = new Bag();\n\t\tassertEquals(0, bag.length(), \"A new bag in instantiated, with length = 0\");\n\t}\n\n}"

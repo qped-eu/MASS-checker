@@ -8,7 +8,7 @@ import eu.qped.java.checkers.coverage.framework.coverage.Coverage;
 import eu.qped.java.checkers.coverage.framework.coverage.CoverageClass;
 
 import java.util.*;
-
+import java.util.stream.Collectors;
 
 
 /**
@@ -21,6 +21,7 @@ public class ByMethod implements Comparable<ByMethod> {
     final LinkedList<StmtFB> statementsFB = new LinkedList<>();
     AstMethod content;
     Coverage coverage;
+    String contentString;
 
     ByMethod(Node node) {
         insert(node);
@@ -29,7 +30,6 @@ public class ByMethod implements Comparable<ByMethod> {
     void insert(Node node) {
         node.insert(this);
     }
-
 
 
     public int start() {
@@ -93,8 +93,36 @@ public class ByMethod implements Comparable<ByMethod> {
                 continue SKIP;
             }
         }
+
         statementsFB.clear();
         statementsFB.addAll(flatt);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("<pre>");
+
+        int i = content.start();
+        for (String line : Arrays
+                .stream(content.content().split("\n"))
+                .collect(Collectors.toList())) {
+            String head = "";
+            System.out.println(line);
+            switch (aClass.byIndex(i ++)) {
+                case FULL:
+                    head = "<fb style='background-color:green'>";
+                    break;
+                case NOT:
+                    head = "<fb style='background-color:red'>";
+                    break;
+                case PARTLY:
+                    head = "<fb style='background-color:orange'>";
+                    break;
+                default:
+                    head = "<fb style='background-color:lightGrey'>";
+                    break;
+            }
+            builder.append(head).append(line).append("</fb><br>");
+        }
+        contentString =  builder.append("</pre>").toString();
     }
 
     public CoverageCount branch() {
@@ -105,11 +133,13 @@ public class ByMethod implements Comparable<ByMethod> {
         return coverage.line();
     }
 
+    public String content() {
+        return contentString;
+    }
 
     @Override
     public int compareTo(ByMethod byMethod) {
         return start() - byMethod.start();
     }
-
 
 }

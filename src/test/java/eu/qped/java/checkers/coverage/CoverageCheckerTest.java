@@ -168,7 +168,7 @@ class CoverageCheckerTest {
         QfUser user = new QfUser();
         user.setLanguage("en");
         genericTest(
-                Arrays.asList(),
+                Arrays.asList("Equals method: You have not tested the equals method with an empty bag as parameter."),
                 List.of("case_all_stmt"),
                 List.of("adt.Bag"),
                 setting,
@@ -182,13 +182,15 @@ class CoverageCheckerTest {
         QfUser user = new QfUser();
         user.setLanguage("en");
         genericTest(
-                Arrays.asList("In class <b>Bag</b. the method <b>equals</b> in line <b>76</b> is never used."),
+                Arrays.asList(
+                        "In class <b>Bag</b> at the method <b>equals</b> the if statement in line <b>81</b> is always wrong.",
+                        "In class <b>Bag</b> at the method <b>equals</b> the if statement in line <b>101</b> is always wrong."
+                ),
                 List.of("case_all_stmt"),
                 List.of("adt.Bag"),
                 setting,
                 user);
     }
-
 
 
     private void genericTest(List<String> wantFB, List<String> testClasses, List<String> classes, QfCovSetting setting, QfUser user) {
@@ -211,7 +213,5 @@ class CoverageCheckerTest {
             assertEquals(w, g.getBody());
         }
     }
-
-
 
 }
