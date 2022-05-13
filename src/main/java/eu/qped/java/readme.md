@@ -78,6 +78,112 @@ Object:
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
 
+
+### Coverage Checker WIP
+
+Feedback Types:
+
+- TEST - Default feedback for failed test.
+- COVERAGE - Default feedback for not covered statements,
+- CUSTOM - Your feedback for a failed test or a not covered statement.
+
+
+Encoding feedback:
+
+- " : TEST or COVERAGE" - Defines this type as default for all classes.
+- "classname : TEST or COVERAGE" - Defines this type as default for an explicit class.
+- "classname : TEST, COVERAGE or CUSTOM : method name or line index : feedback not empty" - Defines a custom feedback for an explicit class and identifier.
+
+The framework velocity is used to format the created feedback.
+The property summary can be used in a vm template.
+Following classes can be accessed be the summary property.
+The summary has only diract access to the FormatterFacade class.
+
+FormatterFacade Method:
+
+- List<Feedback> feedbacks()
+- List<TestFB> testFeedback()
+- List<StmtFB> stmtFeedback()
+- List<ByClass> byClass()
+
+ByClass Method:
+
+- List<ByMethod> byMethods()
+- CoverageCount branch()
+- CoverageCount line()
+- StateOfCoverage state()
+- String name()
+
+ByMethod Method:
+
+- List<StmtFB> statementsFB()
+- StateOfCoverage state()
+- CoverageCount branch()
+- CoverageCount line()
+- String name()
+- String content()
+- int start()
+- int end()
+
+
+TestFB Method:
+
+- String getBody()
+- String className()
+- String methodName()
+- String got()
+- String want()
+
+StmtFB Method:
+
+- String getBody()
+- String className()
+- String methodName()
+- int start()
+- int end()
+- StatementType type()
+
+
+Object:
+
+| Option Name                      | Possible Values                                                                                                            | 
+|----------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| qf.qfCovSetting.feedback         | Array< String >:<br> classname : TEST, COVERGA <br> classname : TEST, COVERGA, CUSTOM : line index, method name : feedback |
+| qf.qfCovSetting.excludeByTypeSet | Array< String >: GET, SET, PRIVATE, PROTECTED                                                                              |
+| qf.qfCovSetting.excludeByNameSet | Array< String >: class or method name                                                                                      |
+| qf.qfCovSetting.format           | String: content of a vm file  or empty                                                                                     |
+| qf.additional                    | Zip file with additional resources                                                                                         |                                                                                                                                             |
+
+```
+qf.checkerClass="eu.qped.umr...CoverageChecker";
+qf.file = {
+    "id: "",
+	"label":"",
+	"extension: "",
+	"path":"",
+	"mimetype":"",
+	"url":""
+};
+qf.additional = {
+    "id: "",
+	"label":"",
+	"extension: "",
+	"path":"",
+	"mimetype":"",
+	"url":""
+};
+qf.covSetting = {
+   "excludeByTypeSet" : ["SET", "GET", "PRIVATE"],
+   "excludeBYNameSet" : [],
+   "format" :  #foreach($r in $summary.stmtFeedback())
+               <p>Branch $r.type() failed at index $r.start()</p>
+               #end",
+   "feedback" : [":test", "Checker:COVERAGE"] 
+};
+
+```
+
+
 ### Example Configuration with Quarterfall
 ```
 qf.checkerClass="eu.qped.umr.Mass";
