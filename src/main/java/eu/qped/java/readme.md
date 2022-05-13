@@ -80,6 +80,21 @@ Object:
 
 
 ### Coverage Checker WIP
+Coverage Checker maps not coverage constructor, methods and branching statements like
+    
+Statement:
+    - if 
+    - else if
+    - else
+    - for 
+    - foreach
+    - while 
+    - case
+    - default
+
+to a default or custom feedback. Additional there is also the possibility to generate feedback for failed *JUNIT5* test.
+
+
 
 Feedback Types:
 
@@ -92,23 +107,28 @@ Encoding feedback:
 
 - " : TEST or COVERAGE" - Defines this type as default for all classes.
 - "classname : TEST or COVERAGE" - Defines this type as default for an explicit class.
-- "classname : TEST, COVERAGE or CUSTOM : method name or line index : feedback not empty" - Defines a custom feedback for an explicit class and identifier.
+- "classname : TEST, COVERAGE or CUSTOM : method name or line index : feedback" - Defines a custom feedback for an explicit class and identifier.
 
 The framework velocity is used to format the created feedback.
-The property summary can be used in a vm template.
+If no formatting template is provided only the feedback body will be generated.
+The property summary can be used in a vm template to format and enrich your feedback
+white additional information.
 Following classes can be accessed be the summary property.
 The summary has only diract access to the FormatterFacade class.
 
+
 FormatterFacade Method:
 
-- List<Feedback> feedbacks()
-- List<TestFB> testFeedback()
-- List<StmtFB> stmtFeedback()
-- List<ByClass> byClass()
+- List< Feedback > feedbacks()
+- List< TestFB > testFeedback()
+- List< StmtFB > stmtFeedback()
+- List< ByClass > byClass()
+
+Over the Class FormatterFacade you can access following Classes:
 
 ByClass Method:
 
-- List<ByMethod> byMethods()
+- List< ByMethod > byMethods()
 - CoverageCount branch()
 - CoverageCount line()
 - StateOfCoverage state()
@@ -116,7 +136,7 @@ ByClass Method:
 
 ByMethod Method:
 
-- List<StmtFB> statementsFB()
+- List< StmtFB > statementsFB()
 - StateOfCoverage state()
 - CoverageCount branch()
 - CoverageCount line()
