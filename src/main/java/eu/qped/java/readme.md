@@ -80,88 +80,46 @@ Object:
 
 
 ### Coverage Checker WIP
-Coverage Checker maps not coverage constructor, methods and branching statements like
-    
-Statement:
-    - if 
-    - else if
-    - else
-    - for 
-    - foreach
-    - while 
-    - case
-    - default
+Coverage Checker maps not covered constructor, methods and branching statements like
 
-to a default or custom feedback. Additional there is also the possibility to generate feedback for failed *JUNIT5* test.
+- if 
+- else if
+- else
+- for 
+- foreach
+- while 
+- case
+- default
 
+to default or custom feedback. Additional there is also the possibility to generate feedback for failed *JUNIT5* test.
 
+#### Example Assignment:
+For a given program description analyse all constraints of the program and test them. 
 
-Feedback Types:
+``` 
+# Pseudocode-PROGRAM                            # Feedback-CUSTOM
 
-- TEST - Default feedback for failed test.
-- COVERAGE - Default feedback for not covered statements,
-- CUSTOM - Your feedback for a failed test or a not covered statement.
-
-
-Encoding feedback:
-
-- " : TEST or COVERAGE" - Defines this type as default for all classes.
-- "classname : TEST or COVERAGE" - Defines this type as default for an explicit class.
-- "classname : TEST, COVERAGE or CUSTOM : method name or line index : feedback" - Defines a custom feedback for an explicit class and identifier.
-
-The framework velocity is used to format the created feedback.
-If no formatting template is provided only the feedback body will be generated.
-The property summary can be used in a vm template to format and enrich your feedback
-white additional information.
-Following classes can be accessed be the summary property.
-The summary has only diract access to the FormatterFacade class.
-
-
-FormatterFacade Method:
-
-- List< Feedback > feedbacks()
-- List< TestFB > testFeedback()
-- List< StmtFB > stmtFeedback()
-- List< ByClass > byClass()
-
-Over the Class FormatterFacade you can access following Classes:
-
-ByClass Method:
-
-- List< ByMethod > byMethods()
-- CoverageCount branch()
-- CoverageCount line()
-- StateOfCoverage state()
-- String name()
-
-ByMethod Method:
-
-- List< StmtFB > statementsFB()
-- StateOfCoverage state()
-- CoverageCount branch()
-- CoverageCount line()
-- String name()
-- String content()
-- int start()
-- int end()
-
-
-TestFB Method:
-
-- String getBody()
-- String className()
-- String methodName()
-- String got()
-- String want()
-
-StmtFB Method:
-
-- String getBody()
-- String className()
-- String methodName()
-- int start()
-- int end()
-- StatementType type()
+if (setConstraint(true)) {                          
+    if (subSetAConstraint(false)) {             // are you sure you tested all constraints. Maybe read passage X more carefully. 
+        ... 
+    }
+    if (subSetBConstraint(true)) {
+        if (constraintB1(true)) {               
+            ...
+        }
+        if (constraintB2(false) {               // you overlooked one constraint for case B.
+            ...
+        }
+    }
+}
+```
+[coverage-doc]: checkers/coverage/doc.md
+#### Feedback:
+There are two types of feedback default and custom.
+The default feedback is only available in english and german. 
+If needed we are happy to support your language.
+Custom feedback can be provided directly over the quarterfall-platform.
+For more information over feedback and settings see [doc] [coverage-doc].
 
 
 Object:
