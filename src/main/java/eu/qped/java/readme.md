@@ -16,7 +16,11 @@ Style checker is a checker that check then report the common formatting, code qu
 violations with solutions examples. The report is often relative to the knowledge level of the student.
 
 ### Class Checker
-To be added: Short description
+Class Checker compares the given solution to the expected design decisions, such as correctly
+setting field or method visibilities. This includes checking if the solution correctly 
+uses the expected class type for either the current class, or the inherited classes. 
+The checker generates feedback if any discrepancies occur and provides starting points on how to 
+resolve the issues.
 
 ### Test Checker
 To be added: Short description
@@ -91,12 +95,19 @@ Object: qfSemConfigs
 | returnType | String | false |
 
 ### Class Checker Configuration WIP
-To be added: short description on what can be configured
+The class checker provides ways for the teacher to specify, on what to expect from a given class.
+The teacher can specify, for example, what the expected class type and name should be, which
+classes the current class should inherit and what each field or method in the class should look like.
 
-Object: 
+Object: qfDesignConfigs
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
+| classTypeName | String | false |
+| inheritsFrom | String Array | false |
+| fieldKeywords | String Array | false |
+| methodKeywords | String Array | false |
+
 
 ### Test Checker Configuration WIP
 To be added: short description on what can be configured
@@ -140,5 +151,17 @@ qf.semSettings = {
     "ifElseStmt":"1",
     "doWhileLoop":"0",
     "returnType":"float"
+};
+
+qf.designSettings = {
+    "classTypeName":"class:Card",
+    "inheritsFrom":["interface:Comparable"],
+    "fieldKeywords": [
+        "private String name",
+        "private String year"
+    ],
+    "methodKeywords": [
+        "public int compareTo"
+    ]
 };
 ```
