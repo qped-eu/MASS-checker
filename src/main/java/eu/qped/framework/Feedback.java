@@ -1,21 +1,15 @@
 package eu.qped.framework;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class Feedback {
 
     String body;
-
-
-    public Feedback (String body){
-        this.body = body;
-
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
 
 }

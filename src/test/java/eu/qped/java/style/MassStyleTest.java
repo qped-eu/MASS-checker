@@ -14,7 +14,7 @@ import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.mass.QFStyleSettings;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleConfigurator;
-import eu.qped.java.checkers.syntax.SyntaxErrorChecker;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 
 class MassStyleTest {
 
@@ -48,9 +48,9 @@ class MassStyleTest {
 				+ "System.out.println(\"pretty\");\n"
 				+ "}";
 
-		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
+		SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
 
-		MassExecutor massE = new MassExecutor(styleChecker, null, syntaxErrorChecker,
+		MassExecutor massE = new MassExecutor(styleChecker, null, syntaxChecker,
 				mainSettingsConfiguratorConf);
 
 		massE.execute();

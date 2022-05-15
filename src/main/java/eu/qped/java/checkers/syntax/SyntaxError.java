@@ -1,56 +1,42 @@
 package eu.qped.java.checkers.syntax;
 
 
+import javax.tools.Diagnostic.Kind;
+import javax.tools.JavaFileObject;
+
+import lombok.*;
+
 import java.util.Map;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class SyntaxError {
-    private final String errorCode;
-    private final String errorMsg;
-    private final long line;
-    private final String errorTrigger;
 
-    private final long startPos;
-    private final long endPos;
-    private final Map<String , String> additionalProperties;
+    private Map<String, String> additionalProperties;
 
+    private String errorCode;
+    private String errorMsg;
+    private String errorTrigger;
+    private Kind kind;
+    private JavaFileObject source;
 
-    public SyntaxError(String errorCode, String errorMsg, long line, String errorTrigger, Map<String , String> additionalProperties , long startPos , long endPos) {
-        this.errorCode = errorCode;
-        this.errorMsg = errorMsg;
-        this.line = line;
-        this.errorTrigger = errorTrigger;
-        this.startPos = startPos;
-        this.endPos = endPos;
-        this.additionalProperties = additionalProperties;
-    }
+    private long line;
+    private long startPos;
+    private long endPos;
+    private long columnNumber;
 
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
-    }
-
-    public long getLine() {
-        return line;
-    }
-
-    public String getErrorTrigger() {
-        return errorTrigger;
-    }
-
-
-
-    public long getStartPos() {
-        return startPos;
-    }
-
-    public long getEndPos() {
-        return endPos;
-    }
-
-    public Map<String, String> getAdditionalProperties() {
-        return additionalProperties;
+    @Override
+    public boolean equals(Object o){
+        if (o == this) return true;
+        if (!(o instanceof SyntaxError)) return false;
+        SyntaxError that = (SyntaxError) o;
+        return
+                this.getErrorCode().equalsIgnoreCase(that.getErrorCode()) &&
+                        this.getErrorMsg().equals(that.getErrorMsg()) &&
+                        this.getStartPos() == that.getStartPos() &&
+                        this.getErrorTrigger().equals(that.getErrorTrigger()) &&
+                        this.getAdditionalProperties().equals(that.getAdditionalProperties());
     }
 }

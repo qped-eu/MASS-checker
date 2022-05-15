@@ -1,20 +1,27 @@
 package eu.qped.java.checkers.semantics;
 
 import eu.qped.java.checkers.mass.QFSemSettings;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SemanticConfigurator {
 
     private String methodName;
-    private String recursionAllowed;
-    private String whileLoop;
-    private String forLoop;
-    private String forEachLoop;
-    private String ifElseStmt;
-    private String doWhileLoop;
+    private Boolean recursionAllowed;
+    private Integer whileLoop;
+    private Integer forLoop;
+    private Integer forEachLoop;
+    private Integer ifElseStmt;
+    private Integer doWhileLoop;
     private String returnType;
 
-    private final QFSemSettings qfSemSettings;
+    private QFSemSettings qfSemSettings;
 
 
     private SemanticConfigurator(QFSemSettings qfSemSettings) {
@@ -29,13 +36,13 @@ public class SemanticConfigurator {
 
     private void setDefaults(){
         setMethodName("undefined");
-        setRecursionAllowed("false");
-        setWhileLoop("-1");
-        setForLoop("-1");
-        setForEachLoop("-1");
-        setIfElseStmt("-1");
-        setDoWhileLoop("-1");
+        setRecursionAllowed(false);
         setReturnType("undefined");
+        setWhileLoop(-1);
+        setForLoop(-1);
+        setForEachLoop(-1);
+        setIfElseStmt(-1);
+        setDoWhileLoop(-1);
     }
 
     private void applySettings(){
@@ -44,91 +51,27 @@ public class SemanticConfigurator {
             setMethodName(qfSemSettings.getMethodName());
         }
         if(qfSemSettings.getRecursionAllowed()!=null){
-            setRecursionAllowed(qfSemSettings.getRecursionAllowed());
+            setRecursionAllowed(Boolean.parseBoolean(qfSemSettings.getRecursionAllowed()));
         }
         if(qfSemSettings.getDoWhileLoop()!=null){
-            setWhileLoop(qfSemSettings.getWhileLoop());
+            setWhileLoop(Integer.parseInt(qfSemSettings.getWhileLoop()));
         }
         if(qfSemSettings.getForLoop()!=null){
-            setForLoop(qfSemSettings.getForLoop());
+            setForLoop(Integer.parseInt(qfSemSettings.getForLoop()));
         }
         if(qfSemSettings.getForEachLoop()!=null){
-            setForEachLoop(qfSemSettings.getForEachLoop());
+            setForEachLoop(Integer.parseInt(qfSemSettings.getForEachLoop()));
         }
         if(qfSemSettings.getIfElseStmt()!=null){
-            setIfElseStmt(qfSemSettings.getIfElseStmt());
+            setIfElseStmt(Integer.parseInt(qfSemSettings.getIfElseStmt()));
         }
         if(qfSemSettings.getDoWhileLoop()!=null){
-            setDoWhileLoop(qfSemSettings.getDoWhileLoop());
+            setDoWhileLoop(Integer.parseInt(qfSemSettings.getDoWhileLoop()));
         }
         if(qfSemSettings.getReturnType()!=null){
             setReturnType(qfSemSettings.getReturnType());
         }
 
-    }
-
-    public String getMethodName() {
-        return methodName;
-    }
-
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
-
-    public String getRecursionAllowed() {
-        return recursionAllowed;
-    }
-
-    public void setRecursionAllowed(String recursionAllowed) {
-        this.recursionAllowed = recursionAllowed;
-    }
-
-    public String getWhileLoop() {
-        return whileLoop;
-    }
-
-    public void setWhileLoop(String whileLoop) {
-        this.whileLoop = whileLoop;
-    }
-
-    public String getForLoop() {
-        return forLoop;
-    }
-
-    public void setForLoop(String forLoop) {
-        this.forLoop = forLoop;
-    }
-
-    public String getForEachLoop() {
-        return forEachLoop;
-    }
-
-    public void setForEachLoop(String forEachLoop) {
-        this.forEachLoop = forEachLoop;
-    }
-
-    public String getIfElseStmt() {
-        return ifElseStmt;
-    }
-
-    public void setIfElseStmt(String ifElseStmt) {
-        this.ifElseStmt = ifElseStmt;
-    }
-
-    public String getDoWhileLoop() {
-        return doWhileLoop;
-    }
-
-    public void setDoWhileLoop(String doWhileLoop) {
-        this.doWhileLoop = doWhileLoop;
-    }
-
-    public String getReturnType() {
-        return returnType;
-    }
-
-    public void setReturnType(String returnType) {
-        this.returnType = returnType;
     }
 
 }

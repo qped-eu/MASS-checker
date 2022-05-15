@@ -80,24 +80,37 @@ Object:
 
 ### Example Configuration with Quarterfall
 ```
-qf.checkerClass="eu.qped.umr.Mass";
-qf.qfMainSettings = {
+qf.checkerClass = "eu.qped.java.checkers.mass.Mass";
+
+qf.mainSettings = {
     "syntaxLevel":"BEGINNER",
-    "preferredLanguage":"en" ,
-    "styleNeeded":"true"  ,
-    "semanticNeeded":"true"  
+    "preferredLanguage":"en",
+    "semanticNeeded":"true", 
+    "styleNeeded":"true"  
 };
-qf.qfStyleConf= {
+
+qf.styleSettings= {
     "mainLevel":"ADVANCED",
-    "compLevel":null,
-    "namesLevel":null,
-    "basisLevel":null,
-    "classLength":"100",
-    "methodLength":"10",
-    "cycloComplexity":"10",
-    "fieldsCount":"-1",
-    "varName":"undefined",
-    "methodName":"[A]*",
+    "compLevel":"BEGINNER"  , 
+    "namesLevel":"ADVANCED"  , 
+    "basisLevel":"ADVANCED" ,
+    "classLength":"100" ,
+    "methodLength":"10" , 
+    "cycloComplexity":"10" , 
+    "fieldsCount":"-1" ,
+    "varName":"undefined" , 
+    "methodName":"[a-z][a-zA-Z0-9]*",
     "className":"undefined"
+};
+ 
+qf.semSettings = {
+    "methodName":"getMinimum" ,
+    "recursionAllowed":"false",
+    "whileLoop":"0",
+    "forLoop":"0",
+    "forEachLoop":"0",
+    "ifElseStmt":"1",
+    "doWhileLoop":"0",
+    "returnType":"float"
 };
 ```
