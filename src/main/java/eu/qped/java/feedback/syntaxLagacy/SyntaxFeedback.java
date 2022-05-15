@@ -21,4 +21,11 @@ public class SyntaxFeedback extends Feedback {
     private SyntaxError syntaxError;
     private ErrorInfo errorInfo;
 
+    public String toInfoString(){
+        return "FeedbackContent: " + this.getFeedbackContent() + "\n" +
+                "SolutionExample: " + this.getSolutionExample() + "\n" +
+                "ErrorMessage: " + this.getErrorMessage() + "\n" +
+                "ErrorInfo: "+ this.getErrorInfo();
+    }
+
 }
