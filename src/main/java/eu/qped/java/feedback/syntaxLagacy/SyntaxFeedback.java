@@ -1,9 +1,12 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.feedback.syntaxLagacy;
 
 
 import eu.qped.framework.Feedback;
+import eu.qped.java.checkers.syntax.ErrorInfo;
+import eu.qped.java.checkers.syntax.SyntaxError;
 import lombok.*;
 
+@ToString
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter

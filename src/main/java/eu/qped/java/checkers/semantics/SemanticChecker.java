@@ -48,7 +48,7 @@ public class SemanticChecker {
 
     public void check(){
         parseCompUnit();
-        checkReturnTyp();
+
         if(checkMethodExist()) {
             try {
                 BlockStmt targetedMethod = getTargetedMethod(semanticConfigurator.getMethodName());
@@ -59,6 +59,7 @@ public class SemanticChecker {
                     MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
                     generateSemanticRecursionFeedback(recursiveCheckHelper);
                 }
+                checkReturnTyp();
             } catch (NoSuchMethodException e){
                 System.out.println(e.getMessage() + " " + e.getCause());
             }

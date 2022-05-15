@@ -1,6 +1,9 @@
 package eu.qped.java.checkers.syntax;
 
 
+import javax.tools.Diagnostic.Kind;
+import javax.tools.JavaFileObject;
+
 import lombok.*;
 
 import java.util.Map;
@@ -16,10 +19,13 @@ public class SyntaxError {
     private String errorCode;
     private String errorMsg;
     private String errorTrigger;
+    private Kind kind;
+    private JavaFileObject source;
 
     private long line;
     private long startPos;
     private long endPos;
+    private long columnNumber;
 
     @Override
     public boolean equals(Object o){

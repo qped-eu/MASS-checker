@@ -1,6 +1,7 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.feedback.syntaxLagacy;
 
 
+import eu.qped.java.checkers.syntax.SyntaxError;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
