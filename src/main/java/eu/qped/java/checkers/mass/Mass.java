@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.mass;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
@@ -33,60 +34,19 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        Map<String, String> styleSettings = new HashMap<>();
-        Map<String, String> mainSettings = new HashMap<>();
 
-
-        /*
-        main settings
-         */
-        if (this.mainSettings != null) {
-            mainSettings.put("syntaxLevel", this.mainSettings.getSyntaxLevel());
-            mainSettings.put("preferredLanguage", this.mainSettings.getPreferredLanguage());
-            mainSettings.put("styleNeeded", this.mainSettings.getStyleNeeded());
-            mainSettings.put("semanticNeeded", this.mainSettings.getSemanticNeeded());
-        }
-        
-        /*
-        Style Configs
-         */
-        if (this.styleSettings != null) {
-            styleSettings.put("mainLevel", this.styleSettings.getMainLevel());
-            styleSettings.put("maxClassLength", this.styleSettings.getClassLength());
-            styleSettings.put("maxMethodLength", this.styleSettings.getMethodLength());
-            styleSettings.put("maxFieldsCount", this.styleSettings.getFieldsCount());
-            styleSettings.put("maxCycloComplexity", this.styleSettings.getCycloComplexity());
-            styleSettings.put("varNamesRegEx", this.styleSettings.getVarName());
-            styleSettings.put("methodNamesRegEx", this.styleSettings.getMethodName());
-            styleSettings.put("classNameRegEx", this.styleSettings.getClassName());
-            styleSettings.put("basisLevel", this.styleSettings.getBasisLevel());
-            styleSettings.put("namesLevel", this.styleSettings.getNamesLevel());
-            styleSettings.put("compLevel", this.styleSettings.getCompLevel());
-        }
 
         StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(this.styleSettings);
 
         StyleChecker styleChecker = new StyleChecker(styleConfigurator);
 
 
-        Map<String, String> semanticSettings = new HashMap<>();
+        MainSettings mainSettingsConfiguratorConf = new MainSettings(new HashMap<>());
+        mainSettingsConfiguratorConf.setSyntaxLevel(CheckLevel.BEGINNER);
+        mainSettingsConfiguratorConf.setStyleNeeded(true);
+        mainSettingsConfiguratorConf.setSemanticNeeded("true");
 
-        /*
-        Semantic Configs
-         */
-        if (this.semSettings != null) {
-            semanticSettings.put("methodName", this.semSettings.getMethodName());
-            semanticSettings.put("recursionAllowed", this.semSettings.getRecursionAllowed());
-            semanticSettings.put("whileLoop", this.semSettings.getWhileLoop());
-            semanticSettings.put("forLoop", this.semSettings.getForLoop());
-            semanticSettings.put("forEachLoop", this.semSettings.getForEachLoop());
-            semanticSettings.put("ifElseStmt", this.semSettings.getIfElseStmt());
-            semanticSettings.put("doWhileLoop", this.semSettings.getDoWhileLoop());
-            semanticSettings.put("returnType", this.semSettings.getReturnType());
-        }
-
-        MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
-        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(new QFSemSettings());
+        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
 
 
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
@@ -137,6 +97,8 @@ public class Mass implements Checker {
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
             result[i + 1] = ""
                     + syntax.getFeedbackContent()
+                    + NEW_LINE
+                    + "At Line: " +  syntax.getSyntaxError().getLine()
                     + NEW_LINE
                     + "--------------------------------------------------"
             ;

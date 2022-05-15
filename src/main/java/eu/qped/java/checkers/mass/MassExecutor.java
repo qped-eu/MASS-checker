@@ -1,13 +1,17 @@
 package eu.qped.java.checkers.mass;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.semantics.SemanticChecker;
+import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
+import eu.qped.java.checkers.style.StyleConfigurator;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.style.StyleViolation;
 import eu.qped.java.checkers.syntax.SyntaxError;
@@ -152,109 +156,96 @@ public class MassExecutor {
     }
 
 
-//    public static void main(String[] args) {
-//        long start = System.nanoTime();
-//
-//
-//        Map<String, String> mainSettings = new HashMap<>();
-//        mainSettings.put("semanticNeeded", "false");
-//        mainSettings.put("syntaxLevel", "2");
-//        mainSettings.put("preferredLanguage", "en");
-//        mainSettings.put("styleNeeded", "true");
-//
-//
-//        MainSettingsConfigurator mainSettingsConfiguratorConf = new MainSettingsConfigurator(mainSettings);
-//
-//
-//        Map<String, String> semanticConf = new HashMap<>();
-//
-//        semanticConf.put("methodName", "recR");
-//        semanticConf.put("recursionAllowed", "false");
-//        semanticConf.put("whereLoop", "-1");
-//        semanticConf.put("forLoop", "1");
-//        semanticConf.put("forEachLoop", "-1");
-//        semanticConf.put("ifElseStmt", "-1");
-//        semanticConf.put("doWhileLoop", "-1");
-//        semanticConf.put("returnType", "int");
-//
-//        QFSemSettings qfSemSettings = new QFSemSettings();
-//        qfSemSettings.setMethodName("recR");
-//        qfSemSettings.setRecursionAllowed("true");
-//        qfSemSettings.setWhileLoop("-1");
-//        qfSemSettings.setForLoop("2");
-//        qfSemSettings.setForEachLoop("-1");
-//        qfSemSettings.setIfElseStmt("-1");
-//        qfSemSettings.setDoWhileLoop("-1");
-//        qfSemSettings.setReturnType("null");
-//
-//        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
-//
-//        String code = " void rec (){\n" +
-//                "        System.out.println(\"pretty\");\n" +
-//                "    }";
-//
-//        QFStyleSettings qfStyleSettings = new QFStyleSettings();
-//        qfStyleSettings.setNamesLevel("adv");
-//        qfStyleSettings.setMethodName("[AA]");
-//
-//
-//        StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);
-//
-//
-//        StyleChecker styleChecker = StyleCheckerFactory.createStyleChecker(styleConfigurator);
-//        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
-//        SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
-//		final StyleChecker styleChecker1 = styleChecker;
-//		final SemanticChecker semanticChecker1 = semanticChecker;
-//		final SyntaxErrorChecker syntaxErrorChecker1 = syntaxErrorChecker;
-//		final MainSettingsConfigurator mainSettingsConfigurator = mainSettingsConfiguratorConf;
-//
-//        MassExecutor massE = new MassExecutor(styleChecker1, semanticChecker1, syntaxErrorChecker1, mainSettingsConfigurator);
-//
-//
-////        MassExecutor massExecutor = MassExecutorFactory.createExecutor(styleConfigurator, semanticConfigurator, mainSettingsConf, code);
-//          massE.execute();
-////        new ArrayList<StyleViolation>(massExecutor.getViolations()).forEach(x -> System.out.println(x.getRule()));
-//
-//
-//        //todo false Alarm: Here was Semicolon expected!
-//
-//
-//        //Compiler compiler = new Compiler(code, styleConfigurator, syntaxConfigurator);
-//
-//
-//        for (Feedback s : massE.semanticFeedbacks) {
-//            System.out.println(s.getBody());
-//        }
-//
-//
-//        /*
-//        for Style Errors
-//         */
-//
-//        List<StyleFeedback> feedbacks = massE.styleFeedbacks;
-//
-//        for (StyleFeedback f : feedbacks) {
-//            System.out.println(f.getDesc());
-//            System.out.println(f.getBody());
-//            System.out.println(f.getLine());
-//            System.out.println(f.getExample());
-//            System.out.println("-----------------------------------------------------------------");
-//        }
-//
-//        /*
-//        for Syntax Errors
-//         */
-//        List<SyntaxFeedback> arrayList = massE.syntaxFeedbacks;
-//        for (SyntaxFeedback s : arrayList) {
-//            System.out.println(s.getHead());
-//            System.out.println(s.getBody());
-//            System.out.println(s.getExample());
-//            System.out.println("--------0T0----------");
-//        }
-//        long end = System.nanoTime() - start;
-//        System.out.println("Feedback generated in: " + end * Math.pow(10.0, -9.0) + " sec");
-//    }
+    public static void main(String[] args) {
+        long start = System.nanoTime();
+
+
+        Map<String, String> mainSettings = new HashMap<>();
+        mainSettings.put("semanticNeeded", "true");
+        mainSettings.put("syntaxLevel", "2");
+        mainSettings.put("preferredLanguage", "en");
+        mainSettings.put("styleNeeded", "false");
+
+
+        MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
+
+        QFSemSettings qfSemSettings = new QFSemSettings();
+        qfSemSettings.setMethodName("rec");
+        qfSemSettings.setRecursionAllowed("true");
+        qfSemSettings.setWhileLoop("-1");
+        qfSemSettings.setForLoop("2");
+        qfSemSettings.setForEachLoop("-1");
+        qfSemSettings.setIfElseStmt("-1");
+        qfSemSettings.setDoWhileLoop("-1");
+        qfSemSettings.setReturnType("int");
+
+        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
+
+        String code = " Long rec (){\n" +
+                "        System.out.println(\"pretty\");\n" +
+                "return 100L; " +
+                "    }";
+
+        QFStyleSettings qfStyleSettings = new QFStyleSettings();
+        qfStyleSettings.setNamesLevel("adv");
+        qfStyleSettings.setMethodName("[AA]");
+
+
+        StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);
+
+
+        StyleChecker styleChecker = new StyleChecker(styleConfigurator);
+
+        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
+
+
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);
+
+
+//        MassExecutor massExecutor = MassExecutorFactory.createExecutor(styleConfigurator, semanticConfigurator, mainSettingsConf, code);
+          massE.execute();
+//        new ArrayList<StyleViolation>(massExecutor.getViolations()).forEach(x -> System.out.println(x.getRule()));
+
+
+        //todo false Alarm: Here was Semicolon expected!
+
+
+        //Compiler compiler = new Compiler(code, styleConfigurator, syntaxConfigurator);
+
+
+        for (Feedback s : massE.semanticFeedbacks) {
+            System.out.println(s.getBody());
+        }
+
+
+        /*
+        for Style Errors
+         */
+
+        List<StyleFeedback> feedbacks = massE.styleFeedbacks;
+
+        for (StyleFeedback f : feedbacks) {
+            System.out.println(f.getDesc());
+            System.out.println(f.getBody());
+            System.out.println(f.getLine());
+            System.out.println(f.getExample());
+            System.out.println("-----------------------------------------------------------------");
+        }
+
+        /*
+        for Syntax Errors
+         */
+        List<SyntaxFeedback> arrayList = massE.syntaxFeedbacks;
+        for (SyntaxFeedback s : arrayList) {
+            System.out.println(s.getBody());
+            System.out.println(s.getBody());
+            System.out.println(s.getSolutionExample());
+            System.out.println("--------0T0----------");
+        }
+        long end = System.nanoTime() - start;
+        System.out.println("Feedback generated in: " + end * Math.pow(10.0, -9.0) + " sec");
+    }
 
 
 }
