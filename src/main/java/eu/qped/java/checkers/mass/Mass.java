@@ -15,7 +15,6 @@ import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class Mass implements Checker {

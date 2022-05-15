@@ -1,11 +1,8 @@
 package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback;
-import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.compiler.Compiler;
 import lombok.*;
-import lombok.Data;
 
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;

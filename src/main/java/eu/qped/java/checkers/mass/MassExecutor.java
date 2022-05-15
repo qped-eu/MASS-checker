@@ -154,8 +154,7 @@ public class MassExecutor {
     public List<SyntaxError> getSyntaxErrors() {
         return syntaxErrors;
     }
-
-
+    //FIXME remove and save the templates for the configs.
     public static void main(String[] args) {
         long start = System.nanoTime();
 
