@@ -13,6 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DesignClassTest {
 
+    //TODO
+    //Multiple Inheritance
+
     private QFDesignSettings qfDesignSettings;
     private ArrayList<ClassInfo> classInfos;
     private final DesignFeedbackGenerator designFeedbackGenerator = DesignFeedbackGenerator.createDesignFeedbackGenerator();
@@ -31,10 +34,10 @@ public class DesignClassTest {
         ClassInfo interfaceInfo = new ClassInfo();
         interfaceInfo.setClassTypeName("interface:Number");
         ArrayList<String> methodKeywords = new ArrayList<>();
-        methodKeywords.add("private");
-        methodKeywords.add("private");
-        methodKeywords.add("default");
-        methodKeywords.add("default");
+        methodKeywords.add("private int toIntValue");
+        methodKeywords.add("private void fromIntValue");
+        methodKeywords.add("default void add");
+        methodKeywords.add("default void subtract");
         interfaceInfo.setMethodKeywords(methodKeywords);
 
 
@@ -47,18 +50,18 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         ArrayList<String> fieldKeywords = new ArrayList<>();
-        fieldKeywords.add("private");
+        fieldKeywords.add("private String *");
         classInfo.setFieldKeywords(fieldKeywords);
         ArrayList<String> classMethodKeywords = new ArrayList<>();
-        classMethodKeywords.add("private");
-        classMethodKeywords.add("private");
+        classMethodKeywords.add("private int *");
+        classMethodKeywords.add("private int *");
         classInfo.setMethodKeywords(classMethodKeywords);
 
         classInfos.add(interfaceInfo);
         classInfos.add(classInfo);
         qfDesignSettings.setClassInfos(classInfos);
 
-        String interfaceSource = "public abstract class Number2 {" +
+        String interfaceSource = "public interface Number2 {" +
                 "private int toIntValue();"+
                 "private void fromIntValue(int value){" +
                 "}"+
@@ -68,7 +71,7 @@ public class DesignClassTest {
                 "}"+
                 "}";
 
-        String classSource = "public class HexaDecimal extends Number2 {" +
+        String classSource = "public class HexaDecimal implements Number2 {" +
                 "private String value;"+
                 "private int toIntValue() {" +
                 "}"+
@@ -87,12 +90,8 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-
-//        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback(DesignFeedbackGenerator.WRONG_CLASS_TYPE, "Number");
-//        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE, "Number");
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("Number", "", DesignFeedbackGenerator.WRONG_CLASS_TYPE);
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("Number2", "", DesignFeedbackGenerator.WRONG_CLASS_NAME);
-        //DesignFeedback fb2 = designFeedbackGenerator.generateFeedback(DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE, "Number");
+        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("Number2", "", DesignFeedbackGenerator.WRONG_CLASS_NAME);
+        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("HexaDecimal", "Number2", DesignFeedbackGenerator.WRONG_INHERITED_CLASS_NAME);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -103,7 +102,7 @@ public class DesignClassTest {
     }
 
     @Test
-    public void classRightClassImplementedTest() {
+    public void rightClassImplementedTest() {
         String expectedClassTypeName = "class:TestClass";
         String implementsInterface = "class:Number";
         ArrayList<String> inheritsFrom = new ArrayList<>();
@@ -133,7 +132,7 @@ public class DesignClassTest {
     }
 
     @Test
-    public void classRightInterfaceImplementedTest() {
+    public void rightInterfaceImplementedTest() {
         String expectedClassTypeName = "class:TestClass";
         String implementsInterface = "interface:Number";
         ArrayList<String> inheritsFrom = new ArrayList<>();
@@ -163,7 +162,7 @@ public class DesignClassTest {
     }
 
     @Test
-    public void classRightAbstractClassImplementedTest() {
+    public void rightAbstractClassImplementedTest() {
         String expectedClassTypeName = "class:TestClass";
         String implementsInterface = "abstract class:Number";
         ArrayList<String> inheritsFrom = new ArrayList<>();
@@ -193,7 +192,7 @@ public class DesignClassTest {
     }
 
     @Test
-    public void classWrongClassTypeTest() {
+    public void wrongClassTypeTest() {
         String expectedClassTypeName = "interface:TestClass";
 
         ClassInfo classInfo = new ClassInfo();
@@ -224,7 +223,7 @@ public class DesignClassTest {
 
 
     @Test
-    public void classMissingImplementationTest() {
+    public void missingImplementationTest() {
         String expectedClassTypeName = "class:TestClass";
         String implementsInterface = "interface:Number";
         ArrayList<String> inheritsFrom = new ArrayList<>();
@@ -251,7 +250,7 @@ public class DesignClassTest {
         }
 
         DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass",
-                "Number", DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
+                "", DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -259,7 +258,7 @@ public class DesignClassTest {
     }
 
     @Test
-    public void classWrongImplementationTest() {
+    public void wrongImplementationTest() {
         String expectedClassTypeName = "class:TestClass";
         String implementsInterface = "interface:Number";
         ArrayList<String> inheritsFrom = new ArrayList<>();

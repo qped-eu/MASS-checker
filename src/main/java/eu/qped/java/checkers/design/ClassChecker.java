@@ -49,7 +49,7 @@ public class ClassChecker {
             String expectedInheritedType = expectedInheritsFromTypeName[0];
             String expectedInheritedName = expectedInheritsFromTypeName[1];
 
-            boolean matchFound = checkMatchInterfaceOrClass(extendedClasses, implementedInterfaces, expectedInheritedType, expectedInheritedName);
+            boolean matchFound = checkExactMatchInterfaceOrClass(extendedClasses, implementedInterfaces, expectedInheritedType, expectedInheritedName);
 
             if (!matchFound) {
                 findViolation(currentClassName, extendedClasses, implementedInterfaces, expectedInheritedType, expectedInheritedName);
@@ -65,30 +65,35 @@ public class ClassChecker {
      * @param expectedInheritedName expected class name from the inherited class
      * @return true if we can find a match with the expected and actual
      */
-    private boolean checkMatchInterfaceOrClass(List<ClassOrInterfaceType> extendedClasses, List<ClassOrInterfaceType> implementedInterfaces,
-                                               String expectedInheritedType, String expectedInheritedName) {
+    private boolean checkExactMatchInterfaceOrClass(List<ClassOrInterfaceType> extendedClasses, List<ClassOrInterfaceType> implementedInterfaces,
+                                                    String expectedInheritedType, String expectedInheritedName) {
         switch(expectedInheritedType) {
             case DesignChecker.INTERFACE_TYPE:
-                return inheritedNameMatches(implementedInterfaces, expectedInheritedName);
+                return doesNameMatchExist(implementedInterfaces, expectedInheritedName);
             case DesignChecker.ABSTRACT_CLASS_TYPE:
             case DesignChecker.DEFAULT_CLASS_TYPE:
-                return inheritedNameMatches(extendedClasses, expectedInheritedName);
+                return doesNameMatchExist(extendedClasses, expectedInheritedName);
         }
         return false;
     }
 
     /**
-     * This method is only called if there are expected type / names, that do not have an exact match
-     * This finds a name match with a type mismatch
+     * Compares the expected inherited name of a class to the list of actual inherited classes
+     * This gives us the name of either the matching super class or blank, if there is no match
      * @param types either the implemented interfaces or the extended classes
      * @param expectedInheritedName expected name of the interface / class
-     * @return true if the expected name can be found in the given types list
+     * @return super class name, if found
      */
-    private boolean findExpectedDiffClassType(List<ClassOrInterfaceType> types, String expectedInheritedName) {
+    private String findInheritedNameMatch(List<ClassOrInterfaceType> types, String expectedInheritedName) {
+        String matchedName = "";
         for (ClassOrInterfaceType type: types) {
-            return type.getNameAsString().equals(expectedInheritedName);
+            String actualInheritedName = type.getNameAsString();
+            if(actualInheritedName.equals(expectedInheritedName)) {
+                matchedName = actualInheritedName;
+                break;
+            }
         }
-        return false;
+        return matchedName;
     }
 
     /**
@@ -97,7 +102,7 @@ public class ClassChecker {
      * @param expectedInheritsFromName expected inheritsFrom name
      * @return true, if there exists a match between type and expected name
      */
-    private boolean inheritedNameMatches(List<ClassOrInterfaceType> types, String expectedInheritsFromName) {
+    private boolean doesNameMatchExist(List<ClassOrInterfaceType> types, String expectedInheritsFromName) {
         Iterator<ClassOrInterfaceType> typesIterator = types.iterator();
         while(typesIterator.hasNext()) {
             ClassOrInterfaceType actualClassName = typesIterator.next();
@@ -122,30 +127,82 @@ public class ClassChecker {
         //Since we know that there has to be a type mismatch here (otherwise they would have been removed above)
         //we only check the other implemented / extended classes to find a fault
         //If we can't find that, we can conclude that its simply missing from the declaration
+
+        List<ClassOrInterfaceType> superClassList = new ArrayList<>();
+        String missingClassImplementationViolation = "";
         switch (expectedInheritedType) {
             case DesignChecker.INTERFACE_TYPE:
-                //TODO: Should be actual Inherited Name and not actual
-                if(findExpectedDiffClassType(extendedClasses, expectedInheritedName)) {
-                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
-                } else {
-                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
-                }
+                superClassList = implementedInterfaces;
+                missingClassImplementationViolation = DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION;
                 break;
-            case DesignChecker.ABSTRACT_CLASS_TYPE:
-                if(findExpectedDiffClassType(implementedInterfaces, expectedInheritedName)) {
-                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
-                } else {
-                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
-                }
 
+            case DesignChecker.ABSTRACT_CLASS_TYPE:
+                superClassList = extendedClasses;
+                missingClassImplementationViolation = DesignFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION;
                 break;
+
             case DesignChecker.DEFAULT_CLASS_TYPE:
-                if(findExpectedDiffClassType(implementedInterfaces, expectedInheritedName)) {
-                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
-                } else {
-                    designChecker.addFeedback(currentClassName, expectedInheritedName, DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
-                }
+                superClassList = extendedClasses;
+                missingClassImplementationViolation = DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION;
                 break;
         }
+
+        //For a violation to occur we have 3 cases:
+        //1. We have a name error: We have the proper class implemented / extended but the name mismatches
+        //2. We have a type error: We can find the name in one of the lists but the list does not match the expected type
+        //3. Name and type error: The entire implementation is missing.
+
+        //Try to find a match in every list
+        String implementedNameMatch = findInheritedNameMatch(implementedInterfaces, expectedInheritedName);
+        String extendedNameMatch = findInheritedNameMatch(extendedClasses, expectedInheritedName);
+        if(implementedNameMatch.isBlank() && extendedNameMatch.isBlank()) {
+            //We cannot find the name in either list, so either the name is wrong or the implementation is missing
+            switch (expectedInheritedType) {
+                case DesignChecker.INTERFACE_TYPE:
+                    if(implementedInterfaces.isEmpty()) {
+                        designChecker.addFeedback(currentClassName, "", DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
+                    } else {
+                        //Get actual class name here
+                        designChecker.addFeedback(currentClassName, "", DesignFeedbackGenerator.WRONG_INHERITED_CLASS_NAME);
+                    }
+                    break;
+
+                case DesignChecker.ABSTRACT_CLASS_TYPE:
+                    if(implementedInterfaces.isEmpty()) {
+                        designChecker.addFeedback(currentClassName, "", DesignFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
+                    } else {
+                        //Get actual class name here
+                        designChecker.addFeedback(currentClassName, "", DesignFeedbackGenerator.WRONG_INHERITED_CLASS_NAME);
+                    }
+                    break;
+
+                case DesignChecker.DEFAULT_CLASS_TYPE:
+                    if(implementedInterfaces.isEmpty()) {
+                        designChecker.addFeedback(currentClassName, "", DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
+                    } else {
+                        //TODO: Change feedback so that we can just assume that one of them is wrong, not specify which one?
+                        //Get actual class name here (closest?)
+                        designChecker.addFeedback(currentClassName, "", DesignFeedbackGenerator.WRONG_INHERITED_CLASS_NAME);
+                    }
+                    break;
+            }
+        } else {
+            if(implementedNameMatch.isBlank()) {
+                designChecker.addFeedback(currentClassName, extendedNameMatch, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+            } else {
+                designChecker.addFeedback(currentClassName, implementedNameMatch, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+            }
+        }
+
+
+        //If we cannot find a match, we can assume that the name is wrong, so we give a name error
+        //Otherwise if we can find a match, we either have a type error or a completely missing implementation
+//        String actualInheritedClassName = findInheritedNameMatch(superClassList, expectedInheritedName);
+//        if(!actualInheritedClassName.isBlank()) {
+//            designChecker.addFeedback(currentClassName, actualInheritedClassName, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+//        } else {
+//            //Now either the inherited class type is wrong or the class is missing entirely
+//            designChecker.addFeedback(currentClassName, actualInheritedClassName, missingClassImplementationViolation);
+//        }
     }
 }

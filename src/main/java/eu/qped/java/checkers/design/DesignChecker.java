@@ -177,9 +177,6 @@ public class DesignChecker implements Checker {
         }
     }
 
-
-
-
     /**
      * Checks if the expected class type matches up with the actual class type
      * @param classType expected class type

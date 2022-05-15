@@ -26,8 +26,10 @@ public class DesignFeedbackGenerator {
     public final static String MISSING_ABSTRACT_CLASS_IMPLEMENTATION = "MissingAbstractClassImplementation";
     public final static String MISSING_CLASS_IMPLEMENTATION = "MissingClassImplementation";
     public final static String WRONG_CLASS_TYPE = "WrongClassType";
-    public final static String WRONG_INHERITED_CLASS_TYPE = "WrongInheritedClassType";
     public final static String WRONG_CLASS_NAME = "WrongClassName";
+    public final static String WRONG_INHERITED_CLASS_TYPE = "WrongInheritedClassType";
+    public final static String WRONG_INHERITED_CLASS_NAME = "WrongInheritedClassName";
+
 
     private final HashMap<String, String> feedbackMap;
 
@@ -44,22 +46,24 @@ public class DesignFeedbackGenerator {
         feedbackMap.put(WRONG_ELEMENT_TYPE, "Element does not possess the expected type.");
         feedbackMap.put(WRONG_ELEMENT_NAME, "Element does not possess the expected name.");
 
-        feedbackMap.put(WRONG_ACCESS_MODIFIER, "Access Modifier has not been set properly.");
-        feedbackMap.put(WRONG_NON_ACCESS_MODIFIER, "Non Access Modifier has not been set properly.");
+        feedbackMap.put(WRONG_ACCESS_MODIFIER, "Different access modifier expected.");
+        feedbackMap.put(WRONG_NON_ACCESS_MODIFIER, "Different non access modifiers expected.");
 
-        feedbackMap.put(MISSING_FIELDS, "Missing Fields.");
+        feedbackMap.put(MISSING_FIELDS, "Expected fields missing.");
         feedbackMap.put(FIELDS_NOT_RESTRICTIVE_ENOUGH, "Field Access Modifiers are not restrictive enough.");
 
-        feedbackMap.put(MISSING_METHODS, "Missing Methods.");
+        feedbackMap.put(MISSING_METHODS, "Expected methods missing.");
         //feedbackMap.put(METHOD_NOT_IMPLEMENTED, "Method Implementation missing.");
         feedbackMap.put(METHODS_NOT_RESTRICTIVE_ENOUGH, "Method Access Modifiers are not restrictive enough.");
 
-        feedbackMap.put(MISSING_INTERFACE_IMPLEMENTATION, "Interface has not been implemented.");
-        feedbackMap.put(MISSING_ABSTRACT_CLASS_IMPLEMENTATION, "Abstract Class has not been extended");
-        feedbackMap.put(MISSING_CLASS_IMPLEMENTATION, "Class has not been extended");
-        feedbackMap.put(WRONG_CLASS_TYPE, "Wrong Class Type has been used.");
-        feedbackMap.put(WRONG_INHERITED_CLASS_TYPE, "Wrong Class Type has been inherited.");
-        feedbackMap.put(WRONG_CLASS_NAME, "Wrong Class Name has been used.");
+        feedbackMap.put(MISSING_INTERFACE_IMPLEMENTATION, "Expected interface has not been implemented.");
+        feedbackMap.put(MISSING_ABSTRACT_CLASS_IMPLEMENTATION, "Expected abstract class has not been extended");
+        feedbackMap.put(MISSING_CLASS_IMPLEMENTATION, "Expected class has not been extended");
+        feedbackMap.put(WRONG_CLASS_TYPE, "Different class type expected.");
+        feedbackMap.put(WRONG_CLASS_NAME, "Different class name expected.");
+        feedbackMap.put(WRONG_INHERITED_CLASS_TYPE, "Different inherited class type expected.");
+        feedbackMap.put(WRONG_INHERITED_CLASS_NAME, "Different inherited class name expected.");
+
     }
 
     private String getFeedbackBody(String violationType) {
