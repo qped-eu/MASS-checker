@@ -14,11 +14,12 @@ import java.util.Objects;
 public class Formatter {
 
     public static String[] format(String format, FormatterFacade summary) {
+        System.out.println("---------------------------- FORATTER -------------------------------------");
         File f = null;
         try {
-            String temp = Paths.get("src/main/resources/coverage/template/index.vm").toString();
+            String temp = Paths.get("./src/main/resources/coverage/template/index.vm").toString();
             if (Objects.nonNull(format) && ! format.isBlank() ) {
-                f = Paths.get("target/classes/coverage/template/custom.vm").toFile(); // TODO::NotOK?
+                f = Paths.get("./target/classes/coverage/template/custom.vm").toFile(); // TODO::NotOK?
                 FileWriter w = new FileWriter(f);
                 w.write(format);
                 w.close();
@@ -32,7 +33,11 @@ public class Formatter {
 
             return new String[] {writer.toString()};
         } catch (Exception e) {
+
+
             e.printStackTrace();
+
+
             return summary.feedbacks().stream().map(Feedback::getBody).toArray(String[]::new);
         } finally {
             if (Objects.nonNull(f)) {

@@ -10,6 +10,7 @@ public class QfCovSetting extends QfObjectBase {
     private Set<String> excludeByNameSet = new HashSet<>();
     private List<String> feedback = new LinkedList<>();
     private String format = null;
+    private String convention = "JAVA";
 
     public String getFormat() {
         return format;
@@ -41,6 +42,14 @@ public class QfCovSetting extends QfObjectBase {
 
     public void setFeedback(List<String> feedback) {
         this.feedback = feedback;
+    }
+
+    public void setConvention(String convention) {
+        this.convention = convention;
+    }
+
+    public String getConvention() {
+        return convention;
     }
 
 }

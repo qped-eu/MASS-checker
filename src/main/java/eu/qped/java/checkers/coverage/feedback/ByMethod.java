@@ -105,7 +105,7 @@ public class ByMethod implements Comparable<ByMethod> {
                 .stream(content.content().split("\n"))
                 .collect(Collectors.toList())) {
             String head = "";
-            System.out.println(line);
+
             switch (aClass.byIndex(i ++)) {
                 case FULL:
                     head = "<fb style='background-color:green'>";

@@ -1,7 +1,9 @@
 package eu.qped.java.checkers.coverage;
 
 import eu.qped.framework.Feedback;
+import eu.qped.framework.FileInfo;
 import eu.qped.framework.qf.QfUser;
+import eu.qped.java.checkers.coverage.feedback.Formatter;
 import eu.qped.java.checkers.coverage.feedback.Summary;
 import eu.qped.java.checkers.coverage.testhelp.*;
 import org.junit.jupiter.api.Test;
@@ -212,6 +214,8 @@ class CoverageCheckerTest {
             Feedback g = iterator.next();
             assertEquals(w, g.getBody());
         }
+
+        Arrays.stream(Formatter.format(null, summary)).forEach(System.out::println);
     }
 
 }

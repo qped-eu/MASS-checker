@@ -24,7 +24,7 @@ public class FileChecker implements Checker {
 	}
 
 	private void printRecursive(File file, String indentation) {
-		System.out.println(indentation + file.getPath());
+		System.out.println(indentation + file.getName());
 		if (file.isDirectory()) {
 			for (File child : file.listFiles()) {
 				printRecursive(child, indentation + "    ");
