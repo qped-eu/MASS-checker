@@ -1,4 +1,6 @@
-QPED - Feedback tools for Java and Python
+[![](https://qped.eu/logo.png)](https://qped.eu/)
+
+QPED (Quality-focused Programming Education) - Feedback tools for Java and Python
 ========================
 What is QPED?
 -----------
