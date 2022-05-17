@@ -8,19 +8,17 @@ A "Syntax Checker" is for instance used to analyze the syntax of submitted code 
 Below you may find a list of currently implemented checkers and a sort description of each one.
 
 ### Syntax Checker
-Syntax checker has the ability to compile java code and report the encountered errors 
-in readable form for students with extra information that helps the check system.
+Syntax checker has the ability to compile java code and report the encountered errors in readable form for students with extra information that helps the check system.
 
 ### Style Checker
-Style checker is a checker that check then report the common formatting, code quality, efficiency, 
-violations with solutions examples. The report is often relative to the knowledge level of the student.
+Style checker is a checker that checks and then reports common formatting, code quality or efficiency  violations.
+The report also contains examples for fixing the violations.
+It is also possible to base the report on one of the three knowledge levels specified in the [configuration section below](#Syntax-Checker-Configuration).
 
 ### Class Checker
-Class Checker compares the given solution to the expected design decisions, such as correctly
-setting field or method visibilities. This includes checking if the solution correctly 
-uses the expected class type for either the current class, or the inherited classes. 
-The checker generates feedback if any discrepancies occur and provides starting points on how to 
-resolve the issues.
+Class Checker compares the given solution to the expected design decisions, such as correctly  setting field or method visibilities.
+This includes checking if the solution correctly uses the expected class type for either the current class, or the inherited classes. 
+The checker generates feedback if any discrepancies occur and provides starting points on how to resolve the issues.
 
 ### Test Checker
 To be added: Short description
@@ -37,7 +35,7 @@ An example for use with Quarterfall will be provided at the end of this section.
 With the general configuration it is possible to set overall aspects of the feedback generation.
 For instance, the level of a learner (beginner, intermediate, expert) or the language that the feedback should be generated in.
 
-Object: qfMainSettings
+Object: mainSettings
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
@@ -46,7 +44,7 @@ Object: qfMainSettings
 
 ### Syntax Checker Configuration
 The syntax checker has not many configs because its goal just to check the correctness of the code.
-Object: qfMainSettings
+Object: mainSettings
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
@@ -58,8 +56,9 @@ In syntax checker can many configs be modified. Classes, methods and variables n
 Level of the student in naming conventions, efficiency, and styling.
 Length of the class, method and variables names.
 The max allowed number of Fields, methods and lines.
+If the number is below 0, the option is ignored and the learner may use as many as they like.
 
-Object: qfStyleConf
+Object: styleSettings
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
@@ -67,10 +66,10 @@ Object: qfStyleConf
 | compLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
 | namesLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
 | basisLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
-| classLength | numeric [1, *] | false |
-| methodLength | numeric [1, *] | false |
-| cycloComplexity | numeric [1, *]  | false |
-| fieldsCount | numeric [1, *] | false |
+| classLength | numeric [-1, 0, 1, *] | false |
+| methodLength | numeric [-1, 0, 1, *] | false |
+| cycloComplexity | numeric [-1, 0, 1, *]  | false |
+| fieldsCount | numeric [-1, 0, 1, *] | false |
 | varName | String | true |
 | methodName | String | true |
 | className | String | true |
@@ -78,28 +77,29 @@ Object: qfStyleConf
 
 ### Semantics Checker Configuration
 Semantic checker has the ability to check the code according to criteria specified by the teacher 
-e.g. number of loops or number of if expressions allowed and if recursion is in the question required.
+e.g. number of loops or number of ```if``` expressions allowed and if it is required to solve the task with recursion.
+Setting a negative number ignores the option and lets the learner use as many as they like.
 
 
-Object: qfSemConfigs
+Object: semSettings
 
-| Option Name | Possible Values | Regular Expression |
-| ------ | --------------- | ----- |
-| methodName | String | false |
-| recursionAllowed | TRUE, FALSE | false |
-| whileLoop | numeric [1, *] | false |
-| forLoop | numeric [1, *] | false |
-| forEachLoop | numeric [1, *] | false |
-| ifElseStmt | numeric [1, *] | false |
-| doWhileLoop | numeric [1, *] | false |
-| returnType | String | false |
+| Option Name | Possible Values       | Regular Expression |
+| ------ |-----------------------| ----- |
+| methodName | String                | false |
+| recursionAllowed | TRUE, FALSE           | false |
+| whileLoop | numeric [-1, 0, 1, *] | false |
+| forLoop | numeric [-1, 0, 1, *]      | false |
+| forEachLoop | numeric [-1, 0, 1, *]     | false |
+| ifElseStmt | numeric [-1, 0, 1, *]      | false |
+| doWhileLoop | numeric [-1, 0, 1, *]       | false |
+| returnType | String                | false |
 
 ### Class Checker Configuration WIP
-The class checker provides ways for the teacher to specify, on what to expect from a given class.
+The class checker provides ways for the teacher to specify on what to expect from a given class.
 The teacher can specify, for example, what the expected class type and name should be, which
 classes the current class should inherit and what each field or method in the class should look like.
 
-Object: qfDesignConfigs
+Object: designSettings
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
