@@ -28,6 +28,7 @@ class CoverageCheckerTest {
                     new String[] {
                             "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
                     Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
+            got.setFeedback(new String[]{});
         } catch (Exception e) {
             assertFalse(true, e.getMessage());
         }

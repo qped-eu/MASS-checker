@@ -97,8 +97,6 @@ public class CoverageChecker implements Checker {
                 throw new InternalError("ERROR::CoverageChecker ERROR-CODE:5");
             }
 
-            extracted.javafileByClassname().keySet().forEach(System.out::println);
-
             Summary summary = checker(
                     preprocessing(extracted.javafileByClassname(), extracted.testClasses()),
                     preprocessing(extracted.javafileByClassname(), extracted.classes()));
