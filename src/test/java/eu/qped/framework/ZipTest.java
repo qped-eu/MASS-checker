@@ -3,6 +3,7 @@ package eu.qped.framework;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,8 +64,8 @@ class ZipTest {
                             return matcher.group(2);
                         }
                         return null;});
-            assertLinesMatch(List.of("adt.BagTest"), extracted.testClasses());
-            assertLinesMatch(List.of("adt.Bag"), extracted.classes());
+            assertTrue(Objects.deepEquals(List.of("adt.BagTest"), extracted.testClasses()));
+            assertTrue(Objects.deepEquals(List.of("adt.Bag"), extracted.classes()));
             toTest.cleanUp();
         } catch (Exception e) {
             e.printStackTrace();

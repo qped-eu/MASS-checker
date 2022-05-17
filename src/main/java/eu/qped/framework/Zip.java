@@ -137,9 +137,9 @@ public class Zip implements ZipService {
                 stack.addAll(0, Arrays.asList(first.listFiles()));
             } else if (Pattern.matches(".*\\.java$", first.getName())) {
                 String name = classname.parse(first);
-                name.replaceAll("/",".");
                 if (Objects.isNull(name))
                     continue;
+                name = name.replace("/",".");
                 files.put(name, first);
                 if (testClass.isTrue(first)) {
                     testClasses.add(name);

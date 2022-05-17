@@ -9,7 +9,6 @@ import eu.qped.java.checkers.coverage.framework.ast.*;
 import eu.qped.java.checkers.coverage.framework.coverage.*;
 import eu.qped.java.checkers.coverage.framework.test.*;
 import eu.qped.java.utils.compiler.Compiler;
-import org.junit.jupiter.api.Test;
 
 import javax.tools.Diagnostic;
 import java.io.File;
@@ -26,6 +25,8 @@ import java.util.stream.Collectors;
  */
 public class CoverageChecker implements Checker {
     private static final String COMPILE_FROM_FILE = null;
+    private static final String MAVEN = "MAVEN", JAVA = "JAVA";
+
     private class Info implements CovInformation {
         private final byte[] byteCode;
         private final String classname;
@@ -57,6 +58,7 @@ public class CoverageChecker implements Checker {
             return byteCode;
         }
     }
+
     private final ZipService.Classname mavenClassName = (file) -> {
         Pattern pattern = Pattern.compile(".*src/+(test|main)+/java/(.*)\\.java$");
         Matcher matcher = pattern.matcher(file.getPath());
@@ -71,7 +73,7 @@ public class CoverageChecker implements Checker {
     private final ZipService.TestClass javaTestClass = (file) -> {
         return Pattern.matches(".*Test\\.java$", file.getPath());
     };
-    
+
     @QfProperty
     QfCovSetting covSetting;
     @QfProperty
@@ -80,21 +82,22 @@ public class CoverageChecker implements Checker {
     FileInfo file;
     @QfProperty
     FileInfo additional;
-    
+
     @Override
     public void check(QfObject qfObject) throws Exception {
-
         try {
             Zip zip = new Zip();
             ZipService.Extracted extracted = extract(zip);
             Compiler compiler = Compiler.builder().build();
             compiler.setTargetProjectPath(extracted.root().getAbsolutePath());
-            if (! compiler.compile(COMPILE_FROM_FILE)) {
+            if (!compiler.compile(COMPILE_FROM_FILE)) {
                 for (Diagnostic s : compiler.getCollectedDiagnostics()) {
                     System.out.println(s);
                 }
-                return;
+                throw new InternalError("ERROR::CoverageChecker ERROR-CODE:5");
             }
+
+            extracted.javafileByClassname().keySet().forEach(System.out::println);
 
             Summary summary = checker(
                     preprocessing(extracted.javafileByClassname(), extracted.testClasses()),
@@ -103,37 +106,41 @@ public class CoverageChecker implements Checker {
             qfObject.setFeedback(Formatter.format(covSetting.getFormat(), summary));
             zip.cleanUp();
         } catch (Exception e) {
-            e.printStackTrace();
+            qfObject.setFeedback(new String[]{e.getMessage()});
         }
 
     }
 
+    private ZipService.Extracted extract(ZipService zipService) {
+        try {
+            ZipService.Classname classname;
+            ZipService.TestClass testClass;
+            if (covSetting.getConvention().equals(JAVA)) {
+                classname = (f) -> {
+                    Pattern pattern = Pattern.compile(".*/exam-results\\d+/(" + additional.getId() + "|" + file.getId() + ")/(.*)\\.java$");
+                    Matcher matcher = pattern.matcher(f.getPath());
+                    if (matcher.find()) {
+                        return matcher.group(2);
+                    }
+                    return null;
+                };
+                testClass = javaTestClass;
+            } else {
+                classname = mavenClassName;
+                testClass = mavenTestClass;
+            }
 
-    private ZipService.Extracted extract(ZipService zipService) throws Exception {
-        ZipService.Classname classname;
-        ZipService.TestClass testClass;
-        if (covSetting.getConvention().equals("JAVA")) {
-            classname = (f) -> {
-                Pattern pattern = Pattern.compile("tmp/exam-results\\d+/("+additional.getId()+"|"+file.getId()+")/(.*)\\.java$");
-                Matcher matcher = pattern.matcher(f.getPath());
-                if (matcher.find()) {
-                    return matcher.group(2);
-                }
-                return null;
-            };
-            testClass = javaTestClass;
-        } else {
-            classname = mavenClassName;
-            testClass = mavenTestClass;
+            return zipService.extractBoth(
+                    zipService.download(file),
+                    zipService.download(additional),
+                    testClass,
+                    classname);
+
+        } catch (Exception e) {
+            throw new InternalError("ERROR::CoverageChecker ERROR-CODE::001");
         }
-
-        return zipService.extractBoth(
-                zipService.download(file),
-                zipService.download(additional),
-                testClass,
-                classname);
     }
-    
+
     public Summary checker(List<CovInformation> testClasses, List<CovInformation> classes) {
         Summary summary = new Summary();
         try {
@@ -153,16 +160,16 @@ public class CoverageChecker implements Checker {
                     new LinkedList<>(classes));
 
             summary.analyze(new ParserWF().parse(user.getLanguage(), covSetting.getFeedback()));
+            return summary;
         } catch (Exception e) {
             e.printStackTrace();
-            return summary;
+            throw new InternalError("ERROR:CoverageChecker ERROR-CODE:002");
         }
-        return summary;
     }
 
-    private LinkedList<CovInformation> preprocessing( 
+    private LinkedList<CovInformation> preprocessing(
             Map<String, File> javafileByClassname,
-            List<String> classname) throws Exception {
+            List<String> classname)  {
         LinkedList<CovInformation> infos = new LinkedList<>();
         for (String name : classname) {
             infos.add(new Info(
@@ -173,12 +180,20 @@ public class CoverageChecker implements Checker {
         return infos;
     }
 
-    private String readJavacontent(File file) throws Exception{
-        return Files.readAllLines(file.toPath()).stream().collect(Collectors.joining("\n"));
+    private String readJavacontent(File file) {
+        try {
+            return Files.readAllLines(file.toPath()).stream().collect(Collectors.joining("\n"));
+
+        } catch (Exception e) {
+            throw new InternalError("ERROR::CoverageChecker ERROR-CODE:003");
+        }
     }
 
-    private byte[] readByteCode(File file) throws Exception {
-        return  Files.readAllBytes(Paths.get(file.getPath().replaceAll("\\.java", ".class")));
+    private byte[] readByteCode(File file) {
+        try {
+            return Files.readAllBytes(Paths.get(file.getPath().replaceAll("\\.java", ".class")));
+        } catch (Exception e) {
+            throw new InternalError("ERROR::CoverageChecker ERROR-CODE:004");
+        }
     }
-
 }

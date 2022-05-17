@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Formatter {
 
     public static String[] format(String format, FormatterFacade summary) {
-        System.out.println("---------------------------- FORATTER -------------------------------------");
+
         File f = null;
         try {
             String temp = Paths.get("./src/main/resources/coverage/template/index.vm").toString();

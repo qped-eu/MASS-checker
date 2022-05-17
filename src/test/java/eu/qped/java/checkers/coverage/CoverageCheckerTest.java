@@ -1,18 +1,37 @@
 package eu.qped.java.checkers.coverage;
 
+import eu.qped.framework.CheckerRunner;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.FileInfo;
+import eu.qped.framework.qf.QfObject;
 import eu.qped.framework.qf.QfUser;
 import eu.qped.java.checkers.coverage.feedback.Formatter;
 import eu.qped.java.checkers.coverage.feedback.Summary;
 import eu.qped.java.checkers.coverage.testhelp.*;
 import org.junit.jupiter.api.Test;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class CoverageCheckerTest {
+
+    @Test
+    public void systemTest() {
+        try {
+            CheckerRunner toTest = new CheckerRunner();
+            toTest.check();
+            QfObject got = toTest.getQfObject();
+
+            assertArrayEquals(
+                    new String[] {
+                            "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
+                    Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
+        } catch (Exception e) {
+            assertFalse(true, e.getMessage());
+        }
+    }
 
     @Test
     public void bagTestCaseNoConstructor() {
