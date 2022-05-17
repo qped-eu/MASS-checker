@@ -2,7 +2,7 @@
 
 QPED (Quality-focused Programming Education) - Feedback tools for Java and Python
 ========================
-What is QPED?
+[What is QPED?](https://qped.eu)
 -----------
 QPED is a project that has seen life as an Erasmus+ project funded by the European government.
 It is a combined venture of four different universities (Open Universiteit Nederland, Fundacio per a la Universitat oberta de Catalunya, Philipps Universität Marburg and Technische Universiteit Eindhoven) and the Quarterfall-organisation.
