@@ -37,18 +37,18 @@ For instance, the level of a learner (beginner, intermediate, expert) or the lan
 
 Object: mainSettings
 
-| Option Name | Possible Values | Regular Expression |
-| ------ | --------------- | ----- |
-| preferredLanguage | Google language codes (e.g. en, de, etc)| false |
+| Option Name       | Possible Values                           | 
+|-------------------|-------------------------------------------|
+| preferredLanguage | Google language codes (e.g. en, de, etc)  |
 
 
 ### Syntax Checker Configuration
 The syntax checker has not many configs because its goal just to check the correctness of the code.
 Object: mainSettings
 
-| Option Name | Possible Values | Regular Expression |
-| ------ | --------------- | ----- |
-| level | BEGINNER, INTERMEDIATE, PROFESSIONAL | false| 
+| Option Name | Possible Values                           |
+|-------------|-------------------------------------------|
+| level       | String (BEGINNER, INTERMEDIATE, ADVANCED) | 
 
 ### Style Checker Configuration
 
@@ -60,19 +60,19 @@ If the number is below 0, the option is ignored and the learner may use as many 
 
 Object: styleSettings
 
-| Option Name | Possible Values | Regular Expression |
-| ------ | --------------- | ----- |
-| mainLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
-| compLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
-| namesLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
-| basisLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
-| classLength | numeric [-1, 0, 1, *] | false |
-| methodLength | numeric [-1, 0, 1, *] | false |
-| cycloComplexity | numeric [-1, 0, 1, *]  | false |
-| fieldsCount | numeric [-1, 0, 1, *] | false |
-| varName | String | true |
-| methodName | String | true |
-| className | String | true |
+| Option Name      | Possible Values                           |
+|------------------|-------------------------------------------|
+| mainLevel        | String (BEGINNER, INTERMEDIATE, ADVANCED) |
+| compLevel        | String (BEGINNER, INTERMEDIATE, ADVANCED) |
+| namesLevel       | String (BEGINNER, INTERMEDIATE, ADVANCED) |
+| basisLevel       | String (BEGINNER, INTERMEDIATE, ADVANCED) |
+| classLength      | numeric [-1, 0, 1, *]                     |
+| methodLength     | numeric [-1, 0, 1, *]                     |
+| cycloComplexity  | numeric [-1, 0, 1, *]                     |
+| fieldsCount      | numeric [-1, 0, 1, *]                     |
+| varName          | String (Regular Expression)               |
+| methodName       | String (Regular Expression)               |
+| className        | String (Regular Expression)               |
 
 
 ### Semantics Checker Configuration
@@ -83,16 +83,16 @@ Setting a negative number ignores the option and lets the learner use as many as
 
 Object: semSettings
 
-| Option Name | Possible Values       | Regular Expression |
-| ------ |-----------------------| ----- |
-| methodName | String                | false |
-| recursionAllowed | TRUE, FALSE           | false |
-| whileLoop | numeric [-1, 0, 1, *] | false |
-| forLoop | numeric [-1, 0, 1, *]      | false |
-| forEachLoop | numeric [-1, 0, 1, *]     | false |
-| ifElseStmt | numeric [-1, 0, 1, *]      | false |
-| doWhileLoop | numeric [-1, 0, 1, *]       | false |
-| returnType | String                | false |
+| Option Name      | Possible Values        |
+|------------------|------------------------|
+| methodName       | String                 |
+| recursionAllowed | TRUE, FALSE            |
+| whileLoop        | numeric [-1, 0, 1, *]  |
+| forLoop          | numeric [-1, 0, 1, *]  |
+| forEachLoop      | numeric [-1, 0, 1, *]  |
+| ifElseStmt       | numeric [-1, 0, 1, *]  |
+| doWhileLoop      | numeric [-1, 0, 1, *]  |
+| returnType       | String                 |
 
 ### Class Checker Configuration WIP
 The class checker provides ways for the teacher to specify on what to expect from a given class.
@@ -101,12 +101,12 @@ classes the current class should inherit and what each field or method in the cl
 
 Object: designSettings
 
-| Option Name | Possible Values | Regular Expression |
-| ------ | --------------- | ----- |
-| classTypeName | String | false |
-| inheritsFrom | String Array | false |
-| fieldKeywords | String Array | false |
-| methodKeywords | String Array | false |
+| Option Name    | Possible Values  |
+|----------------|------------------|
+| classTypeName  | String           |
+| inheritsFrom   | String Array     |
+| fieldKeywords  | String Array     |
+| methodKeywords | String Array     |
 
 
 ### Test Checker Configuration WIP
@@ -114,8 +114,8 @@ To be added: short description on what can be configured
 
 Object: 
 
-| Option Name | Possible Values | Regular Expression |
-| ------ | --------------- | ----- |
+| Option Name | Possible Values |
+|-------------| --------------- |
 
 ### Example Configuration with Quarterfall
 ```
