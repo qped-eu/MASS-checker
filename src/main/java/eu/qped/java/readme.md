@@ -15,6 +15,10 @@ Style checker is a checker that checks and then reports common formatting, code 
 The report also contains examples for fixing the violations.
 It is also possible to base the report on one of the three knowledge levels specified in the [configuration section below](#Syntax-Checker-Configuration).
 
+### Semantics Checker
+Semantics Checker analyzes the meaning of the code and gives feedback on the methodology used within a given method.
+The checker can give feedback on whether a learner is supposed to use a certain type of loop or recursion, as well as the correct return type.
+
 ### Class Checker
 Class Checker compares the given solution to the expected design decisions, such as correctly  setting field or method visibilities.
 This includes checking if the solution correctly uses the expected class type for either the current class, or the inherited classes. 
