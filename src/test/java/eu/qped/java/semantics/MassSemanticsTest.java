@@ -65,7 +65,7 @@ class MassSemanticsTest {
 				+ "System.out.println(\"pretty\");\n"
 				+ "}";
 
-		SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
+		SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
 		MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker,

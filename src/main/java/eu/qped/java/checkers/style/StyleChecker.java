@@ -27,6 +27,8 @@ public class StyleChecker {
     private ArrayList<StyleFeedback> styleFeedbacks = new ArrayList<>();
     private ArrayList<StyleViolation> violations;
 
+    private String targetPath;
+
 
 
     public StyleChecker(final StyleConfigurator styleConfigurator) {
@@ -131,9 +133,17 @@ public class StyleChecker {
         }
     }
 
+    public String getTargetPath() {
+        return targetPath;
+    }
+
+    public void setTargetPath(String targetPath) {
+        this.targetPath = targetPath;
+    }
+
     private void executePMD() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths("TestClass.java");
+        configuration.setInputPaths(targetPath);
         configuration.setRuleSets(xmlFileManager.getFilename());
         configuration.setReportFormat("json");
         configuration.setReportFile("report.json");

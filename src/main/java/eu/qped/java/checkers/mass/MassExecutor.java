@@ -14,6 +14,7 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleConfigurator;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.style.StyleViolation;
+import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback;
@@ -73,11 +74,11 @@ public class MassExecutor {
         boolean semanticNeeded = Boolean.parseBoolean(mainSettingsConfigurator.getSemanticNeeded());
 
 
-        syntaxChecker.check();
+        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
 
-        if (syntaxChecker.isErrorOccurred()) {
-
-            if (styleNeeded) {
+        if (syntaxCheckReport.isCompilable()) {
+            if (styleNeeded){
+                styleChecker.setTargetPath(syntaxCheckReport.getPath());
                 styleChecker.check();
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
 
@@ -85,7 +86,7 @@ public class MassExecutor {
                 violations = styleChecker.getStyleViolationsList();
             }
             if (semanticNeeded) {
-                final String source = syntaxChecker.getSourceCode();
+                final String source = syntaxCheckReport.getCodeAsString();
                 semanticChecker.setSource(source);
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
@@ -93,10 +94,9 @@ public class MassExecutor {
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             SyntaxFeedbackGenerator feedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-            syntaxErrors = syntaxChecker.getSyntaxErrors();
+            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
             syntaxFeedbacks = feedbackGenerator.generateFeedbacks(syntaxErrors);
 
-            //auto checker
         }
 
         // translate Feedback body if needed
@@ -154,7 +154,7 @@ public class MassExecutor {
     public List<SyntaxError> getSyntaxErrors() {
         return syntaxErrors;
     }
-    //FIXME remove and save the templates for the configs.
+
     public static void main(String[] args) {
         long start = System.nanoTime();
 
@@ -162,32 +162,59 @@ public class MassExecutor {
         Map<String, String> mainSettings = new HashMap<>();
         mainSettings.put("semanticNeeded", "true");
         mainSettings.put("syntaxLevel", "2");
-        mainSettings.put("preferredLanguage", "en");
-        mainSettings.put("styleNeeded", "false");
+        mainSettings.put("preferredLanguage", "de");
+        mainSettings.put("styleNeeded", "true");
 
 
         MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
 
         QFSemSettings qfSemSettings = new QFSemSettings();
-        qfSemSettings.setMethodName("rec");
+        qfSemSettings.setMethodName("grayCodeStrings");
         qfSemSettings.setRecursionAllowed("true");
         qfSemSettings.setWhileLoop("-1");
         qfSemSettings.setForLoop("2");
         qfSemSettings.setForEachLoop("-1");
-        qfSemSettings.setIfElseStmt("-1");
+        qfSemSettings.setIfElseStmt("0");
         qfSemSettings.setDoWhileLoop("-1");
         qfSemSettings.setReturnType("int");
 
         SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
 
-        String code = " Long rec (){\n" +
-                "        System.out.println(\"pretty\");\n" +
-                "return 100L; " +
-                "    }";
+        String code = "import java.util.ArrayList;\n" +
+                "import java.util.Arrays;\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "public class GrayCode {\n" +
+                "\n" +
+                "    public static List<String> grayCodeStrings(int n) {\n" +
+                "        List<String> list = new ArrayList<>();\n" +
+                "        if (n == 0) {\n" +
+                "            list.add(\"\");\n" +
+                "            return list;\n" +
+                "        } else if (n == 1) {\n" +
+                "            list.add(\"0\");\n" +
+                "            list.add(\"1\");\n" +
+                "            return list;\n" +
+                "        } else {\n" +
+                "            List<String> prev = grayCodeStrings(n - 1);\n" +
+                "            list.addAll(prev);\n" +
+                "            for (int i = prev.size() - 1; i >= 0; i--) {\n" +
+                "                String bits = \"abc\" \n + \"ccc\"; \n" +
+                "                list.set(i, \"0\" + bits);\n" +
+                "                list.add(\"1\" + bits);\n" +
+                "            }\n" +
+                "            return list;\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+
 
         QFStyleSettings qfStyleSettings = new QFStyleSettings();
         qfStyleSettings.setNamesLevel("adv");
         qfStyleSettings.setMethodName("[AA]");
+        qfStyleSettings.setBasisLevel("adv");
+        qfStyleSettings.setClassLength("10");
+        qfStyleSettings.setMethodLength("10");
 
 
         StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);
@@ -196,22 +223,18 @@ public class MassExecutor {
         StyleChecker styleChecker = new StyleChecker(styleConfigurator);
 
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
         MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);
 
-
-//        MassExecutor massExecutor = MassExecutorFactory.createExecutor(styleConfigurator, semanticConfigurator, mainSettingsConf, code);
-          massE.execute();
-//        new ArrayList<StyleViolation>(massExecutor.getViolations()).forEach(x -> System.out.println(x.getRule()));
-
+        massE.execute();
 
         //todo false Alarm: Here was Semicolon expected!
 
-
-        //Compiler compiler = new Compiler(code, styleConfigurator, syntaxConfigurator);
-
+        for (SyntaxFeedback syntaxFeedback : massE.getSyntaxFeedbacks()) {
+            System.out.println(syntaxFeedback);
+        }
 
         for (Feedback s : massE.semanticFeedbacks) {
             System.out.println(s.getBody());
@@ -245,6 +268,4 @@ public class MassExecutor {
         long end = System.nanoTime() - start;
         System.out.println("Feedback generated in: " + end * Math.pow(10.0, -9.0) + " sec");
     }
-
-
 }

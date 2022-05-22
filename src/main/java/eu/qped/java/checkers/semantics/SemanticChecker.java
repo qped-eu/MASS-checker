@@ -48,7 +48,6 @@ public class SemanticChecker {
 
     public void check(){
         parseCompUnit();
-
         if(checkMethodExist()) {
             try {
                 BlockStmt targetedMethod = getTargetedMethod(semanticConfigurator.getMethodName());

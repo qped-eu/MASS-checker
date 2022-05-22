@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,30 +53,26 @@ public class SyntaxFeedbackGeneratorNew implements FeedbackGenerator<SyntaxFeedb
             // build Feedback body
             List<SyntaxFeedbackNew> relatedSyntaxFeedbacks = this.getFeedback(syntaxError);
             relatedSyntaxFeedbacks = relatedSyntaxFeedbacks.stream().filter(relatedSyntaxFeedback -> {
-               return relatedSyntaxFeedback.getErrorMessage().equals(syntaxError.getErrorMsg());
+               return relatedSyntaxFeedback.getErrorMessage().equals(syntaxError.getErrorMessage());
             }).collect(Collectors.toList());
             relatedSyntaxFeedbacks.forEach(relatedSyntaxFeedback -> {
-                try {
-                    CharSequence source = syntaxError.getSource().getCharContent(false);
-                    relatedSyntaxFeedback.setBody(""
-                            + "* Compiler error\n\n"
-                            + "* About this Error: " + this.getFeedback(syntaxError).get(0).getFeedbackContent() + "\n\n"
-                            + "* Cause of error:\n\n"
-                                + "------------------------------------------------------------"
-                                + "\n\n"
-                                + source.subSequence(0 , (int) syntaxError.getStartPos())
-                                + "^"
-                                + source.subSequence((int) syntaxError.getStartPos(),source.length()) + ""
-                                + "\n\n"
-                                + "-------------------------------------------"
-                                + "\n\n"
-                            + "* Example to fix this error: "
-                            + relatedSyntaxFeedback.getSolutionExample()
-                            + ""
-                    );
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                //                    CharSequence source = syntaxError.getSource().getCharContent(false);
+                relatedSyntaxFeedback.setBody(""
+                        + "* Compiler error\n\n"
+                        + "* About this Error: " + this.getFeedback(syntaxError).get(0).getFeedbackContent() + "\n\n"
+                        + "* Cause of error:\n\n"
+//                                + "------------------------------------------------------------"
+//                                + "\n\n"
+//                                + source.subSequence(0 , (int) syntaxError.getStartPos())
+//                                + "^"
+//                                + source.subSequence((int) syntaxError.getStartPos(),source.length()) + ""
+//                                + "\n\n"
+//                                + "-------------------------------------------"
+//                                + "\n\n"
+                        + "* Example to fix this error: "
+                        + relatedSyntaxFeedback.getSolutionExample()
+                        + ""
+                );
             });
             result.addAll(relatedSyntaxFeedbacks);
         });
@@ -89,7 +84,7 @@ public class SyntaxFeedbackGeneratorNew implements FeedbackGenerator<SyntaxFeedb
         SyntaxFeedbackDataNew syntaxFeedbackDataNew = SyntaxFeedbackDataNew.builder().build();
         result = SyntaxFeedbackDataNew.getSyntaxFeedbackByErrorCode().get(syntaxError.getErrorCode());
         result.stream().filter(syntaxFeedback -> {
-            return syntaxFeedback.getErrorMessage().equals(syntaxError.getErrorMsg());
+            return syntaxFeedback.getErrorMessage().equals(syntaxError.getErrorMessage());
         });
         return result;
     }
@@ -97,14 +92,14 @@ public class SyntaxFeedbackGeneratorNew implements FeedbackGenerator<SyntaxFeedb
     public static void main(String[] args) {
         String code = ""
                 + "public static void main (String[] args){  "
-                    + "int i = 0    "
+                    + "int i = 0;    "
                 + "}"
                 + "public static void test () { "
                     + "int g = 0;"
                 + "}"
                 ;
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(code).build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).level(CheckLevel.ADVANCED).build();
 //
 
 
@@ -121,11 +116,36 @@ public class SyntaxFeedbackGeneratorNew implements FeedbackGenerator<SyntaxFeedb
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker, mainSettingsConfiguratorConf);
         massE.execute();
         List<String> result = new ArrayList<>();
+//        System.out.println(massE.getSyntaxFeedbacks());
         for (eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback syntax : massE.getSyntaxFeedbacks()) {
             result.add(""
                     + syntax.getFeedbackContent()
+//                    + NEW_LINE
+//                    + syntax.getBody()
+//                    + NEW_LINE
+//                    + syntax.getSolutionExample()
+//                    + NEW_LINE
+                    + "--------------------------------------------------"
             );
         }
         System.out.println(result);
+//        SyntaxFeedbackGeneratorNew syntaxFeedbackGenerator = SyntaxFeedbackGeneratorNew.builder().build();
+//        List<SyntaxError> syntaxErrors = syntaxChecker.getSyntaxErrors();
+//        for (SyntaxError syntaxError : syntaxErrors) {
+//            try {
+//
+//                CharSequence charSequence = syntaxError.getSource().getCharContent(false);
+//                CharSequence contentInError = charSequence.subSequence((int) syntaxError.getStartPos(), (int) syntaxError.getEndPos());
+//                CharSequence contentInError1 = charSequence.subSequence((int) syntaxError.getStartPos(), charSequence.length());
+////                System.out.println(">>>>" + charSequence);
+////                System.out.println(">>>>" + charSequence.subSequence((int)syntaxError.getStartPos(), charSequence.length()));
+////                System.out.println(">>>>" + syntaxChecker.getSourceCode());
+////                System.out.println(">>>>" + syntaxChecker.getSourceCode().substring((int)syntaxError.getStartPos()));
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        List<SyntaxFeedbackNew> newSyntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxChecker.getSyntaxErrors());
+//        System.out.println(newSyntaxFeedbacks.get(0).getBody());
     }
 }

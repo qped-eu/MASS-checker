@@ -15,6 +15,7 @@ import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class Mass implements Checker {
@@ -39,17 +40,23 @@ public class Mass implements Checker {
 
         StyleChecker styleChecker = new StyleChecker(styleConfigurator);
 
+        Map<String, String> mainSettingsMap = new HashMap<>();
+        mainSettingsMap.put("semanticNeeded", mainSettings.getSemanticNeeded());
+        mainSettingsMap.put("syntaxLevel", mainSettings.getSyntaxLevel());
+        mainSettingsMap.put("preferredLanguage", mainSettings.getPreferredLanguage());
+        mainSettingsMap.put("styleNeeded", mainSettings.getStyleNeeded());
 
-        MainSettings mainSettingsConfiguratorConf = new MainSettings(new HashMap<>());
-        mainSettingsConfiguratorConf.setSyntaxLevel(CheckLevel.BEGINNER);
-        mainSettingsConfiguratorConf.setStyleNeeded(true);
-        mainSettingsConfiguratorConf.setSemanticNeeded("true");
+
+        MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettingsMap);
+//        mainSettingsConfiguratorConf.setSyntaxLevel(CheckLevel.BEGINNER);
+//        mainSettingsConfiguratorConf.setStyleNeeded(true);
+//        mainSettingsConfiguratorConf.setSemanticNeeded("true");
 
         SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
 
 
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(qfObject.getAnswer()).build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
 
         MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);
 

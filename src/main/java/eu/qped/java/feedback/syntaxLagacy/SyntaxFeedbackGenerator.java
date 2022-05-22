@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.qped.java.checkers.syntax.SyntaxError;
+import eu.qped.java.checkers.syntax.SyntaxErrorPredictHelper;
 import eu.qped.java.feedback.FeedbackGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -75,7 +76,7 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
 
         StringBuilder header = new StringBuilder();
 
-        header = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), header);
+        header = appendCliche(syntaxError.getErrorMessage(), syntaxError.getErrorTrigger(), syntaxError.getLine(), header);
 
         //result = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), result);
 
@@ -87,7 +88,7 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
 
 
 
-        SyntaxErrorPredictHelper syntaxErrorPredictHelper = new SyntaxErrorPredictHelper(syntaxError.getErrorCode(), syntaxError.getErrorMsg(), syntaxError.getErrorTrigger());
+        SyntaxErrorPredictHelper syntaxErrorPredictHelper = new SyntaxErrorPredictHelper(syntaxError.getErrorCode(), syntaxError.getErrorMessage(), syntaxError.getErrorTrigger());
         switch (syntaxError.getErrorCode()) {
             case "compiler.err.expected":
             case "compiler.err.expected3":
@@ -220,7 +221,7 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
             case "compiler.err.cant.apply.symbol":
             case "compiler.err.generic.array.creation": {
                 try{
-                    result.append( syntaxError.getErrorMsg());
+                    result.append( syntaxError.getErrorMessage());
                 }
                 catch (Exception e){
                     LogManager.getLogger((Class<?>) getClass()).throwing(e);
@@ -228,24 +229,24 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
                 break;
             }
             case "compiler.err.prob.found.req": {
-                if (syntaxError.getErrorMsg().equals("incompatible types: int cannot be converted to boolean")) {
+                if (syntaxError.getErrorMessage().equals("incompatible types: int cannot be converted to boolean")) {
                     try{
-                        result.append(syntaxError.getErrorMsg());
+                        result.append(syntaxError.getErrorMessage());
                     }
                     catch (Exception e){
                         LogManager.getLogger((Class<?>) getClass()).throwing(e);
                     }
 
-                } else if (syntaxError.getErrorMsg().equals("incompatible types: possible lossy conversion from double to int")) {
+                } else if (syntaxError.getErrorMessage().equals("incompatible types: possible lossy conversion from double to int")) {
                     try{
-                        result.append( syntaxError.getErrorMsg());
+                        result.append( syntaxError.getErrorMessage());
                     }
                     catch (Exception e){
                         LogManager.getLogger((Class<?>) getClass()).throwing(e);
                     }
                 } else{
                     try{
-                        result.append(syntaxError.getErrorMsg());
+                        result.append(syntaxError.getErrorMessage());
                     }
                     catch (Exception e){
                         LogManager.getLogger((Class<?>) getClass()).throwing(e);
@@ -284,7 +285,7 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
                 break;
             }
             default:
-                result.append(syntaxError.getErrorMsg()).append(LINE_NUMBER_CONS).append(syntaxError.getLine());
+                result.append(syntaxError.getErrorMessage()).append(LINE_NUMBER_CONS).append(syntaxError.getLine());
         }
         result.append(NEW_LINE);
         return new SyntaxFeedback( result.toString() , syntaxError.getErrorCode() , "",syntaxError, null);
@@ -294,9 +295,9 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
     private void expectedSubSwitch(StringBuilder result, SyntaxErrorPredictHelper syntaxErrorPredictHelper, SyntaxError syntaxError) {
 
         example = "";
-        String forSemExp = syntaxError.getAdditionalProperties().get("forSemExpected");
+        String forSemExp = "";
 
-        switch (syntaxError.getErrorMsg()) {
+        switch (syntaxError.getErrorMessage()) {
             case "';' expected":
                 if (forSemExp != null) {
                     if (syntaxErrorPredictHelper.hasBraces(forSemExp)) {
@@ -314,7 +315,7 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
             case "'.class' expected":
             case "'[' expected":
                 try{
-                    result.append(syntaxError.getErrorMsg());
+                    result.append(syntaxError.getErrorMessage());
                 }
                 catch (Exception e){
                     LogManager.getLogger((Class<?>) getClass()).throwing(e);
@@ -337,7 +338,7 @@ public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback
                 }
                 break;
             default:
-                result.append(syntaxError.getErrorMsg());
+                result.append(syntaxError.getErrorMessage());
         }
     }
 

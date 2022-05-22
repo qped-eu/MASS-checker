@@ -119,7 +119,7 @@ public class XmlFileManager {
 
 				mainRulesetFile = File.createTempFile("mainRuleset", ".xml");
 
-				StreamResult streamResult = new StreamResult(mainRulesetFile.getPath());
+				StreamResult streamResult = new StreamResult(mainRulesetFile.toURI().getPath());
 				transformer.transform(domSource, streamResult);
 
 				// make sure that the document is not edited anymore.
