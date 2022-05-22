@@ -92,6 +92,28 @@ public class SyntaxFeedbackSolutionExamples {
                             + "int a = 0;" + MarkdownFormatterUtility.NEW_LINE
                             + "int b = a;" + MarkdownFormatterUtility.NEW_LINE
             );
+            put("compiler.err.cant.resolve.location"
+                    , ""
+                            + "// old code." + MarkdownFormatterUtility.NEW_LINE
+                            + "int a = b;" + MarkdownFormatterUtility.NEW_LINE
+                            + "// new code." + MarkdownFormatterUtility.NEW_LINE
+                            + "int b = 0;" + MarkdownFormatterUtility.NEW_LINE
+                            + "int a = b;" + MarkdownFormatterUtility.NEW_LINE
+            );
+            put("compiler.err.repeated.modifier"
+                    , ""
+                            + "// old code." + MarkdownFormatterUtility.NEW_LINE
+                            + "public public int i;" + MarkdownFormatterUtility.NEW_LINE
+                            + "// new code." + MarkdownFormatterUtility.NEW_LINE
+                            + "public int i;" + MarkdownFormatterUtility.NEW_LINE
+            );
+            put("compiler.err.illegal.combination.of.modifiers"
+                    , ""
+                            + "// old code." + MarkdownFormatterUtility.NEW_LINE
+                            + "public public int i;" + MarkdownFormatterUtility.NEW_LINE
+                            + "// new code." + MarkdownFormatterUtility.NEW_LINE
+                            + "public static int i;" + MarkdownFormatterUtility.NEW_LINE
+            );
         }};
     }
 

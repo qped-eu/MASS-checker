@@ -42,41 +42,31 @@ public class SyntaxFeedbackMessages {
             // new
             put("compiler.err.var.might.not.have.been.initialized"
                     , ""
-                            + "The variable not only had to be declared but also initialized"
-            );
-            put("compiler.err.cant.resolve.location"
-                    , ""
-                            + "You have called an undefined symbol (variable), at the above-mentioned position."
+                            + "The compiler expects that you initialize a variable."
                             + NEW_Double_LINE
-                            + "it could be that you made a typo with the name or forgot to define the symbol."
+                            + "This mean you must give this variable a Value."
             );
             put("compiler.err.abstract.cant.be.instantiated"
                     , ""
-                            + "No object could be created from abstract classes."
+                            + "The compiler expects that you not create an instance from an abstract class."
                             + NEW_Double_LINE
-                            + "it is possible to create an object of a subclass of an abstract class"
+                            + "But you can create an object of a subclass of this abstract class."
             );
             put("compiler.err.repeated.modifier"
                     , ""
-                            + "Dont repeat modifiers"
+                            + "The compiler expects that you not repeat modifiers like “public”, “private”, ..."
             );
             put("compiler.err.illegal.combination.of.modifiers"
                     , ""
-                            + "Modifiers are additional properties for Java declarations such as methods, variables and classes"
+                            + "The compiler expects that combine modifiers correctly."
                             + NEW_Double_LINE
-                            + "you always have to specify it at the very beginning of the declaration"
-                            + NEW_Double_LINE
-                            + "you can also combine them but unfortunately not like what you have done"
-                            + NEW_Double_LINE
-                            + "You can combine almost all modifiers with static, but you are not allowed to combine it public with itself or with private or protected"
+                            + "You can only combine static and final with private, public and protected."
             );
             put("compiler.err.missing.meth.body.or.decl.abstract"
                     , ""
-                            + "The declaration of a method consists of 2 steps:"
+                            + "The compiler expects that you declare method correctly."
                             + NEW_Double_LINE
-                            + "Method header: <return type> methodName()"
-                            + NEW_Double_LINE
-                            + "Method body: {code block and a return if necessary}"
+                            + "To fix this, you need to declare a method header like \"<return type> methodName()\" and method body like \"{ some code }\")."
             );
             put("compiler.err.illegal.start.of.expr"
                     , ""
@@ -89,6 +79,12 @@ public class SyntaxFeedbackMessages {
                             + "2. write method or class inside of another method"
                             + NEW_Double_LINE
                             + "3. forget to write a curly braces \"{\" or \"}\" "
+            );
+            put("compiler.err.illegal.start.of.type"
+                    , ""
+                            + "The compiler expects that you write code in right place."
+                            + NEW_Double_LINE
+                            + "This usually happens when you write for, if, else, ... in a wrong place "
             );
         }};
     }

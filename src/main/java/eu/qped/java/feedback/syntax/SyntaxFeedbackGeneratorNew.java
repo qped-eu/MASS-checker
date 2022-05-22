@@ -66,7 +66,7 @@ public class SyntaxFeedbackGeneratorNew extends AbstractFeedbackGenerator {
     public static void main(String[] args) {
         String code = ""
                 + "public static void main (String[] args) { \n"
-                + " int i = 0; b = 0;  \n"
+                + " int a = b;  \n"
                 + "  \n"
                 + "} \n";
 
