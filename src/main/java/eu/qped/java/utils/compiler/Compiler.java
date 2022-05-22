@@ -114,6 +114,7 @@ public class Compiler {
             }
         }
         else {
+            fileName = DEFAULT_CLASS_Name;
             targetProjectOrClassPath = DEFAULT_CLASS_PATH;
         }
         if (isClassOrInterface) {
@@ -122,11 +123,16 @@ public class Compiler {
             javaFileContent.append("/**" + "public")
                     .append(fileName)
                     .append("*/")
+                    .append("\n")
                     .append("import java.util.*;")
-                    .append("class")
+                    .append("\n")
+                    .append("public class")
+                    .append(" ")
                     .append(fileName)
-                    .append("{")
+                    .append(" {")
+                    .append("\n")
                     .append(answer)
+                    .append("\n")
                     .append("}");
         }
         fullSourceCode = javaFileContent.toString();

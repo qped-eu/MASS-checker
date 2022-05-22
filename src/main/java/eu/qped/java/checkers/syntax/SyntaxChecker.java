@@ -102,33 +102,9 @@ public class SyntaxChecker {
     }
 
     public static void main(String[] args) throws IOException {
-        String code = "import java.util.ArrayList;\n" +
-                "import java.util.Arrays;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class meroo {\n" +
-                "\n" +
-                "    public static List<String> grayCodeStrings(int n) {\n" +
-                "        List<String> list = new ArrayList<>();\n" +
-                "        if (n == 0) {\n" +
-                "            list.add(\"\");\n" +
-                "            return list;\n" +
-                "        } else if (n == 1) {\n" +
-                "            list.add(\"0\");\n" +
-                "            list.add(\"1\");\n" +
-                "            return list;\n" +
-                "        } else {\n" +
-                "            List<String> prev = grayCodeStrings(n - 1);\n" +
-                "            list.addAll(prev);\n" +
-                "            for (int i = prev.size() - 1; i >= 0; i--) {\n" +
-                "                String bits = \"abc\" \n + \"ccc\"; \n" +
-                "                list.set(i, \"0\" + bits);\n" +
-                "                list.add(\"1\" + bits);\n" +
-                "            }\n" +
-                "            return list;\n" +
-                "        }\n" +
-                "    }\n" +
-                "}";
+        String code = "private void print() {\n" +
+            "        System.out.println();\n" +
+                    "    }";
 
         String[] codeLines = code.split("\n");
 
