@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Builder
 
-public class SyntaxFeedbackNew extends Feedback {
+public class SyntaxFeedback extends Feedback {
     private String header;
     private String feedbackMessage;
     private String errorSource;

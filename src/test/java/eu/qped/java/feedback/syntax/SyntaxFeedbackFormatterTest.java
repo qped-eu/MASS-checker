@@ -4,23 +4,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SyntaxFeedbackFormatterTest {
-    private SyntaxFeedbackNew syntaxFeedback;
-    private SyntaxFeedbackNew emptySyntaxFeedback;
+    private SyntaxFeedback syntaxFeedback;
+    private SyntaxFeedback emptySyntaxFeedback;
 
 
     @BeforeEach
     void setUp() {
-        syntaxFeedback = SyntaxFeedbackNew.builder()
+        syntaxFeedback = SyntaxFeedback.builder()
                 .header("header")
                 .feedbackMessage("feedbackMessage")
                 .errorLine("2")
                 .errorSource("int i = 0")
                 .solutionExample("int i = 0;")
                 .build();
-        emptySyntaxFeedback = SyntaxFeedbackNew.builder().build();
+        emptySyntaxFeedback = SyntaxFeedback.builder().build();
     }
 
     @Test

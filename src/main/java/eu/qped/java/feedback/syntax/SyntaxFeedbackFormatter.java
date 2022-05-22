@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @Builder
 public class SyntaxFeedbackFormatter {
 
-    public SyntaxFeedbackNew formatFeedback(SyntaxFeedbackNew syntaxFeedback) {
+    public SyntaxFeedback formatFeedback(SyntaxFeedback syntaxFeedback) {
         if (syntaxFeedback != null) {
             syntaxFeedback.setHeader(formatHeader(syntaxFeedback.getHeader()));
             syntaxFeedback.setFeedbackMessage(formatFeedbackMessage(syntaxFeedback.getFeedbackMessage()));

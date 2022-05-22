@@ -8,8 +8,6 @@ import lombok.Data;
 import java.util.HashMap;
 import java.util.Map;
 
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.NEW_Double_LINE;
-
 @Data
 @AllArgsConstructor
 @Builder

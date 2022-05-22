@@ -1,10 +1,5 @@
 package eu.qped.java.checkers.mass;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -15,10 +10,16 @@ import eu.qped.java.checkers.style.StyleConfigurator;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.style.StyleViolation;
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
-import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback;
-import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedbackGenerator;
+import eu.qped.java.checkers.syntax.SyntaxError;
+import eu.qped.java.feedback.syntax.AbstractSyntaxFeedbackGenerator;
+import eu.qped.java.feedback.syntax.SyntaxFeedbackGenerator;
+import eu.qped.java.feedback.syntax.SyntaxFeedback;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Executor class, execute all components of the System to analyze the code
@@ -77,7 +78,7 @@ public class MassExecutor {
         SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
 
         if (syntaxCheckReport.isCompilable()) {
-            if (styleNeeded){
+            if (styleNeeded) {
                 styleChecker.setTargetPath(syntaxCheckReport.getPath());
                 styleChecker.check();
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
@@ -93,9 +94,9 @@ public class MassExecutor {
             }
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
-            SyntaxFeedbackGenerator feedbackGenerator = SyntaxFeedbackGenerator.builder().build();
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
-            syntaxFeedbacks = feedbackGenerator.generateFeedbacks(syntaxErrors);
+            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
 
         }
 

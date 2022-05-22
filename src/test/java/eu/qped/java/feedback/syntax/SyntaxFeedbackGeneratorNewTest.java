@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SyntaxFeedbackGeneratorNewTest {
     private SyntaxError syntaxError;
 
@@ -22,27 +20,27 @@ class SyntaxFeedbackGeneratorNewTest {
 
     @Test
     void generateHeader() {
-        Assertions.assertNotEquals("", SyntaxFeedbackGeneratorNew.builder().build().generateHeader());
+        Assertions.assertNotEquals("", SyntaxFeedbackGenerator.builder().build().generateHeader());
     }
 
     @Test
     void generateFeedbackMessage() {
-        Assertions.assertNotEquals("", SyntaxFeedbackGeneratorNew.builder().build().generateFeedbackMessage(syntaxError));
+        Assertions.assertNotEquals("", SyntaxFeedbackGenerator.builder().build().generateFeedbackMessage(syntaxError));
     }
 
 
     @Test
     void generateErrorLine() {
-        Assertions.assertNotEquals("", SyntaxFeedbackGeneratorNew.builder().build().generateErrorLine(syntaxError));
+        Assertions.assertNotEquals("", SyntaxFeedbackGenerator.builder().build().generateErrorLine(syntaxError.getLine()));
     }
 
     @Test
     void generateErrorSource() {
-        Assertions.assertNotEquals("", SyntaxFeedbackGeneratorNew.builder().build().generateErrorSource(syntaxError));
+        Assertions.assertNotEquals("", SyntaxFeedbackGenerator.builder().build().generateErrorSource(syntaxError.getErrorTrigger()));
     }
 
     @Test
     void generateSolutionExample() {
-        Assertions.assertNotEquals("", SyntaxFeedbackGeneratorNew.builder().build().generateSolutionExample(syntaxError));
+        Assertions.assertNotEquals("", SyntaxFeedbackGenerator.builder().build().generateSolutionExample(syntaxError));
     }
 }
