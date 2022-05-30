@@ -165,4 +165,26 @@ public class Compiler {
         fullSourceCode = javaFileContent.toString();
         return javaFileContent.toString();
     }
+
+
+
+    public static void main(String[] args) {
+        Compiler compiler = Compiler.builder().build();
+        compiler.compile("    import java.util.ArrayList;\n" +
+                "import java.util.List;\n" +
+                "    public class Mmm{\n" +
+//                "        List<String> xx(){\n" +
+//                "            List list = new ArrayList();\n" +
+//                "            list.add(\"8888\");\n" +
+//                "            return list;\n" +
+//                "        }\n" +
+                "    }");
+        System.out.println(compiler.getCollectedDiagnostics().size());
+        for (Diagnostic diagnostic : compiler.getCollectedDiagnostics()){
+            System.out.println(diagnostic.getMessage(Locale.ENGLISH));
+            System.out.println(diagnostic.getLineNumber());
+            System.out.println("/////////////");
+        }
+
+    }
 }

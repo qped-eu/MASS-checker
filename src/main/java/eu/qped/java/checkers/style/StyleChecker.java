@@ -2,6 +2,10 @@ package eu.qped.java.checkers.style;
 
 import java.util.ArrayList;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
@@ -19,6 +23,10 @@ import net.sourceforge.pmd.PMDConfiguration;
  * @since 08.5.2021
  * @version 1.4
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class StyleChecker {
 
     private final XmlFileManager xmlFileManager = new XmlFileManager();
@@ -133,13 +141,6 @@ public class StyleChecker {
         }
     }
 
-    public String getTargetPath() {
-        return targetPath;
-    }
-
-    public void setTargetPath(String targetPath) {
-        this.targetPath = targetPath;
-    }
 
     private void executePMD() {
         final PMDConfiguration configuration = new PMDConfiguration();
@@ -150,9 +151,6 @@ public class StyleChecker {
         PMD.runPmd(configuration);
     }
 
-    public ArrayList<StyleFeedback> getStyleFeedbacks() {
-        return styleFeedbacks;
-    }
 
     public ArrayList<StyleViolation> getStyleViolationsList() {
         return this.violations;
