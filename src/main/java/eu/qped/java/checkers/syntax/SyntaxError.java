@@ -1,10 +1,10 @@
 package eu.qped.java.checkers.syntax;
 
 
-import javax.tools.Diagnostic.Kind;
-import javax.tools.JavaFileObject;
-
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
@@ -14,13 +14,17 @@ import java.util.Map;
 @Builder
 public class SyntaxError {
 
+    @Deprecated(forRemoval = true)
     private Map<String, String> additionalProperties;
 
     private String errorCode;
-    private String errorMsg;
+    private String errorMessage;
+
+    @Deprecated(forRemoval = true)
+    private String errorSourceCode;
+
     private String errorTrigger;
-    private Kind kind;
-    private JavaFileObject source;
+    private String fileName;
 
     private long line;
     private long startPos;
@@ -34,7 +38,7 @@ public class SyntaxError {
         SyntaxError that = (SyntaxError) o;
         return
                 this.getErrorCode().equalsIgnoreCase(that.getErrorCode()) &&
-                        this.getErrorMsg().equals(that.getErrorMsg()) &&
+                        this.getErrorMessage().equals(that.getErrorMessage()) &&
                         this.getStartPos() == that.getStartPos() &&
                         this.getErrorTrigger().equals(that.getErrorTrigger()) &&
                         this.getAdditionalProperties().equals(that.getAdditionalProperties());

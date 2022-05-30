@@ -1,7 +1,15 @@
 package eu.qped.java.checkers.style;
 
 import eu.qped.framework.Feedback;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class StyleFeedback extends Feedback {
 
     private String desc;
@@ -12,30 +20,6 @@ public class StyleFeedback extends Feedback {
         super(body);
         this.example = example;
         this.line = line;
-        this.desc = desc;
-    }
-
-    public String getLine() {
-        return line;
-    }
-
-    public void setLine(String line) {
-        this.line = line;
-    }
-
-    public String getExample() {
-        return example;
-    }
-
-    public void setExample(String example) {
-        this.example = example;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
         this.desc = desc;
     }
 }

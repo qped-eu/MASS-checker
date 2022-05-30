@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
@@ -11,9 +10,8 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleConfigurator;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.feedback.syntaxLagacy.SyntaxFeedback;
+import eu.qped.java.feedback.syntax.SyntaxFeedback;
 
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -34,24 +32,20 @@ public class Mass implements Checker {
     public void check(QfObject qfObject) throws Exception {
 
 
-
         StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(this.styleSettings);
 
         StyleChecker styleChecker = new StyleChecker(styleConfigurator);
 
 
-        MainSettings mainSettingsConfiguratorConf = new MainSettings(new HashMap<>());
-        mainSettingsConfiguratorConf.setSyntaxLevel(CheckLevel.BEGINNER);
-        mainSettingsConfiguratorConf.setStyleNeeded(true);
-        mainSettingsConfiguratorConf.setSemanticNeeded("true");
+        MainSettings mainSettings = new MainSettings(this.mainSettings);
 
         SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
 
 
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().answer(qfObject.getAnswer()).build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
 
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettings);
 
         massExecutor.execute();
 
@@ -95,14 +89,13 @@ public class Mass implements Checker {
 
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
             result[i + 1] = ""
-                    + syntax.getFeedbackContent()
-                    + NEW_LINE
-                    + "At Line: " +  syntax.getSyntaxError().getLine()
+                    + syntax.toString()
                     + NEW_LINE
                     + "--------------------------------------------------"
             ;
             i = i + 2;
         }
+
 
         qfObject.setFeedback(result);
     }

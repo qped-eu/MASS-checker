@@ -2,6 +2,10 @@ package eu.qped.java.checkers.style;
 
 import java.util.ArrayList;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
@@ -19,6 +23,10 @@ import net.sourceforge.pmd.PMDConfiguration;
  * @since 08.5.2021
  * @version 1.4
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class StyleChecker {
 
     private final XmlFileManager xmlFileManager = new XmlFileManager();
@@ -26,6 +34,8 @@ public class StyleChecker {
 
     private ArrayList<StyleFeedback> styleFeedbacks = new ArrayList<>();
     private ArrayList<StyleViolation> violations;
+
+    private String targetPath;
 
 
 
@@ -131,18 +141,16 @@ public class StyleChecker {
         }
     }
 
+
     private void executePMD() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        configuration.setInputPaths("TestClass.java");
+        configuration.setInputPaths(targetPath);
         configuration.setRuleSets(xmlFileManager.getFilename());
         configuration.setReportFormat("json");
         configuration.setReportFile("report.json");
         PMD.runPmd(configuration);
     }
 
-    public ArrayList<StyleFeedback> getStyleFeedbacks() {
-        return styleFeedbacks;
-    }
 
     public ArrayList<StyleViolation> getStyleViolationsList() {
         return this.violations;
