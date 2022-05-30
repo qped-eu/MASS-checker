@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
 
 import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,7 +32,7 @@ import java.util.Locale;
 public class Compiler {
 
     private static final String DEFAULT_CLASS_PATH = "TestClass.java";
-    private static final String DEFAULT_CLASS_Name = "TestClass";
+    private static final String DEFAULT_CLASS_NAME = "TestClass";
 
     private static final String DEFAULT_DIR_PATH = "exam-results";
 
@@ -41,6 +43,7 @@ public class Compiler {
 
     private String fullSourceCode;
 
+    private List<String> options;
 
     /**
      * @param stringAnswer can be either FilePath or the code as a string
@@ -49,6 +52,7 @@ public class Compiler {
 
     public boolean compile(String stringAnswer) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+
         DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnosticsCollector, Locale.GERMANY, Charset.defaultCharset());
         List<File> files = new ArrayList<>();
@@ -56,10 +60,11 @@ public class Compiler {
         if (stringAnswer != null && !stringAnswer.equals("")) {
             createJavaClass(writeCodeAsClass(stringAnswer));
             files.add(new File(targetProjectOrClassPath));
+
         } else {
             ExtractJavaFilesFromDirectory.ExtractJavaFilesFromDirectoryBuilder extractJavaFilesFromDirectoryBuilder = ExtractJavaFilesFromDirectory.builder();
             ExtractJavaFilesFromDirectory extractJavaFilesFromDirectory;
-            if (targetProjectOrClassPath == null || targetProjectOrClassPath.equals("")){
+            if (targetProjectOrClassPath == null || targetProjectOrClassPath.equals("")) {
                 targetProjectOrClassPath = DEFAULT_DIR_PATH;
             }
             extractJavaFilesFromDirectoryBuilder.dirPath(targetProjectOrClassPath);
@@ -69,11 +74,34 @@ public class Compiler {
                 return false;
             }
         }
+        StringWriter stringWriter = new StringWriter();
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);
-        boolean result = compiler.getTask(null, fileManager, diagnosticsCollector, null, null, compilationUnits).call();
+
+        if (options == null) {
+            setDefaultOptions();
+        }
+
+        JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
+        boolean result = task.call();
+
         this.setCollectedDiagnostics(diagnosticsCollector.getDiagnostics());
         return result;
     }
+
+    public void addExternalJarsToClassPath(List<String> paths) {
+        if (this.options == null){
+            setDefaultOptions();
+        }
+        this.options.addAll(paths);
+    }
+
+    private void setDefaultOptions() {
+        this.options = new ArrayList<>();
+        options.add("-verbose");
+        options.add("-Xlint");
+        options.add("-g");
+    }
+
 
     private void writeJavaFileContent(String code) {
         try (OutputStream output = Files.newOutputStream(Paths.get(targetProjectOrClassPath))) {
@@ -101,20 +129,19 @@ public class Compiler {
         boolean isClassOrInterface = answer.contains("class") || answer.contains("interface");
 
         if (isClassOrInterface) {
-            String classDeclaration = answer.substring(answer.indexOf("class"), answer.indexOf("{") );
+            String classDeclaration = answer.substring(answer.indexOf("class"), answer.indexOf("{"));
 
             String[] declarationArray = classDeclaration.split(" ");
 
             if (declarationArray.length < 2) {
-                fileName = DEFAULT_CLASS_Name;
+                fileName = DEFAULT_CLASS_NAME;
                 targetProjectOrClassPath = DEFAULT_CLASS_PATH;
             } else {
                 fileName = declarationArray[1].trim(); // class name by student
                 targetProjectOrClassPath = fileName + ".java";
             }
-        }
-        else {
-            fileName = DEFAULT_CLASS_Name;
+        } else {
+            fileName = DEFAULT_CLASS_NAME;
             targetProjectOrClassPath = DEFAULT_CLASS_PATH;
         }
         if (isClassOrInterface) {

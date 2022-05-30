@@ -30,12 +30,18 @@ public class SyntaxChecker {
 
     private String targetProject;
 
+    private Compiler compiler;
+
     @Deprecated(forRemoval = true)
     private CheckLevel level;
 
     public SyntaxCheckReport check() {
         SyntaxCheckReport.SyntaxCheckReportBuilder resultBuilder = SyntaxCheckReport.builder();
-        Compiler compiler = Compiler.builder().build();
+
+        if (compiler == null) {
+            compiler = Compiler.builder().build();
+        }
+
         boolean compileResult;
 
         if (stringAnswer != null && !stringAnswer.equals("")) {
@@ -44,7 +50,7 @@ public class SyntaxChecker {
             resultBuilder.codeAsString(compiler.getFullSourceCode());
         } else {
             compiler.setTargetProjectOrClassPath(targetProject);
-            compileResult = compiler.compile(stringAnswer);
+            compileResult = compiler.compile(null);
             resultBuilder.compiledSourceType(CompiledSourceType.PROJECT);
         }
         resultBuilder.isCompilable(compileResult);
@@ -77,7 +83,7 @@ public class SyntaxChecker {
 
         int line = (int) diagnostic.getLineNumber();
 
-        return codeSplitByLine[line -1];
+        return codeSplitByLine[line - 1];
     }
 
     private List<SyntaxError> analyseDiagnostics(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
@@ -102,29 +108,63 @@ public class SyntaxChecker {
     }
 
     public static void main(String[] args) throws IOException {
-        String code = "private void print() {\n" +
-            "        System.out.println();\n" +
-                    "    }";
+        String code = "import java.util.ArrayList;\n" +
+                "import java.util.Arrays;\n" +
+                "import lombok.AllArgsConstructor;\n" +
+                "import lombok.Builder;\n" +
+                "import lombok.Data;\n" +
+                "import lombok.NoArgsConstructor;" +
+                "import java.util.List;\n" +
+                "\n" +
+                "public class Tester1 {\n" +
+                "\n" +
+                "    public static List<String> grayCodeStrings(int n) {\n" +
+                "        List<String> list = new ArrayList<>();\n" +
+                "        if (n == 0) {\n" +
+                "            list.add(\"\");\n" +
+                "            return list;\n" +
+                "        } else if (n == 1) {\n" +
+                "            list.add(\"0\");\n" +
+                "            list.add(\"1\");\n" +
+                "            return list;\n" +
+                "        } else {\n" +
+                "            List<String> prev = grayCodeStrings(n - 1);\n" +
+                "            list.addAll(prev);\n" +
+                "            for (int i = prev.size() - 1; i >= 0; i--) {\n" +
+                "                String bits = \"abc\" \n" +
+                " + \"ccc\"; \n" +
+                "                list.set(i, \"0\" + bits);\n" +
+                "                list.add(\"1\" + bits);\n" +
+                "            }\n" +
+                "            return list;\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
 
         String[] codeLines = code.split("\n");
 
+        Compiler compiler = Compiler.builder().build();
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
-
-        int line = (int) syntaxChecker.check().getSyntaxErrors().get(0).getLine();
-        System.out.println(codeLines[line - 1].trim());
-
-        String lineCode = codeLines[line - 1].trim();
-
-        int column = (int) syntaxChecker.check().getSyntaxErrors().get(0).getColumnNumber();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().compiler(compiler).stringAnswer(code).build();
+        syntaxChecker.compiler.addExternalJarsToClassPath(List.of("-cp","lombok-1.18.24.jar"));
+        SyntaxCheckReport report = syntaxChecker.check();
+        System.out.println(report);
 
 
-        System.out.println(
-                "custom Feedback \n" +
-                        syntaxChecker.check().getSyntaxErrors().get(0).getErrorMessage() + "\n" +
-                        "at line: " + syntaxChecker.check().getSyntaxErrors().get(0).getColumnNumber() + "\n" +
-                        "for example:  int var = value;"
-        );
+//        int line = (int) syntaxChecker.check().getSyntaxErrors().get(0).getLine();
+//        System.out.println(codeLines[line - 1].trim());
+//
+//        String lineCode = codeLines[line - 1].trim();
+//
+//        int column = (int) syntaxChecker.check().getSyntaxErrors().get(0).getColumnNumber();
+//
+//
+//        System.out.println(
+//                "custom Feedback \n" +
+//                        syntaxChecker.check().getSyntaxErrors().get(0).getErrorMessage() + "\n" +
+//                        "at line: " + syntaxChecker.check().getSyntaxErrors().get(0).getColumnNumber() + "\n" +
+//                        "for example:  int var = value;"
+//        );
 //        System.out.println(syntaxChecker.check().getSyntaxErrors().get(0).getErrorSourceCode());
     }
 
