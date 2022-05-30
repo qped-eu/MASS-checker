@@ -2,9 +2,7 @@ package eu.qped.java.syntax;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import eu.qped.java.checkers.mass.QFMainSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,68 +14,69 @@ import eu.qped.java.checkers.syntax.SyntaxChecker;
 
 class MassSyntaxTest {
 
-	private MainSettings mainSettingsConfiguratorConf;
+    private MainSettings mainSettingsConfiguratorConf;
 
-	@BeforeEach
-	public void setup() {
-		Map<String, String> mainSettings = new HashMap<>();
-		mainSettings.put("semanticNeeded", "false");
-		mainSettings.put("syntaxLevel", CheckLevel.ADVANCED.name());
-		mainSettings.put("preferredLanguage", "en");
-		mainSettings.put("styleNeeded", "false");
+    @BeforeEach
+    public void setup() {
+        QFMainSettings qfMainSettings = new QFMainSettings();
+        qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
+        qfMainSettings.setSemanticNeeded("false");
+        qfMainSettings.setStyleNeeded("false");
+        qfMainSettings.setPreferredLanguage("en");
 
-		mainSettingsConfiguratorConf = new MainSettings(mainSettings);
 
-	}
-	
-	@Test
-	void testMethodNoError() {
+        mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
-		String code = "void rec (){\n"
-				+ "System.out.println(\"pretty\");\n"
-				+ "}";
+    }
 
-		SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+    @Test
+    void testMethodNoError() {
 
-		MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-				mainSettingsConfiguratorConf);
+        String code = "void rec (){\n"
+                + "System.out.println(\"pretty\");\n"
+                + "}";
 
-		massE.execute();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
-		assertEquals(0, massE.getSyntaxErrors().size());
-	}
+        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
+                mainSettingsConfiguratorConf);
 
-	@Test
-	void testMethodMissingSemicolon() {
+        massE.execute();
 
-		String code = "void rec (){\n"
-				+ "System.out.println(\"pretty\")\n"
-				+ "}";
+        assertEquals(0, massE.getSyntaxErrors().size());
+    }
 
-		SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+    @Test
+    void testMethodMissingSemicolon() {
 
-		MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-				mainSettingsConfiguratorConf);
+        String code = "void rec (){\n"
+                + "System.out.println(\"pretty\")\n"
+                + "}";
 
-		massE.execute();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
-		assertEquals(1, massE.getSyntaxErrors().size());
-		SyntaxError error = massE.getSyntaxErrors().get(0);
-		assertEquals("compiler.err.expected", error.getErrorCode());
-	}
+        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
+                mainSettingsConfiguratorConf);
 
-	@Test
-	void testClassNoError() {
+        massE.execute();
 
-		String code = "class Simple {}";
+        assertEquals(1, massE.getSyntaxErrors().size());
+        SyntaxError error = massE.getSyntaxErrors().get(0);
+        assertEquals("compiler.err.expected", error.getErrorCode());
+    }
 
-		SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+    @Test
+    void testClassNoError() {
 
-		MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-				mainSettingsConfiguratorConf);
+        String code = "class Simple {}";
 
-		massE.execute();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
-		assertEquals(0, massE.getSyntaxErrors().size());
-	}
+        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
+                mainSettingsConfiguratorConf);
+
+        massE.execute();
+
+        assertEquals(0, massE.getSyntaxErrors().size());
+    }
 }

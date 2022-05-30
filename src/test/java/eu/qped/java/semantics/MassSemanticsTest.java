@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 
+import eu.qped.java.checkers.mass.QFMainSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,63 +20,63 @@ import eu.qped.java.checkers.syntax.SyntaxChecker;
 
 class MassSemanticsTest {
 
-	private MainSettings mainSettingsConfiguratorConf;
-	private SemanticChecker semanticChecker;
+    private MainSettings mainSettingsConfiguratorConf;
+    private SemanticChecker semanticChecker;
 
-	@BeforeEach
-	public void setup() {
-		Map<String, String> mainSettings = new HashMap<>();
-		mainSettings.put("semanticNeeded", "true");
-		mainSettings.put("syntaxLevel", CheckLevel.ADVANCED.name());
-		mainSettings.put("preferredLanguage", "en");
-		mainSettings.put("styleNeeded", "false");
+    @BeforeEach
+    public void setup() {
+        QFMainSettings qfMainSettings = new QFMainSettings();
+        qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
+        qfMainSettings.setSemanticNeeded("true");
+        qfMainSettings.setStyleNeeded("false");
+        qfMainSettings.setPreferredLanguage("en");
 
-		mainSettingsConfiguratorConf = new MainSettings(mainSettings);
-		
-		Map<String, String> semanticConf = new HashMap<>();
+        mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
-		semanticConf.put("methodName", "recR");
-		semanticConf.put("recursionAllowed", "false");
-		semanticConf.put("whereLoop", "-1");
-		semanticConf.put("forLoop", "1");
-		semanticConf.put("forEachLoop", "-1");
-		semanticConf.put("ifElseStmt", "-1");
-		semanticConf.put("doWhileLoop", "-1");
-		semanticConf.put("returnType", "int");
+        Map<String, String> semanticConf = new HashMap<>();
 
-		QFSemSettings qfSemSettings = new QFSemSettings();
-		qfSemSettings.setMethodName("rec");
-		qfSemSettings.setRecursionAllowed("true");
-		qfSemSettings.setWhileLoop("-1");
-		qfSemSettings.setForLoop("2");
-		qfSemSettings.setForEachLoop("-1");
-		qfSemSettings.setIfElseStmt("-1");
-		qfSemSettings.setDoWhileLoop("-1");
-		qfSemSettings.setReturnType("void");
+        semanticConf.put("methodName", "recR");
+        semanticConf.put("recursionAllowed", "false");
+        semanticConf.put("whereLoop", "-1");
+        semanticConf.put("forLoop", "1");
+        semanticConf.put("forEachLoop", "-1");
+        semanticConf.put("ifElseStmt", "-1");
+        semanticConf.put("doWhileLoop", "-1");
+        semanticConf.put("returnType", "int");
 
-		SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
-		semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+        QFSemSettings qfSemSettings = new QFSemSettings();
+        qfSemSettings.setMethodName("rec");
+        qfSemSettings.setRecursionAllowed("true");
+        qfSemSettings.setWhileLoop("-1");
+        qfSemSettings.setForLoop("2");
+        qfSemSettings.setForEachLoop("-1");
+        qfSemSettings.setIfElseStmt("-1");
+        qfSemSettings.setDoWhileLoop("-1");
+        qfSemSettings.setReturnType("void");
 
-	}
-	
-	@Test
-	void testMethodNoError() {
+        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
+        semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
 
-		String code = "void rec(){\n"
-				+ "System.out.println(\"pretty\");\n"
-				+ "}";
+    }
 
-		SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+    @Test
+    void testMethodNoError() {
+
+        String code = "void rec(){\n"
+                + "System.out.println(\"pretty\");\n"
+                + "}";
+
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
-		MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker,
-				mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker,
+                mainSettingsConfiguratorConf);
 
-		massE.execute();
+        massE.execute();
 
-		assertEquals(0, massE.getStyleFeedbacks().size());
-		SemanticFeedback feedback = massE.getSemanticFeedbacks().get(0);
-		assertEquals("you have to solve the method recursive", feedback.getBody());
-	}
+        assertEquals(0, massE.getStyleFeedbacks().size());
+        SemanticFeedback feedback = massE.getSemanticFeedbacks().get(0);
+        assertEquals("you have to solve the method recursive", feedback.getBody());
+    }
 
 }

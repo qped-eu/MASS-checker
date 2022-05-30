@@ -2,9 +2,8 @@ package eu.qped.java.style;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
 
+import eu.qped.java.checkers.mass.QFMainSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,44 +17,45 @@ import eu.qped.java.checkers.syntax.SyntaxChecker;
 
 class MassStyleTest {
 
-	private MainSettings mainSettingsConfiguratorConf;
-	private StyleConfigurator styleConfigurator;
-	private StyleChecker styleChecker;
+    private MainSettings mainSettingsConfiguratorConf;
+    private StyleConfigurator styleConfigurator;
+    private StyleChecker styleChecker;
 
-	@BeforeEach
-	public void setup() {
-		Map<String, String> mainSettings = new HashMap<>();
-		mainSettings.put("semanticNeeded", "false");
-		mainSettings.put("syntaxLevel", CheckLevel.ADVANCED.name());
-		mainSettings.put("preferredLanguage", "en");
-		mainSettings.put("styleNeeded", "true");
+    @BeforeEach
+    public void setup() {
 
-		mainSettingsConfiguratorConf = new MainSettings(mainSettings);
-		
-		QFStyleSettings qfStyleSettings = new QFStyleSettings();
-		qfStyleSettings.setNamesLevel(CheckLevel.ADVANCED.name());
-		qfStyleSettings.setMethodName("[a-z][a-zA-Z0-9_]*");
+        QFMainSettings qfMainSettings = new QFMainSettings();
+        qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
+        qfMainSettings.setSemanticNeeded("false");
+        qfMainSettings.setStyleNeeded("true");
+        qfMainSettings.setPreferredLanguage("en");
 
-		styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);
-		styleChecker = new StyleChecker(styleConfigurator);
+        mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
-	}
-	
-	@Test
-	void testMethodNoError() {
+        QFStyleSettings qfStyleSettings = new QFStyleSettings();
+        qfStyleSettings.setNamesLevel(CheckLevel.ADVANCED.name());
+        qfStyleSettings.setMethodName("[a-z][a-zA-Z0-9_]*");
 
-		String code = "void rec(){\n"
-				+ "System.out.println(\"pretty\");\n"
-				+ "}";
+        styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);
+        styleChecker = new StyleChecker(styleConfigurator);
 
-		SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+    }
 
-		MassExecutor massE = new MassExecutor(styleChecker, null, syntaxChecker,
-				mainSettingsConfiguratorConf);
+    @Test
+    void testMethodNoError() {
 
-		massE.execute();
+        String code = "void rec(){\n"
+                + "System.out.println(\"pretty\");\n"
+                + "}";
 
-		assertEquals(0, massE.getStyleFeedbacks().size());
-	}
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+
+        MassExecutor massE = new MassExecutor(styleChecker, null, syntaxChecker,
+                mainSettingsConfiguratorConf);
+
+        massE.execute();
+
+        assertEquals(0, massE.getStyleFeedbacks().size());
+    }
 
 }

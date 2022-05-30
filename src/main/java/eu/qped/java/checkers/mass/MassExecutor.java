@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.mass;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -17,9 +18,7 @@ import eu.qped.java.feedback.syntax.SyntaxFeedbackGenerator;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Executor class, execute all components of the System to analyze the code
@@ -71,8 +70,8 @@ public class MassExecutor {
     public void execute() {
         init();
 
-        boolean styleNeeded = Boolean.parseBoolean(mainSettingsConfigurator.getRunStyle());
-        boolean semanticNeeded = Boolean.parseBoolean(mainSettingsConfigurator.getSemanticNeeded());
+        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
+        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
 
 
         SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
@@ -159,15 +158,14 @@ public class MassExecutor {
     public static void main(String[] args) {
         long start = System.nanoTime();
 
+        QFMainSettings qfMainSettings = new QFMainSettings();
+        qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
+        qfMainSettings.setSemanticNeeded("true");
+        qfMainSettings.setStyleNeeded("false");
+        qfMainSettings.setPreferredLanguage("en");
 
-        Map<String, String> mainSettings = new HashMap<>();
-        mainSettings.put("semanticNeeded", "true");
-        mainSettings.put("syntaxLevel", "2");
-        mainSettings.put("preferredLanguage", "de");
-        mainSettings.put("styleNeeded", "true");
 
-
-        MainSettings mainSettingsConfiguratorConf = new MainSettings(mainSettings);
+        MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
         QFSemSettings qfSemSettings = new QFSemSettings();
         qfSemSettings.setMethodName("grayCodeStrings");
