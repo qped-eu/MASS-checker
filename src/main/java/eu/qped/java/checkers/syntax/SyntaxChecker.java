@@ -107,30 +107,4 @@ public class SyntaxChecker {
         return syntaxErrors;
     }
 
-    public static void main(String[] args) throws IOException {
-
-
-        String[] codeLines = code.split("\n");
-
-        Compiler compiler = Compiler.builder().build();
-
-
-
-//        int line = (int) syntaxChecker.check().getSyntaxErrors().get(0).getLine();
-//        System.out.println(codeLines[line - 1].trim());
-//
-//        String lineCode = codeLines[line - 1].trim();
-//
-//        int column = (int) syntaxChecker.check().getSyntaxErrors().get(0).getColumnNumber();
-//
-//
-//        System.out.println(
-//                "custom Feedback \n" +
-//                        syntaxChecker.check().getSyntaxErrors().get(0).getErrorMessage() + "\n" +
-//                        "at line: " + syntaxChecker.check().getSyntaxErrors().get(0).getColumnNumber() + "\n" +
-//                        "for example:  int var = value;"
-//        );
-//        System.out.println(syntaxChecker.check().getSyntaxErrors().get(0).getErrorSourceCode());
-    }
-
 }
