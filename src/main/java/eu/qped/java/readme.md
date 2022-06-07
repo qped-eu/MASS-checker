@@ -8,10 +8,12 @@ A "Syntax Checker" is for instance used to analyze the syntax of submitted code 
 Below you may find a list of currently implemented checkers and a sort description of each one.
 
 ### Syntax Checker
-To be added: Short description
+Syntax checker has the ability to compile java code and report the encountered errors 
+in readable form for students with extra information that helps the check system.
 
 ### Style Checker
-To be added: Short description
+Style checker is a checker that check then report the common formatting, code quality, efficiency, 
+violations with solutions examples. The report is often relative to the knowledge level of the student.
 
 ### Class Checker
 To be added: Short description
@@ -39,28 +41,54 @@ Object: qfMainSettings
 
 
 ### Syntax Checker Configuration
-To be added: short description on what can be configured
-
-Object: 
+The syntax checker has not many configs because its goal just to check the correctness of the code.
+Object: qfMainSettings
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
+| level | BEGINNER, INTERMEDIATE, PROFESSIONAL | false| 
 
 ### Style Checker Configuration
-To be added: short description on what can be configured
+
+In syntax checker can many configs be modified. Classes, methods and variables name pattern.
+Level of the student in naming conventions, efficiency, and styling.
+Length of the class, method and variables names.
+The max allowed number of Fields, methods and lines.
 
 Object: qfStyleConf
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
+| mainLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
+| compLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
+| namesLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
+| basisLevel | BEGINNER, INTERMEDIATE, PROFESSIONAL | false |
+| classLength | numeric [1, *] | false |
+| methodLength | numeric [1, *] | false |
+| cycloComplexity | numeric [1, *]  | false |
+| fieldsCount | numeric [1, *] | false |
+| varName | String | true |
+| methodName | String | true |
+| className | String | true |
+
 
 ### Semantics Checker Configuration
-To be added: short description on what can be configured
+Semantic checker has the ability to check the code according to criteria specified by the teacher 
+e.g. number of loops or number of if expressions allowed and if recursion is in the question required.
+
 
 Object: qfSemConfigs
 
 | Option Name | Possible Values | Regular Expression |
 | ------ | --------------- | ----- |
+| methodName | String | false |
+| recursionAllowed | TRUE, FALSE | false |
+| whileLoop | numeric [1, *] | false |
+| forLoop | numeric [1, *] | false |
+| forEachLoop | numeric [1, *] | false |
+| ifElseStmt | numeric [1, *] | false |
+| doWhileLoop | numeric [1, *] | false |
+| returnType | String | false |
 
 ### Class Checker Configuration WIP
 To be added: short description on what can be configured
@@ -80,24 +108,37 @@ Object:
 
 ### Example Configuration with Quarterfall
 ```
-qf.checkerClass="eu.qped.umr.Mass";
-qf.qfMainSettings = {
+qf.checkerClass = "eu.qped.java.checkers.mass.Mass";
+
+qf.mainSettings = {
     "syntaxLevel":"BEGINNER",
-    "preferredLanguage":"en" ,
-    "styleNeeded":"true"  ,
-    "semanticNeeded":"true"  
+    "preferredLanguage":"en",
+    "semanticNeeded":"true", 
+    "styleNeeded":"true"  
 };
-qf.qfStyleConf= {
+
+qf.styleSettings= {
     "mainLevel":"ADVANCED",
-    "compLevel":null,
-    "namesLevel":null,
-    "basisLevel":null,
-    "classLength":"100",
-    "methodLength":"10",
-    "cycloComplexity":"10",
-    "fieldsCount":"-1",
-    "varName":"undefined",
-    "methodName":"[A]*",
+    "compLevel":"BEGINNER"  , 
+    "namesLevel":"ADVANCED"  , 
+    "basisLevel":"ADVANCED" ,
+    "classLength":"100" ,
+    "methodLength":"10" , 
+    "cycloComplexity":"10" , 
+    "fieldsCount":"-1" ,
+    "varName":"undefined" , 
+    "methodName":"[a-z][a-zA-Z0-9]*",
     "className":"undefined"
+};
+ 
+qf.semSettings = {
+    "methodName":"getMinimum" ,
+    "recursionAllowed":"false",
+    "whileLoop":"0",
+    "forLoop":"0",
+    "forEachLoop":"0",
+    "ifElseStmt":"1",
+    "doWhileLoop":"0",
+    "returnType":"float"
 };
 ```

@@ -1,12 +1,23 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.feedback.syntaxLagacy;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import eu.qped.java.checkers.syntax.SyntaxError;
+import eu.qped.java.feedback.FeedbackGenerator;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
 
-public class SyntaxFeedbackGenerator {
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class SyntaxFeedbackGenerator implements FeedbackGenerator<SyntaxFeedback,SyntaxError> {
 
 
     private final static String ERROR_TRIGGER_CONS = " Error code: ";
@@ -15,8 +26,6 @@ public class SyntaxFeedbackGenerator {
     private final static String FEEDBACK_CONS = " Feedback: ";
     private final static String NEW_LINE = "\n\n";
     private final static ArrayList<String> TYPES = new ArrayList<>();
-    private String example;
-
 
     static {
         TYPES.add("for");
@@ -30,17 +39,19 @@ public class SyntaxFeedbackGenerator {
         TYPES.add("case");
     }
 
-
-    private final CheckLevel level;
-
-    private final String sourceCode;
+    private List<SyntaxError> syntaxErrors;
+    private CheckLevel level;
+    private String sourceCode;
+    private String example;
 
 
     private final StringBuilder result = new StringBuilder();
 
-    public SyntaxFeedbackGenerator(String sourceCode, CheckLevel level) {
-        this.level = level;
-        this.sourceCode = sourceCode;
+    @Override
+    public List<SyntaxFeedback> generateFeedbacks(List<SyntaxError> syntaxErrors){
+        List<SyntaxFeedback> result = new ArrayList<>();
+        syntaxErrors.forEach(syntaxError -> result.add(this.getFeedback(syntaxError)));
+        return result;
     }
 
     private StringBuilder appendCliche(String errorMsg, String errorTrigger, long errorLine, StringBuilder result) {
@@ -55,6 +66,10 @@ public class SyntaxFeedbackGenerator {
                 .append(FEEDBACK_CONS);
     }
 
+
+
+
+
     public SyntaxFeedback getFeedback(SyntaxError syntaxError)  {
         example = "";
 
@@ -63,6 +78,11 @@ public class SyntaxFeedbackGenerator {
         header = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), header);
 
         //result = appendCliche(syntaxError.getErrorMsg(), syntaxError.getErrorTrigger(), syntaxError.getLine(), result);
+
+
+//        List<String> potentialFeedbacks = SyntaxFeedbackDao.data.get(syntaxError.getErrorCode());
+//        String helper = potentialFeedbacks.get(0);
+//        String formatter = potentialFeedbacks.get(0).toLowerCase(Locale.ROOT);
 
 
 
@@ -129,7 +149,7 @@ public class SyntaxFeedbackGenerator {
             }
             case "compiler.err.illegal.start.of.expr": {
                 String kind = syntaxErrorPredictHelper.getErrorKind();
-                String feedbackForVar = "Visibility Modifiers must not be used within the method with local variables, as their method area defines their accessibility";
+                String feedbackForVar = "Access Modifiers must not be used within the method with local variables, as their method area defines their accessibility";
                 String feedbackForMethod = "A method cannot have another method within its scope";
                 String feedbackForStrLit = "String Character Without Double Quotes E.g";
                 setExample("String = \"a\";");
@@ -267,7 +287,7 @@ public class SyntaxFeedbackGenerator {
                 result.append(syntaxError.getErrorMsg()).append(LINE_NUMBER_CONS).append(syntaxError.getLine());
         }
         result.append(NEW_LINE);
-        return new SyntaxFeedback(header.toString() , result.toString() , example);
+        return new SyntaxFeedback( result.toString() , syntaxError.getErrorCode() , "",syntaxError, null);
     }
 
 
@@ -321,16 +341,6 @@ public class SyntaxFeedbackGenerator {
         }
     }
 
-    public String getSourceCode() {
-        return sourceCode;
-    }
 
-    public String getExample() {
-        return example;
-    }
-
-    public void setExample(String example) {
-        this.example = example;
-    }
 }
 
