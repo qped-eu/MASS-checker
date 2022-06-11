@@ -78,6 +78,7 @@ public class Compiler implements CompilerInterface {
             if (files.size() == 0) {
                 return false;
             }
+            files.forEach(System.out::println);
         }
         StringWriter stringWriter = new StringWriter();
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);
@@ -85,6 +86,7 @@ public class Compiler implements CompilerInterface {
         if (options == null) {
             setDefaultOptions();
         }
+        addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
         JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
         boolean result = task.call();
 

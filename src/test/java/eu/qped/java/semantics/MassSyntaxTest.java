@@ -43,9 +43,9 @@ class MassSyntaxTest {
 //		qfStyleSettings.setNamesLevel("adv");
 //		qfStyleSettings.setMethodName("[AA]");
 //
-//		StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(qfStyleSettings);
+//		StyleConfigurationReader styleConfigurationReader = StyleConfigurationReader.createStyleConfigurator(qfStyleSettings);
 //
-//		StyleChecker styleChecker = StyleCheckerFactory.createStyleChecker(styleConfigurator);
+//		StyleChecker styleChecker = StyleCheckerFactory.createStyleChecker(styleConfigurationReader);
 //		SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
 //		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
 //		final StyleChecker styleChecker1 = styleChecker;
@@ -56,13 +56,13 @@ class MassSyntaxTest {
 //		MassExecutor massE = new MassExecutor(styleChecker1, semanticChecker1, syntaxErrorChecker1,
 //				mainSettingsConfigurator);
 //
-////		        MassExecutor massExecutor = MassExecutorFactory.createExecutor(styleConfigurator, semanticConfigurator, mainSettingsConf, code);
+////		        MassExecutor massExecutor = MassExecutorFactory.createExecutor(styleConfigurationReader, semanticConfigurator, mainSettingsConf, code);
 //		massE.execute();
 ////		        new ArrayList<StyleViolation>(massExecutor.getViolations()).forEach(x -> System.out.println(x.getRule()));
 //
 //		// todo false Alarm: Here was Semicolon expected!
 //
-//		// Compiler compiler = new Compiler(code, styleConfigurator,
+//		// Compiler compiler = new Compiler(code, styleConfigurationReader,
 //		// syntaxConfigurator);
 //
 //		for (Feedback s : massE.semanticFeedbacks) {

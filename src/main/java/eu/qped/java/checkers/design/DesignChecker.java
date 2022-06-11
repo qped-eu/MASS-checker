@@ -5,8 +5,6 @@ import eu.qped.java.checkers.design.ckjm.QPEDMetricsFilter;
 import eu.qped.java.checkers.design.ckjm.SaveMapResults;
 import eu.qped.java.utils.compiler.Compiler;
 import gr.spinellis.ckjm.CkjmOutputHandler;
-import gr.spinellis.ckjm.ClassMetricsContainer;
-import gr.spinellis.ckjm.MoaClassVisitor;
 import gr.spinellis.ckjm.utils.CmdLineParser;
 import lombok.Builder;
 import lombok.Data;
@@ -69,7 +67,7 @@ public class DesignChecker {
                 "    }";
 
         Compiler c = Compiler.builder().build();
-        c.compile(answer);
+        c.compileFromString(answer);
 
         String pathToClass = "/Users/jannik/ProgrammingProjects/IdeaProjects/uni/ba/fork/QPED-O3/Mmm.class";
 

@@ -5,7 +5,7 @@ import eu.qped.java.utils.compiler.Compiler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test class for {@link DesignChecker}
@@ -82,6 +82,6 @@ class DesignCheckerTest {
                 "            return list;\n" +
                 "        }\n" +
                 "    }";
-        c.compile(stringAnswer);
+        c.compileFromString(stringAnswer);
     }
 }
