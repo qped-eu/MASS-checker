@@ -1,6 +1,9 @@
 package eu.qped.java.design;
 
 import eu.qped.java.checkers.design.*;
+import eu.qped.java.checkers.design.feedback.DesignFeedback;
+import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
+import eu.qped.java.checkers.design.infos.ClassInfo;
 import eu.qped.java.checkers.mass.QFDesignSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,22 +18,72 @@ public class DesignFieldTest {
 
     private QFDesignSettings qfDesignSettings;
     private ArrayList<ClassInfo> classInfos;
-    private final DesignFeedbackGenerator designFeedbackGenerator = DesignFeedbackGenerator.createDesignFeedbackGenerator();
+    private ClassInfo classInfo;
 
     @BeforeEach
     public void setup() {
         qfDesignSettings = new QFDesignSettings();
         classInfos = new ArrayList<>();
-        qfDesignSettings.setModifierMaxRestrictive(false);
+        classInfo = new ClassInfo();
+        classInfo.setClassTypeName("class TestClass");
+    }
+
+    @Test
+    public void multipleVariablesTest() {
+        ArrayList<String> fieldModifiers = new ArrayList<>();
+        fieldModifiers.add("public int a");
+        fieldModifiers.add("public int b");
+        classInfo.setFieldKeywords(fieldModifiers);
+
+        classInfos.add(classInfo);
+        qfDesignSettings.setClassInfos(classInfos);
+
+        String source = "class TestClass {" +
+                "public int a = 0, b = 0;" +
+                "}";
+
+        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
+        DesignChecker designChecker = new DesignChecker(designConfigurator);
+        designChecker.addCompilationUnit(source);
+
+        try {
+            designChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, designChecker.getDesignFeedbacks().size());
+    }
+
+    @Test
+    public void missingAccessTest() {
+        ArrayList<String> fieldModifiers = new ArrayList<>();
+        fieldModifiers.add("List<String> *");
+        classInfo.setFieldKeywords(fieldModifiers);
+
+        classInfos.add(classInfo);
+        qfDesignSettings.setClassInfos(classInfos);
+
+        String source = "class TestClass {" +
+                "List<String> names = new ArrayList<String>();" +
+                "}";
+
+        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
+        DesignChecker designChecker = new DesignChecker(designConfigurator);
+        designChecker.addCompilationUnit(source);
+
+        try {
+            designChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, designChecker.getDesignFeedbacks().size());
     }
 
     @Test
     public void optionalTest() {
         ArrayList<String> fieldModifiers = new ArrayList<>();
-        fieldModifiers.add("private String *");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
+        fieldModifiers.add("* * String *");
+        fieldModifiers.add("private String name");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -38,50 +91,19 @@ public class DesignFieldTest {
 
         String source = "class TestClass {" +
                 "private String name;" +
+                "private String year;" +
                 "}";
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         assertEquals(0, designChecker.getDesignFeedbacks().size());
-    }
-
-    @Test
-    public void maxRestrictedTest() {
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
-
-        classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
-        qfDesignSettings.setModifierMaxRestrictive(true);
-
-        String source = "class TestClass {" +
-                "private String name;" +
-                "public int year;" +
-                "}";
-
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
-
-        try {
-            designChecker.check(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.FIELDS_NOT_RESTRICTIVE_ENOUGH);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
-        expectedFeedback.add(fb1);
-
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 
 
@@ -90,9 +112,6 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("private String name");
         fieldModifiers.add("public int year");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -105,25 +124,20 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         assertEquals(0, designChecker.getDesignFeedbacks().size());
     }
 
     @Test
     public void wrongNameTest() {
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
-
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("private String not_name");
-
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -135,7 +149,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -143,7 +157,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ELEMENT_NAME);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ELEMENT_NAME);
+        System.out.println(fb1.toString());
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -152,12 +167,8 @@ public class DesignFieldTest {
 
     @Test
     public void wrongTypeTest() {
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
-
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("private int *");
-
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -170,7 +181,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -178,7 +189,7 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ELEMENT_TYPE);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ELEMENT_TYPE);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -189,9 +200,6 @@ public class DesignFieldTest {
     public void wrongAccessModifierTest() {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("private String *");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -203,7 +211,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -211,7 +219,7 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -226,9 +234,6 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("public String *");
         fieldModifiers.add("public final int *");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -241,7 +246,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -249,11 +254,11 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "year", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "year", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        System.out.println("Feedback: "+designChecker.getDesignFeedbacks().get(0).toString());
+        System.out.println("Feedback: "+ designChecker.getDesignFeedbacks().get(0).toString());
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 
@@ -262,9 +267,6 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("public int *");
         fieldModifiers.add("public String *");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -276,7 +278,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -284,7 +286,7 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.MISSING_FIELDS);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.MISSING_FIELDS);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -293,13 +295,9 @@ public class DesignFieldTest {
     }
 
     @Test
-    public void expectedModifierMissingTest() {
-        //Generate different feedback?
+    public void expectedFieldMissingTest() {
         ArrayList<String> fieldModifiers = new ArrayList<>();
-        fieldModifiers.add("private double *");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
+        fieldModifiers.add("private static double name2");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -312,7 +310,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -320,12 +318,11 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "year", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.MISSING_FIELDS);
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
-        expectedFeedback.add(fb2);
+        System.out.println(designChecker.getDesignFeedbacks().get(0).toString());
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 
@@ -334,9 +331,6 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("public String not_name1");
         fieldModifiers.add("public String not_name2");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -349,7 +343,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -357,8 +351,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_ELEMENT_NAME);
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_ELEMENT_NAME);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_ELEMENT_NAME);
+        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_ELEMENT_NAME);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -373,9 +367,6 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("public int name1");
         fieldModifiers.add("public int name2");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -388,7 +379,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -396,8 +387,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_ELEMENT_TYPE);
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_ELEMENT_TYPE);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_ELEMENT_TYPE);
+        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_ELEMENT_TYPE);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -412,9 +403,6 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("public String *");
         fieldModifiers.add("public String *");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -427,7 +415,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -435,8 +423,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -453,9 +441,6 @@ public class DesignFieldTest {
         fieldModifiers.add("public static final String *");
         fieldModifiers.add("public static final String *");
         fieldModifiers.add("public static final String *");
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -469,7 +454,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);
@@ -477,9 +462,9 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = designFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
-        DesignFeedback fb2 = designFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
-        DesignFeedback fb3 = designFeedbackGenerator.generateFeedback("TestClass", "name3", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        DesignFeedback fb3 = DesignFeedbackGenerator.generateFeedback("TestClass", "name3", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
 
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
@@ -494,9 +479,6 @@ public class DesignFieldTest {
     @Test
     public void noModifierTest() {
         ArrayList<String> fieldModifiers = new ArrayList<>();
-
-        ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class:TestClass");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -509,7 +491,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSourceCode(source);
+        designChecker.addCompilationUnit(source);
 
         try {
             designChecker.check(null);

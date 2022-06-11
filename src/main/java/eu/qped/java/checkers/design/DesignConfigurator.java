@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.design;
 
+import eu.qped.java.checkers.design.infos.ClassInfo;
 import eu.qped.java.checkers.mass.QFDesignSettings;
 
 import java.util.ArrayList;
@@ -11,15 +12,12 @@ import java.util.ArrayList;
 public class DesignConfigurator {
 
     private ArrayList<ClassInfo> classInfos;
-    private boolean modifierMaxRestrictive;
 
     public DesignConfigurator(QFDesignSettings qfDesignSettings) {
         setDefaultValues();
         if(qfDesignSettings != null) {
             setClassInfos(qfDesignSettings.getClassInfos());
-            setModifierMaxRestrictive(qfDesignSettings.isModifierMaxRestrictive());
         }
-
     }
 
     public static DesignConfigurator createDesignConfigurator(QFDesignSettings qfDesignSettings) {
@@ -35,7 +33,6 @@ public class DesignConfigurator {
      */
     private void setDefaultValues() {
         setClassInfos(new ArrayList<>());
-        setModifierMaxRestrictive(false);
     }
 
     public ArrayList<ClassInfo> getClassInfos() {
@@ -44,13 +41,5 @@ public class DesignConfigurator {
 
     public void setClassInfos(ArrayList<ClassInfo> classInfos) {
         this.classInfos = classInfos;
-    }
-
-    public boolean isModifierMaxRestrictive() {
-        return modifierMaxRestrictive;
-    }
-
-    public void setModifierMaxRestrictive(boolean modifierMaxRestrictive) {
-        this.modifierMaxRestrictive = modifierMaxRestrictive;
     }
 }
