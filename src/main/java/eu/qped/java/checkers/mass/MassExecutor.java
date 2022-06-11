@@ -44,7 +44,6 @@ public class MassExecutor {
     private final SemanticChecker semanticChecker;
     private final SyntaxChecker syntaxChecker;
 
-
     /**
      * To create an Object use the factory Class @MassExecutorFactory
      *
@@ -63,7 +62,6 @@ public class MassExecutor {
         this.mainSettingsConfigurator = mainSettingsConfigurator;
     }
 
-
     /**
      * execute the Mass System
      */
@@ -81,8 +79,6 @@ public class MassExecutor {
                 styleChecker.setTargetPath(syntaxCheckReport.getPath());
                 styleChecker.check();
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
-
-                //auto checker
                 violations = styleChecker.getStyleViolationsList();
             }
             if (semanticNeeded) {
@@ -96,7 +92,6 @@ public class MassExecutor {
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
             syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
-
         }
 
         // translate Feedback body if needed
@@ -161,7 +156,7 @@ public class MassExecutor {
         QFMainSettings qfMainSettings = new QFMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
         qfMainSettings.setSemanticNeeded("true");
-        qfMainSettings.setStyleNeeded("false");
+        qfMainSettings.setStyleNeeded("true");
         qfMainSettings.setPreferredLanguage("en");
 
 

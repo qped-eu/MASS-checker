@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
 
 import javax.tools.*;
 import java.io.File;
@@ -29,7 +28,7 @@ import java.util.Locale;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Compiler {
+public class Compiler implements CompilerInterface {
 
     private static final String DEFAULT_CLASS_PATH = "TestClass.java";
     private static final String DEFAULT_CLASS_NAME = "TestClass";
@@ -45,12 +44,18 @@ public class Compiler {
 
     private List<String> options;
 
-    /**
-     * @param stringAnswer can be either FilePath or the code as a string
-     * @return if the code is compilable
-     */
+    @Override
+    public boolean compileFromString(String code) {
+        return compile(code);
+    }
 
-    public boolean compile(String stringAnswer) {
+    @Override
+    public boolean compileFromProject(String path) {
+        setTargetProjectOrClassPath(path);
+        return compile(null);
+    }
+
+    private boolean compile(String stringAnswer) {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
         DiagnosticCollector<JavaFileObject> diagnosticsCollector = new DiagnosticCollector<>();
@@ -80,7 +85,6 @@ public class Compiler {
         if (options == null) {
             setDefaultOptions();
         }
-
         JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
         boolean result = task.call();
 
@@ -88,12 +92,31 @@ public class Compiler {
         return result;
     }
 
-    public void addExternalJarsToClassPath(List<String> paths) {
+    public void addExternalJarsToClassPath (List<String> paths) {
         if (this.options == null){
             setDefaultOptions();
         }
+        this.options.add("cp");
         this.options.addAll(paths);
     }
+
+    public void addClassFilesDestination(String path){
+        if (options == null){
+            setDefaultOptions();
+        }
+        options.add("-d");
+        options.add(path);
+        options.add("-s");
+        options.add(path);
+    }
+
+//    public void addSourceFilesDestination(String path){
+//        if (options == null){
+//            setDefaultOptions();
+//        }
+//        options.add("-s");
+//        options.add(path);
+//    }
 
     private void setDefaultOptions() {
         this.options = new ArrayList<>();
@@ -101,6 +124,7 @@ public class Compiler {
         options.add("-Xlint");
         options.add("-g");
     }
+
 
 
     private void writeJavaFileContent(String code) {
@@ -166,25 +190,51 @@ public class Compiler {
         return javaFileContent.toString();
     }
 
-
+    public void print(){
+        System.out.println();
+    }
 
     public static void main(String[] args) {
         Compiler compiler = Compiler.builder().build();
-        compiler.compile("    import java.util.ArrayList;\n" +
-                "import java.util.List;\n" +
-                "    public class Mmm{\n" +
-//                "        List<String> xx(){\n" +
-//                "            List list = new ArrayList();\n" +
-//                "            list.add(\"8888\");\n" +
-//                "            return list;\n" +
-//                "        }\n" +
-                "    }");
-        System.out.println(compiler.getCollectedDiagnostics().size());
-        for (Diagnostic diagnostic : compiler.getCollectedDiagnostics()){
-            System.out.println(diagnostic.getMessage(Locale.ENGLISH));
-            System.out.println(diagnostic.getLineNumber());
-            System.out.println("/////////////");
-        }
+        compiler.addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
+//        compiler.addSourceFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
 
+
+        boolean compile = compiler.compile("import java.util.ArrayList;\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "public class GrayCode {\n" +
+                "\n" +
+                "    public GrayCode() {\n" +
+                "    }\n" +
+                "\n" +
+                "    public static List<String> grayCodeStrings(int n) {\n" +
+                "        List<String> list = new ArrayList();\n" +
+                "        if (n == 0) {\n" +
+                "            list.add(\"\");\n" +
+                "            return list;\n" +
+                "        } else if (n == 1) {\n" +
+                "            list.add(\"0\");\n" +
+                "            list.add(\"1\");\n" +
+                "            return list;\n" +
+                "        } else {\n" +
+                "            List<String> prev = grayCodeStrings(n - 1);\n" +
+                "            list.addAll(prev);\n" +
+                "\n" +
+                "            for(int i = prev.size() - 1; i >= 0; --i) {\n" +
+                "                String bits = \"abcccc\";\n" +
+                "                list.set(i, \"0\" + bits);\n" +
+                "                list.add(\"1\" + bits);\n" +
+                "            }\n" +
+                "\n" +
+                "            return list;\n" +
+                "        }\n" +
+                "    }\n" +
+                "    \n" +
+                "}");
+
+        System.out.println(compile);
     }
+
+
 }

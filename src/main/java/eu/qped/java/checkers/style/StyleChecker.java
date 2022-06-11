@@ -147,7 +147,7 @@ public class StyleChecker {
         configuration.setInputPaths(targetPath);
         configuration.setRuleSets(xmlFileManager.getFilename());
         configuration.setReportFormat("json");
-        configuration.setReportFile("report.json");
+        configuration.setReportFile("src/main/java/eu/qped/java/checkers/style/resources/report.json");
         PMD.runPmd(configuration);
     }
 
