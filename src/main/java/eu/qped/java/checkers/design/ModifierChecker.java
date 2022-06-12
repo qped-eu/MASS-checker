@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.design;
 
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -9,6 +8,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import eu.qped.java.checkers.design.feedback.DesignFeedback;
 import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
+import eu.qped.java.checkers.design.infos.ExpectedElement;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ import java.util.*;
  * Modifier Checker for fields and methods, checking for access and non access modifiers
  * @param <T> FieldDeclaration or MethodDeclaration from JavaParser
  */
-public class ModifierChecker<T extends Node> {
+class ModifierChecker<T extends Node> {
 
     private final String CHECKER_TYPE;
 
@@ -32,154 +32,94 @@ public class ModifierChecker<T extends Node> {
      * The splitting is done by extracting the relevant piece from the string, shortening the string by the amount removed
      * This is done for all keywords, such that the string is empty by the end
      * The order to split the string is important, as they depend on the previous operation.
-     * @param expectedKeywords expected modifiers in a node
+     * @param expectedElements expected modifiers in a node
      */
-    public List<DesignFeedback> checkModifiers(ClassOrInterfaceDeclaration classDecl, List<String> expectedKeywords) {
-        //TODO: Create separate class that puts everything into one (ExpectedElementInfo)
-        //TODO: Go through each keyword one by one?
-        //TODO: Fix classDecl mess
-        if(expectedKeywords.isEmpty()) {
+    public List<DesignFeedback> checkModifiers(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedElements) {
+        if(expectedElements.isEmpty()) {
             return new ArrayList<>();
         }
-
         List<DesignFeedback> modifierFeedback = new ArrayList<>();
-
-        List<String> expectedKeywordsCopy = new ArrayList<>(expectedKeywords);
-
-        List<String> expectedAccessModifiers = CheckerUtils.getAccessModifiersFromString(expectedKeywordsCopy);
-        List<List<String>> expectedNonAccessModifiers = CheckerUtils.getNonAccessModifiersFromString(expectedKeywordsCopy);
-        List<String> expectedElementTypes = CheckerUtils.getElementType(expectedKeywordsCopy);
-        List<String> expectedElementNames = CheckerUtils.getExpectedElementName(expectedKeywordsCopy);
-
+        String className = classDecl.getNameAsString();
         List<NodeWithModifiers<T>> presentElements = getAllFieldsOrMethods(classDecl);
 
-        //Error Checking
-        DesignFeedback sizeFb = checkIfLessThanExpectedPresent(classDecl, presentElements, expectedKeywords);
+        DesignFeedback sizeFb = checkIfLessThanExpectedPresent(className, presentElements, expectedElements);
         if(sizeFb != null) {
             modifierFeedback.add(sizeFb);
         }
-        removeExactMatches(presentElements, expectedAccessModifiers, expectedNonAccessModifiers, expectedElementTypes, expectedElementNames);
-        modifierFeedback.addAll(findViolation(classDecl, presentElements,
-                expectedAccessModifiers, expectedNonAccessModifiers,
-                expectedElementTypes, expectedElementNames));
-
+        removeExactMatches(presentElements, expectedElements);
+        modifierFeedback.addAll(findViolation(className, presentElements, expectedElements));
         return modifierFeedback;
     }
 
     /**
      * checks if an element with modifiers matches an exact combination of access and non access modifier
      * removes the element if it has an exact match
-     * @param elementsWithModifiers all elementsWithModifiers
-     * @param expectedAccessModifiers all expected access modifiers
-     * @param expectedNonAccessModifiers all expected non access modifiers
+     * @param presentElements all elements that are present in the current class
+     * @param expectedElements all expected elements in the form of ExpectedElementInfo
      */
-    private void removeExactMatches(List<NodeWithModifiers<T>> elementsWithModifiers,
-                                    List<String> expectedAccessModifiers,
-                                    List<List<String>> expectedNonAccessModifiers,
-                                    List<String> expectedFieldOrReturnTypes,
-                                    List<String> expectedElementNames) {
-
-        if(expectedAccessModifiers.isEmpty()) {
+    private void removeExactMatches(List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
+        if(expectedElements.isEmpty()) {
             return;
         }
 
-        //First Pass: Find exact match
-        Iterator<NodeWithModifiers<T>> elemIterator = elementsWithModifiers.iterator();
+        Iterator<NodeWithModifiers<T>> elemIterator = presentElements.iterator();
         while(elemIterator.hasNext()) {
-            NodeWithModifiers<T> elem = elemIterator.next();
+            NodeWithModifiers<T> presentElement = elemIterator.next();
 
-            //for each field, first check if we can find a access Modifier match
-            //if we can do that, we check if the other required modifiers match
-            //if both match, we can safely delete the field
-
-            Iterator<String> accessIterator = expectedAccessModifiers.iterator();
-            Iterator<List<String>> nonAccessListIterator = expectedNonAccessModifiers.iterator();
-            Iterator<String> typeIterator = expectedFieldOrReturnTypes.iterator();
-            Iterator<String> nameIterator = expectedElementNames.iterator();
-
-            while(accessIterator.hasNext()) {
-                String currentExpectedAccessModifier = accessIterator.next();
-                List<String> currentExpectedNonAccessModifierList = nonAccessListIterator.next();
-                String currentExpectedType = typeIterator.next();
-                String currentExpectedName = nameIterator.next();
-
-                boolean exactMatch = accessMatch(elem, currentExpectedAccessModifier) &&
-                        nonAccessMatch(elem, currentExpectedNonAccessModifierList) &&
-                        typeMatch(elem, currentExpectedType) &&
-                        nameMatch(elem, currentExpectedName);
-
-                if(exactMatch) {
+            Iterator<ExpectedElement> expectedElemIterator = expectedElements.iterator();
+            while(expectedElemIterator.hasNext()) {
+                ExpectedElement expectedElement = expectedElemIterator.next();
+                List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
+                if(!matchingResult.contains(false)) {
                     elemIterator.remove();
-                    accessIterator.remove();
-                    nonAccessListIterator.remove();
-                    typeIterator.remove();
-                    nameIterator.remove();
+                    expectedElemIterator.remove();
                     break;
                 }
-
             }
         }
     }
 
     /**
-     * Finds the design violations in the given elements and adds them to the design feedback
+     * Finds the design violations in the given presentElements and adds them to the design feedback
      * Feedback for:
      * - Name Mismatch
      * - Type Mismatch
      * - Modifier Mismatch
      * - Element missing entirely
-     * @param elements elements to check violations for
-     * @param expectedAccessModifiers expected access modifiers to compare the elements to
-     * @param expectedNonAccessModifierList expected non access modifiers to compare the elements to
+     * @param presentElements elements present in the class
+     * @param expectedElements expected elements from class info
      */
-    private List<DesignFeedback> findViolation(ClassOrInterfaceDeclaration classDecl,
-                                    List<NodeWithModifiers<T>> elements,
-                                    List<String> expectedAccessModifiers,
-                                    List<List<String>> expectedNonAccessModifierList,
-                                    List<String> expectedElementTypes,
-                                    List<String> expectedElementNames) {
-
-        if(expectedAccessModifiers.isEmpty()) {
+    private List<DesignFeedback> findViolation(String className, List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
+        if(expectedElements.isEmpty()) {
             return new ArrayList<>();
         }
 
         List<DesignFeedback> collectedFeedback = new ArrayList<>();
 
-        Iterator<NodeWithModifiers<T>> elemIterator = elements.iterator();
-        Iterator<String> accessIterator = expectedAccessModifiers.iterator();
-        Iterator<List<String>> nonAccessIterator = expectedNonAccessModifierList.iterator();
-        Iterator<String> typeIterator = expectedElementTypes.iterator();
-        Iterator<String> nameIterator = expectedElementNames.iterator();
+        Iterator<NodeWithModifiers<T>> presentElemIterator = presentElements.iterator();
+        Iterator<ExpectedElement> expectedElemIterator = expectedElements.iterator();
 
-        while(elemIterator.hasNext()) {
-
-            NodeWithModifiers<T> element = elemIterator.next();
-            String elementName = getVariableName(element);
-
-            if(!accessIterator.hasNext()) {
+        while(presentElemIterator.hasNext()) {
+            if(!expectedElemIterator.hasNext()) {
                 return collectedFeedback;
             }
 
-            String expectedAccessModifier = accessIterator.next();
-            List<String> expectedNonAccessModifiers = nonAccessIterator.next();
-            String expectedType = typeIterator.next();
-            String expectedName = nameIterator.next();
+            NodeWithModifiers<T> presentElement = presentElemIterator.next();
+            ExpectedElement expectedElement = expectedElemIterator.next();
 
-            boolean accessMatch = accessMatch(element, expectedAccessModifier);
-            boolean nonAccessMatch = nonAccessMatch(element, expectedNonAccessModifiers);
-            boolean typeMatch = typeMatch(element, expectedType);
-            boolean nameMatch = nameMatch(element, expectedName);
+            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
+            String violationFound = DesignFeedbackGenerator.VIOLATION_CHECKS.get(matchingResult);
 
-            String violationFound = DesignFeedbackGenerator.VIOLATION_CHECKS.get(
-                    Arrays.asList(accessMatch, nonAccessMatch, typeMatch, nameMatch));
-
+            String elementName = getVariableName(presentElement);
             if(CHECKER_TYPE.equals(CheckerUtils.METHOD_CHECKER)) {
-                elementName += "()";
+                if(!elementName.contains("()")) {
+                    elementName += "()";
+                }
                 if(violationFound.equals(DesignFeedbackGenerator.MISSING_FIELDS)) {
                     violationFound = DesignFeedbackGenerator.MISSING_METHODS;
                 }
             }
-            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(classDecl.getNameAsString(), elementName, violationFound);
+            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(className, elementName, violationFound);
             collectedFeedback.add(fb);
         }
         return collectedFeedback;
@@ -187,26 +127,26 @@ public class ModifierChecker<T extends Node> {
 
     /**
      * Checks if more or equal elements are there compared to the expected amount
-     * @param expectedKeywords expected keywords, gives the size of the expected elements
+     * @param expectedElements expected keywords, gives the size of the expected elements
      */
-    private DesignFeedback checkIfLessThanExpectedPresent(ClassOrInterfaceDeclaration classDecl,
-                                                          List<NodeWithModifiers<T>> presentElements,
-                                                          List<String> expectedKeywords) {
+    private DesignFeedback checkIfLessThanExpectedPresent(String className, List<NodeWithModifiers<T>> presentElements,
+                                                          List<ExpectedElement> expectedElements) {
 
-        if(expectedKeywords.size() > presentElements.size()) {
+        if(expectedElements.size() > presentElements.size()) {
             String violation;
             if(CHECKER_TYPE.equals(CheckerUtils.FIELD_CHECKER)) {
                 violation = DesignFeedbackGenerator.MISSING_FIELDS;
             } else {
                 violation = DesignFeedbackGenerator.MISSING_METHODS;
             }
-            return DesignFeedbackGenerator.generateFeedback(classDecl.getNameAsString(), "", violation);
+            return DesignFeedbackGenerator.generateFeedback(className, "", violation);
         }
         return null;
     }
 
     /**
-     * Get all names for the element, for fields this can be more than one variable
+     * Get all names of the element. Fields can usually have more than one variale in a declaration
+     * but as we unrolled them previously, every field can only have one variable.
      * @param element the element to get the name from
      * @return name of the element
      */
@@ -223,77 +163,29 @@ public class ModifierChecker<T extends Node> {
     }
 
     /**
-     * Checks if the expected access modifier matches up with the actual element modifier
-     * @param elem element to check
-     * @param expectedAccessModifier expected access modifier
-     * @return true, if actual and expected match up
-     */
-    private boolean accessMatch(NodeWithModifiers<T> elem, String expectedAccessModifier) {
-        if(expectedAccessModifier.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
-            return true;
-        }
-        return elem.getAccessSpecifier().asString().equals(expectedAccessModifier);
-    }
-
-    /**
-     * Compares the expected non access modifiers with the modifiers from the element
-     * @param elem element to check
-     * @param expectedNonAccessModifiers expected non access modifiers
-     * @return true, if the expected non access modifiers match up with the actual non access modifiers
-     */
-    private boolean nonAccessMatch(NodeWithModifiers<T> elem, List<String> expectedNonAccessModifiers) {
-        List<String> actualModifiers = new ArrayList<>();
-
-        if(expectedNonAccessModifiers.get(0).equals(CheckerUtils.OPTIONAL_KEYWORD)) {
-            return true;
-        }
-
-        for (Modifier fdModifier: elem.getModifiers()) {
-            String fdModifierStr = fdModifier.getKeyword().asString();
-
-            if(fdModifierStr.equals(elem.getAccessSpecifier().asString())) {
-                continue;
-            }
-            if(!expectedNonAccessModifiers.contains(fdModifierStr)) {
-                return false;
-            }
-            actualModifiers.add(fdModifierStr);
-        }
-
-        for (String expectedModifier : expectedNonAccessModifiers) {
-            if (!expectedModifier.isBlank()) {
-                if(!actualModifiers.contains(expectedModifier)) {
-                    return false;
-                }
-            }
-        }
-
-        //both list contain each other, so we have an exact match
-        return true;
-    }
-
-    /**
-     * Returns true if the expected field / return type matches up with the actual field / return type of the element
+     * Check the type of the element.
      * @param elem the element to check
-     * @param expectedFieldOrReturnType expected field / return type
+     * @param expectedType expected field / return type
      * @return true if exact match
      */
-    private boolean typeMatch(NodeWithModifiers<T> elem, String expectedFieldOrReturnType) {
-        if(expectedFieldOrReturnType.isBlank()) {
+    private boolean isElementTypeMatch(NodeWithModifiers<T> elem, String expectedType) {
+        if(expectedType.isBlank()) {
             return false;
         }
 
-        if(expectedFieldOrReturnType.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
+        if(expectedType.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
             return true;
         }
 
+        String presentType;
         if(CHECKER_TYPE.equals(CheckerUtils.FIELD_CHECKER)) {
             FieldDeclaration fieldElement = (FieldDeclaration) elem;
-            return fieldElement.getElementType().asString().equals(expectedFieldOrReturnType);
+            presentType = fieldElement.getElementType().asString();
         } else {
             MethodDeclaration methodElement = (MethodDeclaration) elem;
-            return methodElement.getType().asString().equals(expectedFieldOrReturnType);
+            presentType = methodElement.getType().asString();
         }
+        return presentType.equalsIgnoreCase(expectedType);
     }
 
     /**
@@ -302,7 +194,7 @@ public class ModifierChecker<T extends Node> {
      * @param expectedElementName expected element name, can either be * or the name
      * @return true if exact match
      */
-    private boolean nameMatch(NodeWithModifiers<T> elem, String expectedElementName) {
+    private boolean isElementNameMatch(NodeWithModifiers<T> elem, String expectedElementName) {
         if(expectedElementName.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
             return true;
         }
@@ -349,6 +241,24 @@ public class ModifierChecker<T extends Node> {
                 }
             }
         }
+    }
 
+    /**
+     * Check for matches for each individual part of the element
+     * @param presentElement present element to check keywords for
+     * @param expectedElement expected element to check keywords against
+     * @return list of all matches of the format: (access, non access, type, name)
+     */
+    private List<Boolean> getMatchingResult(NodeWithModifiers<T> presentElement, ExpectedElement expectedElement) {
+        List<Boolean> matching = new ArrayList<>();
+        boolean accessMatch = CheckerUtils.isAccessMatch(presentElement.getAccessSpecifier().asString(), expectedElement.getAccessModifier());
+        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(presentElement.getModifiers(), expectedElement.getNonAccessModifiers());
+        boolean typeMatch = isElementTypeMatch(presentElement, expectedElement.getType());
+        boolean nameMatch = isElementNameMatch(presentElement, expectedElement.getName());
+        matching.add(accessMatch);
+        matching.add(nonAccessMatch);
+        matching.add(typeMatch);
+        matching.add(nameMatch);
+        return matching;
     }
 }

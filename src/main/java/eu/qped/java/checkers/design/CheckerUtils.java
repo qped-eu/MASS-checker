@@ -1,17 +1,19 @@
 package eu.qped.java.checkers.design;
 
+import com.github.javaparser.ast.Modifier;
+import eu.qped.java.checkers.design.infos.ExpectedElement;
+
 import java.util.*;
 
 /**
- * Utility Class for the checkers, used for tasks that do not require code parsing or feedback generation
+ * Utility Class for the checkers, useful for tasks that do not require code parsing or feedback generation
  */
 public final class CheckerUtils {
 
     public static final String OPTIONAL_KEYWORD = "*";
     public static final String EMPTY_MODIFIER = "";
 
-    public static final String CONCRETE_CLASS_TYPE = "class";
-    public static final String ABSTRACT_CLASS_TYPE = "abstract class";
+    public static final String CLASS_TYPE = "class";
     public static final String INTERFACE_TYPE = "interface";
 
     public static final String FIELD_CHECKER = "field";
@@ -19,31 +21,42 @@ public final class CheckerUtils {
 
     public static final List<String> possibleAccessModifiers = createAccessList();
     public static final List<String> possibleNonAccessModifiers = createNonAccessList();
-    public static final List<String> possibleClassTypes = createClassTypeList();
 
     private CheckerUtils() { }
 
     /**
-     * Get a list of all access modifiers from expected modifier string list
-     * If we have found an access modifier, we remove it from the expected modifiers and continue to iterate through the rest
-     * @param expectedModifiers expected modifiers from field or method
-     * @return list of all access modifiers from expected modifiers
+     * Extract all relevant keywords from the given String and create ExpectedElementInfo objects with for further use
+     * @param classTypeName string to extract the keywords from
+     * @return ExpectedElementInfo with all fields filled out
      */
-    public static List<String> getAccessModifiersFromString(List<String> expectedModifiers) {
-        List<String> accessModifiers = new ArrayList<>();
+    public static ExpectedElement extractExpectedInfo(String classTypeName) {
 
-        for (int i = 0; i < expectedModifiers.size(); i++) {
-            String expectedKeywords = expectedModifiers.get(i).trim();
-            List<String> splitExpected = new ArrayList<>(Arrays.asList(expectedKeywords.split("\\s+")));
-            String expectedModifier = "";
-            if(possibleAccessModifiers.contains(splitExpected.get(0))) {
-                expectedModifier = splitExpected.remove(0);
+        List<String> immutableList = Arrays.asList(classTypeName.trim().split("\\s+"));
+        List<String> elementStringSplit = new ArrayList<>(immutableList);
+        String accessMod = getAccessModifierFromList(elementStringSplit);
+        List<String> nonAccessMods = getNonAccessModifiersFromList(elementStringSplit);
+        String type = getElementType(elementStringSplit);
+        String name = getElementName(elementStringSplit);
+        return new ExpectedElement(accessMod, nonAccessMods, type, name);
+    }
+
+    /**
+     * Get a list of all keywords for a given declaration and extract the access modifier out of it.
+     * An access modifier can be empty or contain a optional character (*)
+     * indicating that the access modifier in the element does not matter.
+     * @param keywords expected keywords from an element
+     * @return access modifier in keywords
+     */
+    private static String getAccessModifierFromList(List<String> keywords) {
+        final int MINIMUM_REQUIRED_KEYWORDS = 2;
+        String accessMod = "";
+        String currentMod = keywords.get(0);
+        if(keywords.size() > MINIMUM_REQUIRED_KEYWORDS) {
+            if(currentMod.equals(OPTIONAL_KEYWORD) || possibleAccessModifiers.contains(currentMod)) {
+                accessMod = keywords.remove(0);
             }
-            accessModifiers.add(expectedModifier);
-            replaceKeywordString(splitExpected, expectedModifiers, i);
         }
-
-        return accessModifiers;
+        return accessMod;
     }
 
     /**
@@ -53,16 +66,18 @@ public final class CheckerUtils {
      * @param expectedModifiers expected modifier list
      * @return all non access modifiers as a list
      */
-    public static List<List<String>> getNonAccessModifiersFromString(List<String> expectedModifiers) {
-        List<List<String>> nonAccessModifiers = new ArrayList<>();
+    private static List<String> getNonAccessModifiersFromList(List<String> expectedModifiers) {
+        final int MINIMUM_REQUIRED_KEYWORDS = 2;
 
-        for (int i = 0; i < expectedModifiers.size(); i++) {
-            String expectedKeywords = expectedModifiers.get(i).trim();
-            List<String> foundNonAccessModifiers = extractNonAccessFromString(expectedKeywords, expectedModifiers, i);
-            nonAccessModifiers.add(foundNonAccessModifiers);
+        List<String> nonAccessMods = findNonAccessModifiers(expectedModifiers);
+        if(nonAccessMods.isEmpty()) {
+            if(expectedModifiers.get(0).equals(OPTIONAL_KEYWORD) && expectedModifiers.size() > MINIMUM_REQUIRED_KEYWORDS) {
+                nonAccessMods.add(expectedModifiers.remove(0).toLowerCase());
+            } else {
+                nonAccessMods.add(EMPTY_MODIFIER);
+            }
         }
-
-        return nonAccessModifiers;
+        return nonAccessMods;
     }
 
     /**
@@ -70,19 +85,11 @@ public final class CheckerUtils {
      * @param expectedModifiers list to go through and check
      * @return a list of all expected return / field types
      */
-    public static List<String> getElementType(List<String> expectedModifiers) {
-        List<String> elementTypes = new ArrayList<>();
-
-        for (int i = 0; i < expectedModifiers.size(); i++) {
-            String expectedKeywords = expectedModifiers.get(i).trim();
-            //Split the expectedKeywords into a string each
-            List<String> splitExpected = new ArrayList<>(Arrays.asList(expectedKeywords.split("\\s+")));
-            String elementType = splitExpected.remove(0);
-            elementTypes.add(elementType);
-            replaceKeywordString(splitExpected, expectedModifiers, i);
+    private static String getElementType(List<String> expectedModifiers) {
+        if(expectedModifiers.isEmpty()) {
+            return "";
         }
-
-        return elementTypes;
+        return expectedModifiers.remove(0);
     }
 
     /**
@@ -91,101 +98,82 @@ public final class CheckerUtils {
      *                          removed the previous keywords from all strings inside the list
      * @return list of all names of the elements
      */
-    public static List<String> getExpectedElementName(List<String> expectedModifiers) {
-        List<String> expectedNames = new ArrayList<>();
-
-        for (String expectedName: expectedModifiers) {
-            expectedName = expectedName.trim();
-            expectedName = expectedName.replaceAll(";", "");
-            expectedNames.add(expectedName);
+    private static String getElementName(List<String> expectedModifiers) {
+        if(expectedModifiers.isEmpty()) {
+            return "";
         }
 
-        return expectedNames;
-    }
-
-
-    /**
-     * Extracts the non access modifiers of a string
-     * @param expectedKeywordsStr the string to extract the modifiers from
-     * @param expectedModifiers list where the string is from
-     * @param idx index of the position of the string
-     * @return list of all extracted modifiers
-     */
-    private static List<String> extractNonAccessFromString(String expectedKeywordsStr, List<String> expectedModifiers, int idx) {
-        final int MINIMUM_REQUIRED_KEYWORDS = 2;
-
-        List<String> splitExpected = new ArrayList<>(Arrays.asList(expectedKeywordsStr.split("\\s+")));
-        List<String> foundModifiers = findModifiers(splitExpected, possibleNonAccessModifiers);
-        if(foundModifiers.isEmpty()) {
-            if(splitExpected.get(0).equals(OPTIONAL_KEYWORD) && splitExpected.size() > MINIMUM_REQUIRED_KEYWORDS) {
-                foundModifiers.add(splitExpected.remove(0));
-            } else {
-                foundModifiers.add(EMPTY_MODIFIER);
-            }
-
-        }
-        replaceKeywordString(splitExpected, expectedModifiers, idx);
-
-        return foundModifiers;
+        String name = expectedModifiers.remove(expectedModifiers.size()-1);
+        name = name.replaceAll(";", "");
+        return name;
     }
 
     /**
      * Find all modifiers, specified by the possible modifiers list
-     * @param expectedSplit split list from the string of modifiers
-     * @param possibleModifiers all possible modifiers
+     * @param expectedModifiers split list from the string of modifiers
      * @return list of found modifiers
      */
-    private static List<String> findModifiers(List<String> expectedSplit, List<String> possibleModifiers) {
+    private static List<String> findNonAccessModifiers(List<String> expectedModifiers) {
         List<String> foundModifiers = new ArrayList<>();
-        Iterator<String> expectedIterator = expectedSplit.iterator();
+        Iterator<String> expectedIterator = expectedModifiers.iterator();
         while(expectedIterator.hasNext()) {
             String expectedKeyword = expectedIterator.next();
-            if(possibleModifiers.contains(expectedKeyword)) {
+            if(possibleNonAccessModifiers.contains(expectedKeyword)) {
                 foundModifiers.add(expectedKeyword);
                 expectedIterator.remove();
             } else {
-                //list doesn't contain the word anymore, so we have found all and leave
                 break;
             }
         }
 
         return foundModifiers;
     }
-
     /**
-     * Replace the String in expectedSplit with the String in expectedModifiers at position idx
-     * @param expectedSplit String Words to replace the String with
-     * @param expectedModifiers expected modifiers
-     * @param idx index to replace at
+     * Checks if the expected access modifier matches up with the present element access modifier
+     * @param presentAccessMod access modifier of the present element
+     * @param expectedAccessMod expected access modifier from class info
+     * @return true, if present and expected match up
      */
-
-    private static void replaceKeywordString(List<String> expectedSplit, List<String> expectedModifiers, int idx) {
-        String remainingKeywords = String.join(" ", expectedSplit);
-        expectedModifiers.set(idx, remainingKeywords);
-    }
-
-    /**
-     * Extracts the class type and class name from a string. It assumes that the String ends with a Class Name.
-     * @param classTypeName string to extract the type and name from
-     * @return String array with:
-     * - Access Modifier (pos 0)
-     * - Type of Class (class / interface) (pos 1)
-     * - Name (pos 2)
-     */
-    public static String[] extractClassNameInfo(String classTypeName) {
-        List<String> splitList = Arrays.asList(classTypeName.trim().split("\\s+"));
-        List<String> typeNameSplit = new ArrayList<>(splitList);
-        String accessMod = "";
-        if(possibleAccessModifiers.contains(typeNameSplit.get(0))) {
-            accessMod = typeNameSplit.remove(0).toLowerCase();
+    public static boolean isAccessMatch(String presentAccessMod, String expectedAccessMod) {
+        if(expectedAccessMod.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
+            return true;
         }
-        List<String> nonAccessMods = findModifiers(typeNameSplit, possibleNonAccessModifiers);
-        String nonAccessMod = String.join(" ", nonAccessMods).toLowerCase();
-        String name = typeNameSplit.remove(typeNameSplit.size()-1);
-        String type = String.join(" ", typeNameSplit).toLowerCase();
-
-        return new String[] {accessMod, nonAccessMod, type, name};
+        return presentAccessMod.equalsIgnoreCase(expectedAccessMod);
     }
+
+    /**
+     * Compares the expected non access modifiers with the modifiers from the present element
+     * @param presentModifiers present modifiers to check
+     * @param expectedModifiers expected modifiers to compare to
+     * @return true, if the expected non access modifiers match up with the actual non access modifiers
+     */
+    public static boolean isNonAccessMatch(List<Modifier> presentModifiers, List<String> expectedModifiers) {
+        List<String> actualModifiers = new ArrayList<>();
+
+        if(!expectedModifiers.isEmpty() && expectedModifiers.contains(CheckerUtils.OPTIONAL_KEYWORD)) {
+            return true;
+        }
+
+        for (Modifier modifier: presentModifiers) {
+            String modifierName = modifier.getKeyword().asString().trim();
+            if(possibleAccessModifiers.contains(modifierName)) {
+                continue;
+            }
+            if(!expectedModifiers.contains(modifierName)) {
+                return false;
+            }
+            actualModifiers.add(modifierName);
+        }
+
+        for (String expectedModifier : expectedModifiers) {
+            if (!expectedModifier.isBlank() && !actualModifiers.contains(expectedModifier)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 
     /**
      * Count occurrences of the optional character in given keywords
@@ -208,7 +196,6 @@ public final class CheckerUtils {
      */
     private static List<String> createAccessList() {
         List<String> possibleAccess = new ArrayList<>();
-        possibleAccess.add(OPTIONAL_KEYWORD);
         possibleAccess.add("public");
         possibleAccess.add("private");
         possibleAccess.add("protected");
@@ -232,12 +219,5 @@ public final class CheckerUtils {
         possibleNonAccess.add("strictfp");
         possibleNonAccess.add("transitive");
         return possibleNonAccess;
-    }
-
-    private static List<String> createClassTypeList() {
-        List<String> possibleClassTypes = new ArrayList<>();
-        possibleClassTypes.add("class");
-        possibleClassTypes.add("interface");
-        return possibleClassTypes;
     }
 }

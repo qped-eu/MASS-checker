@@ -9,6 +9,7 @@ import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.design.feedback.DesignFeedback;
 import eu.qped.java.checkers.design.infos.ClassInfo;
+import eu.qped.java.checkers.design.infos.ExpectedElement;
 
 import java.util.*;
 
@@ -55,14 +56,15 @@ public class DesignChecker implements Checker {
 
             List<String> expectedFieldKeywords = new ArrayList<>(classInfo.getFieldKeywords());
             List<String> expectedMethodKeywords = new ArrayList<>(classInfo.getMethodKeywords());
-
             expectedFieldKeywords.sort(Comparator.comparingInt(CheckerUtils::countOptionalOccurrences));
             expectedMethodKeywords.sort(Comparator.comparingInt(CheckerUtils::countOptionalOccurrences));
 
-            designFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, classInfo.getClassTypeName()));
-            designFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, expectedFieldKeywords));
-            designFeedbacks.addAll(methodChecker.checkModifiers(classDecl, expectedMethodKeywords));
-            designFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, classInfo.getInheritsFrom()));
+            ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassTypeName());
+            designFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo));
+            designFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getElementInfos(classInfo.getInheritsFrom())));
+            designFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getElementInfos(expectedFieldKeywords)));
+            designFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getElementInfos(expectedMethodKeywords)));
+
         }
     }
 
@@ -78,6 +80,19 @@ public class DesignChecker implements Checker {
             classDeclarations.addAll(foundClassDecls);
         }
         return classDeclarations;
+    }
+
+    /**
+     * Given a string, extract (access, non access, type, name) object out of it
+     * @param expectedKeywords Strings to extract the keywords out of
+     * @return list of all element infos regarding the keywords
+     */
+    private List<ExpectedElement> getElementInfos(List<String> expectedKeywords) {
+        List<ExpectedElement> infos = new ArrayList<>();
+        for (String keywords: expectedKeywords) {
+            infos.add(CheckerUtils.extractExpectedInfo(keywords));
+        }
+        return infos;
     }
 
     public void addCompilationUnit(String source) {

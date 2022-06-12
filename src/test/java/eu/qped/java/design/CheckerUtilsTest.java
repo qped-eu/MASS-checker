@@ -1,6 +1,8 @@
 package eu.qped.java.design;
 
+import com.github.javaparser.ast.Modifier;
 import eu.qped.java.checkers.design.CheckerUtils;
+import eu.qped.java.checkers.design.infos.ExpectedElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,85 +10,72 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CheckerUtilsTest {
 
-    private List<String> expectedKeywords;
+    private List<String> nonAccessMods;
 
     @BeforeEach
     public void setup() {
-        expectedKeywords = new ArrayList<>();
+        nonAccessMods = new ArrayList<>();
+    }
+
+    @Test
+    public void accessMatchTest() {
+        assertTrue(CheckerUtils.isAccessMatch("public", "public"));
+    }
+
+    @Test
+    public void optionalAccessMatchTest() {
+        assertTrue(CheckerUtils.isAccessMatch("public", "*"));
+    }
+
+    @Test
+    public void nonAccessMatchTest() {
+        List<String> expectedNonAccess = new ArrayList<>();
+        expectedNonAccess.add("abstract");
+        List<Modifier> presentModifiers = new ArrayList<>();
+        presentModifiers.add(Modifier.abstractModifier());
+        assertTrue(CheckerUtils.isNonAccessMatch(presentModifiers, expectedNonAccess));
+    }
+
+    @Test
+    public void optionalNonAccessMatchTest() {
+        List<String> expectedNonAccess = new ArrayList<>();
+        expectedNonAccess.add("*");
+        List<Modifier> presentModifiers = new ArrayList<>();
+        presentModifiers.add(Modifier.abstractModifier());
+        assertTrue(CheckerUtils.isNonAccessMatch(presentModifiers, expectedNonAccess));
     }
 
     @Test
     public void extractClassTypeNameTest() {
-        String classTypeName = "public class HexaDecimal";
-        assertArrayEquals(new String[] {"public", "",  "class", "HexaDecimal"}, CheckerUtils.extractClassNameInfo(classTypeName));
+        String classTypeName = "class HexaDecimal";
+        nonAccessMods.add(CheckerUtils.EMPTY_MODIFIER);
+        ExpectedElement elemInfo = new ExpectedElement(CheckerUtils.EMPTY_MODIFIER, nonAccessMods,  "class", "HexaDecimal");
+        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(classTypeName));
+    }
+
+    @Test
+    public void extractFieldTest() {
+        String classTypeName = "* abstract int number";
+        nonAccessMods.add("abstract");
+        ExpectedElement elemInfo = new ExpectedElement(CheckerUtils.OPTIONAL_KEYWORD, nonAccessMods,  "int", "number");
+        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(classTypeName));
+    }
+
+    @Test
+    public void extractMethodTest() {
+        String classTypeName = "public default void getName()";
+        nonAccessMods.add("default");
+        ExpectedElement elemInfo = new ExpectedElement("public", nonAccessMods,  "void", "getName()");
+        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(classTypeName));
     }
 
     @Test
     public void optionalOccurrenceTest() {
         String keyword = "* String *";
         assertEquals(2, CheckerUtils.countOptionalOccurrences(keyword));
-    }
-
-    @Test
-    public void extractOptionalAccessModifierTest() {
-        String keywords = "* final static String name;";
-        expectedKeywords.add(keywords);
-        assertEquals("*", CheckerUtils.getAccessModifiersFromString(expectedKeywords).get(0));
-    }
-
-    @Test
-    public void extractAccessModifierTest() {
-        String keywords = "public final static String name;";
-        expectedKeywords.add(keywords);
-        assertEquals("public", CheckerUtils.getAccessModifiersFromString(expectedKeywords).get(0));
-    }
-
-    @Test
-    public void extractOptionalNonAccessModifierTest() {
-        String keywords = "* String name;";
-        expectedKeywords.add(keywords);
-        String result = String.join(" ", CheckerUtils.getNonAccessModifiersFromString(expectedKeywords).get(0));
-        assertEquals("*", result);
-    }
-
-    @Test
-    public void extractNonAccessModifierTest() {
-        String keywords = "final static String name;";
-        expectedKeywords.add(keywords);
-        String result = String.join(" ", CheckerUtils.getNonAccessModifiersFromString(expectedKeywords).get(0));
-        assertEquals("final static", result);
-    }
-
-    @Test
-    public void extractOptionalTypeTest() {
-        String keywords = "* name;";
-        expectedKeywords.add(keywords);
-        assertEquals("*", CheckerUtils.getElementType(expectedKeywords).get(0));
-    }
-
-    @Test
-    public void extractTypeTest() {
-        String keywords = "String name;";
-        expectedKeywords.add(keywords);
-        assertEquals("String", CheckerUtils.getElementType(expectedKeywords).get(0));
-    }
-
-    @Test
-    public void extractOptionalNameTest() {
-        String keywords = "*";
-        expectedKeywords.add(keywords);
-        assertEquals("*", CheckerUtils.getExpectedElementName(expectedKeywords).get(0));
-    }
-
-    @Test
-    public void extractNameTest() {
-        String keywords = "name;";
-        expectedKeywords.add(keywords);
-        assertEquals("name", CheckerUtils.getExpectedElementName(expectedKeywords).get(0));
     }
 }

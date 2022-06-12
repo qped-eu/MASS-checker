@@ -91,8 +91,8 @@ public class DesignMethodTest {
     @Test
     public void multipleWrongNameTest() {
         ArrayList<String> methodModifiers = new ArrayList<>();
-        methodModifiers.add("public void n_add");
-        methodModifiers.add("public void n_subtract");
+        methodModifiers.add("public void n_add()");
+        methodModifiers.add("public void n_subtract()");
         classInfo.setMethodKeywords(methodModifiers);
 
         classInfos.add(classInfo);

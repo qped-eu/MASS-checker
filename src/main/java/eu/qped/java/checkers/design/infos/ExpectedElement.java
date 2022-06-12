@@ -1,14 +1,21 @@
 package eu.qped.java.checkers.design.infos;
 
 import java.util.List;
+import java.util.Objects;
 
-public class ExpectedElementInfo {
+public class ExpectedElement {
 
     private String accessModifier;
     private List<String> nonAccessModifiers;
     private String type;
     private String name;
 
+    public ExpectedElement(String accessMod, List<String> nonAccessMods, String type, String name) {
+        this.accessModifier = accessMod;
+        this.nonAccessModifiers = nonAccessMods;
+        this.type = type;
+        this.name = name;
+    }
 
     public String getAccessModifier() {
         return accessModifier;
@@ -40,5 +47,20 @@ public class ExpectedElementInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExpectedElement that = (ExpectedElement) o;
+        return Objects.equals(accessModifier, that.accessModifier) &&
+                Objects.equals(nonAccessModifiers, that.nonAccessModifiers) &&
+                Objects.equals(type, that.type) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accessModifier, nonAccessModifiers, type, name);
     }
 }

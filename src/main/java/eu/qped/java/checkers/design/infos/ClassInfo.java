@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.design.infos;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClassInfo {
 
@@ -24,7 +25,7 @@ public class ClassInfo {
         this.classTypeName = classTypeName;
     }
 
-    public ArrayList<String> getInheritsFrom() {
+    public List<String> getInheritsFrom() {
         return inheritsFrom;
     }
 
@@ -32,7 +33,7 @@ public class ClassInfo {
         this.inheritsFrom = inheritsFrom;
     }
 
-    public ArrayList<String> getFieldKeywords() {
+    public List<String> getFieldKeywords() {
         return fieldKeywords;
     }
 
@@ -40,7 +41,7 @@ public class ClassInfo {
         this.fieldKeywords = fieldKeywords;
     }
 
-    public ArrayList<String> getMethodKeywords() {
+    public List<String> getMethodKeywords() {
         return methodKeywords;
     }
 

@@ -1,19 +1,19 @@
 package eu.qped.java.checkers.design;
 
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import eu.qped.java.checkers.design.feedback.DesignFeedback;
 import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
 import eu.qped.java.checkers.design.infos.ClassInfo;
+import eu.qped.java.checkers.design.infos.ExpectedElement;
 
 import java.util.*;
 
 /**
- * Matches the provided compilation units with the expected class infos
+ * Matches the provided class declarations with the expected class infos
  * If it can find a match, they will be stored in a map
  * Otherwise we can generate feedback based on what is most likely the issue
  */
-public class ClassMatcher {
+class ClassMatcher {
 
     /**
      * Matches up class declarations with given class infos. This is done by comparing the given name from the classInfo
@@ -41,10 +41,10 @@ public class ClassMatcher {
                     continue;
                 }
 
-                String[] typeNameSplit = CheckerUtils.extractClassNameInfo(classTypeName);
-                String name = typeNameSplit[3];
+                ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(classTypeName);
+                String name = elemInfo.getName();
 
-                boolean nameMatch = isNameMatch(classDecl, name);
+                boolean nameMatch = isClassNameMatch(classDecl, name);
 
                 if(nameMatch) {
                     matchedDeclInfo.put(classDecl, classInfo);
@@ -54,15 +54,39 @@ public class ClassMatcher {
                 }
             }
         }
+
+        //Since we only have one of each we can say that they belong to each other and match them up anyway,
+        // even if the name is wrong
+        if(classDecls.size() == 1 && classInfos.size() == 1) {
+            ClassOrInterfaceDeclaration classDecl = classDecls.get(0);
+            ClassInfo classInfo = classInfos.remove(0);
+            matchedDeclInfo.put(classDecl, classInfo);
+
+            ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassTypeName());
+            String elementName = elemInfo.getName();
+
+            if(isClassNameMatch(classDecl, elementName)) {
+                classDecls.remove(0);
+            }
+        }
         return matchedDeclInfo;
     }
 
+    /**
+     * All remaining class declarations have mismatched names, so that we generated them here
+     * @param classDecls class declarations to generate feedback for
+     * @return list of all generated feedback for the class declarations
+     */
     public List<DesignFeedback> generateClassNameFeedback(List<ClassOrInterfaceDeclaration> classDecls) {
         List<DesignFeedback> collectedFeedback = new ArrayList<>();
 
-        for (ClassOrInterfaceDeclaration classDecl: classDecls) {
+        Iterator<ClassOrInterfaceDeclaration> classDeclIterator = classDecls.iterator();
+
+        while(classDeclIterator.hasNext()) {
+            ClassOrInterfaceDeclaration classDecl = classDeclIterator.next();
             collectedFeedback.add(DesignFeedbackGenerator.generateFeedback(classDecl.getNameAsString(), "",
                     DesignFeedbackGenerator.WRONG_CLASS_NAME));
+            classDeclIterator.remove();
         }
 
         return collectedFeedback;
@@ -72,26 +96,22 @@ public class ClassMatcher {
      * Generate feedback based on access, non access and type mismatches. If any mismatch for an element
      * is found, only the found one will be displayed to not overwhelm the student with error messages.
      * @param classDecl class declaration to check
-     * @param classTypeName class type and class name to check the declaration against
+     * @param elemInfo expected element info extracted from class info
      */
-    public List<DesignFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, String classTypeName) {
+    public List<DesignFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo) {
         List<DesignFeedback> collectedFeedback = new ArrayList<>();
-        String[] classInfoSplit = CheckerUtils.extractClassNameInfo(classTypeName);
-        String accessMod = classInfoSplit[0];
-        String nonAccessMods = classInfoSplit[1];
-        String expectedClassType = classInfoSplit[2];
 
-        boolean accessMatch = isAccessMatch(classDecl, accessMod);
-        boolean nonAccessMatch = isNonAccessMatch(classDecl, nonAccessMods);
-        boolean typeMatch = isTypeMatch(classDecl, nonAccessMods, expectedClassType);
+        boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getAccessModifier());
+        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getNonAccessModifiers());
+        boolean typeMatch = isClassTypeMatch(classDecl, elemInfo.getType());
 
         String violation = "";
         if(!typeMatch) {
             violation = DesignFeedbackGenerator.WRONG_CLASS_TYPE;
         } else if(!nonAccessMatch) {
-            violation = DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER;
+            violation = DesignFeedbackGenerator.WRONG_CLASS_NON_ACCESS_MODIFIER;
         } else if(!accessMatch){
-            violation = DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER;
+            violation = DesignFeedbackGenerator.WRONG_CLASS_ACCESS_MODIFIER;
         }
 
         if(!violation.isBlank()) {
@@ -104,71 +124,28 @@ public class ClassMatcher {
         return collectedFeedback;
     }
 
-    private boolean isAccessMatch(ClassOrInterfaceDeclaration classDecl, String accessMod) {
-        if(accessMod.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
-            return true;
-        }
-        return classDecl.getAccessSpecifier().asString().equals(accessMod);
-    }
-
-    private boolean isNonAccessMatch(ClassOrInterfaceDeclaration classDecl, String nonAccessMod) {
-        List<String> classModifiers = new ArrayList<>();
-
-        if(nonAccessMod.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
-            return true;
-        }
-
-        for (Modifier modifier: classDecl.getModifiers()) {
-            String modifierName = modifier.getKeyword().asString();
-            if(modifierName.equals(classDecl.getAccessSpecifier().asString())) {
-                continue;
-            }
-            if(!nonAccessMod.contains(modifierName)) {
-                return false;
-            }
-            classModifiers.add(modifierName);
-        }
-
-        String[] modSplit = nonAccessMod.split("\\s+");
-        for (String expectedMod: modSplit) {
-            if(!expectedMod.isBlank() && !classModifiers.contains(expectedMod)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     /**
      * Checks if the expected class type matches up with the actual class type
      * @param classType expected class type
      * @param classDecl class declaration to check the class type from
      */
-    private boolean isTypeMatch(ClassOrInterfaceDeclaration classDecl, String nonAccessMods, String classType) {
+    private boolean isClassTypeMatch(ClassOrInterfaceDeclaration classDecl, String classType) {
+        if(classType.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
+            return true;
+        }
         boolean foundTypeMatch = false;
-        Map<String, Boolean> nonAccessMatchMap = new LinkedHashMap<>();
-        nonAccessMatchMap.put("abstract", classDecl.isAbstract());
-        nonAccessMatchMap.put("final", classDecl.isFinal());
-        nonAccessMatchMap.put("static", classDecl.isStatic());
-
         switch (classType) {
             case CheckerUtils.INTERFACE_TYPE:
                 foundTypeMatch = classDecl.isInterface();
                 break;
-            case CheckerUtils.CONCRETE_CLASS_TYPE:
+            case CheckerUtils.CLASS_TYPE:
                 foundTypeMatch = !classDecl.isInterface();
-                for (Map.Entry<String, Boolean> entry: nonAccessMatchMap.entrySet()) {
-                    if(nonAccessMods.contains(entry.getKey())) {
-                        foundTypeMatch = foundTypeMatch && entry.getValue();
-                        break;
-                    }
-                }
                 break;
         }
         return foundTypeMatch;
     }
 
-    private boolean isNameMatch(ClassOrInterfaceDeclaration classDecl, String className) {
+    private boolean isClassNameMatch(ClassOrInterfaceDeclaration classDecl, String className) {
         return classDecl.getNameAsString().equals(className);
     }
 }

@@ -3,17 +3,19 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import eu.qped.java.checkers.design.feedback.DesignFeedback;
 import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
+import eu.qped.java.checkers.design.infos.ExpectedElement;
 
 import java.util.*;
 
-public class InheritanceChecker {
+class InheritanceChecker {
+
     /**
      * Checks if the class declaration possesses the expected parents by matching them up exactly at first
      * and then finding the mistakes if a match cannot be found
      * @param classDecl ClassDeclaration to check
      * @param expectedParents the expected super classes that classDecl should have
      */
-    public List<DesignFeedback> checkInheritanceMatch(ClassOrInterfaceDeclaration classDecl, List<String> expectedParents) {
+    public List<DesignFeedback> checkInheritanceMatch(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedParents) {
         if(expectedParents.isEmpty()) {
             return new ArrayList<>();
         }
@@ -22,13 +24,11 @@ public class InheritanceChecker {
         List<ClassOrInterfaceType> implementedInterfaces = classDecl.getImplementedTypes();
         List<ClassOrInterfaceType> extendedClasses = classDecl.getExtendedTypes();
 
-        for (String parentInfo : expectedParents) {
-            String[] expectedParentInfo = CheckerUtils.extractClassNameInfo(parentInfo);
-
-            boolean matchFound = findExactInheritanceMatch(extendedClasses, implementedInterfaces, expectedParentInfo);
+        for (ExpectedElement elemInfo : expectedParents) {
+            boolean matchFound = findExactInheritanceMatch(extendedClasses, implementedInterfaces, elemInfo);
 
             if (!matchFound) {
-                inheritanceFeedback = findInheritanceViolation(classDecl.getNameAsString(), extendedClasses, implementedInterfaces, expectedParentInfo);
+                inheritanceFeedback = findInheritanceViolation(classDecl.getNameAsString(), extendedClasses, implementedInterfaces, elemInfo);
             }
         }
 
@@ -42,16 +42,14 @@ public class InheritanceChecker {
      * @return true if we can find a match with the expected and actual
      */
     private boolean findExactInheritanceMatch(List<ClassOrInterfaceType> extendedClasses, List<ClassOrInterfaceType> implementedInterfaces,
-                                              String[] expectedParentInfo) {
-        String expectedParentType = expectedParentInfo[2];
-        String expectedParentName = expectedParentInfo[3];
+                                              ExpectedElement elemInfo) {
 
-        switch(expectedParentType) {
+        switch(elemInfo.getType()) {
             case CheckerUtils.INTERFACE_TYPE:
-                String interfaceMatch = findInheritedNameMatch(implementedInterfaces, expectedParentName, true);
+                String interfaceMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), true);
                 return !interfaceMatch.isBlank();
-            case CheckerUtils.CONCRETE_CLASS_TYPE:
-                String classMatch = findInheritedNameMatch(extendedClasses, expectedParentName, true);
+            case CheckerUtils.CLASS_TYPE:
+                String classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
                 return !classMatch.isBlank();
         }
         return false;
@@ -93,28 +91,23 @@ public class InheritanceChecker {
      * @param currentClassName name of the current class
      * @param extendedClasses extendedClasses of current class
      * @param implementedInterfaces implemented interfaces of the current class
-     * @param expectedParentInfo expected parent classes with all info
+     * @param elemInfo expected parent classes with all element info
      */
     private List<DesignFeedback> findInheritanceViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses,
                                           List<ClassOrInterfaceType> implementedInterfaces,
-                                          String[] expectedParentInfo) {
+                                          ExpectedElement elemInfo) {
         List<DesignFeedback> inheritanceFeedback = new ArrayList<>();
 
-        String expectedParentAccess = expectedParentInfo[0];
-        String expectedParentNonAccess = expectedParentInfo[1];
-        String expectedParentType = expectedParentInfo[2];
-        String expectedParentName = expectedParentInfo[3];
-
-        String implementedNameMatch = findInheritedNameMatch(implementedInterfaces, expectedParentName, false);
-        String extendedNameMatch = findInheritedNameMatch(extendedClasses, expectedParentName, false);
+        String implementedNameMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), false);
+        String extendedNameMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), false);
         if(implementedNameMatch.isBlank() && extendedNameMatch.isBlank()) {
-            switch (expectedParentType) {
+            switch (elemInfo.getType()) {
                 case CheckerUtils.INTERFACE_TYPE:
                     inheritanceFeedback.add(findInterfaceNameViolation(currentClassName, implementedInterfaces));
                     break;
 
-                case CheckerUtils.CONCRETE_CLASS_TYPE:
-                    inheritanceFeedback.add(findClassNameViolation(currentClassName, extendedClasses, expectedParentNonAccess));
+                case CheckerUtils.CLASS_TYPE:
+                    inheritanceFeedback.add(findClassNameViolation(currentClassName, extendedClasses, elemInfo.getNonAccessModifiers()));
                     break;
             }
         } else {
@@ -144,7 +137,7 @@ public class InheritanceChecker {
      * @param extendedClasses extended classes from the current class
      * @param expectedNonAccess non access modifiers to determine the missing class extension
      */
-    private DesignFeedback findClassNameViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses, String expectedNonAccess) {
+    private DesignFeedback findClassNameViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses, List<String> expectedNonAccess) {
         String violation = "";
         Map<String, String> modifierMap = new LinkedHashMap<>();
         modifierMap.put("abstract", DesignFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);

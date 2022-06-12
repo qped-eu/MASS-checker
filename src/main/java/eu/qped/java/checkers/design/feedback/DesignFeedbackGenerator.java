@@ -11,6 +11,8 @@ public final class DesignFeedbackGenerator {
     //Modifier Feedback
     public final static String WRONG_ACCESS_MODIFIER = "WrongAccessModifier";
     public final static String WRONG_NON_ACCESS_MODIFIER = "WrongNonAccessModifier";
+    public final static String WRONG_CLASS_ACCESS_MODIFIER = "WrongClassAccessModifier";
+    public final static String WRONG_CLASS_NON_ACCESS_MODIFIER = "WrongClassNonAccessModifier";
 
     //Field Feedback
     public final static String MISSING_FIELDS = "MissingFields";
@@ -53,10 +55,16 @@ public final class DesignFeedbackGenerator {
                 "Is the name of \""+elementPlaceholder+"\"  set according to the task description?");
         feedbackMap.put(WRONG_ACCESS_MODIFIER,
                 "Different access modifier for \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" expected.\n" +
-                "Are the access modifiers (e.g. public, private, protected, ...) of \""+elementPlaceholder+"\" set according to the task description?");
+                "Is the access modifier (e.g. public, private, protected, ...) of \""+elementPlaceholder+"\" set according to the task description?");
         feedbackMap.put(WRONG_NON_ACCESS_MODIFIER,
                 "Different non access modifiers for \""+elementPlaceholder+"\" in \""+classPlaceholder+"\"  expected.\n" +
                 "Are the non access modifiers (e.g. static, final, abstract, ...) of \""+elementPlaceholder+"\" set according to the task description?");
+        feedbackMap.put(WRONG_CLASS_ACCESS_MODIFIER,
+                "Different access modifier for \""+classPlaceholder+"\" expected.\n" +
+                "Is the access modifier (e.g. public, ...) of \""+classPlaceholder+"\" set according to the task description?");
+        feedbackMap.put(WRONG_CLASS_NON_ACCESS_MODIFIER,
+                "Different non access modifiers for \""+classPlaceholder+"\"  expected.\n" +
+                "Are the non access modifiers (e.g. abstract, final, ...) of \""+classPlaceholder+"\" set according to the task description?");
         feedbackMap.put(MISSING_FIELDS,
                 "Expected fields in \""+classPlaceholder+"\" missing.\n" +
                 "Do all fields, mentioned in the task description, exist in \""+classPlaceholder+"\"?");
@@ -106,10 +114,8 @@ public final class DesignFeedbackGenerator {
         return Collections.unmodifiableMap(feedbackMap);
     }
 
-    /*
-      Format: (access, non access, type, name) for correctness
-     */
     private static Map<List<Boolean>, String> createViolationMap() {
+        //Format: (access, non access, type, name) for correctness
         Map<List<Boolean>, String> violationMap = new HashMap<>();
         violationMap.put(Arrays.asList(false, true, true, true), WRONG_ACCESS_MODIFIER);
         violationMap.put(Arrays.asList(false, true, true, false), WRONG_ACCESS_MODIFIER);
