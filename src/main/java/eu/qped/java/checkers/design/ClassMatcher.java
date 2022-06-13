@@ -24,9 +24,9 @@ class ClassMatcher {
      * @param classInfos expected class infos
      * @return Map with matches class declarations and class infos
      */
-    public Map<ClassOrInterfaceDeclaration, ClassInfo> matchClassNames(List<ClassOrInterfaceDeclaration> classDecls,
+    public Map<ClassInfo, ClassOrInterfaceDeclaration> matchClassNames(List<ClassOrInterfaceDeclaration> classDecls,
                                                                        List<ClassInfo> classInfos) {
-        Map<ClassOrInterfaceDeclaration, ClassInfo> matchedDeclInfo = new HashMap<>();
+        Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = new HashMap<>();
 
         Iterator<ClassOrInterfaceDeclaration> declIterator = classDecls.iterator();
         while(declIterator.hasNext()) {
@@ -47,7 +47,7 @@ class ClassMatcher {
                 boolean nameMatch = isClassNameMatch(classDecl, name);
 
                 if(nameMatch) {
-                    matchedDeclInfo.put(classDecl, classInfo);
+                    matchedInfoDecl.put(classInfo, classDecl);
                     declIterator.remove();
                     infoIterator.remove();
                     break;
@@ -60,7 +60,7 @@ class ClassMatcher {
         if(classDecls.size() == 1 && classInfos.size() == 1) {
             ClassOrInterfaceDeclaration classDecl = classDecls.get(0);
             ClassInfo classInfo = classInfos.remove(0);
-            matchedDeclInfo.put(classDecl, classInfo);
+            matchedInfoDecl.put(classInfo, classDecl);
 
             ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassTypeName());
             String elementName = elemInfo.getName();
@@ -69,7 +69,7 @@ class ClassMatcher {
                 classDecls.remove(0);
             }
         }
-        return matchedDeclInfo;
+        return matchedInfoDecl;
     }
 
     /**

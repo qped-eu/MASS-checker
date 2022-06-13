@@ -16,11 +16,11 @@ public final class DesignFeedbackGenerator {
 
     //Field Feedback
     public final static String MISSING_FIELDS = "MissingFields";
-    public final static String FIELDS_NOT_RESTRICTIVE_ENOUGH = "FieldsNotRestrictiveEnough";
+    public final static String HIDDEN_FIELD = "HiddenField";
 
     //Method Feedback
     public final static String MISSING_METHODS = "MissingMethods";
-    public final static String METHODS_NOT_RESTRICTIVE_ENOUGH = "MethodsNotRestrictiveEnough";
+    public final static String OVERWRITTEN_METHOD = "OverwrittenMethod";
 
     //Class Feedback
     public final static String MISSING_INTERFACE_IMPLEMENTATION = "MissingInterfaceImplementation";
@@ -68,15 +68,15 @@ public final class DesignFeedbackGenerator {
         feedbackMap.put(MISSING_FIELDS,
                 "Expected fields in \""+classPlaceholder+"\" missing.\n" +
                 "Do all fields, mentioned in the task description, exist in \""+classPlaceholder+"\"?");
-        feedbackMap.put(FIELDS_NOT_RESTRICTIVE_ENOUGH,
-                "Field access modifiers in \""+classPlaceholder+"\" are not restrictive enough.\n" +
-                "Are all field access modifiers in \""+classPlaceholder+"\" set to be as restrictive as possible?");
+        feedbackMap.put(HIDDEN_FIELD,
+                "The field \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" is being hiding a superclass' field.\n" +
+                "Have you tried renaming \""+elementPlaceholder+"\" so that you can access the superclass field as well?");
         feedbackMap.put(MISSING_METHODS,
                 "Expected methods in \""+classPlaceholder+"\" missing.\n" +
                 "Do all methods, mentioned in the task description, exist in \""+classPlaceholder+"\"?");
-        feedbackMap.put(METHODS_NOT_RESTRICTIVE_ENOUGH,
-                "Method Access Modifiers in \""+classPlaceholder+"\" are not restrictive enough.\n" +
-                "Are all method access modifiers in \""+classPlaceholder+"\" set to be as restrictive as possible?");
+        feedbackMap.put(OVERWRITTEN_METHOD,
+                "The method \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" has already been implemented in a parent class.\n" +
+                "Have you tried using the implemented method in the parent class of \""+classPlaceholder+"\" instead?");
         feedbackMap.put(MISSING_INTERFACE_IMPLEMENTATION,
                 "Expected interface implementation missing in \""+classPlaceholder+"\".\n" +
                 "Has the interface, mentioned in the task, been implemented in \""+classPlaceholder+"\"?");

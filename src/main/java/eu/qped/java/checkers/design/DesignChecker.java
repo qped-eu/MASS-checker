@@ -39,20 +39,19 @@ public class DesignChecker implements Checker {
      * feedback. This method delegates each task to each class and collects all feedback
      */
     private void checkDesign() {
-        ClassMatcher classMatcher = new ClassMatcher();
-        ModifierChecker<FieldDeclaration> fieldChecker = new ModifierChecker<>(CheckerUtils.FIELD_CHECKER);
-        ModifierChecker<MethodDeclaration> methodChecker = new ModifierChecker<>(CheckerUtils.METHOD_CHECKER);
-        InheritanceChecker inheritanceChecker = new InheritanceChecker();
-
         List<ClassInfo> classInfos = designConfigurator.getClassInfos();
         List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
 
-        Map<ClassOrInterfaceDeclaration, ClassInfo> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
+        ClassMatcher classMatcher = new ClassMatcher();
+        Map<ClassInfo, ClassOrInterfaceDeclaration> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
         designFeedbacks.addAll(classMatcher.generateClassNameFeedback(classDecls));
 
-        for(Map.Entry<ClassOrInterfaceDeclaration, ClassInfo> entry : matchedDeclInfo.entrySet()) {
-            ClassOrInterfaceDeclaration classDecl = entry.getKey();
-            ClassInfo classInfo = entry.getValue();
+        ModifierChecker<FieldDeclaration> fieldChecker = new ModifierChecker<>(CheckerUtils.FIELD_CHECKER);
+        ModifierChecker<MethodDeclaration> methodChecker = new ModifierChecker<>(CheckerUtils.METHOD_CHECKER);
+        InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo);
+        for(Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry : matchedDeclInfo.entrySet()) {
+            ClassOrInterfaceDeclaration classDecl = entry.getValue();
+            ClassInfo classInfo = entry.getKey();
 
             List<String> expectedFieldKeywords = new ArrayList<>(classInfo.getFieldKeywords());
             List<String> expectedMethodKeywords = new ArrayList<>(classInfo.getMethodKeywords());

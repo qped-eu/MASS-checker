@@ -26,6 +26,99 @@ public class DesignClassTest {
     }
 
     @Test
+    public void hiddenFieldTest() {
+        String parentClassName = "class ParentClass";
+        ArrayList<String> fieldKeywords = new ArrayList<>();
+        fieldKeywords.add("public int num;");
+        ClassInfo parentClassInfo = new ClassInfo();
+        parentClassInfo.setClassTypeName(parentClassName);
+        parentClassInfo.setFieldKeywords(fieldKeywords);
+
+        String childClassName = "class ChildClass";
+        ClassInfo childClassInfo = new ClassInfo();
+        ArrayList<String> inheritsFrom = new ArrayList<>();
+        inheritsFrom.add("class ParentClass");
+        childClassInfo.setClassTypeName(childClassName);
+        childClassInfo.setInheritsFrom(inheritsFrom);
+
+        classInfos.add(parentClassInfo);
+        classInfos.add(childClassInfo);
+        qfDesignSettings.setClassInfos(classInfos);
+
+        String source = "class ParentClass {" +
+                "public int num, num1;" +
+                "}" +
+                "class ChildClass extends ParentClass {" +
+                "public int num, num1;" +
+                "}";
+
+        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
+        DesignChecker designChecker = new DesignChecker(designConfigurator);
+        designChecker.addCompilationUnit(source);
+
+        try {
+            designChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("ChildClass", "num", DesignFeedbackGenerator.HIDDEN_FIELD);
+        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("ChildClass", "num1", DesignFeedbackGenerator.HIDDEN_FIELD);
+
+        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        expectedFeedback.add(fb1);
+        expectedFeedback.add(fb2);
+
+        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+    }
+
+
+    @Test
+    public void overwrittenMethodTest() {
+        String parentClassName = "class ParentClass";
+        ArrayList<String> methodKeywords = new ArrayList<>();
+        methodKeywords.add("public int add");
+        ClassInfo parentClassInfo = new ClassInfo();
+        parentClassInfo.setClassTypeName(parentClassName);
+        parentClassInfo.setMethodKeywords(methodKeywords);
+
+        String childClassName = "class ChildClass";
+        ClassInfo childClassInfo = new ClassInfo();
+        ArrayList<String> inheritsFrom = new ArrayList<>();
+        inheritsFrom.add("class ParentClass");
+        childClassInfo.setClassTypeName(childClassName);
+        childClassInfo.setInheritsFrom(inheritsFrom);
+
+        classInfos.add(parentClassInfo);
+        classInfos.add(childClassInfo);
+        qfDesignSettings.setClassInfos(classInfos);
+
+        String source = "class ParentClass {" +
+                "public int add() { int a = 1; return a+1;}" +
+                "}" +
+                "class ChildClass extends ParentClass {" +
+                "public int add() { int a = 1; return a+1;}" +
+                "}";
+
+        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
+        DesignChecker designChecker = new DesignChecker(designConfigurator);
+        designChecker.addCompilationUnit(source);
+
+        try {
+            designChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("ChildClass", "add()", DesignFeedbackGenerator.OVERWRITTEN_METHOD);
+
+        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        expectedFeedback.add(fb1);
+
+        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+    }
+
+    @Test
     public void optionalAccessTest() {
         String expectedClass1 = "* class TestClass";
         ClassInfo classInfo1 = new ClassInfo();
