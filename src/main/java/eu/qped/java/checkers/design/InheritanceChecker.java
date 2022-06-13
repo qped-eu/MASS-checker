@@ -2,6 +2,7 @@ package eu.qped.java.checkers.design;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import eu.qped.java.checkers.design.feedback.DesignFeedback;
@@ -14,128 +15,10 @@ import java.util.stream.Collectors;
 
 class InheritanceChecker {
 
-    private Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl;
+    private final Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl;
 
     public InheritanceChecker(Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl) {
         this.matchedInfoDecl = matchedInfoDecl;
-    }
-
-    public ClassOrInterfaceDeclaration getParentClassDecl(ExpectedElement expectedParent) {
-        ClassOrInterfaceDeclaration parentClassDecl = null;
-        for (Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry: matchedInfoDecl.entrySet()) {
-            ClassInfo maybeParent = entry.getKey();
-            ExpectedElement parentElement = CheckerUtils.extractExpectedInfo(maybeParent.getClassTypeName());
-            if(parentElement.getName().equals(expectedParent.getName())) {
-                parentClassDecl = matchedInfoDecl.get(maybeParent);
-                break;
-            }
-        }
-        return parentClassDecl;
-    }
-
-    public List<DesignFeedback> checkInheritedFields(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
-        List<DesignFeedback> collectedFeedback = new ArrayList<>();
-
-        ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
-        if(parentDecl != null) {
-            List<FieldDeclaration> currentFields = new ArrayList<>(currentClassDecl.findAll(FieldDeclaration.class));
-            List<FieldDeclaration> parentFields = new ArrayList<>(parentDecl.findAll(FieldDeclaration.class));
-
-            Iterator<FieldDeclaration> curIterator = currentFields.listIterator();
-            Iterator<FieldDeclaration> parIterator = parentFields.listIterator();
-
-            while(parIterator.hasNext()) {
-                FieldDeclaration parentField = parIterator.next();
-                //Do we count private fields?
-                while(curIterator.hasNext()) {
-                    FieldDeclaration currentField = curIterator.next();
-                    List<String> parentFieldNames = parentField.getVariables().stream()
-                            .map(NodeWithSimpleName::getNameAsString)
-                            .collect(Collectors.toList());
-                    List<String> currentFieldNames = currentField.getVariables().stream()
-                            .map(NodeWithSimpleName::getNameAsString)
-                            .collect(Collectors.toList());
-                    List<String> sameNames = new ArrayList<>();
-
-
-                    for (String parentFieldName: parentFieldNames) {
-                        Iterator<String> curFieldIterator = currentFieldNames.iterator();
-                        while(curFieldIterator.hasNext()) {
-                            String currentFieldName = curFieldIterator.next();
-                            if(parentFieldName.equals(currentFieldName)) {
-                                sameNames.add(currentFieldName);
-                                curFieldIterator.remove();
-                            }
-                        }
-                    }
-
-                    if(!sameNames.isEmpty()) {
-                        for (String sameName: sameNames) {
-                            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
-                                    currentClassDecl.getNameAsString(),
-                                    sameName,
-                                    DesignFeedbackGenerator.HIDDEN_FIELD);
-                            collectedFeedback.add(fb);
-                        }
-                        parIterator.remove();
-                        curIterator.remove();
-                        break;
-                    }
-                }
-            }
-        }
-        return collectedFeedback;
-    }
-
-    /**
-     * Check if inherited methods are being reimplemented here and generate feedback if they are
-     * @return List of feedback
-     */
-    public List<DesignFeedback> checkInheritedMethods(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
-        List<DesignFeedback> collectedFeedback = new ArrayList<>();
-
-        ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
-        if(parentDecl != null) {
-
-            /*
-            - Get the expected methods of the parent!!
-            - The class here should not be an interface or abstract class. -> concrete class only
-            - Check if they are implemented in here, they are not supposed to be here when:
-                    - default methods in parent interface
-                    - methods with implementations in parent class
-             */
-            List<MethodDeclaration> currentMethods = new ArrayList<>(currentClassDecl.findAll(MethodDeclaration.class));
-            List<MethodDeclaration> parentMethods = new ArrayList<>(parentDecl.findAll(MethodDeclaration.class));
-
-            Iterator<MethodDeclaration> curIterator = currentMethods.listIterator();
-            Iterator<MethodDeclaration> parIterator = parentMethods.listIterator();
-
-            while(parIterator.hasNext()) {
-                MethodDeclaration parentMethod = parIterator.next();
-                if(parentMethod.getBody().isPresent()) {
-                    while(curIterator.hasNext()) {
-                        MethodDeclaration currentMethod = curIterator.next();
-                        String parentMethodName = parentMethod.getNameAsString();
-                        //So we don't remove overloading ones but only overwritten ones
-                        boolean sameName = parentMethodName.equals(currentMethod.getNameAsString());
-                        boolean sameParameterSize = parentMethod.getParameters().size() == currentMethod.getParameters().size();
-                        if(sameName && sameParameterSize) {
-                            //we have an issue as we can just use the parent method instead of this one here
-                            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
-                                    currentClassDecl.getNameAsString(),
-                                    parentMethodName+"()",
-                                    DesignFeedbackGenerator.OVERWRITTEN_METHOD);
-                            collectedFeedback.add(fb);
-                            parIterator.remove();
-                            curIterator.remove();
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return collectedFeedback;
     }
 
     /**
@@ -185,6 +68,111 @@ class InheritanceChecker {
                 return !classMatch.isBlank();
         }
         return false;
+    }
+
+    /**
+     * Check if the fields inside the current class declaration are hiding fields from the super classes
+     * @param currentClassDecl current class declaration to check the fields for
+     * @param expectedParent parent info
+     * @return list of feedback if overwritten fields have been found
+     */
+    private List<DesignFeedback> checkInheritedFields(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
+        List<DesignFeedback> collectedFeedback = new ArrayList<>();
+        ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
+
+        if(parentDecl != null) {
+            List<FieldDeclaration> currentFields = new ArrayList<>(currentClassDecl.findAll(FieldDeclaration.class));
+            List<FieldDeclaration> parentFields = new ArrayList<>(parentDecl.findAll(FieldDeclaration.class));
+
+            Iterator<FieldDeclaration> curIterator = currentFields.listIterator();
+            Iterator<FieldDeclaration> parIterator = parentFields.listIterator();
+
+            while(parIterator.hasNext()) {
+                FieldDeclaration parentField = parIterator.next();
+                List<String> parentFieldNames = getAllFieldNames(parentField);
+                //Do we count private fields?
+                while(curIterator.hasNext()) {
+                    FieldDeclaration currentField = curIterator.next();
+                    List<String> currentFieldNames = getAllFieldNames(currentField);
+                    List<String> sameNames = new ArrayList<>(parentFieldNames);
+                    sameNames.retainAll(currentFieldNames);
+
+                    if(!sameNames.isEmpty()) {
+                        for (String sameName: sameNames) {
+                            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
+                                    currentClassDecl.getNameAsString(),
+                                    sameName,
+                                    DesignFeedbackGenerator.HIDDEN_FIELD);
+                            collectedFeedback.add(fb);
+                        }
+                        parIterator.remove();
+                        curIterator.remove();
+                        break;
+                    }
+                }
+            }
+        }
+        return collectedFeedback;
+    }
+
+    /**
+     * Check if the methods inside of the current class declaration are overwriting or hiding methods from the super class.
+     * Methods are being overwritten if the name, return type and parameters match exactly. If the method is also static
+     * together with the super classes' method, then the method is hiding it instead.
+     * @param currentClassDecl current class declaration to check the methods of
+     * @param expectedParent parent info
+     * @return list of feedback, if methods are found to be overwritten or hidden
+     */
+    private List<DesignFeedback> checkInheritedMethods(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
+        List<DesignFeedback> collectedFeedback = new ArrayList<>();
+
+        ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
+        if(parentDecl != null) {
+
+            List<MethodDeclaration> currentMethods = new ArrayList<>(currentClassDecl.findAll(MethodDeclaration.class));
+            List<MethodDeclaration> parentMethods = new ArrayList<>(parentDecl.findAll(MethodDeclaration.class));
+
+            Iterator<MethodDeclaration> curIterator = currentMethods.listIterator();
+            Iterator<MethodDeclaration> parIterator = parentMethods.listIterator();
+
+            while(parIterator.hasNext()) {
+                MethodDeclaration parentMethod = parIterator.next();
+                String parentMethodName = parentMethod.getNameAsString();
+                String parentMethodType = parentMethod.getType().asString();
+                List<Parameter> parentParameters = parentMethod.getParameters();
+
+                if(parentMethod.getBody().isPresent()) {
+                    while(curIterator.hasNext()) {
+                        MethodDeclaration currentMethod = curIterator.next();
+                        List<Parameter> currentParameters = currentMethod.getParameters();
+
+                        boolean sameName = parentMethodName.equals(currentMethod.getNameAsString());
+                        boolean sameReturnType = parentMethodType.equals(currentMethod.getType().asString());
+                        boolean sameParameters = parentParameters.containsAll(currentParameters) &&
+                                currentParameters.containsAll(parentParameters);
+
+                        if(sameName && sameReturnType && sameParameters) {
+                            String violation;
+                            if(currentMethod.isStatic() && parentMethod.isStatic()) {
+                                violation = DesignFeedbackGenerator.HIDDEN_METHOD;
+                            } else {
+                                violation = DesignFeedbackGenerator.OVERWRITTEN_METHOD;
+                            }
+                            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
+                                    currentClassDecl.getNameAsString(),
+                                    parentMethodName+"()",
+                                    violation);
+                            collectedFeedback.add(fb);
+                            parIterator.remove();
+                            curIterator.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return collectedFeedback;
     }
 
     /**
@@ -303,5 +291,34 @@ class InheritanceChecker {
     private DesignFeedback findTypeViolation(String currentClassName, String implementedNameMatch, String extendedNameMatch) {
         String violatingElement = implementedNameMatch.isBlank() ? extendedNameMatch : implementedNameMatch;
         return DesignFeedbackGenerator.generateFeedback(currentClassName, violatingElement, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+    }
+
+    /**
+     * Get the class declaration of the parent given the name and info about the parent
+     * @param expectedParent parent to find the class declaration out of
+     * @return parent declaration if found, otherwise null
+     */
+    public ClassOrInterfaceDeclaration getParentClassDecl(ExpectedElement expectedParent) {
+        ClassOrInterfaceDeclaration parentClassDecl = null;
+        for (Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry: matchedInfoDecl.entrySet()) {
+            ClassInfo parentInfo = entry.getKey();
+            ExpectedElement parentElement = CheckerUtils.extractExpectedInfo(parentInfo.getClassTypeName());
+            if(parentElement.getName().equals(expectedParent.getName())) {
+                parentClassDecl = matchedInfoDecl.get(parentInfo);
+                break;
+            }
+        }
+        return parentClassDecl;
+    }
+
+    /**
+     * Get all variable names of a field declaration
+     * @param field declaration to check
+     * @return all variable names from that field
+     */
+    public List<String> getAllFieldNames(FieldDeclaration field) {
+        return field.getVariables().stream()
+                .map(NodeWithSimpleName::getNameAsString)
+                .collect(Collectors.toList());
     }
 }

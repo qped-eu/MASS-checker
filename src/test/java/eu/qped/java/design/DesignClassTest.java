@@ -72,6 +72,51 @@ public class DesignClassTest {
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 
+    @Test
+    public void hiddenMethodTest() {
+        String parentClassName = "class ParentClass";
+        ArrayList<String> methodKeywords = new ArrayList<>();
+        methodKeywords.add("public static int add");
+        ClassInfo parentClassInfo = new ClassInfo();
+        parentClassInfo.setClassTypeName(parentClassName);
+        parentClassInfo.setMethodKeywords(methodKeywords);
+
+        String childClassName = "class ChildClass";
+        ClassInfo childClassInfo = new ClassInfo();
+        ArrayList<String> inheritsFrom = new ArrayList<>();
+        inheritsFrom.add("class ParentClass");
+        childClassInfo.setClassTypeName(childClassName);
+        childClassInfo.setInheritsFrom(inheritsFrom);
+
+        classInfos.add(parentClassInfo);
+        classInfos.add(childClassInfo);
+        qfDesignSettings.setClassInfos(classInfos);
+
+        String source = "class ParentClass {" +
+                "public static int add() { int a = 1; return a+1;}" +
+                "}" +
+                "class ChildClass extends ParentClass {" +
+                "public static int add() { int a = 1; return a+1;}" +
+                "}";
+
+        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
+        DesignChecker designChecker = new DesignChecker(designConfigurator);
+        designChecker.addCompilationUnit(source);
+
+        try {
+            designChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("ChildClass", "add()", DesignFeedbackGenerator.HIDDEN_METHOD);
+
+        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        expectedFeedback.add(fb1);
+
+        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+    }
+
 
     @Test
     public void overwrittenMethodTest() {

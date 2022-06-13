@@ -21,6 +21,7 @@ public final class DesignFeedbackGenerator {
     //Method Feedback
     public final static String MISSING_METHODS = "MissingMethods";
     public final static String OVERWRITTEN_METHOD = "OverwrittenMethod";
+    public final static String HIDDEN_METHOD = "HiddenMethod";
 
     //Class Feedback
     public final static String MISSING_INTERFACE_IMPLEMENTATION = "MissingInterfaceImplementation";
@@ -77,6 +78,9 @@ public final class DesignFeedbackGenerator {
         feedbackMap.put(OVERWRITTEN_METHOD,
                 "The method \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" has already been implemented in a parent class.\n" +
                 "Have you tried using the implemented method in the parent class of \""+classPlaceholder+"\" instead?");
+        feedbackMap.put(HIDDEN_METHOD,
+                "The static method \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" is hiding a method in a parent class.\n" +
+                "Have you tried renaming \""+elementPlaceholder+"\", so that the method in the parent class of \""+classPlaceholder+"\" is not hidden?");
         feedbackMap.put(MISSING_INTERFACE_IMPLEMENTATION,
                 "Expected interface implementation missing in \""+classPlaceholder+"\".\n" +
                 "Has the interface, mentioned in the task, been implemented in \""+classPlaceholder+"\"?");
