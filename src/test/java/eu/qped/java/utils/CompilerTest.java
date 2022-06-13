@@ -48,7 +48,7 @@ public class CompilerTest {
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(falseCode.getBytes());
 
-        compiler.setTargetProjectPath(tempDir.toString());
+        compiler.setTargetProjectOrClassPath(tempDir.toString());
         boolean result = compiler.compile(null);
         Assertions.assertFalse(result);
         Assertions.assertEquals(1, compiler.getCollectedDiagnostics().size());
@@ -64,7 +64,7 @@ public class CompilerTest {
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(correctCode.getBytes());
 
-        compiler.setTargetProjectPath(tempDir.toString());
+        compiler.setTargetProjectOrClassPath(tempDir.toString());
         boolean result = compiler.compile(null);
         Assertions.assertTrue(result);
         Assertions.assertEquals(0, compiler.getCollectedDiagnostics().size());
@@ -74,7 +74,7 @@ public class CompilerTest {
     @Test
     public void compileProjectWithoutFilesTest() throws IOException {
         Path tempDir = Files.createTempDirectory("exam-results");
-        compiler.setTargetProjectPath(tempDir.toString());
+        compiler.setTargetProjectOrClassPath(tempDir.toString());
         boolean result = compiler.compile(null);
         Assertions.assertFalse(result);
     }

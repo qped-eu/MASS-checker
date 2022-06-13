@@ -1,8 +1,13 @@
 package eu.qped.java.checkers.style.pmd;
 
-public class PmdConfigException extends Exception {
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-	private static final long serialVersionUID = 6201398871053777341L;
+@Data
+@NoArgsConstructor
+@Builder
+public class PmdConfigException extends Exception {
 	
 	private String ruleName;
 	private String propName;
@@ -21,13 +26,4 @@ public class PmdConfigException extends Exception {
 		this.ruleName = ruleName;
 		this.propName = propName;
 	}
-
-	public String getRuleName() {
-		return ruleName;
-	}
-
-	public String getPropName() {
-		return propName;
-	}
-
 }
