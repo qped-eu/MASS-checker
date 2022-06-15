@@ -1,5 +1,8 @@
 package eu.qped.java.checkers.coverage;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import eu.qped.framework.CheckerRunner;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.FileInfo;
@@ -9,17 +12,28 @@ import eu.qped.java.checkers.coverage.feedback.Formatter;
 import eu.qped.java.checkers.coverage.feedback.Summary;
 import eu.qped.java.checkers.coverage.testhelp.*;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CoverageCheckerTest {
 
     @Test
-    public void systemTest() {
+    public void systemTestString() {
         try {
+            Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_string.json");
+            Path qf = Path.of("qf.json");
+            Files.copy(f, qf, REPLACE_EXISTING);
+
             CheckerRunner toTest = new CheckerRunner();
             toTest.check();
             QfObject got = toTest.getQfObject();
@@ -33,6 +47,28 @@ class CoverageCheckerTest {
             assertFalse(true, e.getMessage());
         }
     }
+
+    @Test
+    public void systemTestZip() {
+        try {
+            Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_zip.json");
+            Path qf = Path.of("qf.json");
+            Files.copy(f, qf, REPLACE_EXISTING);
+
+            CheckerRunner toTest = new CheckerRunner();
+            toTest.check();
+            QfObject got = toTest.getQfObject();
+            assertArrayEquals(
+                    new String[] {
+                            "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
+                    Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
+            got.setFeedback(new String[]{});
+        } catch (Exception e) {
+            assertFalse(true, e.getMessage());
+        }
+    }
+
+
 
     @Test
     public void bagTestCaseNoConstructor() {

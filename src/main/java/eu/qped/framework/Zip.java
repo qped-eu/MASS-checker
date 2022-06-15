@@ -1,7 +1,6 @@
 package eu.qped.framework;
 
 import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.net.URL;
@@ -13,8 +12,8 @@ import java.util.regex.Pattern;
 
 public class Zip implements ZipService {
     private static final int BUFFER_SIZE = 1024;
-    private static String SCHEME = "file:";
-    private static String MIMETYPE = "application/zip";
+    private static final String SCHEME = "file:";
+    private static final String MIMETYPE = "application/zip";
 
 
     public class ZipExtracted implements ZipService.Extracted {
@@ -105,7 +104,6 @@ public class Zip implements ZipService {
         ZipFile zipFileA = new ZipFile(FileUtils.getFile(file.getPath()));
         zipFileA.extractAll(unzipTarget.toString());
         return extracted(unzipTarget, testClass, classname);
-
     }
 
 
@@ -115,6 +113,7 @@ public class Zip implements ZipService {
             return null;
 
         File unzipTarget = Files.createTempDirectory("exam-results").toFile();
+
         toDelete.add(unzipTarget);
         ZipFile zipFileA = new ZipFile(FileUtils.getFile(fileA.getPath()));
         zipFileA.extractAll(unzipTarget.toString());

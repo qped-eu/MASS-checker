@@ -19,6 +19,7 @@ public interface ZipService {
     }
 
     interface Extracted {
+
         List<String> testClasses();
         List<String> classes();
         List<File> files();

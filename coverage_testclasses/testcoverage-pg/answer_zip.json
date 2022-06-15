@@ -1,8 +1,6 @@
 {
    "answer":"",
-   "feedback":[
-
-   ],
+   "feedback":[],
    "answers":[],
    "attemptCount":1,
    "showSolution":false,
@@ -15,9 +13,7 @@
    "assignment":{
       "id":"6261560949496205f2430680",
       "title":"PG Bag",
-      "files":[
-
-      ]
+      "files":[]
    },
    "block":null,
    "question":{
@@ -36,9 +32,7 @@
       "semanticNeeded":false
    },
    "stop":false,
-   "files":[
-
-   ],
+   "files":[],
    "comment":"",
    "covSetting": {
       "excludeByTypeSet" : [],
@@ -52,7 +46,7 @@
       "extension":".zip",
       "path":"",
       "mimetype":"application/zip",
-      "url":"file:./src/test/resources/system-tests/framework/testcoverage-pg-bag-copy/PG-Bag-ANSWER.zip"
+      "url":"file:coverage_testclasses/testcoverage-pg/PG-Bag-ANSWER.zip"
    },
    "additional":{
       "id":"PG-Bag-ASSIGNEMENT",
@@ -60,6 +54,6 @@
       "extension":".zip",
       "path":"",
       "mimetype":"application/zip",
-      "url":"file:./src/test/resources/system-tests/framework/testcoverage-pg-bag-copy/PG-Bag-ASSIGNEMENT.zip"
+      "url":"file:coverage_testclasses/testcoverage-pg/PG-Bag-ASSIGNEMENT.zip"
    }
 }
