@@ -67,9 +67,11 @@ public class CheckerUtilsTest {
 
     @Test
     public void extractMethodTest() {
-        String classTypeName = "public default void getName()";
+        String classTypeName = "public default void getName(int a, int b)";
         nonAccessMods.add("default");
-        ExpectedElement elemInfo = new ExpectedElement("public", nonAccessMods,  "void", "getName()");
+        ExpectedElement elemInfo = new ExpectedElement("public", nonAccessMods,  "void", "getName");
+        ExpectedElement result = CheckerUtils.extractExpectedInfo(classTypeName);
+        System.out.println(result.getName());
         assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(classTypeName));
     }
 

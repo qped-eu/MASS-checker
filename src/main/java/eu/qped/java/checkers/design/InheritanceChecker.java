@@ -71,7 +71,8 @@ class InheritanceChecker {
     }
 
     /**
-     * Check if the fields inside the current class declaration are hiding fields from the super classes
+     * Check if the fields inside the current class declaration are hiding fields from the super classes.
+     * If that is the case, generate feedback to suggest renaming the field variable.
      * @param currentClassDecl current class declaration to check the fields for
      * @param expectedParent parent info
      * @return list of feedback if overwritten fields have been found
@@ -90,7 +91,11 @@ class InheritanceChecker {
             while(parIterator.hasNext()) {
                 FieldDeclaration parentField = parIterator.next();
                 List<String> parentFieldNames = getAllFieldNames(parentField);
-                //Do we count private fields?
+                
+                if (parentField.isPrivate()) {
+                    continue;
+                }
+
                 while(curIterator.hasNext()) {
                     FieldDeclaration currentField = curIterator.next();
                     List<String> currentFieldNames = getAllFieldNames(currentField);
@@ -119,6 +124,7 @@ class InheritanceChecker {
      * Check if the methods inside of the current class declaration are overwriting or hiding methods from the super class.
      * Methods are being overwritten if the name, return type and parameters match exactly. If the method is also static
      * together with the super classes' method, then the method is hiding it instead.
+     * If overwritten or hidden, generate feedback to suggest a possible name change to avoid confusion.
      * @param currentClassDecl current class declaration to check the methods of
      * @param expectedParent parent info
      * @return list of feedback, if methods are found to be overwritten or hidden
@@ -127,47 +133,50 @@ class InheritanceChecker {
         List<DesignFeedback> collectedFeedback = new ArrayList<>();
 
         ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
-        if(parentDecl != null) {
+        if(parentDecl == null) {
+            return new ArrayList<>();
+        }
 
-            List<MethodDeclaration> currentMethods = new ArrayList<>(currentClassDecl.findAll(MethodDeclaration.class));
-            List<MethodDeclaration> parentMethods = new ArrayList<>(parentDecl.findAll(MethodDeclaration.class));
+        List<MethodDeclaration> currentMethods = new ArrayList<>(currentClassDecl.findAll(MethodDeclaration.class));
+        List<MethodDeclaration> parentMethods = new ArrayList<>(parentDecl.findAll(MethodDeclaration.class));
 
-            Iterator<MethodDeclaration> curIterator = currentMethods.listIterator();
-            Iterator<MethodDeclaration> parIterator = parentMethods.listIterator();
+        Iterator<MethodDeclaration> curIterator = currentMethods.listIterator();
+        Iterator<MethodDeclaration> parIterator = parentMethods.listIterator();
 
-            while(parIterator.hasNext()) {
-                MethodDeclaration parentMethod = parIterator.next();
-                String parentMethodName = parentMethod.getNameAsString();
-                String parentMethodType = parentMethod.getType().asString();
-                List<Parameter> parentParameters = parentMethod.getParameters();
+        while(parIterator.hasNext()) {
+            MethodDeclaration parentMethod = parIterator.next();
+            String parentMethodName = parentMethod.getNameAsString();
+            String parentMethodType = parentMethod.getType().asString();
+            List<Parameter> parentParameters = parentMethod.getParameters();
 
-                if(parentMethod.getBody().isPresent()) {
-                    while(curIterator.hasNext()) {
-                        MethodDeclaration currentMethod = curIterator.next();
-                        List<Parameter> currentParameters = currentMethod.getParameters();
+            if(parentMethod.getBody().isEmpty()) {
+                continue;
+            }
 
-                        boolean sameName = parentMethodName.equals(currentMethod.getNameAsString());
-                        boolean sameReturnType = parentMethodType.equals(currentMethod.getType().asString());
-                        boolean sameParameters = parentParameters.containsAll(currentParameters) &&
-                                currentParameters.containsAll(parentParameters);
+            while(curIterator.hasNext()) {
+                MethodDeclaration currentMethod = curIterator.next();
+                List<Parameter> currentParameters = currentMethod.getParameters();
 
-                        if(sameName && sameReturnType && sameParameters) {
-                            String violation;
-                            if(currentMethod.isStatic() && parentMethod.isStatic()) {
-                                violation = DesignFeedbackGenerator.HIDDEN_METHOD;
-                            } else {
-                                violation = DesignFeedbackGenerator.OVERWRITTEN_METHOD;
-                            }
-                            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
-                                    currentClassDecl.getNameAsString(),
-                                    parentMethodName+"()",
-                                    violation);
-                            collectedFeedback.add(fb);
-                            parIterator.remove();
-                            curIterator.remove();
-                            break;
-                        }
+                boolean sameName = parentMethodName.equals(currentMethod.getNameAsString());
+                boolean sameReturnType = parentMethodType.equals(currentMethod.getType().asString());
+                boolean sameParameters = parentParameters.containsAll(currentParameters) &&
+                        currentParameters.containsAll(parentParameters);
+
+                if(sameName && sameReturnType && sameParameters) {
+                    String violation;
+                    if(currentMethod.isStatic() && parentMethod.isStatic()) {
+                        violation = DesignFeedbackGenerator.HIDDEN_METHOD;
+                    } else {
+                        violation = DesignFeedbackGenerator.OVERWRITTEN_METHOD;
                     }
+                    DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
+                            currentClassDecl.getNameAsString(),
+                            parentMethodName+"()",
+                            violation);
+                    collectedFeedback.add(fb);
+                    parIterator.remove();
+                    curIterator.remove();
+                    break;
                 }
             }
         }

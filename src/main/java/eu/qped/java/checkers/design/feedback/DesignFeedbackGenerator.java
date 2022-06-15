@@ -50,7 +50,6 @@ public final class DesignFeedbackGenerator {
         feedbackMap.put(WRONG_ELEMENT_TYPE,
                 "Element \""+elementPlaceholder+"\" in \""+classPlaceholder+"\"  does not possess the expected type.\n" +
                 "Is the type of \""+elementPlaceholder+"\" set according to the task description?");
-
         feedbackMap.put(WRONG_ELEMENT_NAME,
                 "Element \""+elementPlaceholder+"\" in \""+classPlaceholder+"\"  does not possess the expected name.\n" +
                 "Is the name of \""+elementPlaceholder+"\"  set according to the task description?");
@@ -70,13 +69,13 @@ public final class DesignFeedbackGenerator {
                 "Expected fields in \""+classPlaceholder+"\" missing.\n" +
                 "Do all fields, mentioned in the task description, exist in \""+classPlaceholder+"\"?");
         feedbackMap.put(HIDDEN_FIELD,
-                "The field \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" is being hiding a superclass' field.\n" +
+                "The field \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" is hiding a superclass' field.\n" +
                 "Have you tried renaming \""+elementPlaceholder+"\" so that you can access the superclass field as well?");
         feedbackMap.put(MISSING_METHODS,
                 "Expected methods in \""+classPlaceholder+"\" missing.\n" +
                 "Do all methods, mentioned in the task description, exist in \""+classPlaceholder+"\"?");
         feedbackMap.put(OVERWRITTEN_METHOD,
-                "The method \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" has already been implemented in a parent class.\n" +
+                "The method \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" is overwriting a method in a parent class.\n" +
                 "Have you tried using the implemented method in the parent class of \""+classPlaceholder+"\" instead?");
         feedbackMap.put(HIDDEN_METHOD,
                 "The static method \""+elementPlaceholder+"\" in \""+classPlaceholder+"\" is hiding a method in a parent class.\n" +
@@ -95,7 +94,7 @@ public final class DesignFeedbackGenerator {
                 "Has the final class, mentioned in the task, been extended in \""+classPlaceholder+"\"?");
         feedbackMap.put(MISSING_CLASS_IMPLEMENTATION,
                 "Expected class extension missing in \""+classPlaceholder+"\".\n" +
-                "Has the class, mentioned in the task, been extended in \""+classPlaceholder+"\"?");
+                "Have the required classes, mentioned in the task, been extended in \""+classPlaceholder+"\"?");
         feedbackMap.put(WRONG_CLASS_TYPE,
                 "Different type for \""+classPlaceholder+"\" expected.\n" +
                 "Is the type of \""+classPlaceholder+"\" set according to the task description?");

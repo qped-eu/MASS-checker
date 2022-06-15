@@ -103,7 +103,12 @@ public final class CheckerUtils {
             return "";
         }
 
-        String name = expectedModifiers.remove(expectedModifiers.size()-1);
+        String name = expectedModifiers.remove(0);
+        //remove all parenthesis and its content if it exists in the string, as we don't need it for later
+        int firstParenthesis = name.indexOf("(");
+        if(firstParenthesis != -1) {
+            name = name.substring(0, firstParenthesis);
+        }
         name = name.replaceAll(";", "");
         return name;
     }
@@ -115,6 +120,7 @@ public final class CheckerUtils {
      */
     private static List<String> findNonAccessModifiers(List<String> expectedModifiers) {
         List<String> foundModifiers = new ArrayList<>();
+
         Iterator<String> expectedIterator = expectedModifiers.iterator();
         while(expectedIterator.hasNext()) {
             String expectedKeyword = expectedIterator.next();
