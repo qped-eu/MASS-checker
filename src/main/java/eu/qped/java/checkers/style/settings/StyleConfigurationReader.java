@@ -2,6 +2,7 @@ package eu.qped.java.checkers.style.settings;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.QFStyleSettings;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class StyleConfigurationReader {
 
