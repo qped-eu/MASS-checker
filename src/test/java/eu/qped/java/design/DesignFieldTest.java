@@ -440,7 +440,7 @@ public class DesignFieldTest {
         ArrayList<String> fieldModifiers = new ArrayList<>();
         fieldModifiers.add("public static final String *");
         fieldModifiers.add("public static final String *");
-        fieldModifiers.add("public static final String *");
+        fieldModifiers.add("public int *");
         classInfo.setFieldKeywords(fieldModifiers);
 
         classInfos.add(classInfo);
@@ -448,8 +448,8 @@ public class DesignFieldTest {
 
         String source = "class TestClass {" +
                 "public static String name1;" +
-                "public static String name2;" +
-                "public static String name3;" +
+                "public String name2;" +
+                "public static int name3;" +
                 "}";
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
@@ -471,6 +471,42 @@ public class DesignFieldTest {
         expectedFeedback.add(fb1);
         expectedFeedback.add(fb2);
         expectedFeedback.add(fb3);
+
+        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+    }
+
+    @Test
+    public void ambiguityTest() {
+        ArrayList<String> fieldModifiers = new ArrayList<>();
+        fieldModifiers.add("public String *");
+        fieldModifiers.add("final String *");
+        classInfo.setFieldKeywords(fieldModifiers);
+
+        classInfos.add(classInfo);
+        qfDesignSettings.setClassInfos(classInfos);
+
+        String source = "class TestClass {" +
+                "public final String name1;" + //access issue, both have one error
+                "public final String name2;" + //non access issue
+                "}";
+
+        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
+        DesignChecker designChecker = new DesignChecker(designConfigurator);
+        designChecker.addCompilationUnit(source);
+
+        try {
+            designChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name1", DesignFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("TestClass", "name2", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+
+
+        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        expectedFeedback.add(fb1);
+        expectedFeedback.add(fb2);
 
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }

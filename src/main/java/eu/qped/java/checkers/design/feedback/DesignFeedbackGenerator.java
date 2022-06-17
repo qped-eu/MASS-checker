@@ -126,14 +126,11 @@ public final class DesignFeedbackGenerator {
         violationMap.put(Arrays.asList(false, false, true, true), WRONG_ACCESS_MODIFIER);
         violationMap.put(Arrays.asList(false, false, true, false), WRONG_ACCESS_MODIFIER);
         violationMap.put(Arrays.asList(false, false, false, true), WRONG_ACCESS_MODIFIER);
-
         violationMap.put(Arrays.asList(true, false, true, true), WRONG_NON_ACCESS_MODIFIER);
         violationMap.put(Arrays.asList(true, false, true, false), WRONG_NON_ACCESS_MODIFIER);
         violationMap.put(Arrays.asList(true, false, false, true), WRONG_NON_ACCESS_MODIFIER);
-
         violationMap.put(Arrays.asList(true, true, false, true), WRONG_ELEMENT_TYPE);
         violationMap.put(Arrays.asList(true, true, false, false), WRONG_ELEMENT_TYPE);
-
         violationMap.put(Arrays.asList(true, true, true, false), WRONG_ELEMENT_NAME);
 
         //Since we do not have enough info to determine if the fields are there anymore, we expect them to be missing

@@ -96,26 +96,19 @@ class ModifierChecker<T extends Node> {
 
         List<DesignFeedback> collectedFeedback = new ArrayList<>();
 
-        Iterator<NodeWithModifiers<T>> presentElemIterator = presentElements.iterator();
-        Iterator<ExpectedElement> expectedElemIterator = expectedElements.iterator();
-
-        while(presentElemIterator.hasNext()) {
-            if(!expectedElemIterator.hasNext()) {
+        for (NodeWithModifiers<T> presentElement : presentElements) {
+            if(expectedElements.isEmpty()) {
                 return collectedFeedback;
             }
-
-            NodeWithModifiers<T> presentElement = presentElemIterator.next();
-            ExpectedElement expectedElement = expectedElemIterator.next();
-
-            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
-            String violationFound = DesignFeedbackGenerator.VIOLATION_CHECKS.get(matchingResult);
+            List<Boolean> mostLikelyMatch = getMostLikelyMatchResult(presentElement, expectedElements);
+            String violationFound = DesignFeedbackGenerator.VIOLATION_CHECKS.get(mostLikelyMatch);
 
             String elementName = getVariableName(presentElement);
-            if(CHECKER_TYPE.equals(CheckerUtils.METHOD_CHECKER)) {
-                if(!elementName.contains("()")) {
+            if (CHECKER_TYPE.equals(CheckerUtils.METHOD_CHECKER)) {
+                if (!elementName.contains("()")) {
                     elementName += "()";
                 }
-                if(violationFound.equals(DesignFeedbackGenerator.MISSING_FIELDS)) {
+                if (violationFound.equals(DesignFeedbackGenerator.MISSING_FIELDS)) {
                     violationFound = DesignFeedbackGenerator.MISSING_METHODS;
                 }
             }
@@ -123,6 +116,55 @@ class ModifierChecker<T extends Node> {
             collectedFeedback.add(fb);
         }
         return collectedFeedback;
+    }
+
+    /**
+     * Determine the most likely match for a keyword issue. This is accomplished by iterating through all possible
+     * expected keyword pairs and picking the most likely one. The likeliness is determined by the amount of correct
+     * matches between keywords. The higher the match count, the more likely that this is the correct expectedElement object
+     * for the present element.
+     * If there are ties between matches, and no better can be found, we determine the order by selecting the object,
+     * that possesses the first "false" match, as this indicates a more important error, thus needing a feedback message
+     * more than the other object.
+     * If no match can be found, we assume that the expected element simply does not exist and return that.
+     * @param presentElement Element to find a match for
+     * @param expectedElements all possible expected elements
+     * @return the most likely match, in form of a boolean list, indicating the presence of keywords in the declaration
+     */
+    private List<Boolean> getMostLikelyMatchResult(NodeWithModifiers<T> presentElement, List<ExpectedElement> expectedElements) {
+        int maxCount = 0;
+        ExpectedElement maxExpectedElement = expectedElements.get(0);
+        List<Boolean> maxMatchingResult = Arrays.asList(false, false, false, false); //Assume that the element is missing
+
+        for (ExpectedElement expectedElement : expectedElements) {
+            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
+
+            int countMatchings = 0;
+            for (Boolean match : matchingResult) {
+                if (match) {
+                    countMatchings++;
+                }
+                if (countMatchings > maxCount) {
+                    maxCount = countMatchings;
+                    maxMatchingResult = matchingResult;
+                    maxExpectedElement = expectedElement;
+                } else if (countMatchings == maxCount && countMatchings > 0) {
+                    for (int i = 0; i < matchingResult.size(); i++) {
+                        if (!matchingResult.get(i).equals(maxMatchingResult.get(i))) {
+                            //Find the one that is wrong first
+                            if (!matchingResult.get(i)) {
+                                maxMatchingResult = matchingResult;
+                                maxExpectedElement = expectedElement;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        expectedElements.remove(maxExpectedElement);
+
+        return maxMatchingResult;
     }
 
     /**
