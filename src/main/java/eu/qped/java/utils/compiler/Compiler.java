@@ -203,7 +203,7 @@ public class Compiler implements CompilerInterface {
         compiler.addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
 //        compiler.addSourceFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
 
-        compiler.setCompiledStringResourcePath("exam-results");
+        compiler.setCompiledStringResourcePath("exam-results/src/compiledSources");
 
         boolean compile = compiler.compile("import java.util.ArrayList;\n" +
                 "import java.util.List;\n" +
