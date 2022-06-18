@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * checker for the syntax problems in java code.
@@ -47,6 +49,7 @@ public class SyntaxChecker implements Runnable {
         if (compiler == null) {
             compiler = Compiler.builder().build();
         }
+        compiler.setCompiledStringResourcePath("exam-results/src/model");
 
         boolean compileResult;
 

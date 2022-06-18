@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class QFSemSettings extends QfObjectBase {
     //todo rec muss und rec allowed
 
+    private String filePath;
     private String methodName;
     private String recursionAllowed; //todo name ändern
     private String whileLoop;

@@ -60,20 +60,21 @@ public class MassExecutor {
         this.mainSettingsConfigurator = mainSettingsConfigurator;
     }
 
+
     public static void main(String[] args) {
         long start = System.nanoTime();
 
         QFMainSettings qfMainSettings = new QFMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
-        qfMainSettings.setSemanticNeeded("false");
-        qfMainSettings.setStyleNeeded("true");
+        qfMainSettings.setSemanticNeeded("true");
+        qfMainSettings.setStyleNeeded("false");
         qfMainSettings.setPreferredLanguage("en");
-
 
 
         MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
         QFSemSettings qfSemSettings = new QFSemSettings();
+        qfSemSettings.setFilePath("exam-results/GrayCode.java");
         qfSemSettings.setMethodName("grayCodeStrings");
         qfSemSettings.setRecursionAllowed("true");
         qfSemSettings.setWhileLoop("-1");
@@ -181,7 +182,6 @@ public class MassExecutor {
         syntaxErrors = new ArrayList<>();
     }
 
-
     private void translate(boolean styleNeeded, boolean semanticNeeded) {
         String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
         Translator translator = new Translator();
@@ -202,7 +202,6 @@ public class MassExecutor {
         }
     }
 
-
     public List<StyleFeedback> getStyleFeedbacks() {
         return styleFeedbacks;
     }
@@ -214,7 +213,6 @@ public class MassExecutor {
     public List<SyntaxFeedback> getSyntaxFeedbacks() {
         return syntaxFeedbacks;
     }
-
 
     public List<SyntaxError> getSyntaxErrors() {
         return syntaxErrors;

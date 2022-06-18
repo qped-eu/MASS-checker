@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SemanticConfigurator {
 
+    private String filePath;
     private String methodName;
     private Boolean recursionAllowed;
     private Integer whileLoop;
@@ -45,18 +46,21 @@ public class SemanticConfigurator {
         setDoWhileLoop(-1);
     }
 
-    private void applySettings(){
+    private void applySettings() {
 
-        if(qfSemSettings.getMethodName()!=null){
+        if (qfSemSettings.getMethodName() != null) {
+            setFilePath(qfSemSettings.getFilePath());
+        }
+        if (qfSemSettings.getMethodName() != null) {
             setMethodName(qfSemSettings.getMethodName());
         }
-        if(qfSemSettings.getRecursionAllowed()!=null){
+        if (qfSemSettings.getRecursionAllowed() != null) {
             setRecursionAllowed(Boolean.parseBoolean(qfSemSettings.getRecursionAllowed()));
         }
-        if(qfSemSettings.getDoWhileLoop()!=null){
+        if (qfSemSettings.getDoWhileLoop() != null) {
             setWhileLoop(Integer.parseInt(qfSemSettings.getWhileLoop()));
         }
-        if(qfSemSettings.getForLoop()!=null){
+        if (qfSemSettings.getForLoop() != null) {
             setForLoop(Integer.parseInt(qfSemSettings.getForLoop()));
         }
         if(qfSemSettings.getForEachLoop()!=null){
