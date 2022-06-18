@@ -37,6 +37,8 @@ public class Compiler implements CompilerInterface {
 
     private List<Diagnostic<? extends JavaFileObject>> collectedDiagnostics;
 
+    private String compiledStringResourcePath;
+
     private String targetProjectOrClassPath;
     private String fileName;
 
@@ -94,113 +96,12 @@ public class Compiler implements CompilerInterface {
         return result;
     }
 
-    public void addExternalJarsToClassPath (List<String> paths) {
-        if (this.options == null){
-            setDefaultOptions();
-        }
-        this.options.add("cp");
-        this.options.addAll(paths);
-    }
-
-    public void addClassFilesDestination(String path){
-        if (options == null){
-            setDefaultOptions();
-        }
-        options.add("-d");
-        options.add(path);
-        options.add("-s");
-        options.add(path);
-    }
-
-//    public void addSourceFilesDestination(String path){
-//        if (options == null){
-//            setDefaultOptions();
-//        }
-//        options.add("-s");
-//        options.add(path);
-//    }
-
-    private void setDefaultOptions() {
-        this.options = new ArrayList<>();
-        options.add("-verbose");
-        options.add("-Xlint");
-        options.add("-g");
-    }
-
-
-
-    private void writeJavaFileContent(String code) {
-        try (OutputStream output = Files.newOutputStream(Paths.get(targetProjectOrClassPath))) {
-            output.write(code.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            LogManager.getLogger(getClass()).throwing(e);
-        }
-    }
-
-    private void createJavaClass(String javaFileContent) {
-        try {
-            // create class for Answer
-            writeJavaFileContent(javaFileContent);
-        } catch (Exception e) {
-            LogManager.getLogger(getClass()).throwing(e);
-        }
-    }
-
-    /**
-     * @param answer the code
-     * @return If the code does not contain a class, a default class is created and return it
-     */
-    private String writeCodeAsClass(String answer) {
-        StringBuilder javaFileContent = new StringBuilder();
-        boolean isClassOrInterface = answer.contains("class") || answer.contains("interface");
-
-        if (isClassOrInterface) {
-            String classDeclaration = answer.substring(answer.indexOf("class"), answer.indexOf("{"));
-
-            String[] declarationArray = classDeclaration.split(" ");
-
-            if (declarationArray.length < 2) {
-                fileName = DEFAULT_CLASS_NAME;
-                targetProjectOrClassPath = DEFAULT_CLASS_PATH;
-            } else {
-                fileName = declarationArray[1].trim(); // class name by student
-                targetProjectOrClassPath = fileName + ".java";
-            }
-        } else {
-            fileName = DEFAULT_CLASS_NAME;
-            targetProjectOrClassPath = DEFAULT_CLASS_PATH;
-        }
-        if (isClassOrInterface) {
-            javaFileContent.append(answer);
-        } else {
-            javaFileContent.append("/**" + "public")
-                    .append(fileName)
-                    .append("*/")
-                    .append("\n")
-                    .append("import java.util.*;")
-                    .append("\n")
-                    .append("public class")
-                    .append(" ")
-                    .append(fileName)
-                    .append(" {")
-                    .append("\n")
-                    .append(answer)
-                    .append("\n")
-                    .append("}");
-        }
-        fullSourceCode = javaFileContent.toString();
-        return javaFileContent.toString();
-    }
-
-    public void print(){
-        System.out.println();
-    }
-
     public static void main(String[] args) {
         Compiler compiler = Compiler.builder().build();
         compiler.addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
 //        compiler.addSourceFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
 
+        compiler.setCompiledStringResourcePath("src/main/java/eu/qped/java/utils/compiler/compiledFiles/");
 
         boolean compile = compiler.compile("import java.util.ArrayList;\n" +
                 "import java.util.List;\n" +
@@ -236,6 +137,106 @@ public class Compiler implements CompilerInterface {
                 "}");
 
         System.out.println(compile);
+    }
+
+    public void addExternalJarsToClassPath(List<String> paths) {
+        if (this.options == null) {
+            setDefaultOptions();
+        }
+        this.options.add("cp");
+        this.options.addAll(paths);
+    }
+
+    private void setDefaultOptions() {
+        this.options = new ArrayList<>();
+        options.add("-verbose");
+        options.add("-Xlint");
+        options.add("-g");
+    }
+
+
+    private void writeJavaFileContent(String code) {
+        try (OutputStream output = Files.newOutputStream(Paths.get(targetProjectOrClassPath))) {
+            output.write(code.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            LogManager.getLogger(getClass()).throwing(e);
+        }
+    }
+
+    private void createJavaClass(String javaFileContent) {
+        try {
+            // create class for Answer
+            writeJavaFileContent(javaFileContent);
+        } catch (Exception e) {
+            LogManager.getLogger(getClass()).throwing(e);
+        }
+    }
+
+    public void addClassFilesDestination(String path) {
+        if (options == null) {
+            setDefaultOptions();
+        }
+        options.add("-d");
+        options.add(path);
+        options.add("-s");
+        options.add(path);
+    }
+
+    /**
+     * @param answer the code
+     * @return If the code does not contain a class, a default class is created and return it
+     */
+    private String writeCodeAsClass(String answer) {
+        StringBuilder javaFileContent = new StringBuilder();
+        boolean isClassOrInterface = answer.contains("class") || answer.contains("interface");
+
+        if (isClassOrInterface) {
+            String classDeclaration = answer.substring(answer.indexOf("class"), answer.indexOf("{"));
+
+            String[] declarationArray = classDeclaration.split(" ");
+
+            if (declarationArray.length < 2) {
+                fileName = DEFAULT_CLASS_NAME;
+                targetProjectOrClassPath = DEFAULT_CLASS_PATH;
+            } else {
+                fileName = declarationArray[1].trim(); // class name by student
+                if (compiledStringResourcePath != null && !compiledStringResourcePath.equals("")) {
+                    targetProjectOrClassPath = compiledStringResourcePath;
+                    if (compiledStringResourcePath.charAt(compiledStringResourcePath.length() - 1) == '/') {
+                        targetProjectOrClassPath += fileName + ".java";
+                    } else {
+                        targetProjectOrClassPath += "/" + fileName + ".java";
+                    }
+                } else {
+                    targetProjectOrClassPath = fileName + ".java";
+                }
+
+
+            }
+        } else {
+            fileName = DEFAULT_CLASS_NAME;
+            targetProjectOrClassPath = DEFAULT_CLASS_PATH;
+        }
+        if (isClassOrInterface) {
+            javaFileContent.append(answer);
+        } else {
+            javaFileContent.append("/**" + "public")
+                    .append(fileName)
+                    .append("*/")
+                    .append("\n")
+                    .append("import java.util.*;")
+                    .append("\n")
+                    .append("public class")
+                    .append(" ")
+                    .append(fileName)
+                    .append(" {")
+                    .append("\n")
+                    .append(answer)
+                    .append("\n")
+                    .append("}");
+        }
+        fullSourceCode = javaFileContent.toString();
+        return javaFileContent.toString();
     }
 
 
