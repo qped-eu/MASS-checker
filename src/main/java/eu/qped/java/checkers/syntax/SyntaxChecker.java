@@ -52,7 +52,7 @@ public class SyntaxChecker implements Runnable {
 
         boolean compileResult;
 
-        compiler.setCompiledStringResourcePath("exam-results/src/compiledSources/");
+        compiler.setCompiledStringResourcePath("src/main/resources/exam-results/src");
 
 
         if (stringAnswer != null && !stringAnswer.equals("")) {

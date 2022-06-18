@@ -187,7 +187,7 @@ public class MassExecutor {
         MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
         QFSemSettings qfSemSettings = new QFSemSettings();
-        qfSemSettings.setFilePath("exam-results/src/compiledSources/GrayCode.java");
+        qfSemSettings.setFilePath("src/main/resources/exam-results/src");
         qfSemSettings.setMethodName("grayCodeStrings");
         qfSemSettings.setRecursionAllowed("true");
         qfSemSettings.setWhileLoop("-1");
