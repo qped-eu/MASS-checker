@@ -486,8 +486,8 @@ public class DesignFieldTest {
         qfDesignSettings.setClassInfos(classInfos);
 
         String source = "class TestClass {" +
-                "public final String name1;" + //access issue, both have one error
-                "public final String name2;" + //non access issue
+                "public final String name1;" +
+                "public final String name2;" +
                 "}";
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);

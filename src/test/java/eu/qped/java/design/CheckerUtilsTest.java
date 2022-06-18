@@ -51,28 +51,28 @@ public class CheckerUtilsTest {
 
     @Test
     public void extractClassTypeNameTest() {
-        String classTypeName = "class HexaDecimal";
+        String keywords = "class HexaDecimal";
         nonAccessMods.add(CheckerUtils.EMPTY_MODIFIER);
         ExpectedElement elemInfo = new ExpectedElement(CheckerUtils.EMPTY_MODIFIER, nonAccessMods,  "class", "HexaDecimal");
-        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(classTypeName));
+        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(keywords));
     }
 
     @Test
     public void extractFieldTest() {
-        String classTypeName = "* abstract int number";
+        String keywords = "* abstract int number";
         nonAccessMods.add("abstract");
         ExpectedElement elemInfo = new ExpectedElement(CheckerUtils.OPTIONAL_KEYWORD, nonAccessMods,  "int", "number");
-        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(classTypeName));
+        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(keywords));
     }
 
     @Test
     public void extractMethodTest() {
-        String classTypeName = "public default void getName(int a, int b)";
+        String keywords = "public default void getName(int a, int b)";
         nonAccessMods.add("default");
         ExpectedElement elemInfo = new ExpectedElement("public", nonAccessMods,  "void", "getName");
-        ExpectedElement result = CheckerUtils.extractExpectedInfo(classTypeName);
+        ExpectedElement result = CheckerUtils.extractExpectedInfo(keywords);
         System.out.println(result.getName());
-        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(classTypeName));
+        assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(keywords));
     }
 
     @Test
