@@ -96,48 +96,7 @@ public class Compiler implements CompilerInterface {
         return result;
     }
 
-    public static void main(String[] args) {
-        Compiler compiler = Compiler.builder().build();
-        compiler.addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
-//        compiler.addSourceFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
 
-        compiler.setCompiledStringResourcePath("exam-results");
-
-        boolean compile = compiler.compile("import java.util.ArrayList;\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "public class GrayCode {\n" +
-                "\n" +
-                "    public GrayCode() {\n" +
-                "    }\n" +
-                "\n" +
-                "    public static List<String> grayCodeStrings(int n) {\n" +
-                "        List<String> list = new ArrayList();\n" +
-                "        if (n == 0) {\n" +
-                "            list.add(\"\");\n" +
-                "            return list;\n" +
-                "        } else if (n == 1) {\n" +
-                "            list.add(\"0\");\n" +
-                "            list.add(\"1\");\n" +
-                "            return list;\n" +
-                "        } else {\n" +
-                "            List<String> prev = grayCodeStrings(n - 1);\n" +
-                "            list.addAll(prev);\n" +
-                "\n" +
-                "            for(int i = prev.size() - 1; i >= 0; --i) {\n" +
-                "                String bits = \"abcccc\";\n" +
-                "                list.set(i, \"0\" + bits);\n" +
-                "                list.add(\"1\" + bits);\n" +
-                "            }\n" +
-                "\n" +
-                "            return list;\n" +
-                "        }\n" +
-                "    }\n" +
-                "    \n" +
-                "}");
-
-        System.out.println(compile);
-    }
 
     public void addExternalJarsToClassPath(List<String> paths) {
         if (this.options == null) {
@@ -237,6 +196,49 @@ public class Compiler implements CompilerInterface {
         }
         fullSourceCode = javaFileContent.toString();
         return javaFileContent.toString();
+    }
+
+    public static void main(String[] args) {
+        Compiler compiler = Compiler.builder().build();
+        compiler.addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
+//        compiler.addSourceFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
+
+        compiler.setCompiledStringResourcePath("exam-results");
+
+        boolean compile = compiler.compile("import java.util.ArrayList;\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "public class GrayCode {\n" +
+                "\n" +
+                "    public GrayCode() {\n" +
+                "    }\n" +
+                "\n" +
+                "    public static List<String> grayCodeStrings(int n) {\n" +
+                "        List<String> list = new ArrayList();\n" +
+                "        if (n == 0) {\n" +
+                "            list.add(\"\");\n" +
+                "            return list;\n" +
+                "        } else if (n == 1) {\n" +
+                "            list.add(\"0\");\n" +
+                "            list.add(\"1\");\n" +
+                "            return list;\n" +
+                "        } else {\n" +
+                "            List<String> prev = grayCodeStrings(n - 1);\n" +
+                "            list.addAll(prev);\n" +
+                "\n" +
+                "            for(int i = prev.size() - 1; i >= 0; --i) {\n" +
+                "                String bits = \"abcccc\";\n" +
+                "                list.set(i, \"0\" + bits);\n" +
+                "                list.add(\"1\" + bits);\n" +
+                "            }\n" +
+                "\n" +
+                "            return list;\n" +
+                "        }\n" +
+                "    }\n" +
+                "    \n" +
+                "}");
+
+        System.out.println(compile);
     }
 
 
