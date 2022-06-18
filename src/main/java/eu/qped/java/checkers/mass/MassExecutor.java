@@ -214,7 +214,8 @@ public class MassExecutor {
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
 
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject("exam-results").build();
+        //targetProject("exam-results/src/compiledSources/GrayCode.java")
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
         MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);
