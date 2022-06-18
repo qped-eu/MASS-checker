@@ -8,7 +8,6 @@ import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
-import eu.qped.java.checkers.style.StyleViolation;
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
@@ -36,7 +35,7 @@ public class MassExecutor {
     private List<SemanticFeedback> semanticFeedbacks;
     private List<SyntaxFeedback> syntaxFeedbacks;
 
-    private List<StyleViolation> violations;
+
     private List<SyntaxError> syntaxErrors;
 
     private final StyleChecker styleChecker;
@@ -59,94 +58,6 @@ public class MassExecutor {
         this.semanticChecker = semanticChecker;
         this.syntaxChecker = syntaxChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
-    }
-
-    /**
-     * execute the Mass System
-     */
-    public void execute() {
-        init();
-
-        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
-        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
-
-
-        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
-
-        if (syntaxCheckReport.isCompilable()) {
-            if (styleNeeded) {
-                styleChecker.setTargetPath(syntaxCheckReport.getPath());
-                styleChecker.check();
-                styleFeedbacks = styleChecker.getStyleFeedbacks();
-                violations = styleChecker.getStyleViolationsList();
-            }
-            if (semanticNeeded) {
-                final String source = syntaxCheckReport.getCodeAsString();
-                semanticChecker.setSource(source);
-                semanticChecker.check();
-                semanticFeedbacks = semanticChecker.getFeedbacks();
-            }
-        } else {
-            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
-            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
-            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
-        }
-
-        // translate Feedback body if needed
-        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded);
-        }
-    }
-
-    private void init() {
-        syntaxFeedbacks = new ArrayList<>();
-        styleFeedbacks = new ArrayList<>();
-        semanticFeedbacks = new ArrayList<>();
-        violations = new ArrayList<>();
-        syntaxErrors = new ArrayList<>();
-    }
-
-
-    private void translate(boolean styleNeeded, boolean semanticNeeded) {
-        String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
-        Translator translator = new Translator();
-
-        //List is Empty when the syntax is correct
-        for (SyntaxFeedback feedback : syntaxFeedbacks) {
-            translator.translateBody(prefLanguage, feedback);
-        }
-        if (semanticNeeded) {
-            for (Feedback feedback : semanticFeedbacks) {
-                translator.translateBody(prefLanguage, feedback);
-            }
-        }
-        if (styleNeeded) {
-            for (StyleFeedback feedback : styleFeedbacks) {
-                translator.translateStyleBody(prefLanguage, feedback);
-            }
-        }
-    }
-
-
-    public List<StyleFeedback> getStyleFeedbacks() {
-        return styleFeedbacks;
-    }
-
-    public List<SemanticFeedback> getSemanticFeedbacks() {
-        return semanticFeedbacks;
-    }
-
-    public List<SyntaxFeedback> getSyntaxFeedbacks() {
-        return syntaxFeedbacks;
-    }
-
-    public List<StyleViolation> getViolations() {
-        return violations;
-    }
-
-    public List<SyntaxError> getSyntaxErrors() {
-        return syntaxErrors;
     }
 
     public static void main(String[] args) {
@@ -243,7 +154,7 @@ public class MassExecutor {
 
         for (StyleFeedback f : feedbacks) {
             System.out.println(f.getDesc());
-            System.out.println(f.getBody());
+            System.out.println(f.getContent());
             System.out.println(f.getLine());
             System.out.println(f.getExample());
             System.out.println("-----------------------------------------------------------------");
@@ -261,5 +172,89 @@ public class MassExecutor {
         }
         long end = System.nanoTime() - start;
         System.out.println("Feedback generated in: " + end * Math.pow(10.0, -9.0) + " sec");
+    }
+
+    private void init() {
+        syntaxFeedbacks = new ArrayList<>();
+        styleFeedbacks = new ArrayList<>();
+        semanticFeedbacks = new ArrayList<>();
+        syntaxErrors = new ArrayList<>();
+    }
+
+
+    private void translate(boolean styleNeeded, boolean semanticNeeded) {
+        String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
+        Translator translator = new Translator();
+
+        //List is Empty when the syntax is correct
+        for (SyntaxFeedback feedback : syntaxFeedbacks) {
+            translator.translateBody(prefLanguage, feedback);
+        }
+        if (semanticNeeded) {
+            for (Feedback feedback : semanticFeedbacks) {
+                translator.translateBody(prefLanguage, feedback);
+            }
+        }
+        if (styleNeeded) {
+            for (StyleFeedback feedback : styleFeedbacks) {
+                translator.translateStyleBody(prefLanguage, feedback);
+            }
+        }
+    }
+
+
+    public List<StyleFeedback> getStyleFeedbacks() {
+        return styleFeedbacks;
+    }
+
+    public List<SemanticFeedback> getSemanticFeedbacks() {
+        return semanticFeedbacks;
+    }
+
+    public List<SyntaxFeedback> getSyntaxFeedbacks() {
+        return syntaxFeedbacks;
+    }
+
+
+    public List<SyntaxError> getSyntaxErrors() {
+        return syntaxErrors;
+    }
+
+    /**
+     * execute the Mass System
+     */
+    public void execute() {
+        init();
+
+        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
+        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
+
+
+        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
+
+        if (syntaxCheckReport.isCompilable()) {
+            if (styleNeeded) {
+                styleChecker.setTargetPath(syntaxCheckReport.getPath());
+                styleChecker.check();
+                styleFeedbacks = styleChecker.getStyleFeedbacks();
+
+            }
+            if (semanticNeeded) {
+                final String source = syntaxCheckReport.getCodeAsString();
+                semanticChecker.setSource(source);
+                semanticChecker.check();
+                semanticFeedbacks = semanticChecker.getFeedbacks();
+            }
+        } else {
+            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
+            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
+            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
+        }
+
+        // translate Feedback body if needed
+        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
+            translate(styleNeeded, semanticNeeded);
+        }
     }
 }

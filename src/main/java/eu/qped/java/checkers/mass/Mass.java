@@ -69,7 +69,7 @@ public class Mass implements Checker {
             result[i] = "style Feedback";
             result[i + 1] = styleFeedback.getDesc()
                     + NEW_LINE
-                    + styleFeedback.getBody()
+                    + styleFeedback.getContent()
                     + NEW_LINE
                     + styleFeedback.getLine()
                     + NEW_LINE

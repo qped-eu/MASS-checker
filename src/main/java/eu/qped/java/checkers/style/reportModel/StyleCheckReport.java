@@ -26,8 +26,8 @@ public class StyleCheckReport {
     @JsonProperty("timestamp")
     private Timestamp timestamp;
 
-    @JsonProperty("files")
-    private List<ReportFileEntry> files;
+    @JsonProperty(value = "files")
+    private List<ReportFileEntry> fileEntries;
 
 
 }

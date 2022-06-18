@@ -14,10 +14,16 @@ import java.io.IOException;
 @Builder
 public class ReportFromJsonMapper {
 
-    public StyleCheckReport readJson() throws IOException {
+    public StyleCheckReport mapToReportObject() {
         ObjectMapper jacksonMapper = new ObjectMapper();
         File jsonFile = new File("src/main/java/eu/qped/java/checkers/style/resources/report.json").getAbsoluteFile();
-        return jacksonMapper.readValue(jsonFile, StyleCheckReport.class);
+        StyleCheckReport result;
+        try {
+            result = jacksonMapper.readValue(jsonFile, StyleCheckReport.class);
+        } catch (IOException e) {
+            return StyleCheckReport.builder().build();
+        }
+        return result;
     }
 
 }

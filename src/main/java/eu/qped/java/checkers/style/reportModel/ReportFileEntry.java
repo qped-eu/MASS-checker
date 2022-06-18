@@ -16,7 +16,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReportFileEntry {
 
-    @JsonProperty(value = "fileName")
+    @JsonProperty(value = "filename")
     private String fileName;
 
     @JsonProperty("violations")

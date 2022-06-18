@@ -3,8 +3,8 @@ package eu.qped.java.checkers.style;
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.QFStyleSettings;
 import eu.qped.java.checkers.style.pmd.PmdConfigException;
-import eu.qped.java.checkers.style.pmd.ViolationsFromReportParser;
 import eu.qped.java.checkers.style.pmd.XmlFileManager;
+import eu.qped.java.checkers.style.reportModel.StyleCheckReport;
 import eu.qped.java.checkers.style.settings.StyleConfigurationReader;
 import eu.qped.java.checkers.style.settings.StyleSettings;
 import lombok.*;
@@ -13,6 +13,9 @@ import net.sourceforge.pmd.PMDConfiguration;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -32,10 +35,7 @@ public class StyleChecker {
     private String targetPath;
 
     @Setter(AccessLevel.PACKAGE)
-    private ArrayList<StyleFeedback> styleFeedbacks = new ArrayList<>();
-
-    @Setter(AccessLevel.PACKAGE)
-    private ArrayList<StyleViolation> violations;
+    private List<StyleFeedback> styleFeedbacks = new ArrayList<>();
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
@@ -67,18 +67,19 @@ public class StyleChecker {
 
 
     private void prepareFeedbacks() {
-        final ViolationsFromReportParser parser = ViolationsFromReportParser.createViolationsFromReportParser();
+        ReportFromJsonMapper mapper = ReportFromJsonMapper.builder().build();
 
-        violations = parser.parse();
+        StyleCheckReport report = mapper.mapToReportObject();
 
+        StyleFeedbackGenerator adapter = StyleFeedbackGenerator.builder().feedbacks(new HashMap<>()).report(report).build();
+
+        //todo use this to generate a proper feedback.
+        var resultFeedbacks = adapter.generateFeedbacks();
+
+        //FIXME return the map isntead
         styleFeedbacks = new ArrayList<>();
-
-        StyleFeedbackGenerator styleFeedbackGenerator = StyleFeedbackGenerator.createStyleFeedbackGenerator();
-        for (StyleViolation styleViolation : this.violations) {
-            styleFeedbacks.add(new StyleFeedback(styleViolation.getDescription(),
-                    styleFeedbackGenerator.getFeedbackBody(styleViolation.getRule()),
-                    styleFeedbackGenerator.getFeedbackExample(styleViolation.getRule()),
-                    "at Line: " + styleViolation.getLine()));
+        for (Map.Entry<String, List<StyleFeedback>> entry : resultFeedbacks.entrySet()) {
+            styleFeedbacks.addAll(entry.getValue());
         }
     }
 
@@ -154,10 +155,5 @@ public class StyleChecker {
         configuration.setReportFormat("json");
         configuration.setReportFile("src/main/java/eu/qped/java/checkers/style/resources/report.json");
         PMD.runPmd(configuration);
-    }
-
-
-    public ArrayList<StyleViolation> getStyleViolationsList() {
-        return this.violations;
     }
 }
