@@ -1,19 +1,16 @@
-package eu.qped.java.feedback.syntaxLagacy;
+package eu.qped.java.checkers.syntax;
 
 
-import eu.qped.java.checkers.syntax.SyntaxError;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Deprecated(forRemoval = true)
 public class SyntaxErrorPredictHelper {
 
 
@@ -22,33 +19,12 @@ public class SyntaxErrorPredictHelper {
     private String errorMsg;
 
 
-    public SyntaxFeedback predictFeedbackForExpected(List<SyntaxFeedback> feedbacks, SyntaxError syntaxError) {
-        String forSemExp = syntaxError.getAdditionalProperties().get("forSemExpected");
-        List<SyntaxFeedback> filterFeedbacks =
-                feedbacks.stream().filter(
-                        syntaxFeedback -> syntaxFeedback.getErrorMessage().equalsIgnoreCase(syntaxError.getErrorMsg())
-                ).collect(Collectors.toList());
-
-        if (this.hasBraces(forSemExp)) {
-            return filterFeedbacks
-                    .stream()
-                    .filter(syntaxFeedback -> syntaxFeedback.getErrorInfo().getErrorKey().equals("braces_expected"))
-                    .collect(Collectors.toList()).get(0);
-        } else {
-            return filterFeedbacks
-                    .stream()
-                    .filter(syntaxFeedback -> syntaxFeedback.getErrorInfo().getErrorKey().equals("semi_expected"))
-                    .collect(Collectors.toList()).get(0);
-        }
-    }
-
     public String getErrorKind() {
         String errorKind = "";
         switch (errorCode) {
             case "compiler.err.illegal.start.of.expr": {
                 boolean hasMod = hasModifier(errorTrigger);
                 if (!isAMethod(errorTrigger) && hasMod) {
-                    System.out.println("variable");
                     errorKind = "variable";
                 } else if (isAMethod(errorTrigger) && !errorTrigger.contains("(")) {
                     errorKind = "braces || strLit";

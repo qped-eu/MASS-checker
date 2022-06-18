@@ -119,7 +119,7 @@ public class XmlFileManager {
 
 				mainRulesetFile = File.createTempFile("mainRuleset", ".xml");
 
-				StreamResult streamResult = new StreamResult(mainRulesetFile.getPath());
+				StreamResult streamResult = new StreamResult(mainRulesetFile.toURI().getPath());
 				transformer.transform(domSource, streamResult);
 
 				// make sure that the document is not edited anymore.
@@ -131,32 +131,4 @@ public class XmlFileManager {
 		}
 		return mainRulesetFile.getPath();
 	}
-
-//    public void clearXmlFile() {
-//        Document document;
-//        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//        try {
-//            DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-//            document = documentBuilder.parse("pmd-rulesets/mainRuleset.xml");
-//            Node root = document.getDocumentElement();
-//            while (root.hasChildNodes()) {
-//                root.removeChild(root.getFirstChild());
-//            }
-//            transform("pmd-rulesets/mainRuleset.xml", document);
-//
-//        } catch (ParserConfigurationException | IOException | SAXException | TransformerException e) {
-//            LogManager.getLogger((Class<?>) getClass()).throwing(e);
-//        }
-//    }
-
-//    private void transform(String xmlPath, Document document) throws TransformerException {
-//        document.normalize();
-//        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-//
-//        Transformer transformer = transformerFactory.newTransformer();
-//        DOMSource domSource = new DOMSource(document);
-//
-//        StreamResult streamResult = new StreamResult(xmlPath);
-//        transformer.transform(domSource, streamResult);
-//    }
 }

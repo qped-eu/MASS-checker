@@ -1,5 +1,9 @@
 package eu.qped.java.checkers.style;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
@@ -13,6 +17,10 @@ import eu.qped.java.checkers.mass.QFStyleSettings;
  * @version 1.1
  * @since 01.06.2021
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class StyleConfigurator {
 
 
@@ -34,7 +42,7 @@ public class StyleConfigurator {
     private CheckLevel basisLevel;
 
 
-    private final QFStyleSettings qfStyleSettings;
+    private  QFStyleSettings qfStyleSettings;
 
 
 
@@ -137,95 +145,6 @@ public class StyleConfigurator {
 			LogManager.getLogger(getClass()).warn("Unsupported check-level (" + level + "), fall back to " + DEFAULT_CHECK_LEVEL);
 			setComplexityLevel(DEFAULT_CHECK_LEVEL);
 		}
-    }
-
-    public CheckLevel getNamesLevel() {
-        return namesLevel;
-    }
-
-    public void setNamesLevel(CheckLevel namesLevel) {
-        this.namesLevel = namesLevel;
-    }
-
-    public CheckLevel getComplexityLevel() {
-        return complexityLevel;
-    }
-
-    public void setComplexityLevel(CheckLevel complexityLevel) {
-        this.complexityLevel = complexityLevel;
-    }
-
-    public CheckLevel getBasisLevel() {
-        return basisLevel;
-    }
-
-    public void setBasisLevel(CheckLevel basisLevel) {
-        this.basisLevel = basisLevel;
-    }
-
-
-    public int getMaxClassLength() {
-        return maxClassLength;
-    }
-
-    public void setMaxClassLength(int maxClassLength) {
-        this.maxClassLength = maxClassLength;
-    }
-
-    public int getMaxMethodLength() {
-        return maxMethodLength;
-    }
-
-    public void setMaxMethodLength(int maxMethodLength) {
-        this.maxMethodLength = maxMethodLength;
-    }
-
-    public int getMaxFieldsCount() {
-        return maxFieldsCount;
-    }
-
-    public void setMaxFieldsCount(int maxFieldsCount) {
-        this.maxFieldsCount = maxFieldsCount;
-    }
-
-    public int getMaxCycloComplexity() {
-        return maxCycloComplexity;
-    }
-
-    public void setMaxCycloComplexity(int maxCycloComplexity) {
-        this.maxCycloComplexity = maxCycloComplexity;
-    }
-
-    public String getVarNamesRegEx() {
-        return varNamesRegEx;
-    }
-
-    public void setVarNamesRegEx(String varNamesRegEx) {
-        this.varNamesRegEx = varNamesRegEx;
-    }
-
-    public String getMethodNamesRegEx() {
-        return methodNamesRegEx;
-    }
-
-    public void setMethodNamesRegEx(String methodNamesRegEx) {
-        this.methodNamesRegEx = methodNamesRegEx;
-    }
-
-    public String getClassNameRegEx() {
-        return classNameRegEx;
-    }
-
-    public void setClassNameRegEx(String classNameRegEx) {
-        this.classNameRegEx = classNameRegEx;
-    }
-
-    public CheckLevel getMainLevel() {
-        return mainLevel;
-    }
-
-    public void setMainLevel(CheckLevel mainLevel) {
-        this.mainLevel = mainLevel;
     }
 }
 
