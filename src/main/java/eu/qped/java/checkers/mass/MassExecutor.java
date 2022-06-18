@@ -74,7 +74,7 @@ public class MassExecutor {
         MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
         QFSemSettings qfSemSettings = new QFSemSettings();
-        qfSemSettings.setFilePath("exam-results/GrayCode.java");
+        qfSemSettings.setFilePath("exam-results/src/compiledSources/GrayCode.java");
         qfSemSettings.setMethodName("grayCodeStrings");
         qfSemSettings.setRecursionAllowed("true");
         qfSemSettings.setWhileLoop("-1");
@@ -87,13 +87,14 @@ public class MassExecutor {
         SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
 
         String code = "import java.util.ArrayList;\n" +
-                "import java.util.Arrays;\n" +
                 "import java.util.List;\n" +
                 "\n" +
                 "public class GrayCode {\n" +
+                "    public GrayCode() {\n" +
+                "    }\n" +
                 "\n" +
                 "    public static List<String> grayCodeStrings(int n) {\n" +
-                "        List<String> list = new ArrayList<>();\n" +
+                "        List<String> list = new ArrayList();\n" +
                 "        if (n == 0) {\n" +
                 "            list.add(\"\");\n" +
                 "            return list;\n" +
@@ -104,11 +105,13 @@ public class MassExecutor {
                 "        } else {\n" +
                 "            List<String> prev = grayCodeStrings(n - 1);\n" +
                 "            list.addAll(prev);\n" +
-                "            for (int i = prev.size() - 1; i >= 0; i--) {\n" +
-                "                String bits = \"abc\" \n + \"ccc\"; \n" +
+                "\n" +
+                "            for(int i = prev.size() - 1; i >= 0; --i) {\n" +
+                "                String bits = \"abcccc\";\n" +
                 "                list.set(i, \"0\" + bits);\n" +
                 "                list.add(\"1\" + bits);\n" +
                 "            }\n" +
+                "\n" +
                 "            return list;\n" +
                 "        }\n" +
                 "    }\n" +
@@ -129,7 +132,7 @@ public class MassExecutor {
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
 
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject("src/main/resources/testProject").build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
         MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);

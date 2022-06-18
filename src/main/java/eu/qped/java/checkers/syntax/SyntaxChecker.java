@@ -49,9 +49,9 @@ public class SyntaxChecker implements Runnable {
         if (compiler == null) {
             compiler = Compiler.builder().build();
         }
-        compiler.setCompiledStringResourcePath("exam-results/src/model");
 
         boolean compileResult;
+        compiler.setCompiledStringResourcePath("exam-results/src/compiledSources");
 
         if (stringAnswer != null && !stringAnswer.equals("")) {
             compileResult = compiler.compileFromString(stringAnswer);
