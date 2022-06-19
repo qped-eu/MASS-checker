@@ -69,7 +69,7 @@ class MassSemanticsTest {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker,
+        MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker, null,
                 mainSettingsConfiguratorConf);
 
         massE.execute();

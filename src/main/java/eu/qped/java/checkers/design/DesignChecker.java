@@ -94,7 +94,7 @@ public class DesignChecker implements Checker {
         return infos;
     }
 
-    public void addCompilationUnit(String source) {
+    public void addSource(String source) {
         compilationUnits.add(parseCompUnit(source));
     }
 
