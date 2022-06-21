@@ -54,7 +54,7 @@ public class Mass implements Checker {
         SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
 
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, null, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, mainSettings);
 
         massExecutor.execute();
 
@@ -69,7 +69,6 @@ public class Mass implements Checker {
 
         List<SemanticFeedback> semanticFeedbacks;
         semanticFeedbacks = massExecutor.getSemanticFeedbacks();
-
 
         List<DesignFeedback> designFeedbacks;
         designFeedbacks = massExecutor.getDesignFeedbacks();

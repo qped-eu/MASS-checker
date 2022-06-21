@@ -46,8 +46,8 @@ public class DesignChecker implements Checker {
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
         designFeedbacks.addAll(classMatcher.generateClassNameFeedback(classDecls));
 
-        ModifierChecker<FieldDeclaration> fieldChecker = new ModifierChecker<>(CheckerUtils.FIELD_CHECKER);
-        ModifierChecker<MethodDeclaration> methodChecker = new ModifierChecker<>(CheckerUtils.METHOD_CHECKER);
+        ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(CheckerUtils.FIELD_CHECKER);
+        ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(CheckerUtils.METHOD_CHECKER);
         InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo);
         for(Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry : matchedDeclInfo.entrySet()) {
             ClassOrInterfaceDeclaration classDecl = entry.getValue();

@@ -158,14 +158,19 @@ qf.semSettings = {
 };
 
 qf.designSettings = {
-    "classTypeName":"class:Card",
-    "inheritsFrom":["interface:Comparable"],
-    "fieldKeywords": [
-        "private String name",
-        "private String year"
-    ],
-    "methodKeywords": [
-        "public int compareTo"
+    "classInfos": [
+        {
+            "classTypeName":"class Card",
+            "inheritsFrom":["interface Comparable"],
+            "fieldKeywords": [
+                "private String name",
+                "private String year"
+            ],
+            "methodKeywords": [
+                "public int compareTo"
+            ]
+        }
     ]
+    
 };
 ```

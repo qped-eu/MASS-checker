@@ -16,11 +16,11 @@ import java.util.*;
  * Modifier Checker for fields and methods, checking for access and non access modifiers
  * @param <T> FieldDeclaration or MethodDeclaration from JavaParser
  */
-class ModifierChecker<T extends Node> {
+class ClassMemberChecker<T extends Node> {
 
     private final String CHECKER_TYPE;
 
-    public ModifierChecker(String CHECKER_TYPE) {
+    public ClassMemberChecker(String CHECKER_TYPE) {
         this.CHECKER_TYPE = CHECKER_TYPE;
     }
 
