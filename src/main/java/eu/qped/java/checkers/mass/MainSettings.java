@@ -26,6 +26,7 @@ public class MainSettings {
     private String preferredLanguage;
     private boolean styleNeeded;
     private boolean semanticNeeded;
+    private boolean designNeeded;
 
     private QFMainSettings qfMainSettings;
 
@@ -37,6 +38,7 @@ public class MainSettings {
 
 
     public void readSettings() {
+        designNeeded = qfMainSettings.getDesignNeeded() != null && Boolean.parseBoolean(qfMainSettings.getDesignNeeded());
         styleNeeded = qfMainSettings.getStyleNeeded() != null && Boolean.parseBoolean(qfMainSettings.getStyleNeeded());
         semanticNeeded = qfMainSettings.getSemanticNeeded() != null && Boolean.parseBoolean(qfMainSettings.getSemanticNeeded());
         syntaxLevel = qfMainSettings.getSyntaxLevel() != null ? getSyntaxConfLevel(qfMainSettings.getSyntaxLevel()) : CheckLevel.BEGINNER;

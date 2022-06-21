@@ -44,7 +44,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -69,7 +69,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -96,7 +96,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -124,7 +124,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -149,7 +149,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -158,7 +158,6 @@ public class DesignFieldTest {
         }
 
         DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "name", DesignFeedbackGenerator.WRONG_ELEMENT_NAME);
-        System.out.println(fb1.toString());
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -181,7 +180,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -211,7 +210,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -223,8 +222,6 @@ public class DesignFieldTest {
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
-
-        //System.out.println("Feedback: "+designChecker.getDesignFeedbacks().get(0).toString());
 
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
@@ -246,7 +243,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -257,8 +254,6 @@ public class DesignFieldTest {
         DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "year", DesignFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
-
-        System.out.println("Feedback: "+ designChecker.getDesignFeedbacks().get(0).toString());
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 
@@ -278,7 +273,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -310,7 +305,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -322,7 +317,6 @@ public class DesignFieldTest {
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
-        System.out.println(designChecker.getDesignFeedbacks().get(0).toString());
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 
@@ -343,7 +337,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -379,7 +373,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -415,7 +409,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -454,7 +448,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -492,7 +486,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -527,7 +521,7 @@ public class DesignFieldTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);

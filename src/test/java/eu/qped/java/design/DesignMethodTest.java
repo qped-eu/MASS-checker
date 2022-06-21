@@ -45,7 +45,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -77,7 +77,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -110,7 +110,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -126,7 +126,6 @@ public class DesignMethodTest {
         expectedFeedback.add(fb1);
         expectedFeedback.add(fb2);
 
-        System.out.println(designChecker.getDesignFeedbacks().get(0).toString());
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 
@@ -152,7 +151,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -193,7 +192,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -235,7 +234,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -272,7 +271,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -306,7 +305,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -339,7 +338,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -376,7 +375,7 @@ public class DesignMethodTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -388,7 +387,6 @@ public class DesignMethodTest {
 
         List<DesignFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
-        System.out.println(designChecker.getDesignFeedbacks().get(0).toString());
         assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
     }
 }

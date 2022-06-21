@@ -54,7 +54,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -101,7 +101,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -147,7 +147,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -177,7 +177,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -203,7 +203,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -229,7 +229,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -255,7 +255,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -285,7 +285,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -315,7 +315,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -361,7 +361,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -399,7 +399,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -431,7 +431,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -461,7 +461,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -491,7 +491,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -521,7 +521,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -547,7 +547,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -582,7 +582,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -617,7 +617,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -652,7 +652,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -687,7 +687,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -722,7 +722,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -757,7 +757,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -792,7 +792,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -827,7 +827,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
@@ -862,7 +862,7 @@ public class DesignClassTest {
 
         DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
         DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addCompilationUnit(source);
+        designChecker.addSource(source);
 
         try {
             designChecker.check(null);
