@@ -1,16 +1,20 @@
 package eu.qped.java.style;
 
-import eu.qped.framework.CheckLevel;
-import eu.qped.java.checkers.mass.MainSettings;
-import eu.qped.java.checkers.mass.MassExecutor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
+import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.mass.QFMainSettings;
-import eu.qped.java.checkers.mass.QFStyleSettings;
-import eu.qped.java.checkers.style.StyleChecker;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.qped.framework.CheckLevel;
+import eu.qped.java.checkers.mass.MainSettings;
+import eu.qped.java.checkers.mass.MassExecutor;
+import eu.qped.java.checkers.mass.QFStyleSettings;
+import eu.qped.java.checkers.style.StyleChecker;
+
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 
 class MassStyleTest {
 
@@ -46,9 +50,8 @@ class MassStyleTest {
                 + "}";
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
-
         MassExecutor massE = new MassExecutor(styleChecker, null, syntaxChecker,
-                mainSettingsConfiguratorConf);
+                null, mainSettingsConfiguratorConf);
 
         massE.execute();
 

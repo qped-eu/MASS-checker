@@ -1,10 +1,7 @@
 package eu.qped.java.checkers.design.ckjm;
 
-import eu.qped.java.checkers.design.Metric;
 import gr.spinellis.ckjm.*;
 import gr.spinellis.ckjm.utils.LoggerHelper;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.bcel.classfile.ClassParser;
 import org.apache.bcel.classfile.JavaClass;
@@ -19,7 +16,7 @@ import java.util.logging.Logger;
 
 /**
  * Convert a list of classes into their metrics.
- * Given metrics are defined in {@link Metric}.
+ * Given metrics are defined in {@link DesignCheckEntryHandler.Metric}.
  *
  * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a> (from CKJM-extended tool)
  * @author Jannik Seus (edited)

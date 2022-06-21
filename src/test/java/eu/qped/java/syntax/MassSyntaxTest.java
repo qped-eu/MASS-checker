@@ -2,6 +2,7 @@ package eu.qped.java.syntax;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.mass.QFMainSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class MassSyntaxTest {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                mainSettingsConfiguratorConf);
+                null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -56,7 +57,7 @@ class MassSyntaxTest {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                mainSettingsConfiguratorConf);
+                null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -73,7 +74,7 @@ class MassSyntaxTest {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                mainSettingsConfiguratorConf);
+                null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
