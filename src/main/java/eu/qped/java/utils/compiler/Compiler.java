@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor;
+
 
 import javax.tools.*;
 import java.io.File;

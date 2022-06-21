@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
@@ -18,7 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.rules.Timeout;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -40,7 +36,7 @@ public class SystemTests {
 	private static final String QF_EXPECTED_FILE_NAME = "qf-expected.json";
 	private static final String DESCRIPTION_FILE_NAME = "description.yaml";
 	private static final String SYSTEM_TESTS_FOLDER_NAME = "system-tests";
-	private static final File QF_OBJECT_FILE = new File("qf.json");
+	private static final File QF_OBJECT_FILE = new File("qf-copy.json");
 	private static SystemTestConf systemTestConf;
 	private static ObjectMapper yamlMapper;
 	
