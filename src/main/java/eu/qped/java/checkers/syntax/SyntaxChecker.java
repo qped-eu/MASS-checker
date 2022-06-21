@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * checker for the syntax problems in java code.
@@ -24,7 +26,7 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SyntaxChecker {
+public class SyntaxChecker implements Runnable {
 
     private String stringAnswer;
 
@@ -35,6 +37,12 @@ public class SyntaxChecker {
     @Deprecated(forRemoval = true)
     private CheckLevel level;
 
+    @Override
+    public void run() {
+        System.out.println("running: " + this.getClass().getSimpleName());
+    }
+
+
     public SyntaxCheckReport check() {
         SyntaxCheckReport.SyntaxCheckReportBuilder resultBuilder = SyntaxCheckReport.builder();
 
@@ -44,13 +52,15 @@ public class SyntaxChecker {
 
         boolean compileResult;
 
+        compiler.setCompiledStringResourcePath("src/main/resources/exam-results/src");
+
+
         if (stringAnswer != null && !stringAnswer.equals("")) {
-            compileResult = compiler.compile(stringAnswer);
+            compileResult = compiler.compileFromString(stringAnswer);
             resultBuilder.compiledSourceType(CompiledSourceType.STRING);
             resultBuilder.codeAsString(compiler.getFullSourceCode());
         } else {
-            compiler.setTargetProjectOrClassPath(targetProject);
-            compileResult = compiler.compile(null);
+            compileResult = compiler.compileFromProject(targetProject);
             resultBuilder.compiledSourceType(CompiledSourceType.PROJECT);
         }
         resultBuilder.isCompilable(compileResult);
@@ -106,5 +116,6 @@ public class SyntaxChecker {
         }
         return syntaxErrors;
     }
+
 
 }

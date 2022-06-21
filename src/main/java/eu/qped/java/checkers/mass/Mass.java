@@ -3,11 +3,11 @@ package eu.qped.java.checkers.mass;
 import eu.qped.framework.Checker;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
+import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
-import eu.qped.java.checkers.style.StyleConfigurator;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
@@ -31,46 +31,49 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
+    // Main Settings
+    MainSettings mainSettings = new MainSettings(this.mainSettings);
 
-        StyleConfigurator styleConfigurator = StyleConfigurator.createStyleConfigurator(this.styleSettings);
+    // Syntax Checker
+    SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
 
-        StyleChecker styleChecker = new StyleChecker(styleConfigurator);
+    // Style Checker
+
+    StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
+
+    // Semantic Checker
+    SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
+    SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+
+    // Design Checker
+    DesignChecker designChecker = DesignChecker.builder().build(); //TODO is this correct?
+
+    //Mass
+    MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, mainSettings);
+    massExecutor.execute();
+
+    /*
+     feedbacks
+     */
+    List<StyleFeedback> styleFeedbacks;
+    styleFeedbacks = massExecutor.getStyleFeedbacks();
+
+    List<SyntaxFeedback> syntaxFeedbacks;
+    syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
+
+    List<SemanticFeedback> semanticFeedbacks;
+    semanticFeedbacks = massExecutor.getSemanticFeedbacks();
 
 
-        MainSettings mainSettings = new MainSettings(this.mainSettings);
+    String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + 100];
 
-        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
-
-
-        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
-
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettings);
-
-        massExecutor.execute();
-
-        /*
-         feedbacks
-         */
-        List<StyleFeedback> styleFeedbacks;
-        styleFeedbacks = massExecutor.getStyleFeedbacks();
-
-        List<SyntaxFeedback> syntaxFeedbacks;
-        syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
-
-        List<SemanticFeedback> semanticFeedbacks;
-        semanticFeedbacks = massExecutor.getSemanticFeedbacks();
-
-
-        String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + 100];
-
-        int i = 0;
+    int i = 0;
 
         for (StyleFeedback styleFeedback : styleFeedbacks) {
             result[i] = "style Feedback";
             result[i + 1] = styleFeedback.getDesc()
                     + NEW_LINE
-                    + styleFeedback.getBody()
+                    + styleFeedback.getContent()
                     + NEW_LINE
                     + styleFeedback.getLine()
                     + NEW_LINE
@@ -81,23 +84,23 @@ public class Mass implements Checker {
         }
 
         for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
-            result[i] = "semantic Feedback";
-            result[i + 1] = semanticFeedback.getBody() + NEW_LINE
-                    + "--------------------------------------------------";
-            i = i + 2;
-        }
+        result[i] = "semantic Feedback";
+        result[i + 1] = semanticFeedback.getBody() + NEW_LINE
+                + "--------------------------------------------------";
+        i = i + 2;
+    }
 
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
-            result[i + 1] = ""
-                    + syntax.toString()
-                    + NEW_LINE
-                    + "--------------------------------------------------"
-            ;
-            i = i + 2;
-        }
+        result[i + 1] = ""
+                + syntax.toString()
+                + NEW_LINE
+                + "--------------------------------------------------"
+        ;
+        i = i + 2;
+    }
 
 
         qfObject.setFeedback(result);
-    }
+}
 
 }
