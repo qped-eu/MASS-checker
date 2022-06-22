@@ -13,8 +13,9 @@ import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 import java.util.*;
 
 /**
- * Modifier Checker for fields and methods, checking for access and non access modifiers
+ * Keyword Checker for fields and methods, checking for access, non access modifiers, types and names
  * @param <T> FieldDeclaration or MethodDeclaration from JavaParser
+ * @author Paul Engelmann
  */
 class ClassMemberChecker<T extends Node> {
 

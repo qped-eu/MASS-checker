@@ -13,6 +13,10 @@ import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Checker that concerns itself with inherited classes
+ * @author Paul Engelmann
+ */
 class InheritanceChecker {
 
     private final Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl;

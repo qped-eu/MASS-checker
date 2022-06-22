@@ -12,6 +12,7 @@ import java.util.*;
  * Matches the provided class declarations with the expected class infos
  * If it can find a match, they will be stored in a map
  * Otherwise we can generate feedback based on what is most likely the issue
+ * @author Paul Engelmann
  */
 class ClassMatcher {
 

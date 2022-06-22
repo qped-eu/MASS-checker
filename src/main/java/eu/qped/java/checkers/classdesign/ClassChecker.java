@@ -13,6 +13,11 @@ import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 
+/**
+ * Main Checker that delegates work to each class element checker.
+ *
+ * @author Paul Engelmann
+ */
 public class ClassChecker implements Checker {
 
     private final List<CompilationUnit> compilationUnits;
