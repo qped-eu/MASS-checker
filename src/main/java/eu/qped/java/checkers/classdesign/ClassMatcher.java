@@ -1,10 +1,10 @@
-package eu.qped.java.checkers.design;
+package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import eu.qped.java.checkers.design.feedback.DesignFeedback;
-import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
-import eu.qped.java.checkers.design.infos.ClassInfo;
-import eu.qped.java.checkers.design.infos.ExpectedElement;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 
@@ -77,15 +77,15 @@ class ClassMatcher {
      * @param classDecls class declarations to generate feedback for
      * @return list of all generated feedback for the class declarations
      */
-    public List<DesignFeedback> generateClassNameFeedback(List<ClassOrInterfaceDeclaration> classDecls) {
-        List<DesignFeedback> collectedFeedback = new ArrayList<>();
+    public List<ClassFeedback> generateClassNameFeedback(List<ClassOrInterfaceDeclaration> classDecls) {
+        List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
         Iterator<ClassOrInterfaceDeclaration> classDeclIterator = classDecls.iterator();
 
         while(classDeclIterator.hasNext()) {
             ClassOrInterfaceDeclaration classDecl = classDeclIterator.next();
-            collectedFeedback.add(DesignFeedbackGenerator.generateFeedback(classDecl.getNameAsString(), "",
-                    DesignFeedbackGenerator.WRONG_CLASS_NAME));
+            collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(classDecl.getNameAsString(), "",
+                    ClassFeedbackGenerator.WRONG_CLASS_NAME));
             classDeclIterator.remove();
         }
 
@@ -98,8 +98,8 @@ class ClassMatcher {
      * @param classDecl class declaration to check
      * @param elemInfo expected element info extracted from class info
      */
-    public List<DesignFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo) {
-        List<DesignFeedback> collectedFeedback = new ArrayList<>();
+    public List<ClassFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo) {
+        List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
         boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getAccessModifier());
         boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getNonAccessModifiers());
@@ -107,15 +107,15 @@ class ClassMatcher {
 
         String violation = "";
         if(!typeMatch) {
-            violation = DesignFeedbackGenerator.WRONG_CLASS_TYPE;
+            violation = ClassFeedbackGenerator.WRONG_CLASS_TYPE;
         } else if(!nonAccessMatch) {
-            violation = DesignFeedbackGenerator.WRONG_CLASS_NON_ACCESS_MODIFIER;
+            violation = ClassFeedbackGenerator.WRONG_CLASS_NON_ACCESS_MODIFIER;
         } else if(!accessMatch){
-            violation = DesignFeedbackGenerator.WRONG_CLASS_ACCESS_MODIFIER;
+            violation = ClassFeedbackGenerator.WRONG_CLASS_ACCESS_MODIFIER;
         }
 
         if(!violation.isBlank()) {
-            collectedFeedback.add(DesignFeedbackGenerator.generateFeedback(
+            collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(
                     classDecl.getNameAsString(),
                     classDecl.getNameAsString(),
                     violation));

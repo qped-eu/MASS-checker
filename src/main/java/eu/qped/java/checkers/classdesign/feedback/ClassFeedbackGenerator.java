@@ -1,10 +1,10 @@
-package eu.qped.java.checkers.design.feedback;
+package eu.qped.java.checkers.classdesign.feedback;
 
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 
 import java.util.*;
 
-public final class DesignFeedbackGenerator {
+public final class ClassFeedbackGenerator {
 
     //Element Feedback
     public final static String WRONG_ELEMENT_NAME = "WrongElementName";
@@ -44,7 +44,7 @@ public final class DesignFeedbackGenerator {
     private static final Map<String, String> FEEDBACK_MAP = createFeedbackMap();
     public static final Map<List<Boolean>, String> VIOLATION_CHECKS = createViolationMap();
 
-    private DesignFeedbackGenerator() {}
+    private ClassFeedbackGenerator() {}
 
     private static Map<String, String> createFeedbackMap() {
         Map<String, String> feedbackMap = new HashMap<>();
@@ -147,12 +147,12 @@ public final class DesignFeedbackGenerator {
         return FEEDBACK_MAP.get(violationType);
     }
 
-    public static DesignFeedback generateFeedback(String className, String elementName, String violationType) {
+    public static ClassFeedback generateFeedback(String className, String elementName, String violationType) {
         String feedbackBody = violationType+": "+getFeedbackBody(violationType);
         feedbackBody = feedbackBody.replaceAll(classPlaceholder, MarkdownFormatterUtility.asBold(className));
         feedbackBody = feedbackBody.replaceAll(elementPlaceholder, MarkdownFormatterUtility.asBold(elementName));
 
-        return new DesignFeedback(feedbackBody);
+        return new ClassFeedback(feedbackBody);
     }
 
 }

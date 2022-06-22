@@ -1,8 +1,7 @@
-package eu.qped.java.design;
+package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Modifier;
-import eu.qped.java.checkers.design.CheckerUtils;
-import eu.qped.java.checkers.design.infos.ExpectedElement;
+import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

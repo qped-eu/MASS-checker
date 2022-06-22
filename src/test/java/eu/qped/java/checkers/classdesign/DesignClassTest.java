@@ -1,10 +1,9 @@
-package eu.qped.java.design;
+package eu.qped.java.checkers.classdesign;
 
-import eu.qped.java.checkers.design.*;
-import eu.qped.java.checkers.design.feedback.DesignFeedback;
-import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
-import eu.qped.java.checkers.design.infos.ClassInfo;
-import eu.qped.java.checkers.mass.QFDesignSettings;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DesignClassTest {
 
-    private QFDesignSettings qfDesignSettings;
+    private QFClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
 
     @BeforeEach
     public void setup() {
-        qfDesignSettings = new QFDesignSettings();
+        qfClassSettings = new QFClassSettings();
         classInfos = new ArrayList<>();
     }
 
@@ -43,7 +42,7 @@ public class DesignClassTest {
 
         classInfos.add(parentClassInfo);
         classInfos.add(childClassInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class ParentClass {" +
                 "public int num, num1;" +
@@ -52,24 +51,24 @@ public class DesignClassTest {
                 "public int num, num1;" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("ChildClass", "num", DesignFeedbackGenerator.HIDDEN_FIELD);
-        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("ChildClass", "num1", DesignFeedbackGenerator.HIDDEN_FIELD);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "num", ClassFeedbackGenerator.HIDDEN_FIELD);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("ChildClass", "num1", ClassFeedbackGenerator.HIDDEN_FIELD);
 
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
         expectedFeedback.add(fb2);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -90,7 +89,7 @@ public class DesignClassTest {
 
         classInfos.add(parentClassInfo);
         classInfos.add(childClassInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class ParentClass {" +
                 "public static int add() { int a = 1; return a+1;}" +
@@ -99,22 +98,22 @@ public class DesignClassTest {
                 "public static int add() { int a = 1; return a+1;}" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("ChildClass", "add()", DesignFeedbackGenerator.HIDDEN_METHOD);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "add()", ClassFeedbackGenerator.HIDDEN_METHOD);
 
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
 
@@ -136,7 +135,7 @@ public class DesignClassTest {
 
         classInfos.add(parentClassInfo);
         classInfos.add(childClassInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class ParentClass {" +
                 "public int add() { int a = 1; return a+1;}" +
@@ -145,22 +144,22 @@ public class DesignClassTest {
                 "public int add() { int a = 1; return a+1;}" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("ChildClass", "add()", DesignFeedbackGenerator.OVERWRITTEN_METHOD);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "add()", ClassFeedbackGenerator.OVERWRITTEN_METHOD);
 
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -170,23 +169,23 @@ public class DesignClassTest {
         classInfo1.setClassTypeName(expectedClass1);
 
         classInfos.add(classInfo1);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -196,23 +195,23 @@ public class DesignClassTest {
         classInfo1.setClassTypeName(expectedClass1);
 
         classInfos.add(classInfo1);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "public class TestClass {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -222,23 +221,23 @@ public class DesignClassTest {
         classInfo1.setClassTypeName(expectedClass1);
 
         classInfos.add(classInfo1);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "interface TestClass {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -248,27 +247,27 @@ public class DesignClassTest {
         classInfo1.setClassTypeName(expectedClass1);
 
         classInfos.add(classInfo1);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.WRONG_CLASS_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_ACCESS_MODIFIER);
 
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -278,27 +277,27 @@ public class DesignClassTest {
         classInfo1.setClassTypeName(expectedClass1);
 
         classInfos.add(classInfo1);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.WRONG_CLASS_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_NON_ACCESS_MODIFIER);
 
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -308,27 +307,27 @@ public class DesignClassTest {
         classInfo1.setClassTypeName(expectedClass1);
 
         classInfos.add(classInfo1);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.WRONG_CLASS_TYPE);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_TYPE);
 
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
 
@@ -352,30 +351,30 @@ public class DesignClassTest {
 
         classInfos.add(classInfo1);
         classInfos.add(classInfo2);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass {" +
                 "}" +
                 "class TestClass2 {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.WRONG_CLASS_NAME);
-        DesignFeedback fb2 = DesignFeedbackGenerator.generateFeedback("TestClass", "Number", DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_NAME);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number", ClassFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
         expectedFeedback.add(fb2);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -390,24 +389,24 @@ public class DesignClassTest {
 
         classInfos.add(classInfo1);
         classInfos.add(classInfo2);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class OuterClass {" +
                 "class InnerClass {" +
                 "}" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -424,22 +423,22 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass extends Number1 implements Number {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -454,22 +453,22 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass extends Number {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -484,22 +483,22 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass implements Number {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -514,22 +513,22 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass extends Number {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        assertEquals(0, designChecker.getDesignFeedbacks().size());
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
@@ -540,26 +539,26 @@ public class DesignClassTest {
         classInfo.setClassTypeName(expectedClassTypeName);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "interface TestClass  {" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "", DesignFeedbackGenerator.WRONG_CLASS_TYPE);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_TYPE);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
 
@@ -575,27 +574,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass",
-                "", DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
+                "", ClassFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -610,27 +609,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass",
-                "", DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
+                "", ClassFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -645,27 +644,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass",
-                "", DesignFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
+                "", ClassFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -680,27 +679,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass",
-                "", DesignFeedbackGenerator.MISSING_FINAL_CLASS_IMPLEMENTATION);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
+                "", ClassFeedbackGenerator.MISSING_FINAL_CLASS_IMPLEMENTATION);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -715,27 +714,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass extends Number{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "Number",
-                DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number",
+                ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -750,27 +749,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass implements Number{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "Number",
-                DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number",
+                ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -785,27 +784,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass implements Number{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "Number",
-                DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number",
+                ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -820,27 +819,27 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass extends Number{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "",
-                DesignFeedbackGenerator.DIFFERENT_CLASS_NAMES_EXPECTED);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "",
+                ClassFeedbackGenerator.DIFFERENT_CLASS_NAMES_EXPECTED);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 
     @Test
@@ -855,26 +854,26 @@ public class DesignClassTest {
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
-        qfDesignSettings.setClassInfos(classInfos);
+        qfClassSettings.setClassInfos(classInfos);
 
         String source = "class TestClass implements Number{" +
                 "}";
 
-        DesignConfigurator designConfigurator = new DesignConfigurator(qfDesignSettings);
-        DesignChecker designChecker = new DesignChecker(designConfigurator);
-        designChecker.addSource(source);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
 
         try {
-            designChecker.check(null);
+            classChecker.check(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        DesignFeedback fb1 = DesignFeedbackGenerator.generateFeedback("TestClass", "",
-                DesignFeedbackGenerator.DIFFERENT_INTERFACE_NAMES_EXPECTED);
-        List<DesignFeedback> expectedFeedback = new ArrayList<>();
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "",
+                ClassFeedbackGenerator.DIFFERENT_INTERFACE_NAMES_EXPECTED);
+        List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
-        assertArrayEquals(expectedFeedback.toArray(), designChecker.getDesignFeedbacks().toArray());
+        assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
     }
 }

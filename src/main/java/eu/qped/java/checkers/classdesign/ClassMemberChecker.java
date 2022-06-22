@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.design;
+package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -6,9 +6,9 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
-import eu.qped.java.checkers.design.feedback.DesignFeedback;
-import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
-import eu.qped.java.checkers.design.infos.ExpectedElement;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 
@@ -34,15 +34,15 @@ class ClassMemberChecker<T extends Node> {
      * The order to split the string is important, as they depend on the previous operation.
      * @param expectedElements expected modifiers in a node
      */
-    public List<DesignFeedback> checkModifiers(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedElements) {
+    public List<ClassFeedback> checkModifiers(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedElements) {
         if(expectedElements.isEmpty()) {
             return new ArrayList<>();
         }
-        List<DesignFeedback> modifierFeedback = new ArrayList<>();
+        List<ClassFeedback> modifierFeedback = new ArrayList<>();
         String className = classDecl.getNameAsString();
         List<NodeWithModifiers<T>> presentElements = getAllFieldsOrMethods(classDecl);
 
-        DesignFeedback sizeFb = checkIfLessThanExpectedPresent(className, presentElements, expectedElements);
+        ClassFeedback sizeFb = checkIfLessThanExpectedPresent(className, presentElements, expectedElements);
         if(sizeFb != null) {
             modifierFeedback.add(sizeFb);
         }
@@ -89,30 +89,30 @@ class ClassMemberChecker<T extends Node> {
      * @param presentElements elements present in the class
      * @param expectedElements expected elements from class info
      */
-    private List<DesignFeedback> findViolation(String className, List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
+    private List<ClassFeedback> findViolation(String className, List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
         if(expectedElements.isEmpty()) {
             return new ArrayList<>();
         }
 
-        List<DesignFeedback> collectedFeedback = new ArrayList<>();
+        List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
         for (NodeWithModifiers<T> presentElement : presentElements) {
             if(expectedElements.isEmpty()) {
                 return collectedFeedback;
             }
             List<Boolean> mostLikelyMatch = getMostLikelyMatchResult(presentElement, expectedElements);
-            String violationFound = DesignFeedbackGenerator.VIOLATION_CHECKS.get(mostLikelyMatch);
+            String violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(mostLikelyMatch);
 
             String elementName = getVariableName(presentElement);
             if (CHECKER_TYPE.equals(CheckerUtils.METHOD_CHECKER)) {
                 if (!elementName.contains("()")) {
                     elementName += "()";
                 }
-                if (violationFound.equals(DesignFeedbackGenerator.MISSING_FIELDS)) {
-                    violationFound = DesignFeedbackGenerator.MISSING_METHODS;
+                if (violationFound.equals(ClassFeedbackGenerator.MISSING_FIELDS)) {
+                    violationFound = ClassFeedbackGenerator.MISSING_METHODS;
                 }
             }
-            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(className, elementName, violationFound);
+            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(className, elementName, violationFound);
             collectedFeedback.add(fb);
         }
         return collectedFeedback;
@@ -171,17 +171,17 @@ class ClassMemberChecker<T extends Node> {
      * Checks if more or equal elements are there compared to the expected amount
      * @param expectedElements expected keywords, gives the size of the expected elements
      */
-    private DesignFeedback checkIfLessThanExpectedPresent(String className, List<NodeWithModifiers<T>> presentElements,
-                                                          List<ExpectedElement> expectedElements) {
+    private ClassFeedback checkIfLessThanExpectedPresent(String className, List<NodeWithModifiers<T>> presentElements,
+                                                         List<ExpectedElement> expectedElements) {
 
         if(expectedElements.size() > presentElements.size()) {
             String violation;
             if(CHECKER_TYPE.equals(CheckerUtils.FIELD_CHECKER)) {
-                violation = DesignFeedbackGenerator.MISSING_FIELDS;
+                violation = ClassFeedbackGenerator.MISSING_FIELDS;
             } else {
-                violation = DesignFeedbackGenerator.MISSING_METHODS;
+                violation = ClassFeedbackGenerator.MISSING_METHODS;
             }
-            return DesignFeedbackGenerator.generateFeedback(className, "", violation);
+            return ClassFeedbackGenerator.generateFeedback(className, "", violation);
         }
         return null;
     }

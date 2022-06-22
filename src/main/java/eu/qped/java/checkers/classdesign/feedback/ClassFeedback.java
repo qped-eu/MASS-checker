@@ -1,10 +1,10 @@
-package eu.qped.java.checkers.design.feedback;
+package eu.qped.java.checkers.classdesign.feedback;
 
 import eu.qped.framework.Feedback;
 
-public class DesignFeedback extends Feedback {
+public class ClassFeedback extends Feedback {
 
-    public DesignFeedback(String body) {
+    public ClassFeedback(String body) {
         super(body);
     }
 

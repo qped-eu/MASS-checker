@@ -1,11 +1,11 @@
 package eu.qped.java.checkers.mass;
 
 import eu.qped.framework.qf.QfObjectBase;
-import eu.qped.java.checkers.design.infos.ClassInfo;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 
 import java.util.ArrayList;
 
-public class QFDesignSettings extends QfObjectBase {
+public class QFClassSettings extends QfObjectBase {
 
     private ArrayList<ClassInfo> classInfos;
 

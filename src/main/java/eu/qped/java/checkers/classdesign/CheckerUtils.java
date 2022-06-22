@@ -1,7 +1,7 @@
-package eu.qped.java.checkers.design;
+package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Modifier;
-import eu.qped.java.checkers.design.infos.ExpectedElement;
+import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 

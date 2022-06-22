@@ -1,14 +1,14 @@
-package eu.qped.java.checkers.design;
+package eu.qped.java.checkers.classdesign;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import eu.qped.java.checkers.design.feedback.DesignFeedback;
-import eu.qped.java.checkers.design.feedback.DesignFeedbackGenerator;
-import eu.qped.java.checkers.design.infos.ClassInfo;
-import eu.qped.java.checkers.design.infos.ExpectedElement;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,11 +27,11 @@ class InheritanceChecker {
      * @param classDecl ClassDeclaration to check
      * @param expectedParents the expected super classes that classDecl should have
      */
-    public List<DesignFeedback> checkInheritanceMatch(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedParents) {
+    public List<ClassFeedback> checkInheritanceMatch(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedParents) {
         if(expectedParents.isEmpty()) {
             return new ArrayList<>();
         }
-        List<DesignFeedback> inheritanceFeedback = new ArrayList<>();
+        List<ClassFeedback> inheritanceFeedback = new ArrayList<>();
 
         List<ClassOrInterfaceType> implementedInterfaces = classDecl.getImplementedTypes();
         List<ClassOrInterfaceType> extendedClasses = classDecl.getExtendedTypes();
@@ -77,8 +77,8 @@ class InheritanceChecker {
      * @param expectedParent parent info
      * @return list of feedback if overwritten fields have been found
      */
-    private List<DesignFeedback> checkInheritedFields(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
-        List<DesignFeedback> collectedFeedback = new ArrayList<>();
+    private List<ClassFeedback> checkInheritedFields(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
+        List<ClassFeedback> collectedFeedback = new ArrayList<>();
         ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
 
         if(parentDecl != null) {
@@ -104,10 +104,10 @@ class InheritanceChecker {
 
                     if(!sameNames.isEmpty()) {
                         for (String sameName: sameNames) {
-                            DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
+                            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
                                     currentClassDecl.getNameAsString(),
                                     sameName,
-                                    DesignFeedbackGenerator.HIDDEN_FIELD);
+                                    ClassFeedbackGenerator.HIDDEN_FIELD);
                             collectedFeedback.add(fb);
                         }
                         parIterator.remove();
@@ -129,8 +129,8 @@ class InheritanceChecker {
      * @param expectedParent parent info
      * @return list of feedback, if methods are found to be overwritten or hidden
      */
-    private List<DesignFeedback> checkInheritedMethods(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
-        List<DesignFeedback> collectedFeedback = new ArrayList<>();
+    private List<ClassFeedback> checkInheritedMethods(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
+        List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
         ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
         if(parentDecl == null) {
@@ -165,11 +165,11 @@ class InheritanceChecker {
                 if(sameName && sameReturnType && sameParameters) {
                     String violation;
                     if(currentMethod.isStatic() && parentMethod.isStatic()) {
-                        violation = DesignFeedbackGenerator.HIDDEN_METHOD;
+                        violation = ClassFeedbackGenerator.HIDDEN_METHOD;
                     } else {
-                        violation = DesignFeedbackGenerator.OVERWRITTEN_METHOD;
+                        violation = ClassFeedbackGenerator.OVERWRITTEN_METHOD;
                     }
-                    DesignFeedback fb = DesignFeedbackGenerator.generateFeedback(
+                    ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
                             currentClassDecl.getNameAsString(),
                             parentMethodName+"()",
                             violation);
@@ -222,10 +222,10 @@ class InheritanceChecker {
      * @param implementedInterfaces implemented interfaces of the current class
      * @param elemInfo expected parent classes with all element info
      */
-    private List<DesignFeedback> findInheritanceViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses,
-                                          List<ClassOrInterfaceType> implementedInterfaces,
-                                          ExpectedElement elemInfo) {
-        List<DesignFeedback> inheritanceFeedback = new ArrayList<>();
+    private List<ClassFeedback> findInheritanceViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses,
+                                                         List<ClassOrInterfaceType> implementedInterfaces,
+                                                         ExpectedElement elemInfo) {
+        List<ClassFeedback> inheritanceFeedback = new ArrayList<>();
 
         String implementedNameMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), false);
         String extendedNameMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), false);
@@ -250,14 +250,14 @@ class InheritanceChecker {
      * @param currentClassName name of current class
      * @param implementedInterfaces implemented interfaces in the current class
      */
-    private DesignFeedback findInterfaceNameViolation(String currentClassName, List<ClassOrInterfaceType> implementedInterfaces) {
+    private ClassFeedback findInterfaceNameViolation(String currentClassName, List<ClassOrInterfaceType> implementedInterfaces) {
         String violation;
         if(implementedInterfaces.isEmpty()) {
-            violation = DesignFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION;
+            violation = ClassFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION;
         } else {
-            violation = DesignFeedbackGenerator.DIFFERENT_INTERFACE_NAMES_EXPECTED;
+            violation = ClassFeedbackGenerator.DIFFERENT_INTERFACE_NAMES_EXPECTED;
         }
-        return DesignFeedbackGenerator.generateFeedback(currentClassName, "", violation);
+        return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation);
     }
 
     /**
@@ -266,12 +266,12 @@ class InheritanceChecker {
      * @param extendedClasses extended classes from the current class
      * @param expectedNonAccess non access modifiers to determine the missing class extension
      */
-    private DesignFeedback findClassNameViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses, List<String> expectedNonAccess) {
+    private ClassFeedback findClassNameViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses, List<String> expectedNonAccess) {
         String violation = "";
         Map<String, String> modifierMap = new LinkedHashMap<>();
-        modifierMap.put("abstract", DesignFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
-        modifierMap.put("final", DesignFeedbackGenerator.MISSING_FINAL_CLASS_IMPLEMENTATION);
-        modifierMap.put("static", DesignFeedbackGenerator.MISSING_STATIC_CLASS_IMPLEMENTATION);
+        modifierMap.put("abstract", ClassFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
+        modifierMap.put("final", ClassFeedbackGenerator.MISSING_FINAL_CLASS_IMPLEMENTATION);
+        modifierMap.put("static", ClassFeedbackGenerator.MISSING_STATIC_CLASS_IMPLEMENTATION);
         //modifierMap.put(CheckerUtils.EMPTY_MODIFIER, DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
 
         if(extendedClasses.isEmpty()) {
@@ -282,12 +282,12 @@ class InheritanceChecker {
                 }
             }
             if(violation.isBlank()) {
-                violation = DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION;
+                violation = ClassFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION;
             }
         } else {
-            violation = DesignFeedbackGenerator.DIFFERENT_CLASS_NAMES_EXPECTED;
+            violation = ClassFeedbackGenerator.DIFFERENT_CLASS_NAMES_EXPECTED;
         }
-        return DesignFeedbackGenerator.generateFeedback(currentClassName, "", violation);
+        return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation);
     }
 
     /**
@@ -297,9 +297,9 @@ class InheritanceChecker {
      * @param implementedNameMatch string that either gives us the found match in implementingInterfaces or empty string
      * @param extendedNameMatch string that either gives us the found match in extendedClasses or empty string
      */
-    private DesignFeedback findTypeViolation(String currentClassName, String implementedNameMatch, String extendedNameMatch) {
+    private ClassFeedback findTypeViolation(String currentClassName, String implementedNameMatch, String extendedNameMatch) {
         String violatingElement = implementedNameMatch.isBlank() ? extendedNameMatch : implementedNameMatch;
-        return DesignFeedbackGenerator.generateFeedback(currentClassName, violatingElement, DesignFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+        return ClassFeedbackGenerator.generateFeedback(currentClassName, violatingElement, ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
     }
 
     /**

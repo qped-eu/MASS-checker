@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.design;
+package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -7,29 +7,29 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
-import eu.qped.java.checkers.design.feedback.DesignFeedback;
-import eu.qped.java.checkers.design.infos.ClassInfo;
-import eu.qped.java.checkers.design.infos.ExpectedElement;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 
-public class DesignChecker implements Checker {
+public class ClassChecker implements Checker {
 
     private final List<CompilationUnit> compilationUnits;
 
-    private DesignConfigurator designConfigurator;
-    private final List<DesignFeedback> designFeedbacks;
+    private ClassConfigurator classConfigurator;
+    private final List<ClassFeedback> classFeedbacks;
 
-    public DesignChecker(DesignConfigurator designConfigurator) {
-        designFeedbacks = new ArrayList<>();
+    public ClassChecker(ClassConfigurator classConfigurator) {
+        classFeedbacks = new ArrayList<>();
         compilationUnits = new ArrayList<>();
-        this.designConfigurator = designConfigurator;
+        this.classConfigurator = classConfigurator;
     }
 
     @Override
     public void check(QfObject qfObject) throws Exception {
-        if(designConfigurator == null) {
-            designConfigurator = DesignConfigurator.createDefaultDesignConfigurator();
+        if(classConfigurator == null) {
+            classConfigurator = ClassConfigurator.createDefaultClassConfigurator();
         }
         checkDesign();
     }
@@ -39,12 +39,12 @@ public class DesignChecker implements Checker {
      * feedback. This method delegates each task to each class and collects all feedback
      */
     private void checkDesign() {
-        List<ClassInfo> classInfos = designConfigurator.getClassInfos();
+        List<ClassInfo> classInfos = classConfigurator.getClassInfos();
         List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
 
         ClassMatcher classMatcher = new ClassMatcher();
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
-        designFeedbacks.addAll(classMatcher.generateClassNameFeedback(classDecls));
+        classFeedbacks.addAll(classMatcher.generateClassNameFeedback(classDecls));
 
         ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(CheckerUtils.FIELD_CHECKER);
         ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(CheckerUtils.METHOD_CHECKER);
@@ -59,10 +59,10 @@ public class DesignChecker implements Checker {
             expectedMethodKeywords.sort(Comparator.comparingInt(CheckerUtils::countOptionalOccurrences));
 
             ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassTypeName());
-            designFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo));
-            designFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getElementInfos(classInfo.getInheritsFrom())));
-            designFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getElementInfos(expectedFieldKeywords)));
-            designFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getElementInfos(expectedMethodKeywords)));
+            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo));
+            classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getElementInfos(classInfo.getInheritsFrom())));
+            classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getElementInfos(expectedFieldKeywords)));
+            classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getElementInfos(expectedMethodKeywords)));
 
         }
     }
@@ -102,8 +102,8 @@ public class DesignChecker implements Checker {
         return StaticJavaParser.parse(source);
     }
 
-    public List<DesignFeedback> getDesignFeedbacks() {
-        return designFeedbacks;
+    public List<ClassFeedback> getClassFeedbacks() {
+        return classFeedbacks;
     }
 
 }

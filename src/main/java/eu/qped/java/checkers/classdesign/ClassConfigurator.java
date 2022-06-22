@@ -1,7 +1,7 @@
-package eu.qped.java.checkers.design;
+package eu.qped.java.checkers.classdesign;
 
-import eu.qped.java.checkers.design.infos.ClassInfo;
-import eu.qped.java.checkers.mass.QFDesignSettings;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.mass.QFClassSettings;
 
 import java.util.ArrayList;
 
@@ -9,23 +9,23 @@ import java.util.ArrayList;
  * Configuration Manager, manages and sets the DesignSettings for the DesignChecker and allows to be checked
  * against the settings.
  */
-public class DesignConfigurator {
+public class ClassConfigurator {
 
     private ArrayList<ClassInfo> classInfos;
 
-    public DesignConfigurator(QFDesignSettings qfDesignSettings) {
+    public ClassConfigurator(QFClassSettings qfClassSettings) {
         setDefaultValues();
-        if(qfDesignSettings != null) {
-            setClassInfos(qfDesignSettings.getClassInfos());
+        if(qfClassSettings != null) {
+            setClassInfos(qfClassSettings.getClassInfos());
         }
     }
 
-    public static DesignConfigurator createDesignConfigurator(QFDesignSettings qfDesignSettings) {
-        return new DesignConfigurator(qfDesignSettings);
+    public static ClassConfigurator createClassConfigurator(QFClassSettings qfClassSettings) {
+        return new ClassConfigurator(qfClassSettings);
     }
 
-    public static DesignConfigurator createDefaultDesignConfigurator () {
-        return new DesignConfigurator(null);
+    public static ClassConfigurator createDefaultClassConfigurator() {
+        return new ClassConfigurator(null);
     }
 
     /**

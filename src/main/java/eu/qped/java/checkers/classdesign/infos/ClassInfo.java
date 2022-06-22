@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.design.infos;
+package eu.qped.java.checkers.classdesign.infos;
 
 import java.util.ArrayList;
 import java.util.List;
