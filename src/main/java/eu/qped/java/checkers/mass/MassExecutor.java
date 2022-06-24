@@ -3,6 +3,8 @@ package eu.qped.java.checkers.mass;
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
+import eu.qped.java.checkers.classdesign.ClassChecker;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -36,14 +38,15 @@ public class MassExecutor {
     private List<StyleFeedback> styleFeedbacks;
     private List<SemanticFeedback> semanticFeedbacks;
     private List<SyntaxFeedback> syntaxFeedbacks;
+    private List<ClassFeedback> classFeedbacks;
     private List<DesignFeedback> designFeedbacks;
-
 
     private List<SyntaxError> syntaxErrors;
 
     private final StyleChecker styleChecker;
     private final SemanticChecker semanticChecker;
     private final SyntaxChecker syntaxChecker;
+    private final ClassChecker classChecker;
     private final DesignChecker designChecker;
 
 
@@ -58,28 +61,28 @@ public class MassExecutor {
      */
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
-                        final SyntaxChecker syntaxChecker, final DesignChecker designChecker,
-                        final MainSettings mainSettingsConfigurator
-                        ) {
+                        final SyntaxChecker syntaxChecker, final DesignChecker designChecker, final ClassChecker classChecker,
+                        final MainSettings mainSettingsConfigurator) {
 
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
         this.syntaxChecker = syntaxChecker;
+        this.classChecker = classChecker;
         this.designChecker = designChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
     }
-
 
     private void init() {
         syntaxFeedbacks = new ArrayList<>();
         styleFeedbacks = new ArrayList<>();
         semanticFeedbacks = new ArrayList<>();
+        classFeedbacks = new ArrayList<>();
         designFeedbacks = new ArrayList<>();
         syntaxErrors = new ArrayList<>();
     }
 
 
-    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean designNeeded) {
+    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean designNeeded, boolean classNeeded) {
         String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
         Translator translator = new Translator();
 
@@ -95,6 +98,11 @@ public class MassExecutor {
         if (styleNeeded) {
             for (StyleFeedback feedback : styleFeedbacks) {
                 translator.translateStyleBody(prefLanguage, feedback);
+            }
+        }
+        if (classNeeded) {
+            for (Feedback feedback : classFeedbacks) {
+                translator.translateBody(prefLanguage, feedback);
             }
         }
         if (designNeeded) {
@@ -117,6 +125,9 @@ public class MassExecutor {
         return syntaxFeedbacks;
     }
 
+    public List<ClassFeedback> getClassFeedbacks() {
+        return classFeedbacks;
+    }
 
     public List<SyntaxError> getSyntaxErrors() {
         return syntaxErrors;
@@ -131,6 +142,7 @@ public class MassExecutor {
         boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
         boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
         boolean designNeeded = mainSettingsConfigurator.isDesignNeeded();
+        boolean classNeeded = mainSettingsConfigurator.isClassNeeded();
 
 
         SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
@@ -152,6 +164,14 @@ public class MassExecutor {
                 designChecker.check();
                 designFeedbacks = designChecker.getDesignFeedbacks();
             }
+            if(classNeeded) {
+                try {
+                    classChecker.check(null);
+                    classFeedbacks = classChecker.getClassFeedbacks();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
@@ -161,7 +181,7 @@ public class MassExecutor {
 
         // translate Feedback body if needed
         if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded, designNeeded);
+            translate(styleNeeded, semanticNeeded, designNeeded, classNeeded);
         }
     }
 
@@ -239,7 +259,7 @@ public class MassExecutor {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, null, mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 

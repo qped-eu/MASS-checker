@@ -16,5 +16,6 @@ public class QFMainSettings extends QfObjectBase {
     private String preferredLanguage;
     private String styleNeeded;
     private String semanticNeeded;
+    private String classNeeded;
     private String designNeeded;
 }

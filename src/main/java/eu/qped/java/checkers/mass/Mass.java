@@ -3,6 +3,9 @@ package eu.qped.java.checkers.mass;
 import eu.qped.framework.Checker;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
+import eu.qped.java.checkers.classdesign.ClassChecker;
+import eu.qped.java.checkers.classdesign.ClassConfigurator;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticConfigurator;
@@ -26,48 +29,59 @@ public class Mass implements Checker {
     @QfProperty
     private QFSemSettings semSettings;
 
+    @QfProperty
+    private QFClassSettings classSettings;
+
     private final static String NEW_LINE = "\n" + "\n";
 
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-    // Main Settings
-    MainSettings mainSettings = new MainSettings(this.mainSettings);
+        // Main Settings
+        MainSettings mainSettings = new MainSettings(this.mainSettings);
 
-    // Syntax Checker
-    SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
+        // Syntax Checker
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
 
-    // Style Checker
+        // Style Checker
 
-    StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
+        StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
 
-    // Semantic Checker
-    SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
-    SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+        // Semantic Checker
+        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
+        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
 
-    // Design Checker
-    DesignChecker designChecker = DesignChecker.builder().build(); //TODO is this correct?
+        // Design Checker
+        DesignChecker designChecker = DesignChecker.builder().build(); //TODO is this correct?
 
-    //Mass
-    MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, mainSettings);
-    massExecutor.execute();
+        //Class Checker
+        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(this.classSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
 
-    /*
-     feedbacks
-     */
-    List<StyleFeedback> styleFeedbacks;
-    styleFeedbacks = massExecutor.getStyleFeedbacks();
+        //Mass
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, classChecker, mainSettings);
+        massExecutor.execute();
 
-    List<SyntaxFeedback> syntaxFeedbacks;
-    syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
-
-    List<SemanticFeedback> semanticFeedbacks;
-    semanticFeedbacks = massExecutor.getSemanticFeedbacks();
+        /*
+         feedbacks
+         */
+        List<StyleFeedback> styleFeedbacks;
+        styleFeedbacks = massExecutor.getStyleFeedbacks();
 
 
-    String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + 100];
+        List<SyntaxFeedback> syntaxFeedbacks;
+        syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
 
-    int i = 0;
+        List<SemanticFeedback> semanticFeedbacks;
+        semanticFeedbacks = massExecutor.getSemanticFeedbacks();
+
+        List<ClassFeedback> classFeedbacks;
+        classFeedbacks = massExecutor.getClassFeedbacks();
+
+
+        String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + classFeedbacks.size() + 100];
+
+        int i = 0;
 
         for (StyleFeedback styleFeedback : styleFeedbacks) {
             result[i] = "style Feedback";
@@ -89,6 +103,13 @@ public class Mass implements Checker {
                 + "--------------------------------------------------";
         i = i + 2;
     }
+
+        for (ClassFeedback classFeedback : classFeedbacks) {
+            result[i] = "class Feedback";
+            result[i + 1] = classFeedback.getBody() + NEW_LINE
+                    + "--------------------------------------------------";
+            i = i + 2;
+        }
 
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
         result[i + 1] = ""

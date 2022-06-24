@@ -40,7 +40,7 @@ class MassSyntaxTest {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, mainSettingsConfiguratorConf);
+                null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -55,9 +55,8 @@ class MassSyntaxTest {
                 + "}";
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
-
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, mainSettingsConfiguratorConf);
+                null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -72,9 +71,9 @@ class MassSyntaxTest {
         String code = "class Simple {}";
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
-
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, mainSettingsConfiguratorConf);
+                null, null, mainSettingsConfiguratorConf);
+
 
         massE.execute();
 
