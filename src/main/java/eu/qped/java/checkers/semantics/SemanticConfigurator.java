@@ -1,10 +1,15 @@
 package eu.qped.java.checkers.semantics;
 
 import eu.qped.java.checkers.mass.QFSemSettings;
+import eu.qped.java.checkers.mass.SemanticSettingItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -31,11 +36,19 @@ public class SemanticConfigurator {
         applySettings();
     }
 
+    public Map<String, List<SemanticSettingItem>> groupByFileName() {
+        return
+                qfSemSettings.getSemanticSettings()
+                        .stream()
+                        .collect(Collectors.groupingBy(SemanticSettingItem::getFilePath));
+
+    }
+
     public static SemanticConfigurator createSemanticConfigurator(QFSemSettings qfSemSettings) {
         return new SemanticConfigurator(qfSemSettings);
     }
 
-    private void setDefaults(){
+    private void setDefaults() {
         setMethodName("undefined");
         setRecursionAllowed(false);
         setReturnType("undefined");
@@ -47,34 +60,6 @@ public class SemanticConfigurator {
     }
 
     private void applySettings() {
-
-        if (qfSemSettings.getMethodName() != null) {
-            setFilePath(qfSemSettings.getFilePath());
-        }
-        if (qfSemSettings.getMethodName() != null) {
-            setMethodName(qfSemSettings.getMethodName());
-        }
-        if (qfSemSettings.getRecursionAllowed() != null) {
-            setRecursionAllowed(Boolean.parseBoolean(qfSemSettings.getRecursionAllowed()));
-        }
-        if (qfSemSettings.getDoWhileLoop() != null) {
-            setWhileLoop(Integer.parseInt(qfSemSettings.getWhileLoop()));
-        }
-        if (qfSemSettings.getForLoop() != null) {
-            setForLoop(Integer.parseInt(qfSemSettings.getForLoop()));
-        }
-        if(qfSemSettings.getForEachLoop()!=null){
-            setForEachLoop(Integer.parseInt(qfSemSettings.getForEachLoop()));
-        }
-        if(qfSemSettings.getIfElseStmt()!=null){
-            setIfElseStmt(Integer.parseInt(qfSemSettings.getIfElseStmt()));
-        }
-        if(qfSemSettings.getDoWhileLoop()!=null){
-            setDoWhileLoop(Integer.parseInt(qfSemSettings.getDoWhileLoop()));
-        }
-        if(qfSemSettings.getReturnType()!=null){
-            setReturnType(qfSemSettings.getReturnType());
-        }
 
     }
 

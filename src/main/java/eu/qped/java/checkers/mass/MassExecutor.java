@@ -187,15 +187,15 @@ public class MassExecutor {
         MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
         QFSemSettings qfSemSettings = new QFSemSettings();
-        qfSemSettings.setFilePath("src/main/resources/exam-results/src");
-        qfSemSettings.setMethodName("grayCodeStrings");
-        qfSemSettings.setRecursionAllowed("true");
-        qfSemSettings.setWhileLoop("-1");
-        qfSemSettings.setForLoop("2");
-        qfSemSettings.setForEachLoop("-1");
-        qfSemSettings.setIfElseStmt("0");
-        qfSemSettings.setDoWhileLoop("-1");
-        qfSemSettings.setReturnType("int");
+//        qfSemSettings.setFilePath("src/main/resources/exam-results/src");
+//        qfSemSettings.setMethodName("grayCodeStrings");
+//        qfSemSettings.setRecursionAllowed("true");
+//        qfSemSettings.setWhileLoop("-1");
+//        qfSemSettings.setForLoop("2");
+//        qfSemSettings.setForEachLoop("-1");
+//        qfSemSettings.setIfElseStmt("0");
+//        qfSemSettings.setDoWhileLoop("-1");
+//        qfSemSettings.setReturnType("int");
 
         SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
 
