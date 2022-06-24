@@ -1,0 +1,61 @@
+{
+  "type": "array",
+  "description": "Information for all classes",
+  "title": "Class Info Collection",
+  "items": {
+    "type": "object",
+    "title": "Expected Class Infos",
+    "description": "Contains all information for present classes.",
+    "documentation": "This holds all information about all possible classes inside the given files. Note that not only outer but also inner classes should have infos created here, if you wish to check them for properties.",
+    "required": [
+      "classKeywords"
+    ],
+    "properties": {
+      "classKeywords": {
+        "title": "Expected Class Keywords",
+        "type": "string",
+        "description": "Modifiers, type and name of the current class.",
+        "default": "class TestClass",
+        "documentation": "All expected keywords of the current class declaration. This only concerns the current class and follows the same pattern as the Java class declaration. Format: [access modifier] [non access modifier] [class/interface] [name]. ### Examples: - public abstract class Number - interface Employee",
+        "pattern" : "\\s*(\\w*)\\s+(\\w+)"
+      },
+      "inheritsFrom": {
+        "title": "Expected Superclass Collection",
+        "type": "array",
+        "description": "Contains all expected superclasses.",
+        "documentation": "All expected super classes of the current class declaration.  Format:[class/interface] [name]. ### Examples: - interface Employee - abstract class Number",
+        "items": {
+          "type": "string",
+          "title": "Expected Superclass",
+          "description": "Type and name of an inherited super class.",
+          "pattern" : "\\s*(\\w*)\\s+(\\w+)"
+        }
+      },
+      "fieldKeywords": {
+        "type": "array",
+        "description": "Contains all expected keywords for present fields.",
+        "title": "Field Keywords Collection",
+        "documentation": "All expected keywords of the variable declarations. All keyword inputs should have the same format as the Java variable declarations. Format: [access modifier] [non access modifier] [type] [name] Note that anything after the name, such as initialisations, will not be considered and can be omitted. Additionally, if one wishes to allow any keyword for a particular keyword type, one can replace the keyword with a *(asterisk) to indicate that any value is allowed there. ### Examples: - private String name - private int * (indicating that the name can be any)",
+        "items": {
+          "title": "Field Keywords",
+          "type": "string",
+          "description": "Modifiers, type and name of a field declaration.",
+          "pattern" : "\\s*(\\w*)\\s+(\\w+)(;|=)?"
+        }
+      },
+      "methodKeywords": {
+        "type": "array",
+        "title": "Method Keywords Collection",
+        "description": "Contains all expected keywords for all present methods.",
+        "documentation": "All expected keywords of the method declarations. The input here follows the same format as the Java method declarations. Format: [access modifier] [non access modifier] [return type] [name]. Anything after the name, such as further parameters, will not be considered and can be omitted. Additionally, if one wishes to allow any keyword, one can replace the keyword with a *(asterisk) to indicate that any value is allowed there. ### Examples: - protected String getName - *(asterisk) String getStatus (indicating that the access modifier can be any)",
+        "items": {
+          "title": "Method Keywords",
+          "type": "string",
+          "description": "Modifiers, type and name of a method declaration.",
+          "pattern" : "\\s*(\\w*)\\s+(\\w+)\\(?\\)?"
+          
+        }
+      }
+    }
+  }
+}

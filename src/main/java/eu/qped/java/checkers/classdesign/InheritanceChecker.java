@@ -84,40 +84,41 @@ class InheritanceChecker {
     private List<ClassFeedback> checkInheritedFields(ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
         ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
+        if(parentDecl == null) {
+            return new ArrayList<>();
+        }
 
-        if(parentDecl != null) {
-            List<FieldDeclaration> currentFields = new ArrayList<>(currentClassDecl.findAll(FieldDeclaration.class));
-            List<FieldDeclaration> parentFields = new ArrayList<>(parentDecl.findAll(FieldDeclaration.class));
+        List<FieldDeclaration> currentFields = new ArrayList<>(currentClassDecl.findAll(FieldDeclaration.class));
+        List<FieldDeclaration> parentFields = new ArrayList<>(parentDecl.findAll(FieldDeclaration.class));
 
-            Iterator<FieldDeclaration> curIterator = currentFields.listIterator();
-            Iterator<FieldDeclaration> parIterator = parentFields.listIterator();
+        Iterator<FieldDeclaration> curIterator = currentFields.listIterator();
+        Iterator<FieldDeclaration> parIterator = parentFields.listIterator();
 
-            while(parIterator.hasNext()) {
-                FieldDeclaration parentField = parIterator.next();
-                List<String> parentFieldNames = getAllFieldNames(parentField);
-                
-                if (parentField.isPrivate()) {
-                    continue;
-                }
+        while(parIterator.hasNext()) {
+            FieldDeclaration parentField = parIterator.next();
+            List<String> parentFieldNames = getAllFieldNames(parentField);
 
-                while(curIterator.hasNext()) {
-                    FieldDeclaration currentField = curIterator.next();
-                    List<String> currentFieldNames = getAllFieldNames(currentField);
-                    List<String> sameNames = new ArrayList<>(parentFieldNames);
-                    sameNames.retainAll(currentFieldNames);
+            if (parentField.isPrivate()) {
+                continue;
+            }
 
-                    if(!sameNames.isEmpty()) {
-                        for (String sameName: sameNames) {
-                            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
-                                    currentClassDecl.getNameAsString(),
-                                    sameName,
-                                    ClassFeedbackGenerator.HIDDEN_FIELD);
-                            collectedFeedback.add(fb);
-                        }
-                        parIterator.remove();
-                        curIterator.remove();
-                        break;
+            while(curIterator.hasNext()) {
+                FieldDeclaration currentField = curIterator.next();
+                List<String> currentFieldNames = getAllFieldNames(currentField);
+                List<String> sameNames = new ArrayList<>(parentFieldNames);
+                sameNames.retainAll(currentFieldNames);
+
+                if(!sameNames.isEmpty()) {
+                    for (String sameName: sameNames) {
+                        ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
+                                currentClassDecl.getNameAsString(),
+                                sameName,
+                                ClassFeedbackGenerator.HIDDEN_FIELD);
+                        collectedFeedback.add(fb);
                     }
+                    parIterator.remove();
+                    curIterator.remove();
+                    break;
                 }
             }
         }
@@ -167,20 +168,22 @@ class InheritanceChecker {
                         currentParameters.containsAll(parentParameters);
 
                 if(sameName && sameReturnType && sameParameters) {
-                    String violation;
+                    String violation = "";
                     if(currentMethod.isStatic() && parentMethod.isStatic()) {
                         violation = ClassFeedbackGenerator.HIDDEN_METHOD;
                     } else {
                         violation = ClassFeedbackGenerator.OVERWRITTEN_METHOD;
                     }
-                    ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
-                            currentClassDecl.getNameAsString(),
-                            parentMethodName+"()",
-                            violation);
-                    collectedFeedback.add(fb);
-                    parIterator.remove();
-                    curIterator.remove();
-                    break;
+                    if(!violation.isBlank()) {
+                        ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
+                                currentClassDecl.getNameAsString(),
+                                parentMethodName+"()",
+                                violation);
+                        collectedFeedback.add(fb);
+                        parIterator.remove();
+                        curIterator.remove();
+                        break;
+                    }
                 }
             }
         }
@@ -311,11 +314,11 @@ class InheritanceChecker {
      * @param expectedParent parent to find the class declaration out of
      * @return parent declaration if found, otherwise null
      */
-    public ClassOrInterfaceDeclaration getParentClassDecl(ExpectedElement expectedParent) {
+    private ClassOrInterfaceDeclaration getParentClassDecl(ExpectedElement expectedParent) {
         ClassOrInterfaceDeclaration parentClassDecl = null;
         for (Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry: matchedInfoDecl.entrySet()) {
             ClassInfo parentInfo = entry.getKey();
-            ExpectedElement parentElement = CheckerUtils.extractExpectedInfo(parentInfo.getClassTypeName());
+            ExpectedElement parentElement = CheckerUtils.extractExpectedInfo(parentInfo.getClassKeywords());
             if(parentElement.getName().equals(expectedParent.getName())) {
                 parentClassDecl = matchedInfoDecl.get(parentInfo);
                 break;
@@ -329,7 +332,7 @@ class InheritanceChecker {
      * @param field declaration to check
      * @return all variable names from that field
      */
-    public List<String> getAllFieldNames(FieldDeclaration field) {
+    private List<String> getAllFieldNames(FieldDeclaration field) {
         return field.getVariables().stream()
                 .map(NodeWithSimpleName::getNameAsString)
                 .collect(Collectors.toList());

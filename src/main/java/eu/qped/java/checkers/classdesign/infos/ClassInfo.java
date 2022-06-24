@@ -5,24 +5,27 @@ import java.util.List;
 
 public class ClassInfo {
 
-    private String classTypeName;
-    private ArrayList<String> inheritsFrom;
-    private ArrayList<String> fieldKeywords;
-    private ArrayList<String> methodKeywords;
+    //TODO check how to implement
+    private String fullyQualifiedName;
+    private String classKeywords;
+    private List<String> inheritsFrom;
+    private List<String> fieldKeywords;
+    private List<String> methodKeywords;
 
     public ClassInfo() {
-        classTypeName = "";
+        fullyQualifiedName = "";
+        classKeywords = "";
         inheritsFrom = new ArrayList<>();
         fieldKeywords = new ArrayList<>();
         methodKeywords = new ArrayList<>();
     }
 
-    public String getClassTypeName() {
-        return classTypeName;
+    public String getClassKeywords() {
+        return classKeywords;
     }
 
-    public void setClassTypeName(String classTypeName) {
-        this.classTypeName = classTypeName;
+    public void setClassKeywords(String classKeywords) {
+        this.classKeywords = classKeywords;
     }
 
     public List<String> getInheritsFrom() {
@@ -47,5 +50,13 @@ public class ClassInfo {
 
     public void setMethodKeywords(ArrayList<String> methodKeywords) {
         this.methodKeywords = methodKeywords;
+    }
+
+    public String getFullyQualifiedName() {
+        return fullyQualifiedName;
+    }
+
+    public void setFullyQualifiedName(String fullyQualifiedName) {
+        this.fullyQualifiedName = fullyQualifiedName;
     }
 }

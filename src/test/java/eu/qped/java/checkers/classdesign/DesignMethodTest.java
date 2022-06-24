@@ -24,7 +24,7 @@ public class DesignMethodTest {
         qfClassSettings = new QFClassSettings();
         classInfos = new ArrayList<>();
         classInfo = new ClassInfo();
-        classInfo.setClassTypeName("class TestClass");
+        classInfo.setClassKeywords("class TestClass");
     }
 
     @Test

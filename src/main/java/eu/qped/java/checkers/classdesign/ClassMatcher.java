@@ -36,7 +36,7 @@ class ClassMatcher {
 
             while (infoIterator.hasNext()) {
                 ClassInfo classInfo = infoIterator.next();
-                String classTypeName = classInfo.getClassTypeName();
+                String classTypeName = classInfo.getClassKeywords();
 
                 if (classTypeName.isBlank()) {
                     continue;
@@ -63,7 +63,7 @@ class ClassMatcher {
             ClassInfo classInfo = classInfos.remove(0);
             matchedInfoDecl.put(classInfo, classDecl);
 
-            ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassTypeName());
+            ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassKeywords());
             String elementName = elemInfo.getName();
 
             if(isClassNameMatch(classDecl, elementName)) {

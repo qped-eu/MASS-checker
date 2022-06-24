@@ -43,7 +43,7 @@ public class ClassChecker implements Checker {
      * Check the parsed compilation units and compare them to the expected elements in class infos to generate
      * feedback. This method delegates each task to each class and collects all feedback
      */
-    private void checkDesign() {
+    private void checkDesign() throws Exception {
         List<ClassInfo> classInfos = classConfigurator.getClassInfos();
         List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
 
@@ -63,7 +63,7 @@ public class ClassChecker implements Checker {
             expectedFieldKeywords.sort(Comparator.comparingInt(CheckerUtils::countOptionalOccurrences));
             expectedMethodKeywords.sort(Comparator.comparingInt(CheckerUtils::countOptionalOccurrences));
 
-            ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassTypeName());
+            ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassKeywords());
             classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo));
             classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getElementInfos(classInfo.getInheritsFrom())));
             classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getElementInfos(expectedFieldKeywords)));

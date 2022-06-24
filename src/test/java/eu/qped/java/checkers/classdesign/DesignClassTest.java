@@ -30,14 +30,14 @@ public class DesignClassTest {
         ArrayList<String> fieldKeywords = new ArrayList<>();
         fieldKeywords.add("public int num;");
         ClassInfo parentClassInfo = new ClassInfo();
-        parentClassInfo.setClassTypeName(parentClassName);
+        parentClassInfo.setClassKeywords(parentClassName);
         parentClassInfo.setFieldKeywords(fieldKeywords);
 
         String childClassName = "class ChildClass";
         ClassInfo childClassInfo = new ClassInfo();
         ArrayList<String> inheritsFrom = new ArrayList<>();
         inheritsFrom.add("class ParentClass");
-        childClassInfo.setClassTypeName(childClassName);
+        childClassInfo.setClassKeywords(childClassName);
         childClassInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(parentClassInfo);
@@ -77,14 +77,14 @@ public class DesignClassTest {
         ArrayList<String> methodKeywords = new ArrayList<>();
         methodKeywords.add("public static int add");
         ClassInfo parentClassInfo = new ClassInfo();
-        parentClassInfo.setClassTypeName(parentClassName);
+        parentClassInfo.setClassKeywords(parentClassName);
         parentClassInfo.setMethodKeywords(methodKeywords);
 
         String childClassName = "class ChildClass";
         ClassInfo childClassInfo = new ClassInfo();
         ArrayList<String> inheritsFrom = new ArrayList<>();
         inheritsFrom.add("class ParentClass");
-        childClassInfo.setClassTypeName(childClassName);
+        childClassInfo.setClassKeywords(childClassName);
         childClassInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(parentClassInfo);
@@ -123,14 +123,14 @@ public class DesignClassTest {
         ArrayList<String> methodKeywords = new ArrayList<>();
         methodKeywords.add("public int add");
         ClassInfo parentClassInfo = new ClassInfo();
-        parentClassInfo.setClassTypeName(parentClassName);
+        parentClassInfo.setClassKeywords(parentClassName);
         parentClassInfo.setMethodKeywords(methodKeywords);
 
         String childClassName = "class ChildClass";
         ClassInfo childClassInfo = new ClassInfo();
         ArrayList<String> inheritsFrom = new ArrayList<>();
         inheritsFrom.add("class ParentClass");
-        childClassInfo.setClassTypeName(childClassName);
+        childClassInfo.setClassKeywords(childClassName);
         childClassInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(parentClassInfo);
@@ -166,7 +166,7 @@ public class DesignClassTest {
     public void optionalAccessTest() {
         String expectedClass1 = "* class TestClass";
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedClass1);
+        classInfo1.setClassKeywords(expectedClass1);
 
         classInfos.add(classInfo1);
         qfClassSettings.setClassInfos(classInfos);
@@ -192,7 +192,7 @@ public class DesignClassTest {
     public void optionalNonAccessTest() {
         String expectedClass1 = "public * class TestClass";
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedClass1);
+        classInfo1.setClassKeywords(expectedClass1);
 
         classInfos.add(classInfo1);
         qfClassSettings.setClassInfos(classInfos);
@@ -218,7 +218,7 @@ public class DesignClassTest {
     public void optionalTypeTest() {
         String expectedClass1 = "* TestClass";
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedClass1);
+        classInfo1.setClassKeywords(expectedClass1);
 
         classInfos.add(classInfo1);
         qfClassSettings.setClassInfos(classInfos);
@@ -244,7 +244,7 @@ public class DesignClassTest {
     public void wrongAccessTest() {
         String expectedClass1 = "public class TestClass";
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedClass1);
+        classInfo1.setClassKeywords(expectedClass1);
 
         classInfos.add(classInfo1);
         qfClassSettings.setClassInfos(classInfos);
@@ -274,7 +274,7 @@ public class DesignClassTest {
     public void wrongNonAccessTest() {
         String expectedClass1 = "abstract class TestClass";
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedClass1);
+        classInfo1.setClassKeywords(expectedClass1);
 
         classInfos.add(classInfo1);
         qfClassSettings.setClassInfos(classInfos);
@@ -304,7 +304,7 @@ public class DesignClassTest {
     public void wrongTypeTest() {
         String expectedClass1 = "interface TestClass";
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedClass1);
+        classInfo1.setClassKeywords(expectedClass1);
 
         classInfos.add(classInfo1);
         qfClassSettings.setClassInfos(classInfos);
@@ -342,12 +342,12 @@ public class DesignClassTest {
         ArrayList<String> inheritsFrom = new ArrayList<>();
         inheritsFrom.add("interface Number");
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedClass1);
+        classInfo1.setClassKeywords(expectedClass1);
         classInfo1.setInheritsFrom(inheritsFrom);
 
         String expectedClass2 = "class TestClass2";
         ClassInfo classInfo2 = new ClassInfo();
-        classInfo2.setClassTypeName(expectedClass2);
+        classInfo2.setClassKeywords(expectedClass2);
 
         classInfos.add(classInfo1);
         classInfos.add(classInfo2);
@@ -381,11 +381,11 @@ public class DesignClassTest {
     public void innerClassTest() {
         String expectedOuterClass = "class OuterClass";
         ClassInfo classInfo1 = new ClassInfo();
-        classInfo1.setClassTypeName(expectedOuterClass);
+        classInfo1.setClassKeywords(expectedOuterClass);
 
         String expectedInnerClass = "class InnerClass";
         ClassInfo classInfo2 = new ClassInfo();
-        classInfo2.setClassTypeName(expectedInnerClass);
+        classInfo2.setClassKeywords(expectedInnerClass);
 
         classInfos.add(classInfo1);
         classInfos.add(classInfo2);
@@ -419,7 +419,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsType2);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -449,7 +449,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsType);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -479,7 +479,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsType);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -509,7 +509,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsType);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -536,7 +536,7 @@ public class DesignClassTest {
         String expectedClassTypeName = "class TestClass";
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
 
         classInfos.add(classInfo);
         qfClassSettings.setClassInfos(classInfos);
@@ -570,7 +570,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -605,7 +605,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -640,7 +640,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -675,7 +675,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -710,7 +710,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -745,7 +745,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -780,7 +780,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -815,7 +815,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
@@ -850,7 +850,7 @@ public class DesignClassTest {
         inheritsFrom.add(implementsInterface);
 
         ClassInfo classInfo = new ClassInfo();
-        classInfo.setClassTypeName(expectedClassTypeName);
+        classInfo.setClassKeywords(expectedClassTypeName);
         classInfo.setInheritsFrom(inheritsFrom);
 
         classInfos.add(classInfo);
