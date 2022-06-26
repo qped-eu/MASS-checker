@@ -93,7 +93,7 @@ public class CheckerRunner {
 				System.out.println("--------------------------------------++++MERO++++++---------------------------------------");
 
 				System.out.println(submittedFile.getPath());
-				System.out.println("space: " + submittedFile.getTotalSpace());
+				System.out.println("space: " + submittedFile.getTotalSpace() + " " + -submittedFile.getFreeSpace());
 
 				System.out.println("--------------------------------------++++++++++---------------------------------------");
 
@@ -110,7 +110,8 @@ public class CheckerRunner {
 				System.out.println("--------------------------------------+++++MERO+++++---------------------------------------");
 
 				System.out.println(submittedFile.getPath());
-				System.out.println("space: " + submittedFile.getTotalSpace());
+				System.out.println("space: " + s"space: " + submittedFile.getTotalSpace() + " " + -submittedFile.getFreeSpace());
+
 
 				System.out.println("--------------------------------------++++++++++---------------------------------------");
 
