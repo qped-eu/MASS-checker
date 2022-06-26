@@ -17,7 +17,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CheckerRunner {
 
@@ -110,21 +112,17 @@ public class CheckerRunner {
 						fileInfo.setUnzipped(unzipTarget);
 
 						System.out.println("MERO NEW");
-						System.out.println("-----------------------");
-						System.out.println(unzipTarget.getPath());
-						System.out.println("-----------------------");
-						System.out.println(unzipTarget.isDirectory());
-						System.out.println("-----------------------");
-						var dir = Arrays.asList(Objects.requireNonNull(unzipTarget.listFiles()));
+						File folder = new File(unzipTarget.getPath());
+						File[] listOfFiles = folder.listFiles();
 
-						var testProject = dir.get(0);
-						Arrays.asList(Objects.requireNonNull(testProject.listFiles())).forEach(System.out::println);
-
-						var testProjectFiles = Arrays.asList(Objects.requireNonNull(testProject.listFiles()));
-
-						Arrays.asList(Objects.requireNonNull(testProjectFiles.get(0).listFiles())).forEach(System.out::println);
-
-						System.out.println("-----------------------");
+						assert listOfFiles != null;
+						for (File listOfFile : listOfFiles) {
+							if (listOfFile.isFile()) {
+								System.out.println("File " + listOfFile.getName());
+							} else if (listOfFile.isDirectory()) {
+								System.out.println("Directory " + listOfFile.getName());
+							}
+						}
 						System.out.println("MERO NEW");
 					} catch (ZipException e) {
 						throw new IllegalArgumentException(e);
