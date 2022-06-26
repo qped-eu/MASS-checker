@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -61,7 +62,21 @@ public class SemanticChecker {
         // per File
         settings.forEach(
                 fileSettingEntry -> {
-                    var compilationUnit = parse(targetProjectPath + "/" + fileSettingEntry.getFilePath()); // AST per File
+                    if (targetProjectPath == null) {
+                        targetProjectPath = "";
+                    }
+                    var path = "";
+                    if (fileSettingEntry.getFilePath().charAt(0) == '/') {
+                        path = targetProjectPath + fileSettingEntry.getFilePath();
+                    } else {
+                        if (!Objects.equals(targetProjectPath, "")) {
+                            path = targetProjectPath + "/" + fileSettingEntry.getFilePath();
+                        } else {
+                            path = fileSettingEntry.getFilePath();
+                        }
+                    }
+
+                    var compilationUnit = parse(path); // AST per File
                     // AST per Method in File
                     fileSettingEntry.getSettingItems().forEach(
                             semanticSettingItem -> {
@@ -88,13 +103,13 @@ public class SemanticChecker {
         List<SemanticSettingItem> settingItems = new ArrayList<>();
 
         var bagCalcPriceSettingItem = SemanticSettingItem.builder()
-                .filePath("src/main/resources/test-project/src/model/Bag.java")
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
                 .methodName("calcPrice")
                 .returnType("void")
                 .whileLoop(0)
                 .build();
         var bagCalcRecSettingItem = SemanticSettingItem.builder()
-                .filePath("src/main/resources/test-project/src/model/Bag.java")
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
                 .methodName("calcRec")
                 .returnType("int")
                 .recursionAllowed(false)
