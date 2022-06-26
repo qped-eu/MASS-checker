@@ -101,13 +101,10 @@ public class CheckerRunner {
 					try (OutputStream output = new FileOutputStream(submittedFile)) {
 						final int BUFFER_SIZE = 1024;
 						byte[] buffer = new byte[BUFFER_SIZE];
-						while (input.available() > BUFFER_SIZE) {
-							input.read(buffer);
-							output.write(buffer);
+						int bytesRead;
+						while ((bytesRead = input.read(buffer, 0, BUFFER_SIZE)) != -1) {
+							output.write(buffer, 0, bytesRead);
 						}
-						int bytes = input.available();
-						input.read(buffer, 0, bytes);
-						output.write(buffer, 0, bytes);
 					}
 				}
 				System.out.println("--------------------------------------+++++MERO+++++---------------------------------------");
