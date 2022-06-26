@@ -58,6 +58,7 @@ public class Mass implements Checker {
             System.out.println("File not null");
             syntaxChecker.setTargetProject(file.getUnzipped().getPath());
         } else {
+            System.out.println("File  null");
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
 
