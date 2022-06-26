@@ -38,16 +38,6 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        MainSettings mainSettings = new MainSettings(this.mainSettings);
-
-        // Syntax Checker
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
-        if (file != null) {
-            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
-        } else {
-            syntaxChecker.setStringAnswer(qfObject.getAnswer());
-        }
-
         System.out.println("MERO");
 
         Collection<File> files = FileUtils.listFiles(
@@ -59,6 +49,16 @@ public class Mass implements Checker {
         System.out.println(files);
 
         System.out.println("MERO");
+
+        MainSettings mainSettings = new MainSettings(this.mainSettings);
+
+        // Syntax Checker
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
+        if (file != null) {
+            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
+        } else {
+            syntaxChecker.setStringAnswer(qfObject.getAnswer());
+        }
 
         // Style Checker
 
