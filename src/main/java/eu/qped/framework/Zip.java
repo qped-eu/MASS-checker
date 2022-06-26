@@ -87,6 +87,7 @@ public class Zip implements ZipService {
         FileInfo copyInfo =  new FileInfo();
         copyInfo.setSubmittedFile(copy);
         copyInfo.setId(copy.getName().substring(0, copy.getName().lastIndexOf(".")));
+
         copyInfo.setExtension(file.getExtension());
         copyInfo.setUrl(SCHEME + copy.getAbsolutePath());
         copyInfo.setPath(copy.getAbsolutePath());

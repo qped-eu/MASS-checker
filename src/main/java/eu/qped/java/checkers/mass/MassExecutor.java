@@ -5,6 +5,7 @@ import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -48,6 +49,7 @@ public class MassExecutor {
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
     private final DesignChecker designChecker;
+
 
 
     /**
@@ -172,6 +174,20 @@ public class MassExecutor {
                     e.printStackTrace();
                 }
             }
+            if (true) {
+
+
+
+
+
+
+
+
+
+            }
+
+
+
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();

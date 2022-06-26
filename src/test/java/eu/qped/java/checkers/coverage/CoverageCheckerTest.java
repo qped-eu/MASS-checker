@@ -44,7 +44,8 @@ class CoverageCheckerTest {
                     Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
             got.setFeedback(new String[]{});
         } catch (Exception e) {
-            assertFalse(true, e.getMessage());
+            e.printStackTrace();
+            assertFalse(true, e.toString());
         }
     }
 

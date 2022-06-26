@@ -46,6 +46,14 @@ public class CoverageChecker implements Checker {
     private final static ZipService.TestClass mavenTestClass = (file) -> {
         return Pattern.matches("src/test/java.*\\.java$", file.getPath());
     };
+    private final static ZipService.Classname javaClassName = (file) -> {
+        Pattern pattern = Pattern.compile(".*/exam-results\\d+/(.*)\\.java$");
+        Matcher matcher = pattern.matcher(file.getPath());
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    };
     private final static ZipService.TestClass javaTestClass = (file) -> {
         return Pattern.matches(".*Test\\.java$", file.getPath());
     };
@@ -136,7 +144,7 @@ public class CoverageChecker implements Checker {
                     preprocessing(fileByClassname, classes));
 
             qfObject.setFeedback(Formatter.format(covSetting.getFormat(), summary));
-            zip.cleanUp();
+            //zip.cleanUp();
         } catch (Exception e) {
             qfObject.setFeedback(new String[]{e.getMessage()});
         }
@@ -145,59 +153,32 @@ public class CoverageChecker implements Checker {
 
     private ZipService.Extracted extract(ZipService zipService) {
         try {
+            ZipService.Classname classname;
+            ZipService.TestClass testClass;
+            if (covSetting.getConvention().equals(JAVA)) {
+                classname = javaClassName;
+                testClass = javaTestClass;
+            } else {
+                classname = mavenClassName;
+                testClass = mavenTestClass;
+            }
+
             if (Objects.nonNull(file) && Objects.nonNull(additional)) {
-                ZipService.Classname classname;
-                ZipService.TestClass testClass;
-                if (covSetting.getConvention().equals(JAVA)) {
-                    classname = javaClassname(file.getId()+"|"+additional.getId());
-                    testClass = javaTestClass;
-                } else {
-                    classname = mavenClassName;
-                    testClass = mavenTestClass;
-                }
                 return zipService.extractBoth(
                         zipService.download(file),
                         zipService.download(additional),
                         testClass,
                         classname);
             } else if (Objects.nonNull(file)) {
-                return onlyOneZipFile(zipService, file);
+                return zipService.extract(zipService.download(file),testClass, classname);
             } else if (Objects.nonNull(additional)) {
-                return onlyOneZipFile(zipService, additional);
+                return zipService.extract(zipService.download(additional),testClass, classname);
             }
             throw new Exception();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalStateException("Ups something went wrong!");
         }
-    }
-
-
-    private ZipService.Extracted onlyOneZipFile(ZipService zipService, FileInfo fileInfo) throws Exception {
-        ZipService.Classname classname;
-        ZipService.TestClass testClass;
-        if (covSetting.getConvention().equals(JAVA)) {
-            classname = javaClassname(fileInfo.getId());
-            testClass = javaTestClass;
-        } else {
-            classname = mavenClassName;
-            testClass = mavenTestClass;
-        }
-        return zipService.extract(
-                zipService.download(fileInfo),
-                testClass,
-                classname
-        );
-    }
-
-    private ZipService.Classname javaClassname(String p) {
-        return  (f) -> {
-            Pattern pattern = Pattern.compile(".*/exam-results\\d+/(" + p + ")/(.*)\\.java$");
-            Matcher matcher = pattern.matcher(f.getPath());
-            if (matcher.find()) {
-                return matcher.group(2);
-            }
-            return null;
-        };
     }
 
     public Summary checker(List<CovInformation> testClasses, List<CovInformation> classes) {
