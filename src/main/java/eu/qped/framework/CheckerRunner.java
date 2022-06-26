@@ -115,7 +115,11 @@ public class CheckerRunner {
 						System.out.println("-----------------------");
 						System.out.println(unzipTarget.isDirectory());
 						System.out.println("-----------------------");
-						Arrays.asList(Objects.requireNonNull(unzipTarget.listFiles())).forEach(System.out::println);
+						var dir = Arrays.asList(Objects.requireNonNull(unzipTarget.listFiles()));
+
+						var testProject = dir.get(0);
+						Arrays.asList(Objects.requireNonNull(testProject.listFiles())).forEach(System.out::println);
+
 						System.out.println("-----------------------");
 						System.out.println("MERO");
 					} catch (ZipException e) {
