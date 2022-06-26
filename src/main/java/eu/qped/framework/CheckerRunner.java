@@ -10,6 +10,8 @@ import eu.qped.framework.qf.QfObject;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -18,6 +20,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -112,17 +115,13 @@ public class CheckerRunner {
 						fileInfo.setUnzipped(unzipTarget);
 
 						System.out.println("MERO NEW");
-						File folder = new File(unzipTarget.getPath());
-						File[] listOfFiles = folder.listFiles();
+						Collection<File> files = FileUtils.listFiles(
+								unzipTarget,
+								new RegexFileFilter("^(.*?)"),
+								DirectoryFileFilter.DIRECTORY
+						);
 
-						assert listOfFiles != null;
-						for (File listOfFile : listOfFiles) {
-							if (listOfFile.isFile()) {
-								System.out.println("File " + listOfFile.getName());
-							} else if (listOfFile.isDirectory()) {
-								System.out.println("Directory " + listOfFile.getName());
-							}
-						}
+						System.out.println(files);
 						System.out.println("MERO NEW");
 					} catch (ZipException e) {
 						throw new IllegalArgumentException(e);
