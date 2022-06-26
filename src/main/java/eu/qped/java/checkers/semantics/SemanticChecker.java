@@ -76,6 +76,12 @@ public class SemanticChecker {
                         }
                     }
 
+                    System.out.println("--MERO--");
+
+                    System.out.println(path);
+
+                    System.out.println("--MERO--");
+
                     var compilationUnit = parse(path); // AST per File
                     // AST per Method in File
                     fileSettingEntry.getSettingItems().forEach(
