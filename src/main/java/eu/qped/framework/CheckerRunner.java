@@ -103,14 +103,14 @@ public class CheckerRunner {
 					}					
 				}
 				
-				if (fileInfo.getMimetype().equals("application/zip")) {
+				if (fileInfo.getMimetype().equals("application/x-zip")) {
 					try {
 						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
 						tempFiles.add(unzipTarget);
 
 						ZipFile zipFile = new ZipFile(submittedFile);
 						zipFile.extractAll(unzipTarget.toString());
-						
+
 						fileInfo.setUnzipped(unzipTarget);
 					} catch (ZipException e) {
 						throw new IllegalArgumentException(e);
