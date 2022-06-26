@@ -103,7 +103,7 @@ public class CheckerRunner {
 					}					
 				}
 				
-				if (fileInfo.getMimetype().equals("application/x-zip")) {
+				if (fileInfo.getMimetype().equals("application/x-zip-compressed")) {
 					try {
 						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
 						tempFiles.add(unzipTarget);
