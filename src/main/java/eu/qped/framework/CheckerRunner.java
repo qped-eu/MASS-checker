@@ -109,7 +109,7 @@ public class CheckerRunner {
 
 						fileInfo.setUnzipped(unzipTarget);
 
-						System.out.println("MERO");
+						System.out.println("MERO NEW");
 						System.out.println("-----------------------");
 						System.out.println(unzipTarget.getPath());
 						System.out.println("-----------------------");
@@ -120,8 +120,12 @@ public class CheckerRunner {
 						var testProject = dir.get(0);
 						Arrays.asList(Objects.requireNonNull(testProject.listFiles())).forEach(System.out::println);
 
+						var testProjectFiles = Arrays.asList(Objects.requireNonNull(testProject.listFiles()));
+
+						Arrays.asList(testProjectFiles.get(0)).forEach(System.out::println);
+
 						System.out.println("-----------------------");
-						System.out.println("MERO");
+						System.out.println("MERO NEW");
 					} catch (ZipException e) {
 						throw new IllegalArgumentException(e);
 					}
