@@ -108,6 +108,7 @@ public class SemanticChecker {
     // src/main/java/eu/qped/java/checkers/style from syntax checker split([/])
     // eu.qped.um.java.checker.src..... split([.])
     private CompilationUnit parse(final String path) {
+        System.out.println(path);
         return parseFromResourceType(path);
     }
 
@@ -116,12 +117,16 @@ public class SemanticChecker {
         JavaParser javaParser = new JavaParser(configuration);
         try {
             var unit = javaParser.parse(Path.of(path));
+            System.out.println("parseFromResourceType var unit");
             if (unit.getResult().isPresent()) {
+                System.out.println("parseFromResourceType var unit is present");
                 return unit.getResult().get();
             } else {
+                System.out.println("parseFromResourceType var unit isnt present");
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
+            System.out.println("parse error");
             throw new IllegalArgumentException();
         }
     }
