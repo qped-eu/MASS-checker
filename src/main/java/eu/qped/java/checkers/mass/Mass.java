@@ -62,6 +62,9 @@ public class Mass implements Checker {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
 
+
+        System.out.println("BASEL");
+
         // Style Checker
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
