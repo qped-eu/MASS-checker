@@ -7,20 +7,16 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
-import com.github.javaparser.utils.SourceRoot;
 import eu.qped.java.checkers.mass.QFSemSettings;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import eu.qped.java.checkers.mass.SemanticSettingItem;
+import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,105 +24,129 @@ import java.util.Map;
 @NoArgsConstructor
 public class SemanticChecker {
 
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private QFSemSettings qfSemSettings;
 
-    private String source;
-    private SemanticConfigurator semanticConfigurator;
-    private CompilationUnit compilationUnit;
-    private ArrayList<SemanticFeedback> feedbacks;
-    private Map<String, String> settings;
-    private boolean usedALoop = false;
-    private String targetReturnType;
+    @Getter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PACKAGE)
+    private SemanticSettingReader semanticSettingReader;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
+    private boolean usedALoop;
+
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private String returnType;
 
-    private SemanticChecker(SemanticConfigurator semanticConfigurator) {
-        this.feedbacks = new ArrayList<>();
-        this.semanticConfigurator = semanticConfigurator;
-        settings = new HashMap<>();
+    private ArrayList<SemanticFeedback> feedbacks;
+
+    private String targetProjectPath;
+
+    @Deprecated(forRemoval = true)
+    public SemanticChecker(SemanticSettingReader semanticSettingReader) {
+
+    }
+
+    @Deprecated(forRemoval = true)
+    public static SemanticChecker createSemanticMassChecker(SemanticSettingReader semanticSettingReader) {
+        return new SemanticChecker(semanticSettingReader);
     }
 
     public static void main(String[] args) throws IOException {
-        SemanticChecker semanticChecker = new SemanticChecker();
-        semanticChecker.parse("exam-results/src/model/GrayCode.java");
-    }
 
-    public void parse(final String path) {
-        File maybeFile = new File(path);
-        if (maybeFile.isFile()) {
-            parseFromResourceType(path, ResourceType.FILE);
-        } else if (maybeFile.isDirectory()) {
-            parseFromResourceType(path, ResourceType.DIR);
-        } else throw new IllegalArgumentException(path + " is not a file or directory valid path!");
-    }
+        List<SemanticSettingItem> settingItems = new ArrayList<>();
 
-    //FIXME written quick and dirty
-    private void parseFromResourceType(final String path, ResourceType type) {
-        ParserConfiguration configuration = new ParserConfiguration();
-        JavaParser javaParser = new JavaParser(configuration);
-        if (ResourceType.FILE == type) {
-            try {
-                var unit = javaParser.parse(Path.of(path));
-                if (unit.getResult().isPresent()) {
-                    this.compilationUnit = unit.getResult().get();
-                }
-            } catch (IOException e) {
-                throw new IllegalArgumentException();
-            }
-        } else if (ResourceType.DIR == type) {
-            SourceRoot sourceRoot = new SourceRoot(Path.of(path));
-            try {
-                var parsedUnits = sourceRoot.tryToParse();
-                //FIXME now we assume that we have just one File
-                if (parsedUnits.size() > 0) {
-                    var maybeUnit = parsedUnits.get(0);
-                    if (maybeUnit.getResult().isPresent()) {
-                        this.compilationUnit = maybeUnit.getResult().get();
-                    }
-                } else {
-                    System.out.println("No Files");
-                }
-            } catch (IOException e) {
-                throw new IllegalArgumentException();
-            }
-        }
-    }
+        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
+                .filePath("src/main/resources/test-project/src/model/Bag.java")
+                .methodName("calcPrice")
+                .returnType("void")
+                .whileLoop(0)
+                .build();
+        var bagCalcRecSettingItem = SemanticSettingItem.builder()
+                .filePath("src/main/resources/test-project/src/model/Bag.java")
+                .methodName("calcRec")
+                .returnType("int")
+                .recursionAllowed(false)
+                .build();
 
-    private void parseCompUnit() {
-        ParserConfiguration configuration = new ParserConfiguration();
-        JavaParser javaParser = new JavaParser(configuration);
-        var unit = javaParser.parse(this.source);
-        if (unit.getResult().isPresent()) {
-            this.compilationUnit = unit.getResult().get();
-        }
+        settingItems.add(bagCalcPriceSettingItem);
+        settingItems.add(bagCalcRecSettingItem);
+
+        QFSemSettings qfSemSettings = QFSemSettings.builder()
+                .semantic(settingItems)
+                .build();
+
+
+        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(qfSemSettings).build();
+
+        semanticChecker.check();
+
+        semanticChecker.getFeedbacks().forEach(
+                System.out::println
+        );
+
     }
 
     public void check() {
-        parse(semanticConfigurator.getFilePath());
-        if (checkMethodExist()) {
-            try {
-                BlockStmt targetedMethod = getTargetedMethod(semanticConfigurator.getMethodName());
-                StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
-                calculateUsedLoop(statementsVisitorHelper);
-                generateSemanticStatementsFeedback(statementsVisitorHelper);
-                if (semanticConfigurator.getRecursionAllowed()) {
-                    MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
-                    generateSemanticRecursionFeedback(recursiveCheckHelper);
+        SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
+        var settings = reader.groupByFileName();
+
+        // per File
+        settings.forEach(
+                fileSettingEntry -> {
+                    var compilationUnit = parse(fileSettingEntry.getFilePath()); // AST per File
+                    // AST per Method in File
+                    fileSettingEntry.getSettingItems().forEach(
+                            semanticSettingItem -> {
+                                try {
+                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName()); // This method throws NoSuchMethodException
+                                    StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
+                                    calculateUsedLoop(statementsVisitorHelper);
+                                    generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
+                                    MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
+                                    generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
+                                    checkReturnTyp(semanticSettingItem.getReturnType());
+                                } catch (NoSuchMethodException e) {
+                                    System.out.println(e.getMessage() + " " + e.getCause());
+                                }
+                            }
+                    );
                 }
-                checkReturnTyp();
-            } catch (NoSuchMethodException e) {
-                System.out.println(e.getMessage() + " " + e.getCause());
+        );
+
+    }
+
+    // src/main/java/eu/qped/java/checkers/style from syntax checker split([/])
+    // eu.qped.um.java.checker.src..... split([.])
+    private CompilationUnit parse(final String path) {
+        File maybeFile = new File(path);
+        if (maybeFile.isFile()) {
+            return parseFromResourceType(path);
+        } else throw new IllegalArgumentException(path + " is not a file or directory valid path!");
+    }
+
+    private CompilationUnit parseFromResourceType(final String path) {
+        ParserConfiguration configuration = new ParserConfiguration();
+        JavaParser javaParser = new JavaParser(configuration);
+        try {
+            var unit = javaParser.parse(Path.of(path));
+            if (unit.getResult().isPresent()) {
+                return unit.getResult().get();
+            } else {
+                throw new IllegalArgumentException();
             }
+        } catch (IOException e) {
+            throw new IllegalArgumentException();
         }
     }
 
-    public static SemanticChecker createSemanticMassChecker(SemanticConfigurator semanticConfigurator) {
-        return new SemanticChecker(semanticConfigurator);
-    }
+    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
 
-    private void checkReturnTyp() {
+    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
+    private void checkReturnTyp(String targetReturnType) {
         boolean result = false;
-        targetReturnType = semanticConfigurator.getReturnType();
-
         result = targetReturnType.equalsIgnoreCase(returnType);
 
         if (!result && !targetReturnType.equals("undefined") && targetReturnType != null) {
@@ -134,7 +154,7 @@ public class SemanticChecker {
         }
     }
 
-    private BlockStmt getTargetedMethod(String targetedMethodName) throws NoSuchMethodException {
+    private BlockStmt getTargetedMethod(CompilationUnit compilationUnit, String targetedMethodName) throws NoSuchMethodException {
         final BlockStmt[] result = {new BlockStmt()};
         MutableBoolean methodFound = new MutableBoolean(false);
 
@@ -173,24 +193,26 @@ public class SemanticChecker {
         return result[0];
     }
 
-    private void generateSemanticStatementsFeedback(StatementsVisitorHelper statementsVisitorHelper) {
-        if (statementsVisitorHelper.getWhileCounter() > semanticConfigurator.getWhileLoop() && semanticConfigurator.getWhileLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + semanticConfigurator.getWhileLoop() + " while loop in your code, but you've used " + statementsVisitorHelper.getWhileCounter() + " while loop "));
+    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
+    private void generateSemanticStatementsFeedback(SemanticSettingItem settingItem, StatementsVisitorHelper statementsVisitorHelper) {
+        if (statementsVisitorHelper.getWhileCounter() > settingItem.getWhileLoop() && settingItem.getWhileLoop() != -1) {
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getWhileLoop() + " while loop in your code, but you've used " + statementsVisitorHelper.getWhileCounter() + " while loop "));
         }
-        if (statementsVisitorHelper.getForCounter() > semanticConfigurator.getForLoop() && semanticConfigurator.getForLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + semanticConfigurator.getForLoop() + " for loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  for loop "));
+        if (statementsVisitorHelper.getForCounter() > settingItem.getForLoop() && settingItem.getForLoop() != -1) {
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForLoop() + " for loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  for loop "));
         }
-        if (statementsVisitorHelper.getForEachCounter() > semanticConfigurator.getForEachLoop() && semanticConfigurator.getForEachLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + semanticConfigurator.getForEachLoop() + " forEach loop in your code, but you've used " + statementsVisitorHelper.getForEachCounter() + "  forEach loop "));
+        if (statementsVisitorHelper.getForEachCounter() > settingItem.getForEachLoop() && settingItem.getForEachLoop() != -1) {
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForEachLoop() + " forEach loop in your code, but you've used " + statementsVisitorHelper.getForEachCounter() + "  forEach loop "));
         }
-        if (statementsVisitorHelper.getIfElseCounter() > semanticConfigurator.getIfElseStmt() && semanticConfigurator.getIfElseStmt() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + semanticConfigurator.getIfElseStmt() + " IfElse Statement in your code, but you've used " + statementsVisitorHelper.getIfElseCounter() + "  ifElse Statment "));
+        if (statementsVisitorHelper.getIfElseCounter() > settingItem.getIfElseStmt() && settingItem.getIfElseStmt() != -1) {
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getIfElseStmt() + " IfElse Statement in your code, but you've used " + statementsVisitorHelper.getIfElseCounter() + "  ifElse Statment "));
         }
-        if (statementsVisitorHelper.getDoCounter() > semanticConfigurator.getDoWhileLoop() && semanticConfigurator.getDoWhileLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + semanticConfigurator.getDoWhileLoop() + " doWhile loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  doWhile loop "));
+        if (statementsVisitorHelper.getDoCounter() > settingItem.getDoWhileLoop() && settingItem.getDoWhileLoop() != -1) {
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getDoWhileLoop() + " doWhile loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  doWhile loop "));
         }
     }
 
+    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
     private void calculateUsedLoop(StatementsVisitorHelper statementsVisitorHelper) {
         usedALoop = statementsVisitorHelper.getWhileCounter() > 0
                 || statementsVisitorHelper.getDoCounter() > 0
@@ -198,31 +220,18 @@ public class SemanticChecker {
                 || statementsVisitorHelper.getForCounter() > 0;
     }
 
-    private boolean checkMethodExist() {
-        String methodName = semanticConfigurator.getMethodName();
-        if (methodName == null || methodName.equals("undefined")) {
-            feedbacks.add(new SemanticFeedback("Method not found"));
-            return false;
-        }
-        return true;
-    }
-
-    private void generateSemanticRecursionFeedback(MethodCalledChecker recursiveCheckHelper) {
-        if ((!recursiveCheckHelper.check(semanticConfigurator.getMethodName()) && semanticConfigurator.getRecursionAllowed() && !usedALoop)) {
+    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
+    private void generateSemanticRecursionFeedback(SemanticSettingItem settingItem, MethodCalledChecker recursiveCheckHelper) {
+        var hasUsedRecursive = recursiveCheckHelper.check(settingItem.getMethodName());
+        if ((!hasUsedRecursive && settingItem.getRecursionAllowed() && !usedALoop)) {
             feedbacks.add(new SemanticFeedback("you have to solve the method recursive"));
-        } else if (semanticConfigurator.getRecursionAllowed() && usedALoop && recursiveCheckHelper.check(semanticConfigurator.getMethodName())) {
+        } else if (settingItem.getRecursionAllowed() && usedALoop && hasUsedRecursive) {
             feedbacks.add(new SemanticFeedback("you have used a Loop with your recursive Call"));
-        } else if (semanticConfigurator.getRecursionAllowed() && usedALoop && !recursiveCheckHelper.check(semanticConfigurator.getMethodName())) {
+        } else if (settingItem.getRecursionAllowed() && usedALoop && !hasUsedRecursive) {
             feedbacks.add(new SemanticFeedback("you have used a Loop without a recursive Call, you have to solve it just recursive"));
-        } else {
-            feedbacks.add(new SemanticFeedback("well done!"));
+        } else if (hasUsedRecursive && !settingItem.getRecursionAllowed()) {
+            feedbacks.add(new SemanticFeedback("yor are not allowed to use recursive in the method " + settingItem.getMethodName()));
         }
-    }
-
-    private enum ResourceType {
-        FILE,
-        DIR,
-        STRING
     }
 
 }

@@ -1,10 +1,10 @@
 package eu.qped.java.checkers.mass;
 
 import eu.qped.framework.Checker;
+import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
@@ -15,6 +15,9 @@ import java.util.List;
 
 
 public class Mass implements Checker {
+
+    @QfProperty
+    private FileInfo file;
 
     @QfProperty
     private QFMainSettings mainSettings;
@@ -41,8 +44,8 @@ public class Mass implements Checker {
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
 
         // Semantic Checker
-        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
-        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+
+        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(semSettings).build();
 
         //Mass
         MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettings);

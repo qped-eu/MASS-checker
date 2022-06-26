@@ -4,7 +4,6 @@ import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
@@ -126,7 +125,6 @@ public class MassExecutor {
             }
             if (semanticNeeded) {
                 final String source = syntaxCheckReport.getCodeAsString();
-                semanticChecker.setSource(source);
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
@@ -197,7 +195,7 @@ public class MassExecutor {
 //        qfSemSettings.setDoWhileLoop("-1");
 //        qfSemSettings.setReturnType("int");
 
-        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
+//        SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemSettings);
 
 
         QFStyleSettings qfStyleSettings = new QFStyleSettings();
@@ -211,7 +209,7 @@ public class MassExecutor {
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(qfStyleSettings).build();
 
-        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(qfSemSettings).build();
 
 
         //targetProject("exam-results/src/compiledSources/GrayCode.java")

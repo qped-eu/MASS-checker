@@ -15,17 +15,17 @@ public class SemanticSettingItem {
 
     private String methodName;
 
-    private boolean recursionAllowed;
+    private Boolean recursionAllowed;
 
-    private int whileLoop;
+    private Integer whileLoop;
 
-    private int forLoop;
+    private Integer forLoop;
 
-    private int forEachLoop;
+    private Integer forEachLoop;
 
-    private int ifElseStmt;
+    private Integer ifElseStmt;
 
-    private int doWhileLoop;
+    private Integer doWhileLoop;
 
     private String returnType;
 

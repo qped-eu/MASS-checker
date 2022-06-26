@@ -117,5 +117,13 @@ public class SyntaxChecker implements Runnable {
         return syntaxErrors;
     }
 
+    public static void main(String[] args) {
+        SyntaxChecker checker = SyntaxChecker.builder().targetProject("src/main/resources/test-project").build();
+        var report = checker.check();
+
+        System.out.println("path: " + report.getPath());
+
+    }
+
 
 }
