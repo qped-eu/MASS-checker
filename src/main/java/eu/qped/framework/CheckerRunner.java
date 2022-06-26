@@ -84,7 +84,7 @@ public class CheckerRunner {
 			@SuppressWarnings("unchecked")
 			Class<Checker> cls = (Class<Checker>) Class.forName(checkerClassName);
 			this.checker = cls.getDeclaredConstructor().newInstance();
-			
+
 			if (qfObjectMap.containsKey(QF_OBJECT_FILE_PROPERTY)) {
 				fileInfo = mapper.readValue(
 						mapper.writeValueAsString(qfObjectMap.get(QF_OBJECT_FILE_PROPERTY)),
@@ -92,7 +92,7 @@ public class CheckerRunner {
 						});
 				submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
 				tempFiles.add(submittedFile);
-				
+				/*
 				try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
 					try (OutputStream output = new FileOutputStream(submittedFile)) {
 						final int BUFFER_SIZE = 1024;
@@ -121,9 +121,12 @@ public class CheckerRunner {
 					}
 				}
 				fileInfo.setSubmittedFile(submittedFile);
+
+				 */
 			} else {
 				submittedFile = null;
 			}
+
 
 			qfObject = mapper.readValue(mapper.writeValueAsString(qfObjectMap), new TypeReference<QfObject>() {
 			});
