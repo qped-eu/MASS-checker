@@ -43,36 +43,14 @@ public class SyntaxChecker implements Runnable {
     }
 
 
-    public SyntaxCheckReport check() {
-        SyntaxCheckReport.SyntaxCheckReportBuilder resultBuilder = SyntaxCheckReport.builder();
+    public static void main(String[] args) {
+        SyntaxChecker checker = SyntaxChecker.builder().targetProject("tmp").build();
+        var report = checker.check();
 
-        if (compiler == null) {
-            compiler = Compiler.builder().build();
-        }
+        System.out.println("path: " + report.getPath());
 
-        boolean compileResult;
+        System.out.println(report.getSyntaxErrors().size());
 
-        compiler.setCompiledStringResourcePath("src/main/resources/exam-results/src");
-
-
-        if (stringAnswer != null && !stringAnswer.equals("")) {
-            compileResult = compiler.compileFromString(stringAnswer);
-            resultBuilder.compiledSourceType(CompiledSourceType.STRING);
-            resultBuilder.codeAsString(compiler.getFullSourceCode());
-        } else {
-            compileResult = compiler.compileFromProject(targetProject);
-            resultBuilder.compiledSourceType(CompiledSourceType.PROJECT);
-        }
-        resultBuilder.isCompilable(compileResult);
-
-        List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.getCollectedDiagnostics();
-        List<SyntaxError> collectedErrors = new ArrayList<>();
-        if (diagnostics != null) {
-            collectedErrors = analyseDiagnostics(diagnostics);
-        }
-        resultBuilder.syntaxErrors(collectedErrors);
-        resultBuilder.path(compiler.getTargetProjectOrClassPath());
-        return resultBuilder.build();
     }
 
     private String getErrorTrigger(Diagnostic<? extends JavaFileObject> diagnostic) {
@@ -117,12 +95,40 @@ public class SyntaxChecker implements Runnable {
         return syntaxErrors;
     }
 
-    public static void main(String[] args) {
-        SyntaxChecker checker = SyntaxChecker.builder().targetProject("src/main/resources/test-project").build();
-        var report = checker.check();
+    public SyntaxCheckReport check() {
+        SyntaxCheckReport.SyntaxCheckReportBuilder resultBuilder = SyntaxCheckReport.builder();
 
-        System.out.println("path: " + report.getPath());
+        if (compiler == null) {
+            compiler = Compiler.builder().build();
+        }
 
+        boolean compileResult;
+
+        compiler.setCompiledStringResourcePath("src/main/resources/exam-results/src");
+
+        System.out.println("targetProject");
+        System.out.println(targetProject);
+        System.out.println("targetProject");
+
+
+        if (stringAnswer != null && !stringAnswer.equals("")) {
+            compileResult = compiler.compileFromString(stringAnswer);
+            resultBuilder.compiledSourceType(CompiledSourceType.STRING);
+            resultBuilder.codeAsString(compiler.getFullSourceCode());
+        } else {
+            compileResult = compiler.compileFromProject(targetProject);
+            resultBuilder.compiledSourceType(CompiledSourceType.PROJECT);
+        }
+        resultBuilder.isCompilable(compileResult);
+
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = compiler.getCollectedDiagnostics();
+        List<SyntaxError> collectedErrors = new ArrayList<>();
+        if (diagnostics != null) {
+            collectedErrors = analyseDiagnostics(diagnostics);
+        }
+        resultBuilder.syntaxErrors(collectedErrors);
+        resultBuilder.path(compiler.getTargetProjectOrClassPath());
+        return resultBuilder.build();
     }
 
 
