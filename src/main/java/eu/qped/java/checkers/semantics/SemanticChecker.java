@@ -12,7 +12,6 @@ import eu.qped.java.checkers.mass.SemanticSettingItem;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -106,48 +105,10 @@ public class SemanticChecker {
     }
 
 
-    public static void main(String[] args) throws IOException {
-
-        List<SemanticSettingItem> settingItems = new ArrayList<>();
-
-        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcPrice")
-                .returnType("void")
-                .whileLoop(0)
-                .build();
-        var bagCalcRecSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcRec")
-                .returnType("int")
-                .recursionAllowed(false)
-                .build();
-
-        settingItems.add(bagCalcPriceSettingItem);
-        settingItems.add(bagCalcRecSettingItem);
-
-        QFSemSettings qfSemSettings = QFSemSettings.builder()
-                .semantic(settingItems)
-                .build();
-
-
-        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(qfSemSettings).build();
-
-        semanticChecker.check();
-
-        semanticChecker.getFeedbacks().forEach(
-                System.out::println
-        );
-
-    }
-
     // src/main/java/eu/qped/java/checkers/style from syntax checker split([/])
     // eu.qped.um.java.checker.src..... split([.])
     private CompilationUnit parse(final String path) {
-        File maybeFile = new File(path);
-        if (maybeFile.isFile()) {
-            return parseFromResourceType(path);
-        } else throw new IllegalArgumentException(path + " is not a file or directory valid path!");
+        return parseFromResourceType(path);
     }
 
     private CompilationUnit parseFromResourceType(final String path) {
@@ -257,5 +218,39 @@ public class SemanticChecker {
         }
     }
 
+    public static void main(String[] args) throws IOException {
+
+        List<SemanticSettingItem> settingItems = new ArrayList<>();
+
+        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .methodName("calcPrice")
+                .returnType("void")
+                .whileLoop(0)
+                .build();
+        var bagCalcRecSettingItem = SemanticSettingItem.builder()
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .methodName("calcRec")
+                .returnType("int")
+                .recursionAllowed(false)
+                .build();
+
+        settingItems.add(bagCalcPriceSettingItem);
+        settingItems.add(bagCalcRecSettingItem);
+
+        QFSemSettings qfSemSettings = QFSemSettings.builder()
+                .semantic(settingItems)
+                .build();
+
+
+        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(qfSemSettings).build();
+
+        semanticChecker.check();
+
+        semanticChecker.getFeedbacks().forEach(
+                System.out::println
+        );
+
+    }
 
 }
