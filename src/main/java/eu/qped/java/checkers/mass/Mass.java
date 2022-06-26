@@ -33,6 +33,12 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
+        System.out.println("file");
+        System.out.println(file);
+        System.out.println("file");
+        System.out.println("filePath");
+        System.out.println(file.getUnzipped().getPath());
+        System.out.println("filePath");
         // Main Settings
         MainSettings mainSettings = new MainSettings(this.mainSettings);
 
