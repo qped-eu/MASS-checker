@@ -122,7 +122,7 @@ public class CheckerRunner {
 
 						var testProjectFiles = Arrays.asList(Objects.requireNonNull(testProject.listFiles()));
 
-						Arrays.asList(testProjectFiles.get(0)).forEach(System.out::println);
+						Arrays.asList(Objects.requireNonNull(testProjectFiles.get(0).listFiles())).forEach(System.out::println);
 
 						System.out.println("-----------------------");
 						System.out.println("MERO NEW");
