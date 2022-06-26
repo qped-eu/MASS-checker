@@ -89,7 +89,13 @@ public class CheckerRunner {
 				// anjsfldsldkflsdflksd.zip
 				submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
 				tempFiles.add(submittedFile);
-				
+
+				System.out.println("--------------------------------------++++MERO++++++---------------------------------------");
+
+				System.out.println(submittedFile.getPath());
+
+				System.out.println("--------------------------------------++++++++++---------------------------------------");
+
 				try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
 					try (OutputStream output = new FileOutputStream(submittedFile)) {
 						final int BUFFER_SIZE = 1024;
@@ -101,9 +107,15 @@ public class CheckerRunner {
 						int bytes = input.available();
 						input.read(buffer, 0, bytes);
 						output.write(buffer, 0, bytes);
-					}					
+					}
 				}
-				
+				System.out.println("--------------------------------------+++++MERO+++++---------------------------------------");
+
+				System.out.println(submittedFile.getPath());
+
+				System.out.println("--------------------------------------++++++++++---------------------------------------");
+
+
 				if (fileInfo.getMimetype().equals("application/zip")) {
 					try {
 						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
