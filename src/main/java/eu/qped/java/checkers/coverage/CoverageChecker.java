@@ -144,9 +144,9 @@ public class CoverageChecker implements Checker {
                     preprocessing(fileByClassname, classes));
 
             qfObject.setFeedback(Formatter.format(covSetting.getFormat(), summary));
-            //zip.cleanUp();
+            zip.cleanUp();
         } catch (Exception e) {
-            qfObject.setFeedback(new String[]{e.getMessage()});
+            qfObject.setFeedback(new String[]{"Ups something  went wrong! " + e});
         }
 
     }
