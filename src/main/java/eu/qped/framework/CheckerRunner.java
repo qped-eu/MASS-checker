@@ -80,7 +80,13 @@ public class CheckerRunner {
 			@SuppressWarnings("unchecked")
 			Class<Checker> cls = (Class<Checker>) Class.forName(checkerClassName);
 			this.checker = cls.getDeclaredConstructor().newInstance();
-			
+
+			System.out.println("--------------------------------------++++MERO++++++---------------------------------------");
+
+			System.out.println(checkerClassName);
+
+			System.out.println("--------------------------------------++++MERO++++++---------------------------------------");
+
 			if (qfObjectMap.containsKey(QF_OBJECT_FILE_PROPERTY)) {
 				fileInfo = mapper.readValue(
 						mapper.writeValueAsString(qfObjectMap.get(QF_OBJECT_FILE_PROPERTY)),
