@@ -6,16 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -110,19 +105,6 @@ public class SyntaxChecker implements Runnable {
         boolean compileResult;
 
         compiler.setCompiledStringResourcePath("src/main/resources/exam-results/src");
-
-        System.out.println("targetProject");
-        System.out.println(targetProject);
-
-        Collection<File> files = FileUtils.listFiles(
-                new File(targetProject),
-                new RegexFileFilter("^(.*?)"),
-                DirectoryFileFilter.DIRECTORY
-        );
-
-        System.out.println(files);
-        System.out.println("targetProject");
-
 
         if (stringAnswer != null && !stringAnswer.equals("")) {
             compileResult = compiler.compileFromString(stringAnswer);

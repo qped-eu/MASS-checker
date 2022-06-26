@@ -10,7 +10,12 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -42,6 +47,18 @@ public class Mass implements Checker {
         } else {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
+
+        System.out.println("MERO");
+
+        Collection<File> files = FileUtils.listFiles(
+                file.getUnzipped(),
+                new RegexFileFilter("^(.*?)"),
+                DirectoryFileFilter.DIRECTORY
+        );
+
+        System.out.println(files);
+
+        System.out.println("MERO");
 
         // Style Checker
 
