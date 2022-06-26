@@ -10,12 +10,7 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.RegexFileFilter;
 
-import java.io.File;
-import java.util.Collection;
 import java.util.List;
 
 
@@ -38,38 +33,34 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        System.out.println("MERO");
 
-        Collection<File> files = FileUtils.listFiles(
-                file.getUnzipped(),
-                new RegexFileFilter("^(.*?)"),
-                DirectoryFileFilter.DIRECTORY
-        );
+//        Collection<File> files = FileUtils.listFiles(
+//                file.getUnzipped(),
+//                new RegexFileFilter("^(.*?)"),
+//                DirectoryFileFilter.DIRECTORY
+//        );
 
-        System.out.println(files);
-
-        System.out.println("MERO");
 
         MainSettings mainSettings = new MainSettings(this.mainSettings);
 
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
-            System.out.println("File not null");
             syntaxChecker.setTargetProject(file.getUnzipped().getPath());
         } else {
-            System.out.println("File  null");
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
 
-
-        System.out.println("BASEL");
 
         // Style Checker
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
 
         // Semantic Checker
+
+        System.out.println("semSettings");
+        System.out.println(semSettings);
+        System.out.println("semSettings");
 
         SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(semSettings).build();
 

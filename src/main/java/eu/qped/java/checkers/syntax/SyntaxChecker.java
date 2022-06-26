@@ -43,15 +43,6 @@ public class SyntaxChecker implements Runnable {
     }
 
 
-    public static void main(String[] args) {
-        SyntaxChecker checker = SyntaxChecker.builder().targetProject("tmp").build();
-        var report = checker.check();
-
-        System.out.println("path: " + report.getPath());
-
-        System.out.println(report.getSyntaxErrors().size());
-
-    }
 
     private String getErrorTrigger(Diagnostic<? extends JavaFileObject> diagnostic) {
 
@@ -124,6 +115,16 @@ public class SyntaxChecker implements Runnable {
         resultBuilder.syntaxErrors(collectedErrors);
         resultBuilder.path(compiler.getTargetProjectOrClassPath());
         return resultBuilder.build();
+    }
+
+    public static void main(String[] args) {
+        SyntaxChecker checker = SyntaxChecker.builder().targetProject("tmp/exam-results62b874f9fb9d582f0b08d371").build();
+        var report = checker.check();
+
+        System.out.println("path: " + report.getPath());
+
+        System.out.println(report.getSyntaxErrors().size());
+
     }
 
 
