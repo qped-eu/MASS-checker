@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Modifier;
+import eu.qped.java.checkers.classdesign.enums.KeywordType;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,8 +52,8 @@ public class CheckerUtilsTest {
     @Test
     public void extractClassTypeNameTest() {
         String keywords = "class HexaDecimal";
-        nonAccessMods.add(CheckerUtils.EMPTY_MODIFIER);
-        ExpectedElement elemInfo = new ExpectedElement(CheckerUtils.EMPTY_MODIFIER, nonAccessMods,  "class", "HexaDecimal");
+        nonAccessMods.add(KeywordType.EMPTY.toString());
+        ExpectedElement elemInfo = new ExpectedElement(KeywordType.EMPTY.toString(), nonAccessMods,  "class", "HexaDecimal");
         assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(keywords));
     }
 
@@ -60,7 +61,7 @@ public class CheckerUtilsTest {
     public void extractFieldTest() {
         String keywords = "* abstract int number";
         nonAccessMods.add("abstract");
-        ExpectedElement elemInfo = new ExpectedElement(CheckerUtils.OPTIONAL_KEYWORD, nonAccessMods,  "int", "number");
+        ExpectedElement elemInfo = new ExpectedElement(KeywordType.OPTIONAL.toString(), nonAccessMods,  "int", "number");
         assertEquals(elemInfo, CheckerUtils.extractExpectedInfo(keywords));
     }
 

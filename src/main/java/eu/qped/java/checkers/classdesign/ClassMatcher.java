@@ -1,12 +1,17 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.enums.ClassType;
+import eu.qped.java.checkers.classdesign.enums.KeywordType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
+
+import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
 
 /**
  * Matches the provided class declarations with the expected class infos
@@ -86,7 +91,7 @@ class ClassMatcher {
         while(classDeclIterator.hasNext()) {
             ClassOrInterfaceDeclaration classDecl = classDeclIterator.next();
             collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(classDecl.getNameAsString(), "",
-                    ClassFeedbackGenerator.WRONG_CLASS_NAME));
+                    WRONG_CLASS_NAME));
             classDeclIterator.remove();
         }
 
@@ -106,16 +111,16 @@ class ClassMatcher {
         boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getNonAccessModifiers());
         boolean typeMatch = isClassTypeMatch(classDecl, elemInfo.getType());
 
-        String violation = "";
+        ClassFeedbackType violation = null;
         if(!typeMatch) {
-            violation = ClassFeedbackGenerator.WRONG_CLASS_TYPE;
+            violation = WRONG_CLASS_TYPE;
         } else if(!nonAccessMatch) {
-            violation = ClassFeedbackGenerator.WRONG_CLASS_NON_ACCESS_MODIFIER;
+            violation = WRONG_CLASS_NON_ACCESS_MODIFIER;
         } else if(!accessMatch){
-            violation = ClassFeedbackGenerator.WRONG_CLASS_ACCESS_MODIFIER;
+            violation = WRONG_CLASS_ACCESS_MODIFIER;
         }
 
-        if(!violation.isBlank()) {
+        if(violation != null) {
             collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(
                     classDecl.getNameAsString(),
                     classDecl.getNameAsString(),
@@ -131,18 +136,17 @@ class ClassMatcher {
      * @param classDecl class declaration to check the class type from
      */
     private boolean isClassTypeMatch(ClassOrInterfaceDeclaration classDecl, String classType) {
-        if(classType.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
+        if(classType.equals(KeywordType.OPTIONAL.toString())) {
             return true;
         }
         boolean foundTypeMatch = false;
-        switch (classType) {
-            case CheckerUtils.INTERFACE_TYPE:
-                foundTypeMatch = classDecl.isInterface();
-                break;
-            case CheckerUtils.CLASS_TYPE:
-                foundTypeMatch = !classDecl.isInterface();
-                break;
+
+        if(classType.equals(ClassType.INTERFACE.toString())) {
+            foundTypeMatch = classDecl.isInterface();
+        } else if (classType.equals(ClassType.CLASS.toString())) {
+            foundTypeMatch = !classDecl.isInterface();
         }
+
         return foundTypeMatch;
     }
 

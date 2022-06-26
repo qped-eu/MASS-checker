@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
+import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
@@ -36,14 +37,14 @@ public class ClassChecker implements Checker {
         if(classConfigurator == null) {
             classConfigurator = ClassConfigurator.createDefaultClassConfigurator();
         }
-        checkDesign();
+        checkClass();
     }
 
     /**
      * Check the parsed compilation units and compare them to the expected elements in class infos to generate
      * feedback. This method delegates each task to each class and collects all feedback
      */
-    private void checkDesign() throws Exception {
+    private void checkClass() throws Exception {
         List<ClassInfo> classInfos = classConfigurator.getClassInfos();
         List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
 
@@ -51,8 +52,8 @@ public class ClassChecker implements Checker {
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
         classFeedbacks.addAll(classMatcher.generateClassNameFeedback(classDecls));
 
-        ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(CheckerUtils.FIELD_CHECKER);
-        ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(CheckerUtils.METHOD_CHECKER);
+        ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(ClassMemberType.FIELD);
+        ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(ClassMemberType.METHOD);
         InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo);
         for(Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry : matchedDeclInfo.entrySet()) {
             ClassOrInterfaceDeclaration classDecl = entry.getValue();

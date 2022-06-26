@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Modifier;
+import eu.qped.java.checkers.classdesign.enums.KeywordType;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
@@ -9,15 +10,6 @@ import java.util.*;
  * Utility Class for the checkers, useful for tasks that do not require code parsing or feedback generation
  */
 public final class CheckerUtils {
-
-    public static final String OPTIONAL_KEYWORD = "*";
-    public static final String EMPTY_MODIFIER = "";
-
-    public static final String CLASS_TYPE = "class";
-    public static final String INTERFACE_TYPE = "interface";
-
-    public static final String FIELD_CHECKER = "field";
-    public static final String METHOD_CHECKER = "method";
 
     public static final List<String> possibleAccessModifiers = createAccessList();
     public static final List<String> possibleNonAccessModifiers = createNonAccessList();
@@ -52,7 +44,7 @@ public final class CheckerUtils {
         String accessMod = "";
         String currentMod = keywords.get(0);
         if(keywords.size() > MINIMUM_REQUIRED_KEYWORDS) {
-            if(currentMod.equals(OPTIONAL_KEYWORD) || possibleAccessModifiers.contains(currentMod)) {
+            if(currentMod.equals(KeywordType.OPTIONAL.toString()) || possibleAccessModifiers.contains(currentMod)) {
                 accessMod = keywords.remove(0);
             }
         }
@@ -71,10 +63,10 @@ public final class CheckerUtils {
 
         List<String> nonAccessMods = findNonAccessModifiers(expectedModifiers);
         if(nonAccessMods.isEmpty()) {
-            if(expectedModifiers.get(0).equals(OPTIONAL_KEYWORD) && expectedModifiers.size() > MINIMUM_REQUIRED_KEYWORDS) {
+            if(expectedModifiers.get(0).equals(KeywordType.OPTIONAL.toString()) && expectedModifiers.size() > MINIMUM_REQUIRED_KEYWORDS) {
                 nonAccessMods.add(expectedModifiers.remove(0).toLowerCase());
             } else {
-                nonAccessMods.add(EMPTY_MODIFIER);
+                nonAccessMods.add(KeywordType.EMPTY.toString());
             }
         }
         return nonAccessMods;
@@ -141,7 +133,7 @@ public final class CheckerUtils {
      * @return true, if present and expected match up
      */
     public static boolean isAccessMatch(String presentAccessMod, String expectedAccessMod) {
-        if(expectedAccessMod.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
+        if(expectedAccessMod.equals(KeywordType.OPTIONAL.toString())) {
             return true;
         }
         return presentAccessMod.equalsIgnoreCase(expectedAccessMod);
@@ -156,7 +148,7 @@ public final class CheckerUtils {
     public static boolean isNonAccessMatch(List<Modifier> presentModifiers, List<String> expectedModifiers) {
         List<String> actualModifiers = new ArrayList<>();
 
-        if(!expectedModifiers.isEmpty() && expectedModifiers.contains(CheckerUtils.OPTIONAL_KEYWORD)) {
+        if(!expectedModifiers.isEmpty() && expectedModifiers.contains(KeywordType.OPTIONAL.toString())) {
             return true;
         }
 
@@ -189,7 +181,7 @@ public final class CheckerUtils {
     public static int countOptionalOccurrences(String keywords) {
         int count = 0;
         for (int i = 0; i < keywords.length(); i++) {
-            if(Character.toString(keywords.charAt(i)).equals(OPTIONAL_KEYWORD)) {
+            if(Character.toString(keywords.charAt(i)).equals(KeywordType.OPTIONAL.toString())) {
                 count++;
             }
         }

@@ -5,6 +5,8 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
@@ -12,6 +14,8 @@ import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
 
 /**
  * Checker that concerns itself with inherited classes
@@ -60,16 +64,17 @@ class InheritanceChecker {
      * @param implementedInterfaces actual implemented interfaces from the class
      * @return true if we can find a match with the expected and actual
      */
-    private boolean findExactInheritanceMatch(List<ClassOrInterfaceType> extendedClasses, List<ClassOrInterfaceType> implementedInterfaces,
+    private boolean findExactInheritanceMatch(List<ClassOrInterfaceType> extendedClasses,
+                                              List<ClassOrInterfaceType> implementedInterfaces,
                                               ExpectedElement elemInfo) {
 
-        switch(elemInfo.getType()) {
-            case CheckerUtils.INTERFACE_TYPE:
-                String interfaceMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), true);
-                return !interfaceMatch.isBlank();
-            case CheckerUtils.CLASS_TYPE:
-                String classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
-                return !classMatch.isBlank();
+        String type = elemInfo.getType();
+        if(type.equals(ClassType.INTERFACE.toString())) {
+            String interfaceMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), true);
+            return !interfaceMatch.isBlank();
+        } else if(type.equals(ClassType.CLASS.toString())) {
+            String classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
+            return !classMatch.isBlank();
         }
         return false;
     }
@@ -113,7 +118,7 @@ class InheritanceChecker {
                         ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
                                 currentClassDecl.getNameAsString(),
                                 sameName,
-                                ClassFeedbackGenerator.HIDDEN_FIELD);
+                                HIDDEN_FIELD);
                         collectedFeedback.add(fb);
                     }
                     parIterator.remove();
@@ -168,22 +173,20 @@ class InheritanceChecker {
                         currentParameters.containsAll(parentParameters);
 
                 if(sameName && sameReturnType && sameParameters) {
-                    String violation = "";
+                    ClassFeedbackType violation;
                     if(currentMethod.isStatic() && parentMethod.isStatic()) {
-                        violation = ClassFeedbackGenerator.HIDDEN_METHOD;
+                        violation = HIDDEN_METHOD;
                     } else {
-                        violation = ClassFeedbackGenerator.OVERWRITTEN_METHOD;
+                        violation = OVERWRITTEN_METHOD;
                     }
-                    if(!violation.isBlank()) {
-                        ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
-                                currentClassDecl.getNameAsString(),
-                                parentMethodName+"()",
-                                violation);
-                        collectedFeedback.add(fb);
-                        parIterator.remove();
-                        curIterator.remove();
-                        break;
-                    }
+                    ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
+                            currentClassDecl.getNameAsString(),
+                            parentMethodName+"()",
+                            violation);
+                    collectedFeedback.add(fb);
+                    parIterator.remove();
+                    curIterator.remove();
+                    break;
                 }
             }
         }
@@ -237,14 +240,11 @@ class InheritanceChecker {
         String implementedNameMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), false);
         String extendedNameMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), false);
         if(implementedNameMatch.isBlank() && extendedNameMatch.isBlank()) {
-            switch (elemInfo.getType()) {
-                case CheckerUtils.INTERFACE_TYPE:
-                    inheritanceFeedback.add(findInterfaceNameViolation(currentClassName, implementedInterfaces));
-                    break;
-
-                case CheckerUtils.CLASS_TYPE:
-                    inheritanceFeedback.add(findClassNameViolation(currentClassName, extendedClasses, elemInfo.getNonAccessModifiers()));
-                    break;
+            String type = elemInfo.getType();
+            if(type.equals(ClassType.INTERFACE.toString())) {
+                inheritanceFeedback.add(findInterfaceNameViolation(currentClassName, implementedInterfaces));
+            } else if(type.equals(ClassType.CLASS.toString())) {
+                inheritanceFeedback.add(findClassNameViolation(currentClassName, extendedClasses, elemInfo.getNonAccessModifiers()));
             }
         } else {
             inheritanceFeedback.add(findTypeViolation(currentClassName, implementedNameMatch, extendedNameMatch));
@@ -258,11 +258,11 @@ class InheritanceChecker {
      * @param implementedInterfaces implemented interfaces in the current class
      */
     private ClassFeedback findInterfaceNameViolation(String currentClassName, List<ClassOrInterfaceType> implementedInterfaces) {
-        String violation;
+        ClassFeedbackType violation;
         if(implementedInterfaces.isEmpty()) {
-            violation = ClassFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION;
+            violation = MISSING_INTERFACE_IMPLEMENTATION;
         } else {
-            violation = ClassFeedbackGenerator.DIFFERENT_INTERFACE_NAMES_EXPECTED;
+            violation = DIFFERENT_INTERFACE_NAMES_EXPECTED;
         }
         return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation);
     }
@@ -274,25 +274,25 @@ class InheritanceChecker {
      * @param expectedNonAccess non access modifiers to determine the missing class extension
      */
     private ClassFeedback findClassNameViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses, List<String> expectedNonAccess) {
-        String violation = "";
-        Map<String, String> modifierMap = new LinkedHashMap<>();
-        modifierMap.put("abstract", ClassFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
-        modifierMap.put("final", ClassFeedbackGenerator.MISSING_FINAL_CLASS_IMPLEMENTATION);
-        modifierMap.put("static", ClassFeedbackGenerator.MISSING_STATIC_CLASS_IMPLEMENTATION);
+        ClassFeedbackType violation = null;
+        Map<String, ClassFeedbackType> modifierMap = new LinkedHashMap<>();
+        modifierMap.put("abstract", MISSING_ABSTRACT_CLASS_EXTENSION);
+        modifierMap.put("final", MISSING_FINAL_CLASS_EXTENSION);
+        modifierMap.put("static", MISSING_STATIC_CLASS_EXTENSION);
         //modifierMap.put(CheckerUtils.EMPTY_MODIFIER, DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
 
         if(extendedClasses.isEmpty()) {
-            for (Map.Entry<String, String> entry: modifierMap.entrySet()) {
+            for (Map.Entry<String, ClassFeedbackType> entry: modifierMap.entrySet()) {
                 if(expectedNonAccess.contains(entry.getKey())) {
                     violation = entry.getValue();
                     break;
                 }
             }
-            if(violation.isBlank()) {
-                violation = ClassFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION;
+            if(violation == null) {
+                violation = MISSING_CLASS_EXTENSION;
             }
         } else {
-            violation = ClassFeedbackGenerator.DIFFERENT_CLASS_NAMES_EXPECTED;
+            violation = DIFFERENT_CLASS_NAMES_EXPECTED;
         }
         return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation);
     }
@@ -306,7 +306,7 @@ class InheritanceChecker {
      */
     private ClassFeedback findTypeViolation(String currentClassName, String implementedNameMatch, String extendedNameMatch) {
         String violatingElement = implementedNameMatch.isBlank() ? extendedNameMatch : implementedNameMatch;
-        return ClassFeedbackGenerator.generateFeedback(currentClassName, violatingElement, ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+        return ClassFeedbackGenerator.generateFeedback(currentClassName, violatingElement, WRONG_SUPER_CLASS_TYPE);
     }
 
     /**

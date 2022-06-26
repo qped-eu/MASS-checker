@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -61,8 +62,8 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "num", ClassFeedbackGenerator.HIDDEN_FIELD);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("ChildClass", "num1", ClassFeedbackGenerator.HIDDEN_FIELD);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "num", HIDDEN_FIELD);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("ChildClass", "num1", HIDDEN_FIELD);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -108,7 +109,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "add()", ClassFeedbackGenerator.HIDDEN_METHOD);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "add()", HIDDEN_METHOD);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -154,7 +155,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "add()", ClassFeedbackGenerator.OVERWRITTEN_METHOD);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("ChildClass", "add()", OVERWRITTEN_METHOD);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -262,7 +263,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", WRONG_CLASS_ACCESS_MODIFIER);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -292,7 +293,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", WRONG_CLASS_NON_ACCESS_MODIFIER);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -322,7 +323,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_TYPE);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", WRONG_CLASS_TYPE);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -368,8 +369,8 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_NAME);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number", ClassFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", WRONG_CLASS_NAME);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number", MISSING_INTERFACE_IMPLEMENTATION);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
         expectedFeedback.add(fb2);
@@ -554,7 +555,7 @@ public class DesignClassTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.WRONG_CLASS_TYPE);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", WRONG_CLASS_TYPE);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -590,7 +591,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
-                "", ClassFeedbackGenerator.MISSING_INTERFACE_IMPLEMENTATION);
+                "", MISSING_INTERFACE_IMPLEMENTATION);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -625,7 +626,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
-                "", ClassFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
+                "", MISSING_CLASS_EXTENSION);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -660,7 +661,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
-                "", ClassFeedbackGenerator.MISSING_ABSTRACT_CLASS_IMPLEMENTATION);
+                "", MISSING_ABSTRACT_CLASS_EXTENSION);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -695,7 +696,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass",
-                "", ClassFeedbackGenerator.MISSING_FINAL_CLASS_IMPLEMENTATION);
+                "", MISSING_FINAL_CLASS_EXTENSION);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -730,7 +731,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number",
-                ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+                WRONG_SUPER_CLASS_TYPE);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -765,7 +766,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number",
-                ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+                WRONG_SUPER_CLASS_TYPE);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -800,7 +801,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "Number",
-                ClassFeedbackGenerator.WRONG_INHERITED_CLASS_TYPE);
+                WRONG_SUPER_CLASS_TYPE);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -835,7 +836,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "",
-                ClassFeedbackGenerator.DIFFERENT_CLASS_NAMES_EXPECTED);
+                DIFFERENT_CLASS_NAMES_EXPECTED);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -870,7 +871,7 @@ public class DesignClassTest {
         }
 
         ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "",
-                ClassFeedbackGenerator.DIFFERENT_INTERFACE_NAMES_EXPECTED);
+                DIFFERENT_INTERFACE_NAMES_EXPECTED);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 

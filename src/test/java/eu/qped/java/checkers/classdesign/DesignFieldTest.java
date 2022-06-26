@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.classdesign;
 
+import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
@@ -156,7 +157,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name", ClassFeedbackGenerator.WRONG_ELEMENT_NAME);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name",
+                ClassFeedbackType.WRONG_ELEMENT_NAME);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -187,7 +189,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name", ClassFeedbackGenerator.WRONG_ELEMENT_TYPE);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name",
+                ClassFeedbackType.WRONG_ELEMENT_TYPE);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
 
@@ -217,7 +220,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name",
+                ClassFeedbackType.WRONG_ACCESS_MODIFIER);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -250,7 +254,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "year", ClassFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "year",
+                ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
         assertArrayEquals(expectedFeedback.toArray(), classChecker.getClassFeedbacks().toArray());
@@ -280,7 +285,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.MISSING_FIELDS);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "",
+                ClassFeedbackType.MISSING_FIELDS);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -312,7 +318,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.MISSING_FIELDS);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "",
+                ClassFeedbackType.MISSING_FIELDS);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -344,8 +351,10 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackGenerator.WRONG_ELEMENT_NAME);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackGenerator.WRONG_ELEMENT_NAME);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1",
+                ClassFeedbackType.WRONG_ELEMENT_NAME);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2",
+                ClassFeedbackType.WRONG_ELEMENT_NAME);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -380,8 +389,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackGenerator.WRONG_ELEMENT_TYPE);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackGenerator.WRONG_ELEMENT_TYPE);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackType.WRONG_ELEMENT_TYPE);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackType.WRONG_ELEMENT_TYPE);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -416,8 +425,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -455,9 +464,9 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
-        ClassFeedback fb3 = ClassFeedbackGenerator.generateFeedback("TestClass", "name3", ClassFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb3 = ClassFeedbackGenerator.generateFeedback("TestClass", "name3", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -493,8 +502,8 @@ public class DesignFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "name1", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "name2", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();

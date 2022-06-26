@@ -6,11 +6,17 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
+import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
+import eu.qped.java.checkers.classdesign.enums.KeywordType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
+
+import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.MISSING_FIELDS;
+import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.MISSING_METHODS;
 
 /**
  * Keyword Checker for fields and methods, checking for access, non access modifiers, types and names
@@ -19,9 +25,9 @@ import java.util.*;
  */
 class ClassMemberChecker<T extends Node> {
 
-    private final String CHECKER_TYPE;
+    private final ClassMemberType CHECKER_TYPE;
 
-    public ClassMemberChecker(String CHECKER_TYPE) {
+    public ClassMemberChecker(ClassMemberType CHECKER_TYPE) {
         this.CHECKER_TYPE = CHECKER_TYPE;
     }
 
@@ -102,15 +108,15 @@ class ClassMemberChecker<T extends Node> {
                 return collectedFeedback;
             }
             List<Boolean> mostLikelyMatch = getMostLikelyMatchResult(presentElement, expectedElements);
-            String violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(mostLikelyMatch);
+            ClassFeedbackType violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(mostLikelyMatch);
 
             String elementName = getVariableName(presentElement);
-            if (CHECKER_TYPE.equals(CheckerUtils.METHOD_CHECKER)) {
+            if (CHECKER_TYPE.equals(ClassMemberType.METHOD)) {
                 if (!elementName.contains("()")) {
                     elementName += "()";
                 }
-                if (violationFound.equals(ClassFeedbackGenerator.MISSING_FIELDS)) {
-                    violationFound = ClassFeedbackGenerator.MISSING_METHODS;
+                if (violationFound.equals(MISSING_FIELDS)) {
+                    violationFound = MISSING_METHODS;
                 }
             }
             ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(className, elementName, violationFound);
@@ -176,11 +182,11 @@ class ClassMemberChecker<T extends Node> {
                                                          List<ExpectedElement> expectedElements) {
 
         if(expectedElements.size() > presentElements.size()) {
-            String violation;
-            if(CHECKER_TYPE.equals(CheckerUtils.FIELD_CHECKER)) {
-                violation = ClassFeedbackGenerator.MISSING_FIELDS;
+            ClassFeedbackType violation;
+            if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
+                violation = MISSING_FIELDS;
             } else {
-                violation = ClassFeedbackGenerator.MISSING_METHODS;
+                violation = MISSING_METHODS;
             }
             return ClassFeedbackGenerator.generateFeedback(className, "", violation);
         }
@@ -196,7 +202,7 @@ class ClassMemberChecker<T extends Node> {
     private String getVariableName(NodeWithModifiers<T> element) {
         String elementName;
 
-        if(CHECKER_TYPE.equals(CheckerUtils.FIELD_CHECKER)) {
+        if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
             elementName = ((FieldDeclaration) element).getVariable(0).getNameAsString();
         } else {
             elementName = ((MethodDeclaration) element).getNameAsString();
@@ -216,12 +222,12 @@ class ClassMemberChecker<T extends Node> {
             return false;
         }
 
-        if(expectedType.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
+        if(expectedType.equals(KeywordType.OPTIONAL.toString())) {
             return true;
         }
 
         String presentType;
-        if(CHECKER_TYPE.equals(CheckerUtils.FIELD_CHECKER)) {
+        if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
             FieldDeclaration fieldElement = (FieldDeclaration) elem;
             presentType = fieldElement.getElementType().asString();
         } else {
@@ -238,7 +244,7 @@ class ClassMemberChecker<T extends Node> {
      * @return true if exact match
      */
     private boolean isElementNameMatch(NodeWithModifiers<T> elem, String expectedElementName) {
-        if(expectedElementName.equals(CheckerUtils.OPTIONAL_KEYWORD)) {
+        if(expectedElementName.equals(KeywordType.OPTIONAL.toString())) {
             return true;
         }
         String elementName = getVariableName(elem);
@@ -253,7 +259,7 @@ class ClassMemberChecker<T extends Node> {
     private List<NodeWithModifiers<T>> getAllFieldsOrMethods(ClassOrInterfaceDeclaration classDecl) {
         List<NodeWithModifiers<T>> elementsWithModifiers = new ArrayList<>();
 
-        if(CHECKER_TYPE.equals(CheckerUtils.FIELD_CHECKER)) {
+        if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
             List<FieldDeclaration> foundFields = classDecl.findAll(FieldDeclaration.class);
             unrollVariableDeclarations(foundFields);
             foundFields.forEach(fd -> elementsWithModifiers.add((NodeWithModifiers<T>) fd));

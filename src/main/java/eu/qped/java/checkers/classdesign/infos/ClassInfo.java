@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ClassInfo {
 
-    //TODO check how to implement
+    //TODO check how to implement fully qualified name
     private String fullyQualifiedName;
     private String classKeywords;
     private List<String> inheritsFrom;

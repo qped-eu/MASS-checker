@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.classdesign;
 
+import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
@@ -117,8 +118,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackGenerator.WRONG_ELEMENT_NAME);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackGenerator.WRONG_ELEMENT_NAME);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackType.WRONG_ELEMENT_NAME);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackType.WRONG_ELEMENT_NAME);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -158,8 +159,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackGenerator.WRONG_ELEMENT_TYPE);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackGenerator.WRONG_ELEMENT_TYPE);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackType.WRONG_ELEMENT_TYPE);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackType.WRONG_ELEMENT_TYPE);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -199,8 +200,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -241,8 +242,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackGenerator.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
 
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
@@ -278,7 +279,7 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.MISSING_METHODS);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackType.MISSING_METHODS);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -345,8 +346,8 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackGenerator.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "add()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = ClassFeedbackGenerator.generateFeedback("TestClass", "subtract()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
@@ -382,7 +383,7 @@ public class DesignMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackGenerator.MISSING_METHODS);
+        ClassFeedback fb1 = ClassFeedbackGenerator.generateFeedback("TestClass", "", ClassFeedbackType.MISSING_METHODS);
 
         List<ClassFeedback> expectedFeedback = new ArrayList<>();
         expectedFeedback.add(fb1);
