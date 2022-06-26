@@ -17,9 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CheckerRunner {
 
@@ -81,27 +79,14 @@ public class CheckerRunner {
 			Class<Checker> cls = (Class<Checker>) Class.forName(checkerClassName);
 			this.checker = cls.getDeclaredConstructor().newInstance();
 
-			System.out.println("--------------------------------------++++MERO++++++---------------------------------------");
-
-			System.out.println(checkerClassName);
-
-			System.out.println("--------------------------------------++++MERO++++++---------------------------------------");
-
 			if (qfObjectMap.containsKey(QF_OBJECT_FILE_PROPERTY)) {
 				fileInfo = mapper.readValue(
 						mapper.writeValueAsString(qfObjectMap.get(QF_OBJECT_FILE_PROPERTY)),
 						new TypeReference<FileInfo>() {
 						});
-				// anjsfldsldkflsdflksd.zip
+
 				submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
 				tempFiles.add(submittedFile);
-
-				System.out.println("--------------------------------------++++MERO++++++---------------------------------------");
-
-				System.out.println(submittedFile.getPath());
-				System.out.println("space: " + submittedFile.getTotalSpace() + " " + -submittedFile.getFreeSpace());
-
-				System.out.println("--------------------------------------++++++++++---------------------------------------");
 
 				try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
 					try (OutputStream output = new FileOutputStream(submittedFile)) {
@@ -113,14 +98,6 @@ public class CheckerRunner {
 						}
 					}
 				}
-				System.out.println("--------------------------------------+++++MERO+++++---------------------------------------");
-
-				System.out.println(submittedFile.getPath());
-				System.out.println("space: " + "space: " + submittedFile.getTotalSpace() + " " + -submittedFile.getFreeSpace());
-
-
-				System.out.println("--------------------------------------++++++++++---------------------------------------");
-
 
 				if (fileInfo.getMimetype().equals("application/zip")) {
 					try {
@@ -131,6 +108,16 @@ public class CheckerRunner {
 						zipFile.extractAll(unzipTarget.toString());
 
 						fileInfo.setUnzipped(unzipTarget);
+
+						System.out.println("MERO");
+						System.out.println("-----------------------");
+						System.out.println(unzipTarget.getPath());
+						System.out.println("-----------------------");
+						System.out.println(unzipTarget.isDirectory());
+						System.out.println("-----------------------");
+						Arrays.asList(Objects.requireNonNull(unzipTarget.listFiles())).forEach(System.out::println);
+						System.out.println("-----------------------");
+						System.out.println("MERO");
 					} catch (ZipException e) {
 						throw new IllegalArgumentException(e);
 					}
