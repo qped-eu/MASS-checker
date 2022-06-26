@@ -59,6 +59,42 @@ public class MassExecutor {
         this.mainSettingsConfigurator = mainSettingsConfigurator;
     }
 
+    /**
+     * execute the Mass System
+     */
+    public void execute() {
+        init();
+
+        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
+        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
+
+
+        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
+
+        if (syntaxCheckReport.isCompilable()) {
+            if (styleNeeded) {
+                styleChecker.setTargetPath(syntaxCheckReport.getPath());
+                styleChecker.check();
+                styleFeedbacks = styleChecker.getStyleFeedbacks();
+
+            }
+            if (semanticNeeded) {
+                semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
+                semanticChecker.check();
+                semanticFeedbacks = semanticChecker.getFeedbacks();
+            }
+        } else {
+            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
+            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
+            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
+        }
+
+        // translate Feedback body if needed
+        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
+            translate(styleNeeded, semanticNeeded);
+        }
+    }
 
 
     private void init() {
@@ -104,42 +140,7 @@ public class MassExecutor {
         return syntaxErrors;
     }
 
-    /**
-     * execute the Mass System
-     */
-    public void execute() {
-        init();
 
-        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
-        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
-
-
-        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
-
-        if (syntaxCheckReport.isCompilable()) {
-            if (styleNeeded) {
-                styleChecker.setTargetPath(syntaxCheckReport.getPath());
-                styleChecker.check();
-                styleFeedbacks = styleChecker.getStyleFeedbacks();
-
-            }
-            if (semanticNeeded) {
-                final String source = syntaxCheckReport.getCodeAsString();
-                semanticChecker.check();
-                semanticFeedbacks = semanticChecker.getFeedbacks();
-            }
-        } else {
-            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
-            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
-            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
-        }
-
-        // translate Feedback body if needed
-        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded);
-        }
-    }
 
 
     public static void main(String[] args) {
