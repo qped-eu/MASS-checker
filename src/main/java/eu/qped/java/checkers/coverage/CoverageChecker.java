@@ -113,7 +113,7 @@ public class CoverageChecker implements Checker {
             List<String> classes = extracted.classes();
 
             Com compiler = new Com();
-
+            System.out.println("\n\n----------------------->\n\n");
             if (Objects.nonNull(answer) && !answer.isBlank()) {
                 Com.Created f = compiler.createClassFromString(extracted.root(), answer);
                 if (f.isTrue) {
