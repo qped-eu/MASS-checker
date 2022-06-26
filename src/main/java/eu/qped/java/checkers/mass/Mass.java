@@ -37,7 +37,7 @@ public class Mass implements Checker {
         MainSettings mainSettings = new MainSettings(this.mainSettings);
 
         // Syntax Checker
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(file.getPath()).build();
 
         // Style Checker
 
