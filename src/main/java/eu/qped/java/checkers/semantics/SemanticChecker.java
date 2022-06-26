@@ -75,6 +75,9 @@ public class SemanticChecker {
                             path = fileSettingEntry.getFilePath();
                         }
                     }
+                    if (path.charAt(0) == '/') {
+                        path = path.substring(1);
+                    }
 
                     System.out.println("--MERO--");
 
@@ -254,7 +257,6 @@ public class SemanticChecker {
             feedbacks.add(new SemanticFeedback("yor are not allowed to use recursive in the method " + settingItem.getMethodName()));
         }
     }
-
 
 
 }
