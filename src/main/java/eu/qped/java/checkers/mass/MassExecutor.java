@@ -82,6 +82,9 @@ public class MassExecutor {
                 semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
+                System.out.println("feedback size");
+                System.out.println(semanticFeedbacks.size());
+                System.out.println("feedback size");
             }
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());

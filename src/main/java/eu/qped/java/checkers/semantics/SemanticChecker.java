@@ -54,6 +54,34 @@ public class SemanticChecker {
         return new SemanticChecker(semanticSettingReader);
     }
 
+    public void check() {
+        SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
+        var settings = reader.groupByFileName();
+
+        // per File
+        settings.forEach(
+                fileSettingEntry -> {
+                    var compilationUnit = parse(targetProjectPath + "/" + fileSettingEntry.getFilePath()); // AST per File
+                    // AST per Method in File
+                    fileSettingEntry.getSettingItems().forEach(
+                            semanticSettingItem -> {
+                                try {
+                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName()); // This method throws NoSuchMethodException
+                                    StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
+                                    calculateUsedLoop(statementsVisitorHelper);
+                                    generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
+                                    MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
+                                    generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
+                                    checkReturnTyp(semanticSettingItem.getReturnType());
+                                } catch (NoSuchMethodException e) {
+                                    System.out.println(e.getMessage() + " " + e.getCause());
+                                }
+                            }
+                    );
+                }
+        );
+    }
+
 
     public static void main(String[] args) throws IOException {
 
@@ -206,32 +234,6 @@ public class SemanticChecker {
         }
     }
 
-    public void check() {
-        SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
-        var settings = reader.groupByFileName();
 
-        // per File
-        settings.forEach(
-                fileSettingEntry -> {
-                    var compilationUnit = parse(targetProjectPath + "/" + fileSettingEntry.getFilePath()); // AST per File
-                    // AST per Method in File
-                    fileSettingEntry.getSettingItems().forEach(
-                            semanticSettingItem -> {
-                                try {
-                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName()); // This method throws NoSuchMethodException
-                                    StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
-                                    calculateUsedLoop(statementsVisitorHelper);
-                                    generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
-                                    MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
-                                    generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
-                                    checkReturnTyp(semanticSettingItem.getReturnType());
-                                } catch (NoSuchMethodException e) {
-                                    System.out.println(e.getMessage() + " " + e.getCause());
-                                }
-                            }
-                    );
-                }
-        );
-    }
 
 }
