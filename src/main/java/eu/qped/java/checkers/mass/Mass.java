@@ -39,7 +39,7 @@ public class Mass implements Checker {
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
-            syntaxChecker.setTargetProject(file.getPath());
+            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
         } else {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
