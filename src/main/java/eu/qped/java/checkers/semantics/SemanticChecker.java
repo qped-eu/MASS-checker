@@ -79,13 +79,12 @@ public class SemanticChecker {
                         path = path.substring(1);
                     }
 
-                    System.out.println("--MERO--");
-
-                    System.out.println(path);
-
-                    System.out.println("--MERO--");
-
                     var compilationUnit = parse(path); // AST per File
+
+                    System.out.println("mero");
+
+                    System.out.println(compilationUnit.toString());
+                    System.out.println("mero");
                     // AST per Method in File
                     fileSettingEntry.getSettingItems().forEach(
                             semanticSettingItem -> {
