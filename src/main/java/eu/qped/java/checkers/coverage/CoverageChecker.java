@@ -113,7 +113,7 @@ public class CoverageChecker implements Checker {
             List<String> classes = extracted.classes();
 
             Com compiler = new Com();
-            System.out.println("\n\n----------------------->\n\n");
+            System.out.println("\n\n-----------------------> 1\n\n");
             if (Objects.nonNull(answer) && !answer.isBlank()) {
                 Com.Created f = compiler.createClassFromString(extracted.root(), answer);
                 if (f.isTrue) {
@@ -125,6 +125,7 @@ public class CoverageChecker implements Checker {
                     fileByClassname.put(f.className, f.file);
                 }
             }
+            System.out.println("\n\n-----------------------> 2\n\n");
 
             if (! compiler.compileSource(extracted.root())) {
                 List<String> failed = compiler.protocol().stream().map(s-> s.toString()).collect(Collectors.toList());
@@ -132,18 +133,19 @@ public class CoverageChecker implements Checker {
                 qfObject.setFeedback((String[]) failed.toArray());
                 return ;
             }
-
+            System.out.println("\n\n-----------------------> 3\n\n");
             if (classes.isEmpty())
                 throw new IllegalStateException("Ups something went wrong! Needs at least one class for testing." );
             if (testClasses.isEmpty())
                 throw new IllegalStateException("Ups something went wrong! Needs at least one test class." );
 
-
+            System.out.println("\n\n-----------------------> 4\n\n");
             Summary summary = checker(
                     preprocessing(fileByClassname, testClasses),
                     preprocessing(fileByClassname, classes));
-
+            System.out.println("\n\n-----------------------> 5\n\n");
             qfObject.setFeedback(Formatter.format(covSetting.getFormat(), summary));
+            System.out.println("\n\n-----------------------> 6\n\n");
             zip.cleanUp();
         } catch (Exception e) {
             qfObject.setFeedback(new String[]{"Ups something  went wrong! " + e});
