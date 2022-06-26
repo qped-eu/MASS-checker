@@ -49,7 +49,7 @@
       "url":"file:coverage_testclasses/testcoverage-pg/PG-Bag-ANSWER.zip"
    },
    "additional":{
-      "id":"PG-Bag-ASSIGNEMENT",
+      "id":"PG-Bag-ASSIGNMENT",
       "label":"hello",
       "extension":".zip",
       "path":"",

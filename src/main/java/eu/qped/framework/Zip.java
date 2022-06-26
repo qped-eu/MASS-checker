@@ -71,6 +71,9 @@ public class Zip implements ZipService {
         File copy = File.createTempFile(file.getId(), file.getExtension());
         toDelete.add(copy);
 
+        FileUtils.copyURLToFile(new URL(file.getUrl()), copy);
+
+        /*
         try (InputStream input = new URL(file.getUrl()).openStream()) {
             try (OutputStream output = new FileOutputStream(copy)) {
                 byte[] buffer = new byte[BUFFER_SIZE];
@@ -83,6 +86,7 @@ public class Zip implements ZipService {
                 output.write(buffer, 0, remaining);
             }
         }
+        */
 
         FileInfo copyInfo =  new FileInfo();
         copyInfo.setSubmittedFile(copy);
