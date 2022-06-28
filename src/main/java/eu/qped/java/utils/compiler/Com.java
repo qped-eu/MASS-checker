@@ -70,10 +70,10 @@ public class Com {
                 fileManager.getJavaFileObjectsFromFiles(java)
         );
 
-
+        boolean ok = task.call();
         protocol = collector.getDiagnostics();
 
-        return task.call();
+        return ok;
     }
 
     public Created createClassFromString(File targetDir, String str) {
@@ -96,7 +96,7 @@ public class Com {
                 return new Created(file, DEFAULT_CLASS_NAME, true);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
             return new Created(null, null, false);
         }
     }

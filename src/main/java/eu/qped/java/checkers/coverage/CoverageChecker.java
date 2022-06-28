@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
  * @author Herfurth
  */
 public class CoverageChecker implements Checker {
+
+
+
     // frameworks
     // defines what frameworks are used
     private static final String COVERAGE_FRAMEWORK = "JACOCO", AST_FRAMEWORK = "JAVA_PARSER", TEST_FRAMEWORK = "JUNIT5";
@@ -90,20 +93,33 @@ public class CoverageChecker implements Checker {
         }
     }
 
-
-    @QfProperty
     QfCovSetting covSetting;
-    @QfProperty
-    QfUser user;
-    @QfProperty
     FileInfo file = null;
-    @QfProperty
     FileInfo additional = null;
-    @QfProperty
     String answer = null;
+
+    public CoverageChecker() {
+
+    }
+
+    public CoverageChecker(QfCovSetting covSetting) {
+        this.covSetting = covSetting;
+        this.file = covSetting.getFile();
+        this.additional = covSetting.getAdditional();
+        this.answer = covSetting.getAnswer();
+    }
+
+
+    public List<String> check()  {
+        return  Arrays.stream(setUp()).collect(Collectors.toList());
+    }
 
     @Override
     public void check(QfObject qfObject) throws Exception {
+        qfObject.setFeedback(setUp());
+    }
+
+    private String[] setUp() {
         try {
             Zip zip = new Zip();
             ZipService.Extracted extracted = extract(zip);
@@ -132,8 +148,7 @@ public class CoverageChecker implements Checker {
                 List<String> failed = compiler.protocol().stream().map(s-> s.toString()).collect(Collectors.toList());
                 System.out.println(compiler.protocol());
                 failed.add(0, "Ups there are some compile issues: ");
-                qfObject.setFeedback((String[]) failed.toArray());
-                return ;
+                return (String[]) failed.toArray();
             }
 
             if (classes.isEmpty())
@@ -145,15 +160,13 @@ public class CoverageChecker implements Checker {
             Summary summary = checker(
                     preprocessing(fileByClassname, testClasses),
                     preprocessing(fileByClassname, classes));
-
-            qfObject.setFeedback(Formatter.format(covSetting.getFormat(), summary));
-
             zip.cleanUp();
+            return Formatter.format(covSetting.getFormat(), summary);
         } catch (Exception e) {
-            qfObject.setFeedback(new String[]{"Ups something  went wrong! " + e});
+            return new String[]{"Ups something  went wrong! " + e};
         }
-
     }
+
 
     private ZipService.Extracted extract(ZipService zipService) {
         try {
@@ -203,7 +216,7 @@ public class CoverageChecker implements Checker {
                     new LinkedList<>(testClasses),
                     new LinkedList<>(classes));
 
-            summary.analyze(new ParserWF().parse(user.getLanguage(), covSetting.getFeedback()));
+            summary.analyze(new ParserWF().parse(covSetting.getLanguage(), covSetting.getFeedback()));
             return summary;
         } catch (Exception e) {
             e.printStackTrace();

@@ -81,8 +81,8 @@ public class SyntaxChecker implements Runnable {
 
         try {
             errorCode = diagnostic.getSource().getCharContent(false).toString();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) { // TODO QUICK FIX NullPointerException <Diagnostic=warning: No processor claimed any of these annotations: /org.junit.jupiter.api.Test>  has no source
+            // e.printStackTrace();
             return errorCode;
         }
         String[] codeSplitByLine = errorCode.split("\n");
@@ -100,6 +100,9 @@ public class SyntaxChecker implements Runnable {
         List<SyntaxError> syntaxErrors = new ArrayList<>();
         for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
             String errorTrigger = getErrorTrigger(diagnostic);
+            if (errorTrigger.isBlank()) // // TODO QUICK FIX NullPointerException <Diagnostic=warning: No processor claimed any of these annotations: /org.junit.jupiter.api.Test>  has no source
+                continue;
+
             syntaxErrors.add(
                     SyntaxError.builder()
                             .errorCode(diagnostic.getCode())

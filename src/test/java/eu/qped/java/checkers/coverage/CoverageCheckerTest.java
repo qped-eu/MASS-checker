@@ -59,12 +59,14 @@ class CoverageCheckerTest {
             CheckerRunner toTest = new CheckerRunner();
             toTest.check();
             QfObject got = toTest.getQfObject();
+            Arrays.stream(got.getFeedback()).forEach(System.out::println);
             assertArrayEquals(
                     new String[] {
                             "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
                     Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
             got.setFeedback(new String[]{});
         } catch (Exception e) {
+            e.printStackTrace();
             assertFalse(true, e.getMessage());
         }
     }
@@ -90,14 +92,13 @@ class CoverageCheckerTest {
                 "Bag:CUSTOM:129:Method cardinality: You have not tested with an empty bag.",
                 "Bag:CUSTOM:132:Method cardinality: You have not tested with non-empty bag and cardinality zero.",
                 "Bag:CUSTOM:136:Method cardinality: You have not tested with non-empty bag and cardinality > zero."));
-        QfUser user = new QfUser();
-        user.setLanguage("en");
+
+        setting.setLanguage("en");
         genericTest(
                 Arrays.asList("You have not created a new bag needed to test the class Bag."),
                 List.of("case_no_constructor"),
                 List.of("adt.Bag"),
-                setting,
-                user);
+                setting);
     }
 
     @Test
@@ -119,22 +120,20 @@ class CoverageCheckerTest {
                 "Bag:CUSTOM:129:Method cardinality: You have not tested with an empty bag.",
                 "Bag:CUSTOM:132:Method cardinality: You have not tested with non-empty bag and cardinality zero.",
                 "Bag:CUSTOM:136:Method cardinality: You have not tested with non-empty bag and cardinality > zero."));
-        QfUser user = new QfUser();
-        user.setLanguage("en");
+
+        setting.setLanguage("en");
         genericTest(
                 Arrays.asList(),
                 List.of("case_no_method"),
                 List.of("adt.Bag"),
-                setting,
-                user);
+                setting);
     }
 
     @Test
     public void bagTestCaseNoMethodCOVERAGE() {
         QfCovSetting setting = new QfCovSetting();
         setting.setFeedback(Arrays.asList("Bag:COVERAGE"));
-        QfUser user = new QfUser();
-        user.setLanguage("en");
+        setting.setLanguage("en");
         genericTest(
                 Arrays.asList(
                         "In class <b>Bag</b. the method <b>add</b> in line <b>28</b> is never used.",
@@ -145,8 +144,7 @@ class CoverageCheckerTest {
                         "In class <b>Bag</b. the method <b>cardinality</b> in line <b>128</b> is never used."),
                 List.of("case_no_method"),
                 List.of("adt.Bag"),
-                setting,
-                user);
+                setting);
     }
 
     @Test
@@ -168,8 +166,8 @@ class CoverageCheckerTest {
                 "Bag:CUSTOM:129:Method cardinality: You have not tested with an empty bag.",
                 "Bag:CUSTOM:132:Method cardinality: You have not tested with non-empty bag and cardinality zero.",
                 "Bag:CUSTOM:136:Method cardinality: You have not tested with non-empty bag and cardinality > zero."));
-        QfUser user = new QfUser();
-        user.setLanguage("en");
+
+        setting.setLanguage("en");
         genericTest(
                 Arrays.asList(
                         "Add method: You have not tested the add method with a non empty bag.",
@@ -179,16 +177,15 @@ class CoverageCheckerTest {
                 ),
                 List.of("case_all_method"),
                 List.of("adt.Bag"),
-                setting,
-                user);
+                setting);
     }
 
     @Test
     public void bagTestCaseAllMethodCOVERAGE() {
         QfCovSetting setting = new QfCovSetting();
         setting.setFeedback(List.of("Bag:COVERAGE"));
-        QfUser user = new QfUser();
-        user.setLanguage("en");
+
+        setting.setLanguage("en");
         genericTest(
                 Arrays.asList(
                         "In class <b>Bag</b> at the method <b>add</b> the if statement in line <b>32</b> is always wrong.",
@@ -199,8 +196,7 @@ class CoverageCheckerTest {
                         "In class <b>Bag</b> at the method <b>cardinality</b> the if statement in line <b>136</b> is always wrong."),
                 List.of("case_all_method"),
                 List.of("adt.Bag"),
-                setting,
-                user);
+                setting);
     }
 
 
@@ -224,22 +220,20 @@ class CoverageCheckerTest {
                 "Bag:CUSTOM:129:Method cardinality: You have not tested with an empty bag.",
                 "Bag:CUSTOM:132:Method cardinality: You have not tested with non-empty bag and cardinality zero.",
                 "Bag:CUSTOM:136:Method cardinality: You have not tested with non-empty bag and cardinality > zero."));
-        QfUser user = new QfUser();
-        user.setLanguage("en");
+
+        setting.setLanguage("en");
         genericTest(
                 Arrays.asList("Equals method: You have not tested the equals method with an empty bag as parameter."),
                 List.of("case_all_stmt"),
                 List.of("adt.Bag"),
-                setting,
-                user);
+                setting);
     }
 
     @Test
     public void bagTestCaseAllStmtCOVERAGE() {
         QfCovSetting setting = new QfCovSetting();
         setting.setFeedback(Arrays.asList(":COVERAGE"));
-        QfUser user = new QfUser();
-        user.setLanguage("en");
+        setting.setLanguage("en");
         genericTest(
                 Arrays.asList(
                         "In class <b>Bag</b> at the method <b>equals</b> the if statement in line <b>81</b> is always wrong.",
@@ -247,12 +241,11 @@ class CoverageCheckerTest {
                 ),
                 List.of("case_all_stmt"),
                 List.of("adt.Bag"),
-                setting,
-                user);
+                setting);
     }
 
 
-    private void genericTest(List<String> wantFB, List<String> testClasses, List<String> classes, QfCovSetting setting, QfUser user) {
+    private void genericTest(List<String> wantFB, List<String> testClasses, List<String> classes, QfCovSetting setting) {
         Preprocessed p = new Preprocessing().processing(
                 FileResources.filesByClassName,
                 FileResources.convertNames,
@@ -261,7 +254,6 @@ class CoverageCheckerTest {
 
         CoverageChecker toTest = new CoverageChecker();
         toTest.covSetting = setting;
-        toTest.user = user;
 
         Summary summary = toTest.checker(p.getTestClasses(), p.getClasses());
 

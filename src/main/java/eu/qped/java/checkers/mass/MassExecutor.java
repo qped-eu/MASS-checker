@@ -41,6 +41,7 @@ public class MassExecutor {
     private List<SyntaxFeedback> syntaxFeedbacks;
     private List<ClassFeedback> classFeedbacks;
     private List<DesignFeedback> designFeedbacks;
+    private List<String> coverageFeedbacks;
 
     private List<SyntaxError> syntaxErrors;
 
@@ -49,6 +50,7 @@ public class MassExecutor {
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
     private final DesignChecker designChecker;
+    private CoverageChecker covChecker;
 
 
 
@@ -64,7 +66,7 @@ public class MassExecutor {
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
                         final SyntaxChecker syntaxChecker, final DesignChecker designChecker, final ClassChecker classChecker,
-                        final MainSettings mainSettingsConfigurator) {
+                        final MainSettings mainSettingsConfigurator, final CoverageChecker coverageChecker) {
 
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
@@ -72,6 +74,7 @@ public class MassExecutor {
         this.classChecker = classChecker;
         this.designChecker = designChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
+        this.covChecker = coverageChecker;
     }
 
     private void init() {
@@ -81,6 +84,7 @@ public class MassExecutor {
         classFeedbacks = new ArrayList<>();
         designFeedbacks = new ArrayList<>();
         syntaxErrors = new ArrayList<>();
+        coverageFeedbacks = new ArrayList<>();
     }
 
 
@@ -114,6 +118,9 @@ public class MassExecutor {
         }
     }
 
+    public List<String> getCoverageFeedbacks() {
+        return coverageFeedbacks;
+    }
 
     public List<StyleFeedback> getStyleFeedbacks() {
         return styleFeedbacks;
@@ -174,21 +181,16 @@ public class MassExecutor {
                     e.printStackTrace();
                 }
             }
-            if (true) {
-
-
-
-
-
-
-
-
-
+            if (mainSettingsConfigurator.isCoverageNeeded()) {
+                coverageFeedbacks = covChecker.check();
             }
 
 
 
+        } else  if (mainSettingsConfigurator.isCoverageNeeded()) {
+            coverageFeedbacks = covChecker.check();
         } else {
+
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
@@ -275,7 +277,7 @@ public class MassExecutor {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, null, null, mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, null, null, mainSettingsConfiguratorConf, null);
 
         massE.execute();
 

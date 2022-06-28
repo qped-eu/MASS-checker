@@ -35,16 +35,16 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.0.0</version>
 				<executions>
-					<execution>
+                    <execution>
 						<id>CheckerRunner</id>
 						<goals>
 							<goal>java</goal>
 						</goals>
-						<configuration>
-							<mainClass>eu.qped.framework.CheckerRunner</mainClass>
-							<classpathScope>runtime</classpathScope>
-							<addResourcesToClasspath>true</addResourcesToClasspath>
-						</configuration>
+                        <configuration>
+                            <mainClass>eu.qped.framework.CheckerRunner</mainClass>
+                            <classpathScope>runtime</classpathScope>
+                            <addResourcesToClasspath>true</addResourcesToClasspath>
+                        </configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -131,6 +131,7 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.8.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -147,13 +148,12 @@
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite-api</artifactId>
             <version>1.8.1</version>
-            <scope>test</scope>
+
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite-engine</artifactId>
             <version>1.8.1</version>
-            <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.javaparser/javaparser-core -->
         <dependency>

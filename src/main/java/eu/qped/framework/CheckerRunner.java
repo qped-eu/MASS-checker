@@ -73,7 +73,7 @@ public class CheckerRunner {
 				new TypeReference<Map<String, Object>>() {
 				});
 
-//		qfObject = mapper.readValue(qfObjectJsonString, new TypeReference<QfObject>(){});
+		//qfObject = mapper.readValue(qfObjectJsonString, new TypeReference<QfObject>(){});
 
 		String checkerClassName = (String) qfObjectMap.get("checkerClass");
 		if (checkerClassName == null) {
@@ -90,9 +90,10 @@ public class CheckerRunner {
 						mapper.writeValueAsString(qfObjectMap.get(QF_OBJECT_FILE_PROPERTY)),
 						new TypeReference<FileInfo>() {
 						});
+
 				submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
 				tempFiles.add(submittedFile);
-				/*
+
 				try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
 					try (OutputStream output = new FileOutputStream(submittedFile)) {
 						final int BUFFER_SIZE = 1024;
@@ -122,7 +123,7 @@ public class CheckerRunner {
 				}
 				fileInfo.setSubmittedFile(submittedFile);
 
-				 */
+
 			} else {
 				submittedFile = null;
 			}
@@ -147,9 +148,6 @@ public class CheckerRunner {
 					}
 				}
 			}
-
-
-
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			throw new IllegalArgumentException("Illegal checker class specified", e);
