@@ -88,14 +88,22 @@ public class SemanticChecker {
                     fileSettingEntry.getSettingItems().forEach(
                             semanticSettingItem -> {
                                 try {
-                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName()); // This method throws NoSuchMethodException
+                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName());
+                                    System.out.println("method found");// This method throws NoSuchMethodException
                                     StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
+                                    System.out.println("StatementsVisitorHelper");
                                     calculateUsedLoop(statementsVisitorHelper);
+                                    System.out.println("calculateUsedLoop");
                                     generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
+                                    System.out.println("generateSemanticStatementsFeedback");
                                     MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
+                                    System.out.println("createRecursiveCheckHelper");
                                     generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
+                                    System.out.println("generateSemanticRecursionFeedback");
                                     checkReturnTyp(semanticSettingItem.getReturnType());
+                                    System.out.println("checkReturnTyp");
                                 } catch (NoSuchMethodException e) {
+                                    System.out.println("NoSuchMethodException");
                                     System.out.println(e.getMessage() + " " + e.getCause());
                                 }
                             }
