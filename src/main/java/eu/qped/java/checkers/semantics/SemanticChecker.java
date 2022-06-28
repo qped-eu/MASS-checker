@@ -130,8 +130,52 @@ public class SemanticChecker {
             }
         } catch (IOException e) {
             System.out.println("parse error");
+            System.out.println(
+                    "cause: " + e.getCause().toString() + "\n\n" +
+                            "message: " + e.getMessage()
+            );
             throw new IllegalArgumentException();
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        List<SemanticSettingItem> settingItems = new ArrayList<>();
+
+        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .methodName("calcPrice")
+                .returnType("void")
+                .whileLoop(0)
+                .build();
+        var bagCalcRecSettingItem = SemanticSettingItem.builder()
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .methodName("calcRec")
+                .returnType("int")
+                .recursionAllowed(false)
+                .build();
+
+        settingItems.add(bagCalcPriceSettingItem);
+        settingItems.add(bagCalcRecSettingItem);
+
+        SemanticChecker semanticChecker = SemanticChecker.builder().build();
+
+        semanticChecker.parseFromResourceType("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
+
+
+//        QFSemSettings qfSemSettings = QFSemSettings.builder()
+//                .semantic(settingItems)
+//                .build();
+//
+//
+//        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(qfSemSettings).build();
+//
+//        semanticChecker.check();
+//
+//        semanticChecker.getFeedbacks().forEach(
+//                System.out::println
+//        );
+
     }
 
     //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
@@ -226,39 +270,6 @@ public class SemanticChecker {
         }
     }
 
-    public static void main(String[] args) throws IOException {
 
-        List<SemanticSettingItem> settingItems = new ArrayList<>();
-
-        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcPrice")
-                .returnType("void")
-                .whileLoop(0)
-                .build();
-        var bagCalcRecSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcRec")
-                .returnType("int")
-                .recursionAllowed(false)
-                .build();
-
-        settingItems.add(bagCalcPriceSettingItem);
-        settingItems.add(bagCalcRecSettingItem);
-
-        QFSemSettings qfSemSettings = QFSemSettings.builder()
-                .semantic(settingItems)
-                .build();
-
-
-        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(qfSemSettings).build();
-
-        semanticChecker.check();
-
-        semanticChecker.getFeedbacks().forEach(
-                System.out::println
-        );
-
-    }
 
 }
