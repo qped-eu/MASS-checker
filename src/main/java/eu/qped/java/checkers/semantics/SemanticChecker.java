@@ -117,7 +117,7 @@ public class SemanticChecker {
         JavaParser javaParser = new JavaParser(configuration);
         try {
             System.out.println("------------------------");
-            System.out.println("path:" + path);
+            System.out.println("path: " + path);
             System.out.println("------------------------");
             var unit = javaParser.parse(Path.of(path));
             System.out.println("parseFromResourceType var unit");
@@ -129,7 +129,7 @@ public class SemanticChecker {
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
-            System.out.println("cause: " + e.getCause().toString());
+            System.out.println("cause: " + e.getMessage());
             throw new IllegalArgumentException();
         }
     }
@@ -137,6 +137,8 @@ public class SemanticChecker {
     public static void main(String[] args) throws IOException {
 
         List<SemanticSettingItem> settingItems = new ArrayList<>();
+
+        System.out.println(Path.of("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java"));
 
         var bagCalcPriceSettingItem = SemanticSettingItem.builder()
                 .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
@@ -156,7 +158,7 @@ public class SemanticChecker {
 
         SemanticChecker semanticChecker = SemanticChecker.builder().build();
 
-        semanticChecker.parseFromResourceType("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
+        semanticChecker.parse("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
 
 
 //        QFSemSettings qfSemSettings = QFSemSettings.builder()
