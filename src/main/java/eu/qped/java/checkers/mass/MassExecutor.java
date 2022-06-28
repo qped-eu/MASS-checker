@@ -79,6 +79,10 @@ public class MassExecutor {
 
             }
             if (semanticNeeded) {
+                System.out.println("sem path");
+                System.out.println(syntaxCheckReport.getPath());
+                System.out.println("sem path");
+
                 semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
