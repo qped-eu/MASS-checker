@@ -129,6 +129,7 @@ public class SemanticChecker {
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("cause: " + e.getMessage());
             throw new IllegalArgumentException();
         }
