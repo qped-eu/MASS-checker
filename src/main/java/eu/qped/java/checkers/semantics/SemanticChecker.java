@@ -129,7 +129,6 @@ public class SemanticChecker {
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
-            System.out.println("parse error");
             System.out.println(
                     "cause: " + e.getCause().toString() + "\n\n" +
                             "message: " + e.getMessage()
