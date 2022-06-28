@@ -116,6 +116,9 @@ public class SemanticChecker {
         ParserConfiguration configuration = new ParserConfiguration();
         JavaParser javaParser = new JavaParser(configuration);
         try {
+            System.out.println("------------------------");
+            System.out.println("path:" + path);
+            System.out.println("------------------------");
             var unit = javaParser.parse(Path.of(path));
             System.out.println("parseFromResourceType var unit");
             if (unit.getResult().isPresent()) {
