@@ -119,7 +119,7 @@ public class SemanticChecker {
             System.out.println("------------------------");
             System.out.println("path: " + path);
             System.out.println("------------------------");
-            var unit = javaParser.parse(Path.of(path));
+            var unit = javaParser.parse(Path.of("/" + path));
             System.out.println("parseFromResourceType var unit");
             if (unit.getResult().isPresent()) {
                 System.out.println("parseFromResourceType var unit is present");
