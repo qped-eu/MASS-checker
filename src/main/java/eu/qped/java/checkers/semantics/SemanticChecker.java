@@ -197,23 +197,22 @@ public class SemanticChecker {
     //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
     private void generateSemanticStatementsFeedback(SemanticSettingItem settingItem, StatementsVisitorHelper statementsVisitorHelper) {
         if (statementsVisitorHelper.getWhileCounter() > settingItem.getWhileLoop() && settingItem.getWhileLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getWhileLoop() + " while loop in your code, but you've used " + statementsVisitorHelper.getWhileCounter() + " while loop "));
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getWhileLoop() + " while loop in your code, but you've used " + statementsVisitorHelper.getWhileCounter() + " while loop in " + settingItem.getFilePath()));
         }
         if (statementsVisitorHelper.getForCounter() > settingItem.getForLoop() && settingItem.getForLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForLoop() + " for loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  for loop "));
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForLoop() + " for loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  for loop in " + settingItem.getFilePath()));
         }
         if (statementsVisitorHelper.getForEachCounter() > settingItem.getForEachLoop() && settingItem.getForEachLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForEachLoop() + " forEach loop in your code, but you've used " + statementsVisitorHelper.getForEachCounter() + "  forEach loop "));
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForEachLoop() + " forEach loop in your code, but you've used " + statementsVisitorHelper.getForEachCounter() + "  forEach loop in " + settingItem.getFilePath()));
         }
         if (statementsVisitorHelper.getIfElseCounter() > settingItem.getIfElseStmt() && settingItem.getIfElseStmt() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getIfElseStmt() + " IfElse Statement in your code, but you've used " + statementsVisitorHelper.getIfElseCounter() + "  ifElse Statment "));
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getIfElseStmt() + " IfElse Statement in your code, but you've used " + statementsVisitorHelper.getIfElseCounter() + "  ifElse Statment in " + settingItem.getFilePath()));
         }
         if (statementsVisitorHelper.getDoCounter() > settingItem.getDoWhileLoop() && settingItem.getDoWhileLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getDoWhileLoop() + " doWhile loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  doWhile loop "));
+            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getDoWhileLoop() + " doWhile loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  doWhile loop in " + settingItem.getFilePath()));
         }
     }
 
-    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
     private void calculateUsedLoop(StatementsVisitorHelper statementsVisitorHelper) {
         usedALoop = statementsVisitorHelper.getWhileCounter() > 0
                 || statementsVisitorHelper.getDoCounter() > 0
@@ -221,17 +220,16 @@ public class SemanticChecker {
                 || statementsVisitorHelper.getForCounter() > 0;
     }
 
-    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
     private void generateSemanticRecursionFeedback(SemanticSettingItem settingItem, MethodCalledChecker recursiveCheckHelper) {
         var hasUsedRecursive = recursiveCheckHelper.check(settingItem.getMethodName());
         if ((!hasUsedRecursive && settingItem.getRecursionAllowed() && !usedALoop)) {
-            feedbacks.add(new SemanticFeedback("you have to solve the method recursive"));
+            feedbacks.add(new SemanticFeedback("you have to solve the method recursive in " + settingItem.getFilePath()));
         } else if (settingItem.getRecursionAllowed() && usedALoop && hasUsedRecursive) {
-            feedbacks.add(new SemanticFeedback("you have used a Loop with your recursive Call"));
+            feedbacks.add(new SemanticFeedback("you have used a Loop with your recursive Call in " + settingItem.getFilePath()));
         } else if (settingItem.getRecursionAllowed() && usedALoop && !hasUsedRecursive) {
-            feedbacks.add(new SemanticFeedback("you have used a Loop without a recursive Call, you have to solve it just recursive"));
+            feedbacks.add(new SemanticFeedback("you have used a Loop without a recursive Call, you have to solve it just recursive in " + settingItem.getFilePath()));
         } else if (hasUsedRecursive && !settingItem.getRecursionAllowed()) {
-            feedbacks.add(new SemanticFeedback("yor are not allowed to use recursive in the method " + settingItem.getMethodName()));
+            feedbacks.add(new SemanticFeedback("yor are not allowed to use recursive in the method in " + settingItem.getFilePath() + " " + settingItem.getMethodName()));
         }
     }
 
