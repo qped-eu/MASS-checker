@@ -53,11 +53,11 @@ public class Mass implements Checker {
 
         // Style Checker
 
-        StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
+        StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         // Semantic Checker
 
-        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(semSettings).build();
+        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
         //Mass
         MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettings);
