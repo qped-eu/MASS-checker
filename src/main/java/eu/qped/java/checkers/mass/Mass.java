@@ -85,8 +85,7 @@ public class Mass implements Checker {
                             + styleFeedback.getLine()
                             + NEW_LINE
                             + styleFeedback.getExample()
-                            + NEW_LINE
-                            + "------------------------------------------------------------------------------";
+                            + NEW_LINE;
             i = i + 2;
         }
 
