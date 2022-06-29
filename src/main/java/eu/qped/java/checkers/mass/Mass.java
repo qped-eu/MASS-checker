@@ -40,7 +40,6 @@ public class Mass implements Checker {
         } else {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
-
         // Style Checker
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
