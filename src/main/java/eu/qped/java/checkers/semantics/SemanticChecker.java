@@ -117,35 +117,6 @@ public class SemanticChecker {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-
-        List<SemanticSettingItem> settingItems = new ArrayList<>();
-
-        System.out.println(Path.of("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java"));
-
-        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcPrice")
-                .returnType("void")
-                .whileLoop(0)
-                .build();
-        var bagCalcRecSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcRec")
-                .returnType("int")
-                .recursionAllowed(false)
-                .build();
-
-        settingItems.add(bagCalcPriceSettingItem);
-        settingItems.add(bagCalcRecSettingItem);
-
-        SemanticChecker semanticChecker = SemanticChecker.builder().build();
-
-        semanticChecker.parse("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
-
-
-    }
-
     private void checkReturnTyp(String targetReturnType) {
         boolean result = false;
         result = targetReturnType.equalsIgnoreCase(returnType);
@@ -234,5 +205,31 @@ public class SemanticChecker {
     }
 
 
+    public static void main(String[] args) throws IOException {
 
+        List<SemanticSettingItem> settingItems = new ArrayList<>();
+
+        System.out.println(Path.of("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java"));
+
+        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .methodName("calcPrice")
+                .returnType("void")
+                .whileLoop(0)
+                .build();
+        var bagCalcRecSettingItem = SemanticSettingItem.builder()
+                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .methodName("calcRec")
+                .returnType("int")
+                .recursionAllowed(false)
+                .build();
+
+        settingItems.add(bagCalcPriceSettingItem);
+        settingItems.add(bagCalcRecSettingItem);
+
+        SemanticChecker semanticChecker = SemanticChecker.builder().build();
+
+        semanticChecker.parse("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
+
+    }
 }

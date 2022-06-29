@@ -29,10 +29,17 @@ public class Mass implements Checker {
     @QfProperty
     private QFSemSettings semSettings;
 
+    @QfProperty
+    private QfMass mass;
+
     private final static String NEW_LINE = "\n" + "\n";
 
     @Override
     public void check(QfObject qfObject) throws Exception {
+
+        System.out.println("-------------------");
+        System.out.println(mass);
+        System.out.println("-----------------");
 
         MainSettings mainSettings = new MainSettings(this.mainSettings);
 
