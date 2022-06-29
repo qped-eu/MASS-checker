@@ -3,6 +3,8 @@ package eu.qped.java.checkers.mass;
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
+import eu.qped.java.checkers.design.DesignChecker;
+import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
@@ -33,6 +35,7 @@ public class MassExecutor {
     private List<StyleFeedback> styleFeedbacks;
     private List<SemanticFeedback> semanticFeedbacks;
     private List<SyntaxFeedback> syntaxFeedbacks;
+    private List<DesignFeedback> designFeedbacks;
 
 
     private List<SyntaxError> syntaxErrors;
@@ -40,6 +43,7 @@ public class MassExecutor {
     private final StyleChecker styleChecker;
     private final SemanticChecker semanticChecker;
     private final SyntaxChecker syntaxChecker;
+    private DesignChecker designChecker;
 
     /**
      * To create an Object use the factory Class @MassExecutorFactory
@@ -59,6 +63,7 @@ public class MassExecutor {
         this.semanticChecker = semanticChecker;
         this.syntaxChecker = syntaxChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
+        this.designChecker = designChecker;
 
     }
 
@@ -83,52 +88,13 @@ public class MassExecutor {
 
             }
             if (semanticNeeded) {
-                final String source = syntaxCheckReport.getCodeAsString();
-                semanticChecker.setSource(source);
+                semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
             if (designNeeded) {
                 designChecker.check();
                 designFeedbacks = designChecker.getDesignFeedbacks();
-            }
-        } else {
-            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
-            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
-            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
-        }
-
-        // translate Feedback body if needed
-        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded, designNeeded);
-        }
-    }
-
-    /**
-     * execute the Mass System
-     */
-    public void execute() {
-        init();
-
-        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
-        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
-
-
-        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
-
-        if (syntaxCheckReport.isCompilable()) {
-            if (styleNeeded) {
-                styleChecker.setTargetPath(syntaxCheckReport.getPath());
-                styleChecker.check();
-                styleFeedbacks = styleChecker.getStyleFeedbacks();
-
-            }
-            if (semanticNeeded) {
-
-                semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
-                semanticChecker.check();
-                semanticFeedbacks = semanticChecker.getFeedbacks();
             }
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
@@ -263,7 +229,7 @@ public class MassExecutor {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 

@@ -53,7 +53,7 @@ public class Mass implements Checker {
     DesignChecker designChecker = DesignChecker.builder().build(); //TODO is this correct?
 
     //Mass
-    MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettings);
+    MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, mainSettings);
     massExecutor.execute();
 
         /*
