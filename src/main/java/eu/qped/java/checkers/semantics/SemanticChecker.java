@@ -74,36 +74,20 @@ public class SemanticChecker {
                             path = fileSettingEntry.getFilePath();
                         }
                     }
-                    if (path.charAt(0) == '/') {
-                        path = path.substring(1);
-                    }
-
                     var compilationUnit = parse(path); // AST per File
 
-                    System.out.println("mero");
-
-                    System.out.println(compilationUnit.toString());
-                    System.out.println("mero");
                     // AST per Method in File
                     fileSettingEntry.getSettingItems().forEach(
                             semanticSettingItem -> {
                                 try {
                                     BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName());
-                                    System.out.println("method found");// This method throws NoSuchMethodException
                                     StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
-                                    System.out.println("StatementsVisitorHelper");
                                     calculateUsedLoop(statementsVisitorHelper);
-                                    System.out.println("calculateUsedLoop");
                                     generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
-                                    System.out.println("generateSemanticStatementsFeedback");
                                     MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
-                                    System.out.println("createRecursiveCheckHelper");
                                     generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
-                                    System.out.println("generateSemanticRecursionFeedback");
                                     checkReturnTyp(semanticSettingItem.getReturnType());
-                                    System.out.println("checkReturnTyp");
                                 } catch (NoSuchMethodException e) {
-                                    System.out.println("NoSuchMethodException");
                                     System.out.println(e.getMessage() + " " + e.getCause());
                                 }
                             }
@@ -113,10 +97,7 @@ public class SemanticChecker {
     }
 
 
-    // src/main/java/eu/qped/java/checkers/style from syntax checker split([/])
-    // eu.qped.um.java.checker.src..... split([.])
     private CompilationUnit parse(final String path) {
-        System.out.println(path);
         return parseFromResourceType(path);
     }
 
@@ -124,21 +105,14 @@ public class SemanticChecker {
         ParserConfiguration configuration = new ParserConfiguration();
         JavaParser javaParser = new JavaParser(configuration);
         try {
-            System.out.println("------------------------");
-            System.out.println("path: " + path);
-            System.out.println("------------------------");
-            var unit = javaParser.parse(Path.of("/" + path));
-            System.out.println("parseFromResourceType var unit");
+
+            var unit = javaParser.parse(Path.of(path));
             if (unit.getResult().isPresent()) {
-                System.out.println("parseFromResourceType var unit is present");
                 return unit.getResult().get();
             } else {
-                System.out.println("parseFromResourceType var unit isnt present");
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("cause: " + e.getMessage());
             throw new IllegalArgumentException();
         }
     }
@@ -170,24 +144,8 @@ public class SemanticChecker {
         semanticChecker.parse("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
 
 
-//        QFSemSettings qfSemSettings = QFSemSettings.builder()
-//                .semantic(settingItems)
-//                .build();
-//
-//
-//        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(qfSemSettings).build();
-//
-//        semanticChecker.check();
-//
-//        semanticChecker.getFeedbacks().forEach(
-//                System.out::println
-//        );
-
     }
 
-    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
-
-    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
     private void checkReturnTyp(String targetReturnType) {
         boolean result = false;
         result = targetReturnType.equalsIgnoreCase(returnType);
@@ -238,7 +196,6 @@ public class SemanticChecker {
 
     //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
     private void generateSemanticStatementsFeedback(SemanticSettingItem settingItem, StatementsVisitorHelper statementsVisitorHelper) {
-        System.out.println(settingItem);
         if (statementsVisitorHelper.getWhileCounter() > settingItem.getWhileLoop() && settingItem.getWhileLoop() != -1) {
             feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getWhileLoop() + " while loop in your code, but you've used " + statementsVisitorHelper.getWhileCounter() + " while loop "));
         }

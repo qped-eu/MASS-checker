@@ -34,14 +34,6 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-
-//        Collection<File> files = FileUtils.listFiles(
-//                file.getUnzipped(),
-//                new RegexFileFilter("^(.*?)"),
-//                DirectoryFileFilter.DIRECTORY
-//        );
-
-
         MainSettings mainSettings = new MainSettings(this.mainSettings);
 
         // Syntax Checker
@@ -52,16 +44,11 @@ public class Mass implements Checker {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
 
-
         // Style Checker
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
 
         // Semantic Checker
-
-        System.out.println("semSettings");
-        System.out.println(semSettings);
-        System.out.println("semSettings");
 
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(semSettings).build();
 
