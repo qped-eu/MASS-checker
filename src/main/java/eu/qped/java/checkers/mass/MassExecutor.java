@@ -17,6 +17,8 @@ import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.feedback.syntax.AbstractSyntaxFeedbackGenerator;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
 import eu.qped.java.feedback.syntax.SyntaxFeedbackGenerator;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,8 @@ import java.util.List;
  * @version 1.0
  * @since 19.08.2021
  */
-
+@Getter
+@Setter
 public class MassExecutor {
 
     private final MainSettings mainSettingsConfigurator;
@@ -59,19 +62,15 @@ public class MassExecutor {
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
                         final SyntaxChecker syntaxChecker, final DesignChecker designChecker,
-                        final MainSettings mainSettingsConfigurator
+                        final ClassChecker classChecker, final MainSettings mainSettingsConfigurator
     ) {
-                        final SyntaxChecker syntaxChecker, final DesignChecker designChecker, final ClassChecker classChecker,
-                        final MainSettings mainSettingsConfigurator) {
-
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
         this.syntaxChecker = syntaxChecker;
         this.classChecker = classChecker;
-        this.designChecker = designChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
         this.designChecker = designChecker;
-
+    }
 
 
     /**
@@ -104,7 +103,7 @@ public class MassExecutor {
                 designChecker.check();
                 designFeedbacks = designChecker.getDesignFeedbacks();
             }
-            if(classNeeded) {
+            if (classNeeded) {
                 try {
                     classChecker.check(null);
                     classFeedbacks = classChecker.getClassFeedbacks();
@@ -121,8 +120,8 @@ public class MassExecutor {
 
         // translate Feedback body if needed
         if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded);
-            translate(styleNeeded, semanticNeeded, designNeeded, classNeeded);
+            translate(styleNeeded, semanticNeeded, designNeeded);
+
         }
     }
 
@@ -159,22 +158,6 @@ public class MassExecutor {
         }
     }
 
-    public List<StyleFeedback> getStyleFeedbacks() {
-        return styleFeedbacks;
-    }
-
-    public List<SemanticFeedback> getSemanticFeedbacks() {
-        return semanticFeedbacks;
-    }
-
-    public List<SyntaxFeedback> getSyntaxFeedbacks() {
-        return syntaxFeedbacks;
-    }
-
-
-    public List<SyntaxError> getSyntaxErrors() {
-        return syntaxErrors;
-    }
 
     public static void main(String[] args) {
         long start = System.nanoTime();
