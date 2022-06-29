@@ -60,13 +60,57 @@ public class MassExecutor {
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
                         final SyntaxChecker syntaxChecker, final DesignChecker designChecker,
                         final MainSettings mainSettingsConfigurator
-                        ) {
+    ) {
 
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
         this.syntaxChecker = syntaxChecker;
         this.designChecker = designChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
+
+    }
+
+    /**
+     * execute the Mass System
+     */
+    public void execute() {
+        init();
+
+        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
+        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
+        boolean designNeeded = mainSettingsConfigurator.isDesignNeeded();
+
+
+        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
+
+        if (syntaxCheckReport.isCompilable()) {
+            if (styleNeeded) {
+                styleChecker.setTargetPath(syntaxCheckReport.getPath());
+                styleChecker.check();
+                styleFeedbacks = styleChecker.getStyleFeedbacks();
+
+            }
+            if (semanticNeeded) {
+                final String source = syntaxCheckReport.getCodeAsString();
+                semanticChecker.setSource(source);
+                semanticChecker.check();
+                semanticFeedbacks = semanticChecker.getFeedbacks();
+            }
+            if (designNeeded) {
+                designChecker.check();
+                designFeedbacks = designChecker.getDesignFeedbacks();
+            }
+        } else {
+            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
+            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
+            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
+        }
+
+        // translate Feedback body if needed
+        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
+            translate(styleNeeded, semanticNeeded, designNeeded);
+        }
     }
 
 
@@ -122,48 +166,7 @@ public class MassExecutor {
         return syntaxErrors;
     }
 
-    /**
-     * execute the Mass System
-     */
-    public void execute() {
-        init();
 
-        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
-        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
-        boolean designNeeded = mainSettingsConfigurator.isDesignNeeded();
-
-
-        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
-
-        if (syntaxCheckReport.isCompilable()) {
-            if (styleNeeded) {
-                styleChecker.setTargetPath(syntaxCheckReport.getPath());
-                styleChecker.check();
-                styleFeedbacks = styleChecker.getStyleFeedbacks();
-
-            }
-            if (semanticNeeded) {
-                final String source = syntaxCheckReport.getCodeAsString();
-                semanticChecker.setSource(source);
-                semanticChecker.check();
-                semanticFeedbacks = semanticChecker.getFeedbacks();
-            }
-            if (designNeeded) {
-                designChecker.check();
-                designFeedbacks = designChecker.getDesignFeedbacks();
-            }
-        } else {
-            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
-            syntaxErrors = syntaxCheckReport.getSyntaxErrors();
-            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
-        }
-
-        // translate Feedback body if needed
-        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded, designNeeded);
-        }
-    }
 
     public static void main(String[] args) {
         long start = System.nanoTime();
