@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.design.ckjm;
 
-import eu.qped.java.checkers.design.Metric;
 import gr.spinellis.ckjm.AbstractClassVisitor;
 import gr.spinellis.ckjm.IClassMetricsContainer;
 import gr.spinellis.ckjm.utils.FieldAccess;
@@ -16,8 +15,8 @@ import java.util.*;
 
 /**
  * Custom visitor class for the metrics:
- * IC {@link Metric#IC} and
- * CBM {@link Metric#CBM}.
+ * IC {@link DesignCheckEntryHandler.Metric#IC} and
+ * CBM {@link DesignCheckEntryHandler.Metric#CBM}.
  *
  * @author marian (from CKJM-extended tool)
  * @author Jannik Seus (edited)
@@ -90,7 +89,7 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
             }
 
             countCase1();
-            countCase2(); // TODO: remove duplications
+            countCase2();
             countCase3();
             saveResults();
         } catch (ClassNotFoundException e) {

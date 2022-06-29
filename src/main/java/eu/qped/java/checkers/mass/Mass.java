@@ -4,6 +4,7 @@ import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
+import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
@@ -48,9 +49,12 @@ public class Mass implements Checker {
 
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
-        //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettings);
-        massExecutor.execute();
+    // Design Checker
+    DesignChecker designChecker = DesignChecker.builder().build(); //TODO is this correct?
+
+    //Mass
+    MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, mainSettings);
+    massExecutor.execute();
 
         /*
          feedbacks
@@ -65,7 +69,7 @@ public class Mass implements Checker {
         semanticFeedbacks = massExecutor.getSemanticFeedbacks();
 
 
-        String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + 100];
+    String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + 100];
 
         int i = 0;
 

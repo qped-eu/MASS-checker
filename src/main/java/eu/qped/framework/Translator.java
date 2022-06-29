@@ -1,5 +1,6 @@
 package eu.qped.framework;
 
+import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.style.StyleFeedback;
 import org.apache.logging.log4j.LogManager;
 
@@ -28,8 +29,8 @@ public class Translator {
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
-            if (con.getResponseCode() == -1){
-            	throw new TranslationException(langFrom , langTo);
+            if (con.getResponseCode() == -1) {
+                throw new TranslationException(langFrom, langTo);
             }
 
             String inputLine;
@@ -42,7 +43,7 @@ public class Translator {
             } else {
                 result = response.toString();
             }
-        } catch (IOException e  ) {
+        } catch (IOException e) {
             LogManager.getLogger((Class<?>) getClass()).throwing(e);
         }
 
@@ -78,6 +79,22 @@ public class Translator {
         } catch (Exception e) {
             e.printStackTrace();
 
+        }
+    }
+
+    public void translateDesignBody(String pref, DesignFeedback feedback) {
+
+        try {
+            feedback.setBody(translate("en", pref, feedback.getBody()));
+            String[] words;
+            words = feedback.getBody().split("[.]");
+            StringBuilder result = new StringBuilder();
+            for (String word : words) {
+                result.append(word).append("\n\n");
+            }
+            feedback.setBody(result.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

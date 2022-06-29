@@ -1,16 +1,18 @@
 package eu.qped.java.checkers.design;
 
-import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.design.ckjm.QPEDMetricsFilter;
-import eu.qped.java.checkers.design.ckjm.SaveMapResults;
-import eu.qped.java.utils.compiler.Compiler;
-import gr.spinellis.ckjm.CkjmOutputHandler;
+import eu.qped.java.checkers.design.ckjm.DesignCheckEntryHandler;
+import eu.qped.java.checkers.design.configuration.DesignSettings;
+import eu.qped.java.checkers.design.configuration.DesignSettingsReader;
+import eu.qped.java.checkers.design.data.DesignCheckReport;
+import eu.qped.java.checkers.mass.QFDesignSettings;
+import eu.qped.java.utils.ExtractJavaFilesFromDirectory;
 import gr.spinellis.ckjm.utils.CmdLineParser;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
+
 
 /**
  * Class represents a checker for class design.
@@ -18,63 +20,65 @@ import java.util.Map;
  * @author Jannik Seus
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class DesignChecker {
 
+    @Getter(AccessLevel.PUBLIC)
+    @Setter(AccessLevel.PUBLIC)
+    private List<DesignFeedback> designFeedbacks;
 
-    private String answer;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private QFDesignSettings qfDesignSettings;
 
-    private String targetProject;
+    private final static String CLASSFILES_PATH = "src/main/java/eu/qped/java/utils/compiler/compiledFiles";
 
     /**
-     * is able to check one or multiple .class files
-     * for defined metrics ({@link Metric}).
-     * The output is printed on the console (plain or xml) or saved in {@link DesignCheckReport#getMetricsMap()} ).
+     * Method is able to check one or multiple .class files
+     * for defined metrics ({@link DesignCheckEntryHandler.Metric}).
+     *
+     * @return the built {@link DesignCheckReport}
      */
     public DesignCheckReport check() {
-        DesignCheckReport.DesignCheckReportBuilder resultBuilder = DesignCheckReport.builder();
-        Map<String, Map<Metric, Double>> metricsMap = new HashMap<>();
 
+        DesignCheckReport designCheckReport = DesignCheckReport.builder().build();
+        DesignSettingsReader designSettingsReader = DesignSettingsReader.builder().qfDesignSettings(this.qfDesignSettings).build();
+        DesignSettings designSettings = designSettingsReader.readDesignSettings();
+
+        List<File> classFiles
+                = ExtractJavaFilesFromDirectory.builder().dirPath(CLASSFILES_PATH).build().filesWithExtension("class");
+        String[] pathsToClassFiles = classFiles.stream().map(File::getPath).toArray(String[]::new);
+
+        runCkjmExtended(designCheckReport, pathsToClassFiles);
+        designCheckReport.setPathsToClassFiles(List.of(pathsToClassFiles));
+        this.designFeedbacks = DesignFeedback.generateDesignFeedback(designCheckReport.getMetricsMap(), designSettings);
+
+        return designCheckReport;
+    }
+
+    /**
+     * Dispatching method for program code to run CKJM-extended. Improves readability.
+     *
+     * @param designCheckReport the final report of the design checker
+     * @param classFileNames    the .class files' names (including relative path from src root)
+     */
+    private void runCkjmExtended(DesignCheckReport designCheckReport, String[] classFileNames) {
         QPEDMetricsFilter qmf = new QPEDMetricsFilter();
         CmdLineParser cmdParser = new CmdLineParser();
+        DesignCheckEntryHandler handler = new DesignCheckEntryHandler();
 
-        cmdParser.parse(new String[]{targetProject});
-
-        CkjmOutputHandler handler;
-        handler = new SaveMapResults(metricsMap);
-
+        cmdParser.parse(classFileNames);
         qmf.runMetricsInternal(cmdParser.getClassNames(), handler);
-
-        resultBuilder.metricsMap(((SaveMapResults) handler).getOutputMetrics());
-        //resultBuilder.metricsThresholds();
-        //resultBuilder.codeAsString();
-        //resultBuilder.path();
-        return resultBuilder.build();
+        designCheckReport.setMetricsMap(handler.getOutputMetrics());
     }
 
-    // for removal
-
-    public static void main(String[] args) {
-
-        String answer = "import java.util.List;\n" +
-                "    import java.util.ArrayList;\n" +
-                "    public class Mmm{\n" +
-                "        List<String> xx(){\n" +
-                "            List list = new ArrayList();\n" +
-                "            list.add(\"8888\");\n" +
-                "            return list;\n" +
-                "        }\n" +
-                "    }";
-
-        Compiler c = Compiler.builder().build();
-        c.compileFromString(answer);
-
-        String pathToClass = "/Users/jannik/ProgrammingProjects/IdeaProjects/uni/ba/fork/QPED-O3/Mmm.class";
-
-        DesignChecker b = DesignChecker.builder().answer(new QfObject().getAnswer()).build();
-        b.setTargetProject(pathToClass);
-        b.setAnswer(answer);
-        b.check().getMetricsMap().forEach((k, v) -> System.out.println(k + " : " + v));
+    @Override
+    public String toString() {
+        return "DesignChecker{" +
+                "feedbacks=" + designFeedbacks +
+                ", qfDesignSettings=" + qfDesignSettings +
+                '}';
     }
-
 }

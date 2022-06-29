@@ -76,7 +76,7 @@ public class Compiler implements CompilerInterface {
             }
             extractJavaFilesFromDirectoryBuilder.dirPath(targetProjectOrClassPath);
             extractJavaFilesFromDirectory = extractJavaFilesFromDirectoryBuilder.build();
-            files = extractJavaFilesFromDirectory.filesWithJavaExtension();
+            files = extractJavaFilesFromDirectory.filesWithExtension("java");
             if (files.size() == 0) {
                 return false;
             }
