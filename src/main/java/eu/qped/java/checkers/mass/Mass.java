@@ -11,6 +11,7 @@ import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -62,7 +63,7 @@ public class Mass implements Checker {
         System.out.println(semSettings);
         System.out.println("semSettings");
 
-        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(semSettings).build();
+        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(semSettings).build();
 
         //Mass
         MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, mainSettings);
