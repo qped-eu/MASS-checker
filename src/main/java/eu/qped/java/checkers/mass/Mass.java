@@ -82,15 +82,18 @@ public class Mass implements Checker {
 
         for (StyleFeedback styleFeedback : styleFeedbacks) {
             result[i] = "style Feedback";
-            result[i + 1] = styleFeedback.getDesc()
-                    + NEW_LINE
-                    + styleFeedback.getContent()
-                    + NEW_LINE
-                    + styleFeedback.getLine()
-                    + NEW_LINE
-                    + styleFeedback.getExample()
-                    + NEW_LINE
-                    + "------------------------------------------------------------------------------";
+            result[i + 1] =
+                    styleFeedback.getFile()
+                            + NEW_LINE
+                            + styleFeedback.getDesc()
+                            + NEW_LINE
+                            + styleFeedback.getContent()
+                            + NEW_LINE
+                            + styleFeedback.getLine()
+                            + NEW_LINE
+                            + styleFeedback.getExample()
+                            + NEW_LINE
+                            + "------------------------------------------------------------------------------";
             i = i + 2;
         }
 
