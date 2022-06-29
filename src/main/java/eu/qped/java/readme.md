@@ -121,6 +121,90 @@ Object:
 | Option Name | Possible Values |
 |-------------| --------------- |
 
+
+### Coverage Checker WIP
+Coverage Checker maps not covered constructor, methods and branching statements like
+
+- if 
+- else if
+- else
+- for 
+- foreach
+- while 
+- case
+- default
+
+to default or custom feedback. Additional there is also the possibility to generate feedback for failed *JUNIT5* test.
+
+#### Example Assignment:
+For a given program description analyse all constraints of the program and test them. 
+
+``` 
+# Pseudocode-PROGRAM                            # Feedback-CUSTOM
+
+if (setConstraint(true)) {                          
+    if (subSetAConstraint(false)) {             // are you sure you tested all constraints. Maybe read passage X more carefully. 
+        ... 
+    }
+    if (subSetBConstraint(true)) {
+        if (constraintB1(true)) {               
+            ...
+        }
+        if (constraintB2(false) {               // you overlooked one constraint for case B.
+            ...
+        }
+    }
+}
+```
+[coverage-doc]: checkers/coverage/doc.md
+#### Feedback:
+There are two types of feedback default and custom.
+The default feedback is only available in english and german. 
+If needed we are happy to support your language.
+Custom feedback can be provided directly over the quarterfall-platform.
+For more information over feedback and settings see [doc] [coverage-doc].
+
+
+Object:
+
+| Option Name                      | Possible Values                                                                                                            | 
+|----------------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| qf.qfCovSetting.feedback         | Array< String >:<br> classname : TEST, COVERGA <br> classname : TEST, COVERGA, CUSTOM : line index, method name : feedback |
+| qf.qfCovSetting.excludeByTypeSet | Array< String >: GET, SET, PRIVATE, PROTECTED                                                                              |
+| qf.qfCovSetting.excludeByNameSet | Array< String >: class or method name                                                                                      |
+| qf.qfCovSetting.format           | String: content of a vm file  or empty                                                                                     |
+| qf.additional                    | Zip file with additional resources                                                                                         |                                                                                                                                             |
+
+```
+qf.checkerClass="eu.qped.umr...CoverageChecker";
+qf.file = {
+    "id: "",
+	"label":"",
+	"extension: "",
+	"path":"",
+	"mimetype":"",
+	"url":""
+};
+qf.additional = {
+    "id: "",
+	"label":"",
+	"extension: "",
+	"path":"",
+	"mimetype":"",
+	"url":""
+};
+qf.covSetting = {
+   "excludeByTypeSet" : ["SET", "GET", "PRIVATE"],
+   "excludeBYNameSet" : [],
+   "format" :  #foreach($r in $summary.stmtFeedback())
+               <p>Branch $r.type() failed at index $r.start()</p>
+               #end",
+   "feedback" : [":test", "Checker:COVERAGE"] 
+};
+
+```
+
+
 ### Example Configuration with Quarterfall
 ```
 qf.checkerClass = "eu.qped.java.checkers.mass.Mass";
@@ -158,14 +242,19 @@ qf.semSettings = {
 };
 
 qf.designSettings = {
-    "classTypeName":"class:Card",
-    "inheritsFrom":["interface:Comparable"],
-    "fieldKeywords": [
-        "private String name",
-        "private String year"
-    ],
-    "methodKeywords": [
-        "public int compareTo"
+    "classInfos": [
+        {
+            "classTypeName":"class Card",
+            "inheritsFrom":["interface Comparable"],
+            "fieldKeywords": [
+                "private String name",
+                "private String year"
+            ],
+            "methodKeywords": [
+                "public int compareTo"
+            ]
+        }
     ]
+    
 };
 ```
