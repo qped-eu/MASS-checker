@@ -8,7 +8,6 @@ import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
@@ -18,6 +17,8 @@ import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.feedback.syntax.AbstractSyntaxFeedbackGenerator;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
 import eu.qped.java.feedback.syntax.SyntaxFeedbackGenerator;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,8 @@ import java.util.List;
  * @version 1.0
  * @since 19.08.2021
  */
-
+@Getter
+@Setter
 public class MassExecutor {
 
     private final MainSettings mainSettingsConfigurator;
@@ -47,8 +49,7 @@ public class MassExecutor {
     private final SemanticChecker semanticChecker;
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
-    private final DesignChecker designChecker;
-
+    private DesignChecker designChecker;
 
     /**
      * To create an Object use the factory Class @MassExecutorFactory
@@ -56,82 +57,21 @@ public class MassExecutor {
      * @param styleChecker             style checker component
      * @param semanticChecker          semantic checker component
      * @param syntaxChecker            syntax checker component
-     * @param designChecker            design checker component
      * @param mainSettingsConfigurator settings
      */
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
-                        final SyntaxChecker syntaxChecker, final DesignChecker designChecker, final ClassChecker classChecker,
-                        final MainSettings mainSettingsConfigurator) {
-
+                        final SyntaxChecker syntaxChecker, final DesignChecker designChecker,
+                        final ClassChecker classChecker, final MainSettings mainSettingsConfigurator
+    ) {
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
         this.syntaxChecker = syntaxChecker;
         this.classChecker = classChecker;
-        this.designChecker = designChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
+        this.designChecker = designChecker;
     }
 
-    private void init() {
-        syntaxFeedbacks = new ArrayList<>();
-        styleFeedbacks = new ArrayList<>();
-        semanticFeedbacks = new ArrayList<>();
-        classFeedbacks = new ArrayList<>();
-        designFeedbacks = new ArrayList<>();
-        syntaxErrors = new ArrayList<>();
-    }
-
-
-    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean designNeeded, boolean classNeeded) {
-        String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
-        Translator translator = new Translator();
-
-        //List is Empty when the syntax is correct
-        for (SyntaxFeedback feedback : syntaxFeedbacks) {
-            translator.translateBody(prefLanguage, feedback);
-        }
-        if (semanticNeeded) {
-            for (Feedback feedback : semanticFeedbacks) {
-                translator.translateBody(prefLanguage, feedback);
-            }
-        }
-        if (styleNeeded) {
-            for (StyleFeedback feedback : styleFeedbacks) {
-                translator.translateStyleBody(prefLanguage, feedback);
-            }
-        }
-        if (classNeeded) {
-            for (Feedback feedback : classFeedbacks) {
-                translator.translateBody(prefLanguage, feedback);
-            }
-        }
-        if (designNeeded) {
-            for (DesignFeedback feedback : designFeedbacks) {
-                translator.translateDesignBody(prefLanguage, feedback);
-            }
-        }
-    }
-
-
-    public List<StyleFeedback> getStyleFeedbacks() {
-        return styleFeedbacks;
-    }
-
-    public List<SemanticFeedback> getSemanticFeedbacks() {
-        return semanticFeedbacks;
-    }
-
-    public List<SyntaxFeedback> getSyntaxFeedbacks() {
-        return syntaxFeedbacks;
-    }
-
-    public List<ClassFeedback> getClassFeedbacks() {
-        return classFeedbacks;
-    }
-
-    public List<SyntaxError> getSyntaxErrors() {
-        return syntaxErrors;
-    }
 
     /**
      * execute the Mass System
@@ -155,8 +95,7 @@ public class MassExecutor {
 
             }
             if (semanticNeeded) {
-                final String source = syntaxCheckReport.getCodeAsString();
-                semanticChecker.setSource(source);
+                semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
@@ -164,7 +103,7 @@ public class MassExecutor {
                 designChecker.check();
                 designFeedbacks = designChecker.getDesignFeedbacks();
             }
-            if(classNeeded) {
+            if (classNeeded) {
                 try {
                     classChecker.check(null);
                     classFeedbacks = classChecker.getClassFeedbacks();
@@ -181,9 +120,44 @@ public class MassExecutor {
 
         // translate Feedback body if needed
         if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded, designNeeded, classNeeded);
+            translate(styleNeeded, semanticNeeded, designNeeded);
+
         }
     }
+
+    private void init() {
+        syntaxFeedbacks = new ArrayList<>();
+        styleFeedbacks = new ArrayList<>();
+        semanticFeedbacks = new ArrayList<>();
+        designFeedbacks = new ArrayList<>();
+        syntaxErrors = new ArrayList<>();
+    }
+
+    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean designNeeded) {
+        String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
+        Translator translator = new Translator();
+
+        //List is Empty when the syntax is correct
+        for (SyntaxFeedback feedback : syntaxFeedbacks) {
+            translator.translateBody(prefLanguage, feedback);
+        }
+        if (semanticNeeded) {
+            for (Feedback feedback : semanticFeedbacks) {
+                translator.translateBody(prefLanguage, feedback);
+            }
+        }
+        if (styleNeeded) {
+            for (StyleFeedback feedback : styleFeedbacks) {
+                translator.translateStyleBody(prefLanguage, feedback);
+            }
+        }
+        if (designNeeded) {
+            for (DesignFeedback feedback : designFeedbacks) {
+                translator.translateDesignBody(prefLanguage, feedback);
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
         long start = System.nanoTime();
@@ -228,31 +202,31 @@ public class MassExecutor {
         MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
         QFSemSettings qfSemSettings = new QFSemSettings();
-        qfSemSettings.setFilePath("src/main/resources/exam-results/src");
-        qfSemSettings.setMethodName("grayCodeStrings");
-        qfSemSettings.setRecursionAllowed("true");
-        qfSemSettings.setWhileLoop("-1");
-        qfSemSettings.setForLoop("2");
-        qfSemSettings.setForEachLoop("-1");
-        qfSemSettings.setIfElseStmt("0");
-        qfSemSettings.setDoWhileLoop("-1");
-        qfSemSettings.setReturnType("int");
+//        qfSemSettings.setFilePath("src/main/resources/exam-results/src");
+//        qfSemSettings.setMethodName("grayCodeStrings");
+//        qfSemSettings.setRecursionAllowed("true");
+//        qfSemSettings.setWhileLoop("-1");
+//        qfSemSettings.setForLoop("2");
+//        qfSemSettings.setForEachLoop("-1");
+//        qfSemSettings.setIfElseStmt("0");
+//        qfSemSettings.setDoWhileLoop("-1");
+//        qfSemSettings.setReturnType("int");
 
-        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
+//        SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemSettings);
 
 
         QFStyleSettings qfStyleSettings = new QFStyleSettings();
-        qfStyleSettings.setNamesLevel("ADVANCED");
-        qfStyleSettings.setCompLevel("ADVANCED");
-        qfStyleSettings.setMainLevel("ADVANCED");
-        qfStyleSettings.setMethodName("[ADVANCED]");
+        qfStyleSettings.setNamesLevel("ADV");
+        qfStyleSettings.setCompLevel("ADV");
+        qfStyleSettings.setMainLevel("ADV");
+        qfStyleSettings.setMethodName("[AA]");
         qfStyleSettings.setBasisLevel("ADVANCED");
         qfStyleSettings.setClassLength("10");
         qfStyleSettings.setMethodLength("10");
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(qfStyleSettings).build();
 
-        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(qfSemSettings).build();
 
 
         //targetProject("exam-results/src/compiledSources/GrayCode.java")
@@ -301,5 +275,4 @@ public class MassExecutor {
         long end = System.nanoTime() - start;
         System.out.println("Feedback generated in: " + end * Math.pow(10.0, -9.0) + " sec");
     }
-
 }

@@ -1,21 +1,32 @@
-package eu.qped.java.checkers.semantics.configs;
+package eu.qped.java.checkers.mass;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class SemanticMethodConfig {
+public class SemanticSettingItem {
+
+    private String filePath;
 
     private String methodName;
+
     private Boolean recursionAllowed;
+
     private Integer whileLoop;
+
     private Integer forLoop;
+
     private Integer forEachLoop;
+
     private Integer ifElseStmt;
+
     private Integer doWhileLoop;
+
     private String returnType;
 
 }

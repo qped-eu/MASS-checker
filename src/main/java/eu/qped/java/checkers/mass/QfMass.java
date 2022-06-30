@@ -6,14 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QFSemSettings extends QfObjectBase {
+public class QfMass extends QfObjectBase {
 
-    private List<SemanticSettingItem> semantic;
+    private QFSemSettings semantic;
+
+    private QFStyleSettings style;
 
 }

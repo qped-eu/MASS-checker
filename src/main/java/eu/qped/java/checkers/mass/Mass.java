@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.mass;
 
 import eu.qped.framework.Checker;
+import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
@@ -8,26 +9,26 @@ import eu.qped.java.checkers.classdesign.ClassConfigurator;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticConfigurator;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class Mass implements Checker {
 
     @QfProperty
+    private FileInfo file;
+
+    @QfProperty
     private QFMainSettings mainSettings;
 
     @QfProperty
-    private QFStyleSettings styleSettings;
-
-    @QfProperty
-    private QFSemSettings semSettings;
+    private QfMass mass;
 
     @QfProperty
     private QFClassSettings classSettings;
@@ -37,19 +38,22 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        // Main Settings
-        MainSettings mainSettings = new MainSettings(this.mainSettings);
+            MainSettings mainSettings = new MainSettings(this.mainSettings);
 
         // Syntax Checker
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(qfObject.getAnswer()).build();
-
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
+        if (file != null) {
+            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
+        } else {
+            syntaxChecker.setStringAnswer(qfObject.getAnswer());
+        }
         // Style Checker
 
-        StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(styleSettings).build();
+        StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         // Semantic Checker
-        SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(semSettings);
-        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+
+        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
         // Design Checker
         DesignChecker designChecker = DesignChecker.builder().build(); //TODO is this correct?
@@ -68,7 +72,6 @@ public class Mass implements Checker {
         List<StyleFeedback> styleFeedbacks;
         styleFeedbacks = massExecutor.getStyleFeedbacks();
 
-
         List<SyntaxFeedback> syntaxFeedbacks;
         syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
 
@@ -78,31 +81,32 @@ public class Mass implements Checker {
         List<ClassFeedback> classFeedbacks;
         classFeedbacks = massExecutor.getClassFeedbacks();
 
-
         String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + classFeedbacks.size() + 100];
 
         int i = 0;
 
         for (StyleFeedback styleFeedback : styleFeedbacks) {
             result[i] = "style Feedback";
-            result[i + 1] = styleFeedback.getDesc()
-                    + NEW_LINE
-                    + styleFeedback.getContent()
-                    + NEW_LINE
-                    + styleFeedback.getLine()
-                    + NEW_LINE
-                    + styleFeedback.getExample()
-                    + NEW_LINE
-                    + "------------------------------------------------------------------------------";
+            result[i + 1] =
+                    styleFeedback.getFile()
+                            + NEW_LINE
+                            + styleFeedback.getDesc()
+                            + NEW_LINE
+                            + styleFeedback.getContent()
+                            + NEW_LINE
+                            + styleFeedback.getLine()
+                            + NEW_LINE
+                            + styleFeedback.getExample()
+                            + NEW_LINE;
             i = i + 2;
         }
 
         for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
-        result[i] = "semantic Feedback";
-        result[i + 1] = semanticFeedback.getBody() + NEW_LINE
-                + "--------------------------------------------------";
-        i = i + 2;
-    }
+            result[i] = "semantic Feedback";
+            result[i + 1] = semanticFeedback.getBody() + NEW_LINE
+                    + "--------------------------------------------------";
+            i = i + 2;
+        }
 
         for (ClassFeedback classFeedback : classFeedbacks) {
             result[i] = "class Feedback";
@@ -112,16 +116,16 @@ public class Mass implements Checker {
         }
 
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
-        result[i + 1] = ""
-                + syntax.toString()
-                + NEW_LINE
-                + "--------------------------------------------------"
-        ;
-        i = i + 2;
-    }
+            result[i + 1] = ""
+                    + syntax.toString()
+                    + NEW_LINE
+                    + "--------------------------------------------------"
+            ;
+            i = i + 2;
+        }
 
 
         qfObject.setFeedback(result);
-}
+    }
 
 }
