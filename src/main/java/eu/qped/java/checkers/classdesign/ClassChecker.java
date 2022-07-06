@@ -54,18 +54,20 @@ public class ClassChecker implements Checker {
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
         classFeedbacks.addAll(classMatcher.generateClassNameFeedback(classDecls));
 
-        ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(ClassMemberType.FIELD);
-        ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(ClassMemberType.METHOD);
-        InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo);
         for(Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry : matchedDeclInfo.entrySet()) {
             ClassOrInterfaceDeclaration classDecl = entry.getValue();
             ClassInfo classInfo = entry.getKey();
+
+            ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(ClassMemberType.FIELD, classInfo.getCustomFieldFeedback());
+            ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(ClassMemberType.METHOD, classInfo.getCustomMethodFeedback());
+
+            InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo, classInfo.getCustomInheritanceFeedback());
 
             List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>(classInfo.getFieldKeywordConfigs());
             List<MethodKeywordConfig> methodKeywordConfigs = new ArrayList<>(classInfo.getMethodKeywordConfigs());
             ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedClassInfo(classInfo.getClassKeywordConfig());
 
-            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo));
+            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo, classInfo.getCustomClassFeedback()));
             classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getInheritsFromInfos(classInfo.getInheritsFrom())));
             classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getFieldInfos(fieldKeywordConfigs)));
             classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getMethodInfos(methodKeywordConfigs)));

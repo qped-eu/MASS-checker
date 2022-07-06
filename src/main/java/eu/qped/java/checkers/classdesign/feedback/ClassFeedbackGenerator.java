@@ -109,12 +109,14 @@ public final class ClassFeedbackGenerator {
         return FEEDBACK_MAP.getOrDefault(violationType, "");
     }
 
-    public static ClassFeedback generateFeedback(String className, String elementName, ClassFeedbackType violationType) {
+    public static ClassFeedback generateFeedback(String className, String elementName, ClassFeedbackType violationType, String customFeedback) {
         String feedbackBody = violationType+": "+getFeedbackBody(violationType);
         feedbackBody = feedbackBody.replaceAll(classPlaceholder, MarkdownFormatterUtility.asBold(className));
         feedbackBody = feedbackBody.replaceAll(elementPlaceholder, MarkdownFormatterUtility.asBold(elementName));
 
-        return new ClassFeedback(feedbackBody);
+        String feedbackMsg = feedbackBody + "\n\n" +customFeedback;
+
+        return new ClassFeedback(feedbackMsg);
     }
 
 }

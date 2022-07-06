@@ -36,7 +36,7 @@ public final class CheckerUtils {
         return possibleAccessMods;
     }
 
-    public static List<String> getCommonNonAccessModifiers(KeywordConfig keywordConfig) {
+    public static List<String> getCommonPossibleNonAccessModifiers(KeywordConfig keywordConfig) {
         List<String> nonAccessMods = new ArrayList<>();
 
         if(!keywordConfig.getAbstractModifier().equals(KeywordChoice.NO.toString())) {
@@ -56,9 +56,9 @@ public final class CheckerUtils {
     }
 
     /**
-     * Field Info Stuff
-     * @param fieldKeywordConfig
-     * @return
+     * Extract all possible modifiers, type and name from the field configuration provided by json
+     * @param fieldKeywordConfig field keyword modifiers from json
+     * @return expected element with all possible modifiers
      */
 
     public static ExpectedElement extractExpectedFieldInfo(FieldKeywordConfig fieldKeywordConfig) {
@@ -70,7 +70,7 @@ public final class CheckerUtils {
     }
 
     public static List<String> getNonAccessModifiersFromFieldConfig(FieldKeywordConfig keywordConfig) {
-        List<String> nonAccessMods = getCommonNonAccessModifiers(keywordConfig);
+        List<String> nonAccessMods = getCommonPossibleNonAccessModifiers(keywordConfig);
 
         if(!keywordConfig.getTransientModifier().equals(KeywordChoice.NO.toString())) {
             nonAccessMods.add("transient");
@@ -86,9 +86,9 @@ public final class CheckerUtils {
     }
 
     /**
-     * Method Info Stuff
-     * @param methodKeywordConfig
-     * @return
+     * Extract all possible modifiers, type and name from the method configuration provided by json
+     * @param methodKeywordConfig method keyword configuration from json
+     * @return expected element with all possible modifiers
      */
 
     public static ExpectedElement extractExpectedMethodInfo(MethodKeywordConfig methodKeywordConfig) {
@@ -123,12 +123,12 @@ public final class CheckerUtils {
 
     /**
      * Class Info Stuff
-     * @param classKeywordConfig
-     * @return
+     * @param classKeywordConfig class keyword configuration from json
+     * @return expected element with all possible modifiers
      */
     public static ExpectedElement extractExpectedClassInfo(ClassKeywordConfig classKeywordConfig) {
         List<String> possibleAccess = getPossibleAccessModifiers(classKeywordConfig);
-        List<String> nonAccessMods = getCommonNonAccessModifiers(classKeywordConfig);
+        List<String> nonAccessMods = getCommonPossibleNonAccessModifiers(classKeywordConfig);
         String type = getTypeFromClassConfig(classKeywordConfig);
         String name = getNameFromConfig(classKeywordConfig);
 
@@ -141,8 +141,8 @@ public final class CheckerUtils {
 
     /**
      * Inherits From Info Stuff
-     * @param keywordConfig
-     * @return
+     * @param keywordConfig keyword configuration about inherited classes from json
+     * @return expected element with all possible modifiers
      */
     public static ExpectedElement extractExpectedInheritsFromInfo(InheritsFromConfig keywordConfig) {
         String type = getTypeFromInheritsConfig(keywordConfig);

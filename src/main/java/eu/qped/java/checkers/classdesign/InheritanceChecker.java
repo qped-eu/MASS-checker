@@ -24,9 +24,11 @@ import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
 class InheritanceChecker {
 
     private final Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl;
+    private final List<String> customFeedback;
 
-    public InheritanceChecker(Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl) {
+    public InheritanceChecker(Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl, List<String> customFeedback) {
         this.matchedInfoDecl = matchedInfoDecl;
+        this.customFeedback = customFeedback;
     }
 
     /**
@@ -122,7 +124,7 @@ class InheritanceChecker {
                         ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
                                 currentClassTypeName,
                                 sameName,
-                                HIDDEN_FIELD);
+                                HIDDEN_FIELD, String.join("\n", customFeedback));
                         collectedFeedback.add(fb);
                     }
                     parIterator.remove();
@@ -186,7 +188,7 @@ class InheritanceChecker {
                     ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
                             currentClassTypeName,
                             parentMethodName+"()",
-                            violation);
+                            violation, String.join("\n", customFeedback));
                     collectedFeedback.add(fb);
                     parIterator.remove();
                     curIterator.remove();
@@ -268,7 +270,7 @@ class InheritanceChecker {
         } else {
             violation = DIFFERENT_INTERFACE_NAMES_EXPECTED;
         }
-        return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation);
+        return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation, String.join("\n", customFeedback));
     }
 
     /**
@@ -299,7 +301,7 @@ class InheritanceChecker {
         } else {
             violation = DIFFERENT_CLASS_NAMES_EXPECTED;
         }
-        return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation);
+        return ClassFeedbackGenerator.generateFeedback(currentClassName, "", violation, String.join("\n", customFeedback));
     }
 
     /**
@@ -311,7 +313,7 @@ class InheritanceChecker {
      */
     private ClassFeedback findTypeViolation(String currentClassName, String implementedNameMatch, String extendedNameMatch) {
         String violatingElement = implementedNameMatch.isBlank() ? extendedNameMatch : implementedNameMatch;
-        return ClassFeedbackGenerator.generateFeedback(currentClassName, violatingElement, WRONG_SUPER_CLASS_TYPE);
+        return ClassFeedbackGenerator.generateFeedback(currentClassName, violatingElement, WRONG_SUPER_CLASS_TYPE, String.join("\n", customFeedback));
     }
 
     /**

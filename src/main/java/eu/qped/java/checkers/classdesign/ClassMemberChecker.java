@@ -22,9 +22,11 @@ import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
 class ClassMemberChecker<T extends Node> {
 
     private final ClassMemberType CHECKER_TYPE;
+    private final List<String> customFeedback;
 
-    public ClassMemberChecker(ClassMemberType CHECKER_TYPE) {
+    public ClassMemberChecker(ClassMemberType CHECKER_TYPE, List<String> customFeedback) {
         this.CHECKER_TYPE = CHECKER_TYPE;
+        this.customFeedback = customFeedback;
     }
 
     /**
@@ -125,7 +127,7 @@ class ClassMemberChecker<T extends Node> {
                     violationFound = MISSING_METHODS;
                 }
             }
-            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(classTypeName, elementName, violationFound);
+            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(classTypeName, elementName, violationFound, String.join("\n", customFeedback));
             collectedFeedback.add(fb);
         }
         return collectedFeedback;
@@ -196,7 +198,7 @@ class ClassMemberChecker<T extends Node> {
             } else {
                 violation = MISSING_METHODS;
             }
-            return ClassFeedbackGenerator.generateFeedback(classTypeName, "", violation);
+            return ClassFeedbackGenerator.generateFeedback(classTypeName, "", violation, String.join("\n", customFeedback));
         }
         return null;
     }
