@@ -19,35 +19,73 @@ public final class CheckerUtils {
 
     public static List<String> getPossibleAccessModifiers(KeywordConfig keywordConfig) {
         List<String> possibleAccessMods = new ArrayList<>();
+        boolean containsYes = false;
 
-        if(!keywordConfig.getPublicModifier().equals(KeywordChoice.NO.toString())) {
+        //If we have yes here, we include these
+        if(keywordConfig.getPublicModifier().equals(KeywordChoice.YES.toString())) {
             possibleAccessMods.add("public");
+            containsYes = true;
         }
-        if(!keywordConfig.getProtectedModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getProtectedModifier().equals(KeywordChoice.YES.toString())) {
             possibleAccessMods.add("protected");
+            containsYes = true;
         }
-        if(!keywordConfig.getPrivateModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getPrivateModifier().equals(KeywordChoice.YES.toString())) {
             possibleAccessMods.add("private");
+            containsYes = true;
         }
-        if(!keywordConfig.getPackagePrivateModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getPackagePrivateModifier().equals(KeywordChoice.YES.toString())) {
             possibleAccessMods.add("");
+            containsYes = true;
         }
 
+        //If we don't have any yes and only no's, we take everything that is not no
+        if(!containsYes) {
+            if(!keywordConfig.getPublicModifier().equals(KeywordChoice.NO.toString())) {
+                possibleAccessMods.add("public");
+            }
+            if(!keywordConfig.getProtectedModifier().equals(KeywordChoice.NO.toString())) {
+                possibleAccessMods.add("protected");
+            }
+            if(!keywordConfig.getPrivateModifier().equals(KeywordChoice.NO.toString())) {
+                possibleAccessMods.add("private");
+            }
+            if(!keywordConfig.getPackagePrivateModifier().equals(KeywordChoice.NO.toString())) {
+                possibleAccessMods.add("");
+            }
+        }
         return possibleAccessMods;
     }
 
     public static List<String> getCommonPossibleNonAccessModifiers(KeywordConfig keywordConfig) {
         List<String> nonAccessMods = new ArrayList<>();
+        boolean containsYes = false;
 
-        if(!keywordConfig.getAbstractModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getAbstractModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("abstract");
+            containsYes = true;
         }
-        if(!keywordConfig.getStaticModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getStaticModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("static");
+            containsYes = true;
         }
-        if(!keywordConfig.getFinalModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getFinalModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("final");
+            containsYes = true;
         }
+
+        if(!containsYes) {
+            if(!keywordConfig.getAbstractModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("abstract");
+            }
+            if(!keywordConfig.getStaticModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("static");
+            }
+            if(!keywordConfig.getFinalModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("final");
+            }
+        }
+
         return nonAccessMods;
     }
 
@@ -63,7 +101,8 @@ public final class CheckerUtils {
 
     public static ExpectedElement extractExpectedFieldInfo(FieldKeywordConfig fieldKeywordConfig) {
         List<String> accessMod = getPossibleAccessModifiers(fieldKeywordConfig);
-        List<String> nonAccessMods = getNonAccessModifiersFromFieldConfig(fieldKeywordConfig);
+        List<String> nonAccessMods = getCommonPossibleNonAccessModifiers(fieldKeywordConfig);
+        nonAccessMods.addAll(getNonAccessModifiersFromFieldConfig(fieldKeywordConfig));
         String type = getTypeFromFieldConfig(fieldKeywordConfig);
         String name = getNameFromConfig(fieldKeywordConfig);
         return new ExpectedElement(accessMod, nonAccessMods, type, name);
@@ -71,13 +110,26 @@ public final class CheckerUtils {
 
     public static List<String> getNonAccessModifiersFromFieldConfig(FieldKeywordConfig keywordConfig) {
         List<String> nonAccessMods = getCommonPossibleNonAccessModifiers(keywordConfig);
+        boolean containsYes = false;
 
-        if(!keywordConfig.getTransientModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getTransientModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("transient");
+            containsYes = true;
         }
-        if(!keywordConfig.getVolatileModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getVolatileModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("volatile");
+            containsYes = true;
         }
+
+        if(!containsYes) {
+            if(!keywordConfig.getTransientModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("transient");
+            }
+            if(!keywordConfig.getVolatileModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("volatile");
+            }
+        }
+
         return nonAccessMods;
     }
 
@@ -93,7 +145,8 @@ public final class CheckerUtils {
 
     public static ExpectedElement extractExpectedMethodInfo(MethodKeywordConfig methodKeywordConfig) {
         List<String> accessMod = getPossibleAccessModifiers(methodKeywordConfig);
-        List<String> nonAccessMods = getNonAccessModifiersFromMethodConfig(methodKeywordConfig);
+        List<String> nonAccessMods = getCommonPossibleNonAccessModifiers(methodKeywordConfig);
+        nonAccessMods.addAll(getNonAccessModifiersFromMethodConfig(methodKeywordConfig));
         String type = getTypeFromMethodConfig(methodKeywordConfig);
         String name = getNameFromConfig(methodKeywordConfig);
         return new ExpectedElement(accessMod, nonAccessMods, type, name);
@@ -102,15 +155,32 @@ public final class CheckerUtils {
 
     public static List<String> getNonAccessModifiersFromMethodConfig(MethodKeywordConfig keywordConfig) {
         List<String> nonAccessMods = new ArrayList<>();
-        if(!keywordConfig.getSynchronizedModifier().equals(KeywordChoice.NO.toString())) {
+        boolean containsYes = false;
+        if(keywordConfig.getSynchronizedModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("synchronized");
+            containsYes = true;
         }
-        if(!keywordConfig.getNativeModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getNativeModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("native");
+            containsYes = true;
         }
-        if(!keywordConfig.getDefaultModifier().equals(KeywordChoice.NO.toString())) {
+        if(keywordConfig.getDefaultModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("default");
+            containsYes = true;
         }
+
+        if(!containsYes) {
+            if(!keywordConfig.getSynchronizedModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("synchronized");
+            }
+            if(!keywordConfig.getNativeModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("native");
+            }
+            if(!keywordConfig.getDefaultModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("default");
+            }
+        }
+
 
         return nonAccessMods;
     }

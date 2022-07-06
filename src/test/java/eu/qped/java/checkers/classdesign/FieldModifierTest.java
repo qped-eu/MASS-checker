@@ -5,10 +5,7 @@ import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.mass.QFClassSettings;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
+import org.junit.experimental.theories.*;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
@@ -30,13 +27,14 @@ public class FieldModifierTest {
     @DataPoints("nonAccessModifiers")
     public static String[] nonAccessValues() {
         return new String[]{
-                //"abstract",
                 "static",
                 "final",
                 "transient",
-                "volatile"
+                "volatile",
+                ""
         };
     }
+
 
     private static void setAccessModifier(FieldKeywordConfig field, String accessMod) {
         String yes = KeywordChoice.YES.toString();
@@ -57,16 +55,20 @@ public class FieldModifierTest {
         runnableMap.put("final", () -> field.setFinalModifier(yes));
         runnableMap.put("transient", () -> field.setTransientModifier(yes));
         runnableMap.put("volatile", () -> field.setVolatileModifier(yes));
+        runnableMap.put("", () -> {});
 
         runnableMap.get(nonAccessMod).run();
     }
 
 
-    //TODO: NonAccess for Methods (default)
+
 
     @Theory
     public void modifierCombinations(@FromDataPoints("accessModifiers") String accessMod,
-                                     @FromDataPoints("nonAccessModifiers") String nonAccessMod) {
+                                     @FromDataPoints("nonAccessModifiers") String firstNonAccess,
+                                     @FromDataPoints("nonAccessModifiers") String secondNonAccess) {
+
+        if(firstNonAccess.equals(secondNonAccess)) return;
 
         QFClassSettings qfClassSettings = new QFClassSettings();
         ArrayList<ClassInfo> classInfos = new ArrayList<>();
@@ -77,7 +79,8 @@ public class FieldModifierTest {
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
         setAccessModifier(field, accessMod);
-        setNonAccessModifier(field, nonAccessMod);
+        setNonAccessModifier(field, firstNonAccess);
+        setNonAccessModifier(field, secondNonAccess);
         field.setFieldType("int");
         field.setName("a");
 
@@ -89,8 +92,8 @@ public class FieldModifierTest {
 
         String source = "class TestClass {" +
                 accessMod +
-                " "
-                + nonAccessMod +
+                " " + firstNonAccess +
+                " " + secondNonAccess +
                 " int a;" +
                 "}";
 

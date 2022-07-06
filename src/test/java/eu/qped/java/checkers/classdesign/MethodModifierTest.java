@@ -1,14 +1,12 @@
 package eu.qped.java.checkers.classdesign;
 
+import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
 import eu.qped.java.checkers.mass.QFClassSettings;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
+import org.junit.experimental.theories.*;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
@@ -29,13 +27,32 @@ public class MethodModifierTest {
     @DataPoints("nonAccessModifiers")
     public static String[] nonAccessValues() {
         return new String[]{
-                //"abstract", //TODO: Test separately
                 "static",
                 "final",
-                //"default", //TODO: Test separately
                 "synchronized",
                 "native",
+                "",
         };
+    }
+
+
+    @DataPoints("abstractAccess")
+    public static String[] abstractAccessValues() {
+        return new String[] {
+                "public",
+                "protected",
+                ""
+        };
+    }
+
+    @DataPoint("abstractKeyword")
+    public static String abstractValue() {
+        return "abstract";
+    }
+
+    @DataPoint("defaultKeyword")
+    public static String defaultValue() {
+        return "default";
     }
 
     private static void setAccessModifier(MethodKeywordConfig method, String accessMod) {
@@ -58,8 +75,54 @@ public class MethodModifierTest {
         runnableMap.put("default", () -> method.setDefaultModifier(yes));
         runnableMap.put("synchronized", () -> method.setSynchronizedModifier(yes));
         runnableMap.put("native", () -> method.setNativeModifier(yes));
+        runnableMap.put("", () -> {});
+
 
         runnableMap.get(nonAccessMod).run();
+    }
+
+    //TODO: NonAccess for Methods (default)
+    @Theory
+    public void abstractModifierCombinations(@FromDataPoints("abstractAccess") String accessMod,
+                                             @FromDataPoints("abstractKeyword") String abstractMod) {
+
+        QFClassSettings qfClassSettings = new QFClassSettings();
+        ArrayList<ClassInfo> classInfos = new ArrayList<>();
+        ClassInfo classInfo = new ClassInfo();
+        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
+        classInfo.setClassKeywordConfig(classKeywordConfig);
+
+        List<MethodKeywordConfig> methodKeywordConfigs = new ArrayList<>();
+        MethodKeywordConfig method = new MethodKeywordConfig();
+        setAccessModifier(method, accessMod);
+        setNonAccessModifier(method, abstractMod);
+        method.setMethodType("int");
+        method.setName("test");
+
+        methodKeywordConfigs.add(method);
+        classInfo.setMethodKeywordConfigs(methodKeywordConfigs);
+
+        classInfos.add(classInfo);
+        qfClassSettings.setClassInfos(classInfos);
+
+        String source = "class TestClass {" +
+                accessMod +
+                " "
+                + abstractMod +
+                " int test() {}" +
+                "}";
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+
     }
 
     @Theory
