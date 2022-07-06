@@ -20,9 +20,7 @@ public enum ClassFeedbackType {
 
     //Class Errors
     MISSING_INTERFACE_IMPLEMENTATION("MissingInterfaceImplementationError"),
-    MISSING_ABSTRACT_CLASS_EXTENSION("MissingAbstractClassExtensionError"),
-    MISSING_STATIC_CLASS_EXTENSION("MissingStaticClassExtensionError"),
-    MISSING_FINAL_CLASS_EXTENSION("MissingFinalClassExtensionError"),
+    //MISSING_ABSTRACT_CLASS_EXTENSION("MissingAbstractClassExtensionError"),
     MISSING_CLASS_EXTENSION("MissingClassExtensionError"),
     WRONG_CLASS_TYPE("ClassTypeError"),
     WRONG_CLASS_NAME("ClassNameError"),
@@ -30,7 +28,6 @@ public enum ClassFeedbackType {
     WRONG_SUPER_CLASS_NAME("SuperClassNameError"),
     DIFFERENT_INTERFACE_NAMES_EXPECTED("DifferentInterfaceNamesExpected"),
     DIFFERENT_CLASS_NAMES_EXPECTED("DifferentClassNamesExpected");
-
 
     private final String error;
     ClassFeedbackType(final String error) {

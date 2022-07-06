@@ -1,12 +1,14 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import eu.qped.java.checkers.classdesign.enums.AccessModifier;
 import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.enums.KeywordType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
@@ -41,16 +43,14 @@ class ClassMatcher {
 
             while (infoIterator.hasNext()) {
                 ClassInfo classInfo = infoIterator.next();
-                String classTypeName = classInfo.getClassKeywords();
+                ClassKeywordConfig classKeywordConfig = classInfo.getClassKeywordConfig();
+                String className = classKeywordConfig.getName();
 
-                if (classTypeName.isBlank()) {
+                if (className.isBlank()) {
                     continue;
                 }
 
-                ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(classTypeName);
-                String name = elemInfo.getName();
-
-                boolean nameMatch = isClassNameMatch(classDecl, name);
+                boolean nameMatch = isClassNameMatch(classDecl, className);
 
                 if(nameMatch) {
                     matchedInfoDecl.put(classInfo, classDecl);
@@ -68,8 +68,7 @@ class ClassMatcher {
             ClassInfo classInfo = classInfos.remove(0);
             matchedInfoDecl.put(classInfo, classDecl);
 
-            ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassKeywords());
-            String elementName = elemInfo.getName();
+            String elementName = classInfo.getClassKeywordConfig().getName();
 
             if(isClassNameMatch(classDecl, elementName)) {
                 classDecls.remove(0);
@@ -90,7 +89,10 @@ class ClassMatcher {
 
         while(classDeclIterator.hasNext()) {
             ClassOrInterfaceDeclaration classDecl = classDeclIterator.next();
-            collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(classDecl.getNameAsString(), "",
+            String className = classDecl.getNameAsString();
+            String classType = classDecl.isInterface() ? "interface" : "class";
+            String classTypeName = classType + " " + className;
+            collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(classTypeName, "",
                     WRONG_CLASS_NAME));
             classDeclIterator.remove();
         }
@@ -107,7 +109,7 @@ class ClassMatcher {
     public List<ClassFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo) {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
-        boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getAccessModifier());
+        boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getPossibleAccessModifiers());
         boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getNonAccessModifiers());
         boolean typeMatch = isClassTypeMatch(classDecl, elemInfo.getType());
 
@@ -117,13 +119,18 @@ class ClassMatcher {
         } else if(!nonAccessMatch) {
             violation = WRONG_CLASS_NON_ACCESS_MODIFIER;
         } else if(!accessMatch){
+
             violation = WRONG_CLASS_ACCESS_MODIFIER;
         }
 
         if(violation != null) {
+            String className = classDecl.getNameAsString();
+            String classType = classDecl.isInterface() ? "interface" : "class";
+            String classTypeName = classType +" "+className;
+
             collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(
-                    classDecl.getNameAsString(),
-                    classDecl.getNameAsString(),
+                    classTypeName,
+                    "",
                     violation));
         }
 
@@ -136,9 +143,6 @@ class ClassMatcher {
      * @param classDecl class declaration to check the class type from
      */
     private boolean isClassTypeMatch(ClassOrInterfaceDeclaration classDecl, String classType) {
-        if(classType.equals(KeywordType.OPTIONAL.toString())) {
-            return true;
-        }
         boolean foundTypeMatch = false;
 
         if(classType.equals(ClassType.INTERFACE.toString())) {

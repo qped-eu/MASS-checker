@@ -1,7 +1,6 @@
 package eu.qped.java.checkers.classdesign.feedback;
 
 import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
-import eu.qped.java.checkers.coverage.enums.FeedbackType;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 
 import java.util.*;
@@ -57,15 +56,6 @@ public final class ClassFeedbackGenerator {
         feedbackMap.put(MISSING_INTERFACE_IMPLEMENTATION,
                 "Expected interface implementation missing in "+classPlaceholder+".\n" +
                 "Has the interface, mentioned in the task, been implemented in "+classPlaceholder+"?");
-        feedbackMap.put(MISSING_ABSTRACT_CLASS_EXTENSION,
-                "Expected abstract class extension missing in "+classPlaceholder+".\n" +
-                "Has the abstract class, mentioned in the task, been extended in "+classPlaceholder+"?");
-        feedbackMap.put(MISSING_STATIC_CLASS_EXTENSION,
-                "Expected class extension missing in "+classPlaceholder+".\n" +
-                "Has the static class, mentioned in the task, been extended in "+classPlaceholder+"?");
-        feedbackMap.put(MISSING_FINAL_CLASS_EXTENSION,
-                "Expected class extension missing in "+classPlaceholder+".\n" +
-                "Has the final class, mentioned in the task, been extended in "+classPlaceholder+"?");
         feedbackMap.put(MISSING_CLASS_EXTENSION,
                 "Expected class extension missing in "+classPlaceholder+".\n" +
                 "Have the required classes, mentioned in the task, been extended in "+classPlaceholder+"?");

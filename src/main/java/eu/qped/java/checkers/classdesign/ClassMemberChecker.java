@@ -6,17 +6,13 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
-import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
-import eu.qped.java.checkers.classdesign.enums.KeywordType;
+import eu.qped.java.checkers.classdesign.enums.*;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
-
-import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.MISSING_FIELDS;
-import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.MISSING_METHODS;
+import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
 
 /**
  * Keyword Checker for fields and methods, checking for access, non access modifiers, types and names
@@ -39,7 +35,7 @@ class ClassMemberChecker<T extends Node> {
      * The splitting is done by extracting the relevant piece from the string, shortening the string by the amount removed
      * This is done for all keywords, such that the string is empty by the end
      * The order to split the string is important, as they depend on the previous operation.
-     * @param expectedElements expected modifiers in a node
+     //* @param expectedElements expected modifiers in a node
      */
     public List<ClassFeedback> checkModifiers(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedElements) {
         if(expectedElements.isEmpty()) {
@@ -47,14 +43,16 @@ class ClassMemberChecker<T extends Node> {
         }
         List<ClassFeedback> modifierFeedback = new ArrayList<>();
         String className = classDecl.getNameAsString();
+        String classType = classDecl.isInterface() ?  "interface" : "class";
+        String classTypeName = classType +" " +className;
         List<NodeWithModifiers<T>> presentElements = getAllFieldsOrMethods(classDecl);
 
-        ClassFeedback sizeFb = checkIfLessThanExpectedPresent(className, presentElements, expectedElements);
+        ClassFeedback sizeFb = checkIfLessThanExpectedPresent(classTypeName, presentElements, expectedElements);
         if(sizeFb != null) {
             modifierFeedback.add(sizeFb);
         }
         removeExactMatches(presentElements, expectedElements);
-        modifierFeedback.addAll(findViolation(className, presentElements, expectedElements));
+        modifierFeedback.addAll(findViolation(classTypeName, presentElements, expectedElements));
         return modifierFeedback;
     }
 
@@ -62,7 +60,7 @@ class ClassMemberChecker<T extends Node> {
      * checks if an element with modifiers matches an exact combination of access and non access modifier
      * removes the element if it has an exact match
      * @param presentElements all elements that are present in the current class
-     * @param expectedElements all expected elements in the form of ExpectedElementInfo
+     //* @param expectedElements all expected elements in the form of ExpectedElementInfo
      */
     private void removeExactMatches(List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
         if(expectedElements.isEmpty()) {
@@ -96,7 +94,7 @@ class ClassMemberChecker<T extends Node> {
      * @param presentElements elements present in the class
      * @param expectedElements expected elements from class info
      */
-    private List<ClassFeedback> findViolation(String className, List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
+    private List<ClassFeedback> findViolation(String classTypeName, List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
         if(expectedElements.isEmpty()) {
             return new ArrayList<>();
         }
@@ -107,7 +105,15 @@ class ClassMemberChecker<T extends Node> {
             if(expectedElements.isEmpty()) {
                 return collectedFeedback;
             }
-            List<Boolean> mostLikelyMatch = getMostLikelyMatchResult(presentElement, expectedElements);
+            Map<ExpectedElement, List<Boolean>> likelyMatchMap  = getMostLikelyMatchResult(presentElement, expectedElements);
+
+            ExpectedElement matchingElement = null;
+            Optional<ExpectedElement> optionalElem = likelyMatchMap.keySet().stream().findFirst();
+            if(optionalElem.isPresent()) {
+                matchingElement = optionalElem.get();
+            }
+            List<Boolean> mostLikelyMatch = likelyMatchMap.get(matchingElement);
+
             ClassFeedbackType violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(mostLikelyMatch);
 
             String elementName = getVariableName(presentElement);
@@ -119,7 +125,7 @@ class ClassMemberChecker<T extends Node> {
                     violationFound = MISSING_METHODS;
                 }
             }
-            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(className, elementName, violationFound);
+            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(classTypeName, elementName, violationFound);
             collectedFeedback.add(fb);
         }
         return collectedFeedback;
@@ -135,13 +141,14 @@ class ClassMemberChecker<T extends Node> {
      * more than the other object.
      * If no match can be found, we assume that the expected element simply does not exist and return that.
      * @param presentElement Element to find a match for
-     * @param expectedElements all possible expected elements
+     //* @param expectedElements all possible expected elements
      * @return the most likely match, in form of a boolean list, indicating the presence of keywords in the declaration
      */
-    private List<Boolean> getMostLikelyMatchResult(NodeWithModifiers<T> presentElement, List<ExpectedElement> expectedElements) {
+    private Map<ExpectedElement, List<Boolean>> getMostLikelyMatchResult(NodeWithModifiers<T> presentElement, List<ExpectedElement> expectedElements) {
         int maxCount = 0;
         ExpectedElement maxExpectedElement = expectedElements.get(0);
         List<Boolean> maxMatchingResult = Arrays.asList(false, false, false, false); //Assume that the element is missing
+        Map<ExpectedElement, List<Boolean>> matchingMap = new HashMap<>();
 
         for (ExpectedElement expectedElement : expectedElements) {
             List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
@@ -171,14 +178,15 @@ class ClassMemberChecker<T extends Node> {
         }
         expectedElements.remove(maxExpectedElement);
 
-        return maxMatchingResult;
+        matchingMap.put(maxExpectedElement, maxMatchingResult);
+        return matchingMap;
     }
 
     /**
      * Checks if more or equal elements are there compared to the expected amount
      * @param expectedElements expected keywords, gives the size of the expected elements
      */
-    private ClassFeedback checkIfLessThanExpectedPresent(String className, List<NodeWithModifiers<T>> presentElements,
+    private ClassFeedback checkIfLessThanExpectedPresent(String classTypeName, List<NodeWithModifiers<T>> presentElements,
                                                          List<ExpectedElement> expectedElements) {
 
         if(expectedElements.size() > presentElements.size()) {
@@ -188,7 +196,7 @@ class ClassMemberChecker<T extends Node> {
             } else {
                 violation = MISSING_METHODS;
             }
-            return ClassFeedbackGenerator.generateFeedback(className, "", violation);
+            return ClassFeedbackGenerator.generateFeedback(classTypeName, "", violation);
         }
         return null;
     }
@@ -222,10 +230,6 @@ class ClassMemberChecker<T extends Node> {
             return false;
         }
 
-        if(expectedType.equals(KeywordType.OPTIONAL.toString())) {
-            return true;
-        }
-
         String presentType;
         if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
             FieldDeclaration fieldElement = (FieldDeclaration) elem;
@@ -244,9 +248,6 @@ class ClassMemberChecker<T extends Node> {
      * @return true if exact match
      */
     private boolean isElementNameMatch(NodeWithModifiers<T> elem, String expectedElementName) {
-        if(expectedElementName.equals(KeywordType.OPTIONAL.toString())) {
-            return true;
-        }
         String elementName = getVariableName(elem);
         return expectedElementName.equals(elementName);
     }
@@ -300,7 +301,7 @@ class ClassMemberChecker<T extends Node> {
      */
     private List<Boolean> getMatchingResult(NodeWithModifiers<T> presentElement, ExpectedElement expectedElement) {
         List<Boolean> matching = new ArrayList<>();
-        boolean accessMatch = CheckerUtils.isAccessMatch(presentElement.getAccessSpecifier().asString(), expectedElement.getAccessModifier());
+        boolean accessMatch = CheckerUtils.isAccessMatch(presentElement.getAccessSpecifier().asString(), expectedElement.getPossibleAccessModifiers());
         boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(presentElement.getModifiers(), expectedElement.getNonAccessModifiers());
         boolean typeMatch = isElementTypeMatch(presentElement, expectedElement.getType());
         boolean nameMatch = isElementNameMatch(presentElement, expectedElement.getName());

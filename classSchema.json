@@ -8,53 +8,500 @@
     "description": "Contains all information for present classes.",
     "documentation": "This holds all information about all possible classes inside the given files. Note that not only outer but also inner classes should have infos created here, if you wish to check them for properties.",
     "required": [
-      "classKeywords"
+      "classKeywordConfig",
+      "fieldCollection",
+      "methodCollection",
+      "inheritsFrom",
+      "allowMethodOverride",
+      "allowMethodOverload",
+      "allowHelperMethods"
     ],
     "properties": {
-      "classKeywords": {
-        "title": "Expected Class Keywords",
-        "type": "string",
-        "description": "Modifiers, type and name of the current class.",
-        "default": "class TestClass",
-        "documentation": "All expected keywords of the current class declaration. This only concerns the current class and follows the same pattern as the Java class declaration. Format: [access modifier] [non access modifier] [class/interface] [name]. ### Examples: - public abstract class Number - interface Employee",
-        "pattern" : "\\s*(\\w*)\\s+(\\w+)"
+      "classKeywordConfig": {
+        "type": "object",
+        "properties": {
+          "publicModifier": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no",
+              "don't care"
+            ],
+            "title": "Public Modifier",
+            "description": "Set if you expect the public keyword",
+            "default": "don't care"
+          },
+          "protectedModifier": {
+            "type": "string",
+            "title": "Protected Modifier",
+            "enum": [
+              "yes",
+              "no",
+              "don't care"
+            ],
+            "description": "Set if you expect the protected keyword",
+            "default": "don't care"
+          },
+          "privateModifier": {
+            "type": "string",
+            "title": "Private Modifier",
+            "enum": [
+              "yes",
+              "no",
+              "don't care"
+            ],
+            "description": "Set if you expect the private keyword",
+            "default": "don't care"
+          },
+          "packageprivateModifier": {
+            "type": "string",
+            "title": "Package Private Modifier",
+            "enum": [
+              "yes",
+              "no",
+              "don't care"
+            ],
+            "description": "Set if you expect the package private (empty) keyword",
+            "default": "don't care"
+          },
+          "abstractModifier": {
+            "type": "string",
+            "title": "Abstract Modifier",
+            "description": "Set if you expect the abstract keyword",
+            "enum": [
+              "yes",
+              "no",
+              "don't care"
+            ],
+            "default": "don't care"
+          },
+          "staticModifier": {
+            "type": "string",
+            "title": "Static Modifier",
+            "description": "Set if you expect the static keyword",
+            "enum": [
+              "yes",
+              "no",
+              "don't care"
+            ],
+            "default": "don't care"
+          },
+          "finalModifier": {
+            "type": "string",
+            "title": "Final Modifier",
+            "description": "Set if you expect the field keyword",
+            "enum": [
+              "yes",
+              "no",
+              "don't care"
+            ],
+            "default": "don't care"
+          },
+          "classType": {
+            "type": "string",
+            "title": "Class Type",
+            "description": "Set to \"yes\" if you expect the type to be a class. If set to \"no\", the type \"class\" is disallowed.",
+            "enum": [
+              "yes",
+              "no",
+              "either"
+            ],
+            "default": "yes"
+          },
+          "interfaceType": {
+            "type": "string",
+            "title": "Interface Type",
+            "description": "Set to \"yes\" if you expect the type to be an interface. If set to \"no\", the type \"interface\" is disallowed.",
+            "enum": [
+              "yes",
+              "no",
+              "either"
+            ],
+            "default": "no"
+          },
+          "className": {
+            "type": "string",
+            "title": "Class Name",
+            "description": "Set to the expected class name.",
+            "default": "TestClass"
+          }
+        },
+        "required": [
+          "className"
+        ],
+        "description": "Modifiers, type and name can be set here.",
+        "title": "Class Keyword Config"
       },
       "inheritsFrom": {
-        "title": "Expected Superclass Collection",
         "type": "array",
-        "description": "Contains all expected superclasses.",
         "documentation": "All expected super classes of the current class declaration.  Format:[class/interface] [name]. ### Examples: - interface Employee - abstract class Number",
         "items": {
-          "type": "string",
-          "title": "Expected Superclass",
-          "description": "Type and name of an inherited super class.",
-          "pattern" : "\\s*(\\w*)\\s+(\\w+)"
+          "type": "object",
+          "properties": {
+            "classType": {
+              "type": "string",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "If the expected class is of type \"class\"",
+              "title": "Expected Class Type"
+            },
+            "interfaceType": {
+              "type": "string",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "If the expected class is of type \"interface\"",
+              "title": "Expected Interface Type"
+            },
+            "className": {
+              "type": "string",
+              "title": "Class Name of Expected Super Class",
+              "description": "Set to the expected name of the super class, that this class is supposed to inherit."
+            }
+          },
+          "title": "Expected Superclass Collection",
+          "description": "Contains all expected superclasses."
         }
       },
-      "fieldKeywords": {
+      "fieldCollection": {
         "type": "array",
-        "description": "Contains all expected keywords for present fields.",
-        "title": "Field Keywords Collection",
-        "documentation": "All expected keywords of the variable declarations. All keyword inputs should have the same format as the Java variable declarations. Format: [access modifier] [non access modifier] [type] [name] Note that anything after the name, such as initialisations, will not be considered and can be omitted. Additionally, if one wishes to allow any keyword for a particular keyword type, one can replace the keyword with a *(asterisk) to indicate that any value is allowed there. ### Examples: - private String name - private int * (indicating that the name can be any)",
         "items": {
-          "title": "Field Keywords",
-          "type": "string",
-          "description": "Modifiers, type and name of a field declaration.",
-          "pattern" : "\\s*(\\w*)\\s+(\\w+)(;|=)?"
-        }
+          "type": "object",
+          "properties": {
+            "publicModifier": {
+              "type": "string",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "title": "Public Modifier",
+              "description": "Set if you expect the public keyword",
+              "default": "don't care"
+            },
+            "protectedModifier": {
+              "type": "string",
+              "title": "Protected Modifier",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "Set if you expect the protected keyword",
+              "default": "don't care"
+            },
+            "privateModifier": {
+              "type": "string",
+              "title": "Private Modifier",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "Set if you expect the private keyword",
+              "default": "don't care"
+            },
+            "packageprivateModifier": {
+              "type": "string",
+              "title": "Package Private Modifier",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "Set if you expect the package private (empty) keyword",
+              "default": "don't care"
+            },
+            "abstractModifier": {
+              "type": "string",
+              "title": "Abstract Modifier",
+              "description": "Set if you expect the abstract keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "staticModifier": {
+              "type": "string",
+              "title": "Static Modifier",
+              "description": "Set if you expect the static keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "finalModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the final keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "synchronizedModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the synchronized keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "transientModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the transient keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "volatileModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the volatile keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "nativeModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the native keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "transitiveModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the transitive keyword",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "fieldType": {
+              "type": "string",
+              "title": "Field Type",
+              "description": "Type of the expected field as a word."
+            },
+            "fieldName": {
+              "type": "string",
+              "title": "Field Name",
+              "description": "Name of the expected field as a word."
+            }
+          },
+          "title": "Field Keyword Config"
+        },
+        "description": "Contains all information about fields",
+        "title": "All Information about Fields"
       },
-      "methodKeywords": {
+      "methodCollection": {
         "type": "array",
-        "title": "Method Keywords Collection",
-        "description": "Contains all expected keywords for all present methods.",
-        "documentation": "All expected keywords of the method declarations. The input here follows the same format as the Java method declarations. Format: [access modifier] [non access modifier] [return type] [name]. Anything after the name, such as further parameters, will not be considered and can be omitted. Additionally, if one wishes to allow any keyword, one can replace the keyword with a *(asterisk) to indicate that any value is allowed there. ### Examples: - protected String getName - *(asterisk) String getStatus (indicating that the access modifier can be any)",
         "items": {
-          "title": "Method Keywords",
-          "type": "string",
-          "description": "Modifiers, type and name of a method declaration.",
-          "pattern" : "\\s*(\\w*)\\s+(\\w+)\\(?\\)?"
-          
-        }
+          "type": "object",
+          "properties": {
+            "publicModifier": {
+              "type": "string",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "title": "Public Modifier",
+              "description": "Set if you expect the public keyword for the method",
+              "default": "don't care"
+            },
+            "protectedModifier": {
+              "type": "string",
+              "title": "Protected Modifier",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "Set if you expect the protected keyword for the method",
+              "default": "don't care"
+            },
+            "privateModifier": {
+              "type": "string",
+              "title": "Private Modifier",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "Set if you expect the private keyword for the method.",
+              "default": "don't care"
+            },
+            "packageprivateModifier": {
+              "type": "string",
+              "title": "Package Private Modifier",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "description": "Set if you expect the package private (empty) keyword for the method.",
+              "default": "don't care"
+            },
+            "abstractModifier": {
+              "type": "string",
+              "title": "Abstract Modifier",
+              "description": "Set if you expect the abstract keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "staticModifier": {
+              "type": "string",
+              "title": "Static Modifier",
+              "description": "Set if you expect the static keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "finalModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the final keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "defaultModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the default keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "synchronizedModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the synchronized keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "transientModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the transient keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "volatileModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the volatile keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "nativeModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the native keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "transitiveModifier": {
+              "type": "string",
+              "title": "Final Modifier",
+              "description": "Set if you expect the transitive keyword for the method.",
+              "enum": [
+                "yes",
+                "no",
+                "don't care"
+              ],
+              "default": "don't care"
+            },
+            "methodType": {
+              "type": "string",
+              "title": "Method Type",
+              "description": "Return type of the expected method as a word."
+            },
+            "methodName": {
+              "type": "string",
+              "title": "Method Name",
+              "description": "Name of the expected method as a word."
+            }
+          },
+          "title": "Field Keyword Config"
+        },
+        "description": "Contains all information about methods",
+        "title": "All Information about Methods"
+      },
+      "allowMethodOverride": {
+        "type": "boolean",
+        "description": "Set to true, if the tool should check for overridden methods in the current class.",
+        "title": "Allow Method Override",
+        "default": false
+      },
+      "allowMethodOverload": {
+        "type": "boolean",
+        "description": "Set to true, if the tool should check for overloaded methods in the current class.",
+        "title": "Allow Method Overload",
+        "default": false
+      },
+      "allowHelperMethods": {
+        "type": "boolean",
+        "title": "Allow Private Helper Methods",
+        "description": "If set to true, private helper methods inside of the class are going to be ignored by the checker.",
+        "default": false
       }
     }
   }

@@ -5,24 +5,24 @@ import java.util.Objects;
 
 public class ExpectedElement {
 
-    private String accessModifier;
+    private List<String> possibleAccessModifiers;
     private List<String> nonAccessModifiers;
     private String type;
     private String name;
 
-    public ExpectedElement(String accessMod, List<String> nonAccessMods, String type, String name) {
-        this.accessModifier = accessMod;
+    public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, String type, String name) {
+        this.possibleAccessModifiers = accessMod;
         this.nonAccessModifiers = nonAccessMods;
         this.type = type;
         this.name = name;
     }
 
-    public String getAccessModifier() {
-        return accessModifier;
+    public List<String> getPossibleAccessModifiers() {
+        return possibleAccessModifiers;
     }
 
-    public void setAccessModifier(String accessModifier) {
-        this.accessModifier = accessModifier;
+    public void setPossibleAccessModifiers(List<String> possibleAccessModifiers) {
+        this.possibleAccessModifiers = possibleAccessModifiers;
     }
 
     public List<String> getNonAccessModifiers() {
@@ -54,13 +54,13 @@ public class ExpectedElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExpectedElement that = (ExpectedElement) o;
-        return Objects.equals(accessModifier, that.accessModifier) &&
+        return Objects.equals(possibleAccessModifiers, that.possibleAccessModifiers) &&
                 Objects.equals(nonAccessModifiers, that.nonAccessModifiers) &&
                 Objects.equals(type, that.type) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accessModifier, nonAccessModifiers, type, name);
+        return Objects.hash(possibleAccessModifiers, nonAccessModifiers, type, name);
     }
 }

@@ -7,10 +7,12 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
+import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
+import eu.qped.java.checkers.classdesign.config.InheritsFromConfig;
+import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
+import eu.qped.java.checkers.classdesign.infos.*;
 
 import java.util.*;
 
@@ -44,7 +46,7 @@ public class ClassChecker implements Checker {
      * Check the parsed compilation units and compare them to the expected elements in class infos to generate
      * feedback. This method delegates each task to each class and collects all feedback
      */
-    private void checkClass() throws Exception {
+    private void checkClass() {
         List<ClassInfo> classInfos = classConfigurator.getClassInfos();
         List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
 
@@ -59,16 +61,14 @@ public class ClassChecker implements Checker {
             ClassOrInterfaceDeclaration classDecl = entry.getValue();
             ClassInfo classInfo = entry.getKey();
 
-            List<String> expectedFieldKeywords = new ArrayList<>(classInfo.getFieldKeywords());
-            List<String> expectedMethodKeywords = new ArrayList<>(classInfo.getMethodKeywords());
-            expectedFieldKeywords.sort(Comparator.comparingInt(CheckerUtils::countOptionalOccurrences));
-            expectedMethodKeywords.sort(Comparator.comparingInt(CheckerUtils::countOptionalOccurrences));
+            List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>(classInfo.getFieldKeywordConfigs());
+            List<MethodKeywordConfig> methodKeywordConfigs = new ArrayList<>(classInfo.getMethodKeywordConfigs());
+            ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedClassInfo(classInfo.getClassKeywordConfig());
 
-            ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedInfo(classInfo.getClassKeywords());
             classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo));
-            classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getElementInfos(classInfo.getInheritsFrom())));
-            classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getElementInfos(expectedFieldKeywords)));
-            classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getElementInfos(expectedMethodKeywords)));
+            classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getInheritsFromInfos(classInfo.getInheritsFrom())));
+            classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getFieldInfos(fieldKeywordConfigs)));
+            classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getMethodInfos(methodKeywordConfigs)));
 
         }
     }
@@ -87,15 +87,26 @@ public class ClassChecker implements Checker {
         return classDeclarations;
     }
 
-    /**
-     * Given a string, extract (access, non access, type, name) object out of it
-     * @param expectedKeywords Strings to extract the keywords out of
-     * @return list of all element infos regarding the keywords
-     */
-    private List<ExpectedElement> getElementInfos(List<String> expectedKeywords) {
+    private List<ExpectedElement> getInheritsFromInfos(List<InheritsFromConfig> keywordConfigs) {
         List<ExpectedElement> infos = new ArrayList<>();
-        for (String keywords: expectedKeywords) {
-            infos.add(CheckerUtils.extractExpectedInfo(keywords));
+        for (InheritsFromConfig keywords: keywordConfigs) {
+            infos.add(CheckerUtils.extractExpectedInheritsFromInfo(keywords));
+        }
+        return infos;
+    }
+
+    private List<ExpectedElement> getFieldInfos(List<FieldKeywordConfig> fieldKeywordConfigs) {
+        List<ExpectedElement> infos = new ArrayList<>();
+        for (FieldKeywordConfig keywords: fieldKeywordConfigs) {
+            infos.add(CheckerUtils.extractExpectedFieldInfo(keywords));
+        }
+        return infos;
+    }
+
+    private List<ExpectedElement> getMethodInfos(List<MethodKeywordConfig> methodKeywordConfigs) {
+        List<ExpectedElement> infos = new ArrayList<>();
+        for (MethodKeywordConfig keywords: methodKeywordConfigs) {
+            infos.add(CheckerUtils.extractExpectedMethodInfo(keywords));
         }
         return infos;
     }
