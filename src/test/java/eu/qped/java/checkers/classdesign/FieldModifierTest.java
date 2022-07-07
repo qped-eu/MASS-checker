@@ -5,7 +5,6 @@ import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.mass.QFClassSettings;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.experimental.theories.*;
 import org.junit.runner.RunWith;
 
@@ -56,77 +55,34 @@ public class FieldModifierTest {
     }
 
 
-    private static void allowAccessModifier(FieldKeywordConfig field, String accessMod) {
-        String yes = KeywordChoice.YES.toString();
-
+    private static void chooseAccessModifier(FieldKeywordConfig field, String accessMod, String choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
-        runnableMap.put("public", () -> field.setPublicModifier(yes));
-        runnableMap.put("protected", () -> field.setProtectedModifier(yes));
-        runnableMap.put("private", () -> field.setPrivateModifier(yes));
-        runnableMap.put("", () -> field.setPackagePrivateModifier(yes));
+        runnableMap.put("public", () -> field.setPublicModifier(choice));
+        runnableMap.put("protected", () -> field.setProtectedModifier(choice));
+        runnableMap.put("private", () -> field.setPrivateModifier(choice));
+        runnableMap.put("", () -> field.setPackagePrivateModifier(choice));
         runnableMap.get(accessMod).run();
     }
 
-    private static void allowNonAccessModifier(FieldKeywordConfig field, String nonAccessMod) {
-        String yes = KeywordChoice.YES.toString();
+    private static void chooseNonAccessModifier(FieldKeywordConfig field, String nonAccessMod, String choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
-        runnableMap.put("static", () -> field.setStaticModifier(yes));
-        runnableMap.put("final", () -> field.setFinalModifier(yes));
-        runnableMap.put("transient", () -> field.setTransientModifier(yes));
-        runnableMap.put("volatile", () -> field.setVolatileModifier(yes));
-        runnableMap.put("", () -> field.setDefaultNonAccessModifier(yes));
+        runnableMap.put("static", () -> field.setStaticModifier(choice));
+        runnableMap.put("final", () -> field.setFinalModifier(choice));
+        runnableMap.put("transient", () -> field.setTransientModifier(choice));
+        runnableMap.put("volatile", () -> field.setVolatileModifier(choice));
+        runnableMap.put("", () -> field.setEmptyNonAccessModifier(choice));
 
         runnableMap.get(nonAccessMod).run();
     }
 
-    private static void disAllowAccessModifier(FieldKeywordConfig field, String accessMod) {
-        String no = KeywordChoice.NO.toString();
-
-        Map<String, Runnable> runnableMap = new HashMap<>();
-        runnableMap.put("public", () -> field.setPublicModifier(no));
-        runnableMap.put("protected", () -> field.setProtectedModifier(no));
-        runnableMap.put("private", () -> field.setPrivateModifier(no));
-        runnableMap.put("", () -> field.setPackagePrivateModifier(no));
-        runnableMap.get(accessMod).run();
-    }
-
-    private static void disAllowNonAccessModifier(FieldKeywordConfig field, String nonAccessMod) {
-        String no = KeywordChoice.NO.toString();
-
-        Map<String, Runnable> runnableMap = new HashMap<>();
-        runnableMap.put("static", () -> field.setStaticModifier(no));
-        runnableMap.put("final", () -> field.setFinalModifier(no));
-        runnableMap.put("transient", () -> field.setTransientModifier(no));
-        runnableMap.put("volatile", () -> field.setVolatileModifier(no));
-        runnableMap.put("", () -> field.setDefaultNonAccessModifier(no));
-
-        runnableMap.get(nonAccessMod).run();
-    }
-
-    private static String getRandomAllowedAccess(List<String> modifiers, String disallowedMod) {
-        String mod = disallowedMod;
-        while(mod.equals(disallowedMod)) {
-            int rnd = new Random().nextInt(modifiers.size());
-            mod = modifiers.get(rnd);
-        }
-        return mod;
-    }
-
-    private static List<String> getRandomAllowedNonAccess(List<String> modifiers, List<String> disallowedNonAccess) {
-        List<String> allowedMods = new ArrayList<>();
-        for (String modifier : modifiers) {
-            if(!disallowedNonAccess.contains(modifier)) {
-                allowedMods.add(modifier);
-            }
-        }
-        return allowedMods;
-    }
 
     //test access modifier
     //test non access modifier
     //test exact and inexact matching
     //test allowing and disallowing variables
     //test empty
+
+    //test multiple fields once?
 
 
     //test type
@@ -148,8 +104,8 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        allowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.YES.toString());
 
         String source = "class TestClass {" + accessMod;
         source += " "+emptyNonAccess;
@@ -189,11 +145,11 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        allowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.YES.toString());
 
         String source = "class TestClass {" + accessMod;
-        List<String> allowedNonAccess = getRandomAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
+        List<String> allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
         source += " "+String.join(" ", allowedNonAccess);
         source += " int a;"+
                 "}";
@@ -231,8 +187,8 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        allowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.YES.toString());
         field.setAllowExactModifierMatching("true");
 
         String source = "class TestClass {" + accessMod;
@@ -273,12 +229,12 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        allowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.YES.toString());
         field.setAllowExactModifierMatching("true");
 
         String source = "class TestClass {" + accessMod;
-        List<String> allowedNonAccess = getRandomAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
+        List<String> allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
         source += " "+String.join(" ", allowedNonAccess);
         source += " int a;"+
                 "}";
@@ -316,8 +272,8 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        disAllowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.NO.toString());
 
         String source = "class TestClass {" + accessMod;
         source += " "+emptyNonAccess;
@@ -357,11 +313,11 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        disAllowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.NO.toString());
 
         String source = "class TestClass {" + accessMod;
-        List<String> allowedNonAccess = getRandomAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
+        List<String> allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
         source += " "+String.join(" ", allowedNonAccess);
         source += " int a;"+
                 "}";
@@ -399,8 +355,8 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        disAllowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.NO.toString());
         field.setAllowExactModifierMatching("true");
 
         String source = "class TestClass {" + accessMod;
@@ -441,12 +397,12 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
-        disAllowNonAccessModifier(field, emptyNonAccess);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, emptyNonAccess, KeywordChoice.NO.toString());
         field.setAllowExactModifierMatching("true");
 
         String source = "class TestClass {" + accessMod;
-        List<String> allowedNonAccess = getRandomAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
+        List<String> allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyNonAccess));
         source += " "+String.join(" ", allowedNonAccess);
         source += " int a;"+
                 "}";
@@ -486,11 +442,11 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
 
         String source = "class TestClass {" + accessMod;
         for (String nonAccess: nonAccessComb) {
-            allowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.YES.toString());
             source += " "+nonAccess;
         }
         source += " int a;"+
@@ -531,12 +487,12 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
         field.setAllowExactModifierMatching("true");
 
         String source = "class TestClass {" + accessMod;
         for (String nonAccess: nonAccessComb) {
-            allowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.YES.toString());
             source += " "+nonAccess;
         }
         source += " int a;"+
@@ -579,7 +535,7 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, wrongMod);
+        chooseAccessModifier(field, wrongMod, KeywordChoice.YES.toString());
         field.setFieldType("int");
         field.setName("a");
 
@@ -587,7 +543,7 @@ public class FieldModifierTest {
                 accessMod;
         for (String nonAccess: nonAccessMods) {
             source += " "+nonAccess;
-            allowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.YES.toString());
         }
         source += " int a;" +
                         "}";
@@ -628,7 +584,7 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, wrongMod);
+        chooseAccessModifier(field, wrongMod, KeywordChoice.YES.toString());
         field.setAllowExactModifierMatching("true");
         field.setFieldType("int");
         field.setName("a");
@@ -637,7 +593,7 @@ public class FieldModifierTest {
                 accessMod;
         for (String nonAccess: nonAccessMods) {
             source += " "+nonAccess;
-            allowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.YES.toString());
         }
         source += " int a;" +
                 "}";
@@ -682,12 +638,12 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
         field.setFieldType("int");
         field.setName("a");
 
         for (String nonAccess: expectedNonAccess) {
-            allowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.YES.toString());
         }
 
         String source = "class TestClass {"+accessMod;
@@ -732,21 +688,28 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        allowAccessModifier(field, accessMod);
+        chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
         field.setAllowExactModifierMatching("true");
         field.setFieldType("int");
         field.setName("a");
 
+//        FieldKeywordConfig field2 = new FieldKeywordConfig();
+//        allowAccessModifier(field2, accessMod);
+//        field2.setAllowExactModifierMatching("true");
+//        field2.setFieldType("int");
+//        field2.setName("b");
+
         for (String nonAccess: expectedNonAccess) {
-            allowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.YES.toString());
+//            allowNonAccessModifier(field2, nonAccess);
         }
 
-        String source = "class TestClass {"+accessMod;
-        source += " "+String.join(" ", actualList);
-        source += " int a;"+
-                "}";
+        String source = "class TestClass {";
+        String fieldDecl = accessMod+" "+String.join(" ", actualList)+" int a;";
+        //String fieldDecl2 = accessMod+" "+String.join(" ", actualList)+" int b;";
+        source += fieldDecl+ "}";
 
-
+        //fieldKeywordConfigs.add(field2);
         fieldKeywordConfigs.add(field);
         classInfo.setFieldKeywordConfigs(fieldKeywordConfigs);
 
@@ -779,14 +742,14 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        disAllowAccessModifier(field, disallowedAccess);
+        chooseAccessModifier(field, disallowedAccess, KeywordChoice.NO.toString());
 
-        String allowedAccess = getRandomAllowedAccess(Arrays.asList(accessValues()), disallowedAccess);
+        String allowedAccess = CheckerUtils.getRandomAllowedAccess(Arrays.asList(accessValues()), disallowedAccess);
         String source = "class TestClass {" + allowedAccess;
         for (String disallowedNonAccess: nonAccessComb) {
-            disAllowNonAccessModifier(field, disallowedNonAccess);
+            chooseNonAccessModifier(field, disallowedNonAccess, KeywordChoice.NO.toString());
         }
-        List<String> allowedNonAccess = getRandomAllowedNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
+        List<String> allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
         source += " "+ String.join(" ", allowedNonAccess);
         source += " int a;"+
                 "}";
@@ -826,15 +789,15 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        disAllowAccessModifier(field, disallowedAccess);
+        chooseAccessModifier(field, disallowedAccess, KeywordChoice.NO.toString());
         field.setAllowExactModifierMatching("true");
 
-        String allowedAccess = getRandomAllowedAccess(Arrays.asList(accessValues()), disallowedAccess);
+        String allowedAccess = CheckerUtils.getRandomAllowedAccess(Arrays.asList(accessValues()), disallowedAccess);
         String source = "class TestClass {" + allowedAccess;
         for (String disallowedNonAccess: nonAccessComb) {
-            disAllowNonAccessModifier(field, disallowedNonAccess);
+            chooseNonAccessModifier(field, disallowedNonAccess, KeywordChoice.NO.toString());
         }
-        List<String> allowedNonAccess = getRandomAllowedNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
+        List<String> allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
         source += " "+ String.join(" ", allowedNonAccess);
         source += " int a;"+
                 "}";
@@ -876,12 +839,12 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        disAllowAccessModifier(field, wrongMod);
+        chooseAccessModifier(field, wrongMod, KeywordChoice.NO.toString());
         field.setFieldType("int");
         field.setName("a");
 
         for (String nonAccess: nonAccessMods) {
-            disAllowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.NO.toString());
         }
 
         String source = "class TestClass {" + accessMod;
@@ -925,13 +888,13 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        disAllowAccessModifier(field, wrongMod);
+        chooseAccessModifier(field, wrongMod, KeywordChoice.NO.toString());
         field.setAllowExactModifierMatching("true");
         field.setFieldType("int");
         field.setName("a");
 
         for (String nonAccess: nonAccessMods) {
-            disAllowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.NO.toString());
         }
 
         String source = "class TestClass {" + accessMod;
@@ -979,12 +942,12 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        disAllowAccessModifier(field, accessMod);
+        chooseAccessModifier(field, accessMod, KeywordChoice.NO.toString());
         field.setFieldType("int");
         field.setName("a");
 
         for (String nonAccess: expectedNonAccess) {
-            disAllowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.NO.toString());
         }
 
         String source = "class TestClass {"+accessMod;
@@ -1031,13 +994,13 @@ public class FieldModifierTest {
 
         List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
         FieldKeywordConfig field = new FieldKeywordConfig();
-        disAllowAccessModifier(field, accessMod);
+        chooseAccessModifier(field, accessMod, KeywordChoice.NO.toString());
         field.setAllowExactModifierMatching("true");
         field.setFieldType("int");
         field.setName("a");
 
         for (String nonAccess: expectedNonAccess) {
-            disAllowNonAccessModifier(field, nonAccess);
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.NO.toString());
         }
 
         String source = "class TestClass {"+accessMod;

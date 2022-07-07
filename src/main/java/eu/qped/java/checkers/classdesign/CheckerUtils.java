@@ -60,7 +60,7 @@ public final class CheckerUtils {
             nonAccessMods.add("final");
             containsYes = true;
         }
-        if(keywordConfig.getDefaultNonAccessModifier().equals(KeywordChoice.YES.toString())) {
+        if(keywordConfig.getEmptyNonAccessModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("");
             containsYes = true;
         }
@@ -77,7 +77,7 @@ public final class CheckerUtils {
             if(!keywordConfig.getFinalModifier().equals(KeywordChoice.NO.toString())) {
                 nonAccessMods.add("final");
             }
-            if(!keywordConfig.getDefaultNonAccessModifier().equals(KeywordChoice.NO.toString())) {
+            if(!keywordConfig.getEmptyNonAccessModifier().equals(KeywordChoice.NO.toString())) {
                 nonAccessMods.add("");
             }
         }
@@ -210,6 +210,7 @@ public final class CheckerUtils {
         List<String> possibleAccess = getPossibleAccessModifiers(classKeywordConfig);
         List<String> nonAccessMods = new ArrayList<>();
         boolean containsYes = getOnlyAllowedNonAccess(classKeywordConfig, nonAccessMods);
+
         if(classKeywordConfig.getAbstractModifier().equals(KeywordChoice.YES.toString())) {
             nonAccessMods.add("abstract");
             containsYes = true;
@@ -217,9 +218,12 @@ public final class CheckerUtils {
 
         getRestAllowedNonAccess(classKeywordConfig, nonAccessMods, containsYes);
 
-        if(!classKeywordConfig.getAbstractModifier().equals(KeywordChoice.NO.toString())) {
-            nonAccessMods.add("abstract");
+        if(!containsYes) {
+            if(!classKeywordConfig.getAbstractModifier().equals(KeywordChoice.NO.toString())) {
+                nonAccessMods.add("abstract");
+            }
         }
+
         String type = getTypeFromClassConfig(classKeywordConfig);
         String name = getNameFromConfig(classKeywordConfig);
 
@@ -301,5 +305,24 @@ public final class CheckerUtils {
         possibleAccess.add("private");
         possibleAccess.add("protected");
         return possibleAccess;
+    }
+
+    public static String getRandomAllowedAccess(List<String> modifiers, String disallowedMod) {
+        String mod = disallowedMod;
+        while(mod.equals(disallowedMod)) {
+            int rnd = new Random().nextInt(modifiers.size());
+            mod = modifiers.get(rnd);
+        }
+        return mod;
+    }
+
+    public static List<String> getAllowedNonAccess(List<String> modifiers, List<String> disallowedNonAccess) {
+        List<String> allowedMods = new ArrayList<>();
+        for (String modifier : modifiers) {
+            if(!disallowedNonAccess.contains(modifier)) {
+                allowedMods.add(modifier);
+            }
+        }
+        return allowedMods;
     }
 }

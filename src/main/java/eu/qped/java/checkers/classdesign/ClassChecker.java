@@ -69,7 +69,7 @@ public class ClassChecker implements Checker {
 
             InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo, classInfo.getCustomInheritanceFeedback());
 
-            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, classInfo.getClassKeywordConfig(), classInfo.getCustomClassFeedback()));
+            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, CheckerUtils.extractExpectedClassInfo(classInfo.getClassKeywordConfig()), classInfo.getCustomClassFeedback()));
             classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getInheritsFromInfos(classInfo.getInheritsFrom())));
             classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getFieldInfos(fieldKeywordConfigs)));
             classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getMethodInfos(methodKeywordConfigs)));

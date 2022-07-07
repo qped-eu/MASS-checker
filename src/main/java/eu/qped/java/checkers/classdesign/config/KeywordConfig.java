@@ -11,8 +11,7 @@ public class KeywordConfig {
     private String privateModifier;
     private String packagePrivateModifier;
 
-    private String defaultNonAccessModifier;
-
+    private String emptyNonAccessModifier;
     private String staticModifier;
     private String finalModifier;
 
@@ -25,8 +24,7 @@ public class KeywordConfig {
         privateModifier = KeywordChoice.DONTCARE.toString();
         packagePrivateModifier = KeywordChoice.DONTCARE.toString();
 
-        defaultNonAccessModifier = KeywordChoice.DONTCARE.toString();
-
+        emptyNonAccessModifier = KeywordChoice.DONTCARE.toString();
         staticModifier = KeywordChoice.DONTCARE.toString();
         finalModifier = KeywordChoice.DONTCARE.toString();
 
@@ -73,12 +71,12 @@ public class KeywordConfig {
         this.packagePrivateModifier = packagePrivateModifier;
     }
 
-    public String getDefaultNonAccessModifier() {
-        return defaultNonAccessModifier;
+    public String getEmptyNonAccessModifier() {
+        return emptyNonAccessModifier;
     }
 
-    public void setDefaultNonAccessModifier(String defaultNonAccessModifier) {
-        this.defaultNonAccessModifier = defaultNonAccessModifier;
+    public void setEmptyNonAccessModifier(String emptyNonAccessModifier) {
+        this.emptyNonAccessModifier = emptyNonAccessModifier;
     }
 
 

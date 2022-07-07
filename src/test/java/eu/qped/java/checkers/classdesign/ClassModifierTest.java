@@ -10,38 +10,51 @@ import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.experimental.theories.*;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(Theories.class)
 public class ClassModifierTest {
 
-    @DataPoints("accessModifiers")
+    @DataPoints("outerClassAccess")
     public static String[] accessValues() {
-        return new String[]{"public",
-                "private",
-                "protected", ""};
+        return new String[]{"public", ""};
     }
-
-    @DataPoints("reducedAccess")
-    public static String[] abstractAccessValues() {
-        return new String[] {
-                "public",
-                ""
-        };
-    }
-
 
     @DataPoints("nonAccessModifiers")
     public static String[] nonAccessValues() {
         return new String[]{
                 "abstract",
                 "final",
+                "",
+
+        };
+    }
+
+    @DataPoints("innerClassAccess")
+    public static String[] reducedAccess() {
+        return new String[] {
+                "public", "private", "protected",
                 ""
+        };
+    }
+
+    @DataPoints("innerClassNonAccess")
+    public static String[] innerClassNonAccess() {
+        return new String[]{
+                "abstract",
+                "final",
+                "",
+                "static"
+
+        };
+    }
+
+    @DataPoints("choices")
+    public static String[] choiceValue() {
+        return new String[] {
+                KeywordChoice.YES.toString(), KeywordChoice.NO.toString()
         };
     }
 
@@ -53,59 +66,51 @@ public class ClassModifierTest {
     //test type
     //test name
 
-
-    @DataPoint("staticKeyword")
-    public static String staticValue() {
-        return "static";
-    }
-
-
-    private static void setAccessModifier(KeywordConfig field, String accessMod) {
-        String yes = KeywordChoice.YES.toString();
-
+    private static void setAccessModifier(KeywordConfig field, String accessMod, String choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
-        runnableMap.put("public", () -> field.setPublicModifier(yes));
-        runnableMap.put("protected", () -> field.setProtectedModifier(yes));
-        runnableMap.put("private", () -> field.setPrivateModifier(yes));
-        runnableMap.put("", () -> field.setPackagePrivateModifier(yes));
+        runnableMap.put("public", () -> field.setPublicModifier(choice));
+        runnableMap.put("protected", () -> field.setProtectedModifier(choice));
+        runnableMap.put("private", () -> field.setPrivateModifier(choice));
+        runnableMap.put("", () -> field.setPackagePrivateModifier(choice));
         runnableMap.get(accessMod).run();
     }
 
-    private static void setNonAccessModifier(ClassKeywordConfig field, String nonAccessMod) {
-        String yes = KeywordChoice.YES.toString();
+    private static void setNonAccessModifier(ClassKeywordConfig classConfig, String nonAccessMod, String choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
-        runnableMap.put("abstract", () -> field.setAbstractModifier(yes));
-        runnableMap.put("static", () -> field.setStaticModifier(yes));
-        runnableMap.put("final", () -> field.setFinalModifier(yes));
-        runnableMap.put("", () -> {});
+        runnableMap.put("abstract", () -> classConfig.setAbstractModifier(choice));
+        runnableMap.put("static", () -> classConfig.setStaticModifier(choice));
+        runnableMap.put("final", () -> classConfig.setFinalModifier(choice));
+        runnableMap.put("", () -> classConfig.setEmptyNonAccessModifier(choice));
 
         runnableMap.get(nonAccessMod).run();
     }
 
     @Theory
-    public void innerClassCombinationsNoFault(@FromDataPoints("reducedAccess") String accessMod,
-                                           @FromDataPoints("nonAccessModifiers") String nonAccessMod) {
+    public void innerClassCorrect(@FromDataPoints("innerClassAccess") String accessMod,
+                                           @FromDataPoints("innerClassNonAccess") String nonAccessMod,
+                                            @FromDataPoints("choices") String choice) {
+
+        if(nonAccessMod.equals("abstract") && (accessMod.equals("private") || accessMod.equals("protected"))) return;
 
 
         QFClassSettings qfClassSettings = new QFClassSettings();
         ArrayList<ClassInfo> classInfos = new ArrayList<>();
         ClassInfo outerClassInfo = new ClassInfo();
         ClassKeywordConfig outerClassConfig = new ClassKeywordConfig();
-        setAccessModifier(outerClassConfig, accessMod);
         outerClassInfo.setClassKeywordConfig(outerClassConfig);
 
         ClassInfo innerClassInfo = new ClassInfo();
         ClassKeywordConfig innerClassConfig = new ClassKeywordConfig();
         innerClassConfig.setName("InnerClass");
-        setAccessModifier(innerClassConfig, accessMod);
-        setNonAccessModifier(innerClassConfig, nonAccessMod);
+        setAccessModifier(innerClassConfig, accessMod, choice);
+        setNonAccessModifier(innerClassConfig, nonAccessMod, choice);
         innerClassInfo.setClassKeywordConfig(innerClassConfig);
 
         classInfos.add(outerClassInfo);
         classInfos.add(innerClassInfo);
         qfClassSettings.setClassInfos(classInfos);
 
-        String source = accessMod+" class TestClass {" +
+        String source = " class TestClass {" +
                 accessMod+" "+nonAccessMod+" class InnerClass {}"+
                 "}";
 
@@ -118,35 +123,41 @@ public class ClassModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(0, classChecker.getClassFeedbacks().size());
-
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            assertEquals(1, classChecker.getClassFeedbacks().size());
+        } else {
+            assertEquals(0, classChecker.getClassFeedbacks().size());
+        }
     }
 
     @Theory
-    public void staticModifierCombinationsNoFault(@FromDataPoints("reducedAccess") String accessMod,
-                                           @FromDataPoints("staticKeyword") String staticKeyword) {
+    public void innerClassWrong(@FromDataPoints("innerClassAccess") String correctAccess,
+                                            @FromDataPoints("innerClassAccess") String wrongAccess,
+                                            @FromDataPoints("innerClassNonAccess") String correctNonAccess,
+                                            @FromDataPoints("innerClassNonAccess") String wrongNonAccess,
+                                            @FromDataPoints("choices") String choice) {
 
+        if(correctAccess.equals(wrongAccess) || correctNonAccess.equals(wrongNonAccess)) return;
 
         QFClassSettings qfClassSettings = new QFClassSettings();
         ArrayList<ClassInfo> classInfos = new ArrayList<>();
         ClassInfo outerClassInfo = new ClassInfo();
         ClassKeywordConfig outerClassConfig = new ClassKeywordConfig();
-        setAccessModifier(outerClassConfig, accessMod);
         outerClassInfo.setClassKeywordConfig(outerClassConfig);
 
         ClassInfo innerClassInfo = new ClassInfo();
         ClassKeywordConfig innerClassConfig = new ClassKeywordConfig();
         innerClassConfig.setName("InnerClass");
-        setAccessModifier(innerClassConfig, accessMod);
-        setNonAccessModifier(innerClassConfig, staticKeyword);
+        setAccessModifier(innerClassConfig, correctAccess, choice);
+        setNonAccessModifier(innerClassConfig, correctNonAccess, choice);
         innerClassInfo.setClassKeywordConfig(innerClassConfig);
 
         classInfos.add(outerClassInfo);
         classInfos.add(innerClassInfo);
         qfClassSettings.setClassInfos(classInfos);
 
-        String source = accessMod+" class TestClass {" +
-                accessMod+" "+staticKeyword+" class InnerClass {}"+
+        String source = " class TestClass {" +
+                wrongAccess+" "+String.join(" ", wrongNonAccess)+" class InnerClass {}"+
                 "}";
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
@@ -158,20 +169,24 @@ public class ClassModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(0, classChecker.getClassFeedbacks().size());
-
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            assertEquals(0, classChecker.getClassFeedbacks().size());
+        } else {
+            assertEquals(1, classChecker.getClassFeedbacks().size());
+        }
     }
 
     @Theory
-    public void modifierCombinationsNoFault(@FromDataPoints("reducedAccess") String accessMod,
-                                     @FromDataPoints("nonAccessModifiers") String firstNonAccess) {
+    public void outerClassCorrect(@FromDataPoints("outerClassAccess") String accessMod,
+                                        @FromDataPoints("nonAccessModifiers") String firstNonAccess,
+                                        @FromDataPoints("choices") String choice) {
 
         QFClassSettings qfClassSettings = new QFClassSettings();
         ArrayList<ClassInfo> classInfos = new ArrayList<>();
         ClassInfo classInfo = new ClassInfo();
         ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        setAccessModifier(classKeywordConfig, accessMod);
-        setNonAccessModifier(classKeywordConfig, firstNonAccess);
+        setAccessModifier(classKeywordConfig, accessMod, choice);
+        setNonAccessModifier(classKeywordConfig, firstNonAccess, choice);
         classInfo.setClassKeywordConfig(classKeywordConfig);
 
         classInfos.add(classInfo);
@@ -189,7 +204,53 @@ public class ClassModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(0, classChecker.getClassFeedbacks().size());
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            assertEquals(1, classChecker.getClassFeedbacks().size());
+        } else {
+            assertEquals(0, classChecker.getClassFeedbacks().size());
+        }
+
+    }
+
+    @Theory
+    public void outerClassWrong(@FromDataPoints("outerClassAccess") String correctAccess,
+                                @FromDataPoints("outerClassAccess") String wrongAccess,
+                                @FromDataPoints("nonAccessModifiers") String correctNonAccess,
+                                @FromDataPoints("nonAccessModifiers") String wrongNonAccess,
+                                @FromDataPoints("choices") String choice) {
+
+        if(correctAccess.equals(wrongAccess) || correctNonAccess.equals(wrongNonAccess)) return;
+
+        QFClassSettings qfClassSettings = new QFClassSettings();
+        ArrayList<ClassInfo> classInfos = new ArrayList<>();
+        ClassInfo classInfo = new ClassInfo();
+        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
+        setAccessModifier(classKeywordConfig, correctAccess, choice);
+        setNonAccessModifier(classKeywordConfig, correctNonAccess, choice);
+        classInfo.setClassKeywordConfig(classKeywordConfig);
+
+        classInfos.add(classInfo);
+        qfClassSettings.setClassInfos(classInfos);
+
+        String source = wrongAccess +" "+ wrongNonAccess +" class TestClass {" +
+                "}";
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            assertEquals(0, classChecker.getClassFeedbacks().size());
+        } else {
+            assertEquals(1, classChecker.getClassFeedbacks().size());
+        }
+
 
     }
 

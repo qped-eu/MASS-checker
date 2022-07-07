@@ -146,17 +146,14 @@ class ClassMatcher {
      * Generate feedback based on access, non access and type mismatches. If any mismatch for an element
      * is found, only the found one will be displayed to not overwhelm the student with error messages.
      * @param classDecl class declaration to check
-     * @param keywordConfig expected class keyword configuration extracted from class info
+     * @param elemInfo expected element info extracted from class info
      */
-    public List<ClassFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ClassKeywordConfig keywordConfig, List<String> customFeedback) {
+    public List<ClassFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo, List<String> customFeedback) {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
-
-        ExpectedElement elemInfo = CheckerUtils.extractExpectedClassInfo(keywordConfig);
-        boolean isExactMatching = Boolean.parseBoolean(keywordConfig.getAllowExactModifierMatching());
 
         boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getPossibleAccessModifiers());
         boolean nonAccessMatch;
-        if(isExactMatching) {
+        if(elemInfo.isExactMatch()) {
             nonAccessMatch = CheckerUtils.isExactNonAccessMatch(classDecl.getModifiers(), elemInfo.getPossibleNonAccessModifiers());
         } else {
             nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getPossibleNonAccessModifiers());
