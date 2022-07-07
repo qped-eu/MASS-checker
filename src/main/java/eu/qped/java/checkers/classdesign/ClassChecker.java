@@ -9,6 +9,7 @@ import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.InheritsFromConfig;
+import eu.qped.java.checkers.classdesign.config.KeywordConfig;
 import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
@@ -58,16 +59,17 @@ public class ClassChecker implements Checker {
             ClassOrInterfaceDeclaration classDecl = entry.getValue();
             ClassInfo classInfo = entry.getKey();
 
-            ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(ClassMemberType.FIELD, classInfo.getCustomFieldFeedback());
-            ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(ClassMemberType.METHOD, classInfo.getCustomMethodFeedback());
+            List<KeywordConfig> fieldKeywordConfigs = new ArrayList<>(classInfo.getFieldKeywordConfigs());
+            List<KeywordConfig> methodKeywordConfigs = new ArrayList<>(classInfo.getMethodKeywordConfigs());
+
+            ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(ClassMemberType.FIELD,
+                    classInfo.getCustomFieldFeedback());
+            ClassMemberChecker<MethodDeclaration> methodChecker = new ClassMemberChecker<>(ClassMemberType.METHOD,
+                    classInfo.getCustomMethodFeedback());
 
             InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo, classInfo.getCustomInheritanceFeedback());
 
-            List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>(classInfo.getFieldKeywordConfigs());
-            List<MethodKeywordConfig> methodKeywordConfigs = new ArrayList<>(classInfo.getMethodKeywordConfigs());
-            ExpectedElement expectedDeclInfo = CheckerUtils.extractExpectedClassInfo(classInfo.getClassKeywordConfig());
-
-            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, expectedDeclInfo, classInfo.getCustomClassFeedback()));
+            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, classInfo.getClassKeywordConfig(), classInfo.getCustomClassFeedback()));
             classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getInheritsFromInfos(classInfo.getInheritsFrom())));
             classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getFieldInfos(fieldKeywordConfigs)));
             classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getMethodInfos(methodKeywordConfigs)));
@@ -97,18 +99,20 @@ public class ClassChecker implements Checker {
         return infos;
     }
 
-    private List<ExpectedElement> getFieldInfos(List<FieldKeywordConfig> fieldKeywordConfigs) {
+    private List<ExpectedElement> getFieldInfos(List<KeywordConfig> fieldKeywordConfigs) {
         List<ExpectedElement> infos = new ArrayList<>();
-        for (FieldKeywordConfig keywords: fieldKeywordConfigs) {
-            infos.add(CheckerUtils.extractExpectedFieldInfo(keywords));
+        for (KeywordConfig keywords: fieldKeywordConfigs) {
+            FieldKeywordConfig fieldKeywordConfig = (FieldKeywordConfig) keywords;
+            infos.add(CheckerUtils.extractExpectedFieldInfo(fieldKeywordConfig));
         }
         return infos;
     }
 
-    private List<ExpectedElement> getMethodInfos(List<MethodKeywordConfig> methodKeywordConfigs) {
+    private List<ExpectedElement> getMethodInfos(List<KeywordConfig> methodKeywordConfigs) {
         List<ExpectedElement> infos = new ArrayList<>();
-        for (MethodKeywordConfig keywords: methodKeywordConfigs) {
-            infos.add(CheckerUtils.extractExpectedMethodInfo(keywords));
+        for (KeywordConfig keywords: methodKeywordConfigs) {
+            MethodKeywordConfig methodKeywordConfig = (MethodKeywordConfig) keywords;
+            infos.add(CheckerUtils.extractExpectedMethodInfo(methodKeywordConfig));
         }
         return infos;
     }

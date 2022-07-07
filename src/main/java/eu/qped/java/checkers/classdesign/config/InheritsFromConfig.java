@@ -8,8 +8,8 @@ public class InheritsFromConfig extends KeywordConfig {
     private String interfaceType;
 
     public InheritsFromConfig() {
-        classType = KeywordChoice.YES.toString();;
-        interfaceType = KeywordChoice.NO.toString();
+        classType = KeywordChoice.DONTCARE.toString();;
+        interfaceType = KeywordChoice.DONTCARE.toString();
     }
 
     public String getClassType() {

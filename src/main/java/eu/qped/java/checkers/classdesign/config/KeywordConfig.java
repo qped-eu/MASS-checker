@@ -4,28 +4,41 @@ import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
 public class KeywordConfig {
 
+    private String allowExactModifierMatching;
+
     private String publicModifier;
     private String protectedModifier;
     private String privateModifier;
     private String packagePrivateModifier;
 
-    private String abstractModifier;
+    private String defaultNonAccessModifier;
+
     private String staticModifier;
     private String finalModifier;
 
     private String name;
 
     public KeywordConfig() {
-        publicModifier = KeywordChoice.IGNORE.toString();
-        protectedModifier = KeywordChoice.IGNORE.toString();
-        privateModifier = KeywordChoice.IGNORE.toString();
-        packagePrivateModifier = KeywordChoice.IGNORE.toString();
+        allowExactModifierMatching = "false";
+        publicModifier = KeywordChoice.DONTCARE.toString();
+        protectedModifier = KeywordChoice.DONTCARE.toString();
+        privateModifier = KeywordChoice.DONTCARE.toString();
+        packagePrivateModifier = KeywordChoice.DONTCARE.toString();
 
-        abstractModifier = KeywordChoice.IGNORE.toString();
-        staticModifier = KeywordChoice.IGNORE.toString();
-        finalModifier = KeywordChoice.IGNORE.toString();
+        defaultNonAccessModifier = KeywordChoice.DONTCARE.toString();
+
+        staticModifier = KeywordChoice.DONTCARE.toString();
+        finalModifier = KeywordChoice.DONTCARE.toString();
 
         name = "";
+    }
+
+    public String getAllowExactModifierMatching() {
+        return allowExactModifierMatching;
+    }
+
+    public void setAllowExactModifierMatching(String allowExactModifierMatching) {
+        this.allowExactModifierMatching = allowExactModifierMatching;
     }
 
     public String getPublicModifier() {
@@ -60,13 +73,15 @@ public class KeywordConfig {
         this.packagePrivateModifier = packagePrivateModifier;
     }
 
-    public String getAbstractModifier() {
-        return abstractModifier;
+    public String getDefaultNonAccessModifier() {
+        return defaultNonAccessModifier;
     }
 
-    public void setAbstractModifier(String abstractModifier) {
-        this.abstractModifier = abstractModifier;
+    public void setDefaultNonAccessModifier(String defaultNonAccessModifier) {
+        this.defaultNonAccessModifier = defaultNonAccessModifier;
     }
+
+
 
     public String getStaticModifier() {
         return staticModifier;

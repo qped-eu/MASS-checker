@@ -10,8 +10,8 @@ public class FieldKeywordConfig extends KeywordConfig {
 
     public FieldKeywordConfig() {
 
-        transientModifier = KeywordChoice.IGNORE.toString();
-        volatileModifier = KeywordChoice.IGNORE.toString();
+        transientModifier = KeywordChoice.DONTCARE.toString();
+        volatileModifier = KeywordChoice.DONTCARE.toString();
         fieldType = "";
     }
 

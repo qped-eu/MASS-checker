@@ -46,6 +46,14 @@ public class ClassModifierTest {
     }
 
 
+    //test access modifier
+    //test non access modifier
+
+
+    //test type
+    //test name
+
+
     @DataPoint("staticKeyword")
     public static String staticValue() {
         return "static";
@@ -63,7 +71,7 @@ public class ClassModifierTest {
         runnableMap.get(accessMod).run();
     }
 
-    private static void setNonAccessModifier(KeywordConfig field, String nonAccessMod) {
+    private static void setNonAccessModifier(ClassKeywordConfig field, String nonAccessMod) {
         String yes = KeywordChoice.YES.toString();
         Map<String, Runnable> runnableMap = new HashMap<>();
         runnableMap.put("abstract", () -> field.setAbstractModifier(yes));
@@ -75,7 +83,7 @@ public class ClassModifierTest {
     }
 
     @Theory
-    public void innerClassCombinations(@FromDataPoints("reducedAccess") String accessMod,
+    public void innerClassCombinationsNoFault(@FromDataPoints("reducedAccess") String accessMod,
                                            @FromDataPoints("nonAccessModifiers") String nonAccessMod) {
 
 
@@ -115,7 +123,7 @@ public class ClassModifierTest {
     }
 
     @Theory
-    public void staticModifierCombinations(@FromDataPoints("reducedAccess") String accessMod,
+    public void staticModifierCombinationsNoFault(@FromDataPoints("reducedAccess") String accessMod,
                                            @FromDataPoints("staticKeyword") String staticKeyword) {
 
 
@@ -155,7 +163,7 @@ public class ClassModifierTest {
     }
 
     @Theory
-    public void modifierCombinations(@FromDataPoints("reducedAccess") String accessMod,
+    public void modifierCombinationsNoFault(@FromDataPoints("reducedAccess") String accessMod,
                                      @FromDataPoints("nonAccessModifiers") String firstNonAccess) {
 
         QFClassSettings qfClassSettings = new QFClassSettings();
@@ -184,4 +192,5 @@ public class ClassModifierTest {
         assertEquals(0, classChecker.getClassFeedbacks().size());
 
     }
+
 }

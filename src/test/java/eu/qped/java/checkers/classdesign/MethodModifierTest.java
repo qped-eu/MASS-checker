@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.classdesign;
 
-import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
@@ -27,6 +26,7 @@ public class MethodModifierTest {
     @DataPoints("nonAccessModifiers")
     public static String[] nonAccessValues() {
         return new String[]{
+                "default",
                 "static",
                 "final",
                 "synchronized",
@@ -35,8 +35,7 @@ public class MethodModifierTest {
         };
     }
 
-
-    @DataPoints("abstractAccess")
+    @DataPoints("reducedAccess")
     public static String[] abstractAccessValues() {
         return new String[] {
                 "public",
@@ -45,15 +44,22 @@ public class MethodModifierTest {
         };
     }
 
-    @DataPoint("abstractKeyword")
-    public static String abstractValue() {
-        return "abstract";
+    @DataPoints("reducedNonAccess")
+    public static String[] reducedNonAccessValues() {
+        return new String[] {
+                "abstract"
+        };
     }
 
-    @DataPoint("defaultKeyword")
-    public static String defaultValue() {
-        return "default";
-    }
+    //test access modifier <- focus on this
+    //test non access modifier
+
+
+    //test type
+    //test name
+    //test missing
+    //test override/overload?
+    //test hidden?
 
     private static void setAccessModifier(MethodKeywordConfig method, String accessMod) {
         String yes = KeywordChoice.YES.toString();
@@ -81,21 +87,29 @@ public class MethodModifierTest {
         runnableMap.get(nonAccessMod).run();
     }
 
-    //TODO: NonAccess for Methods (default)
+
     @Theory
-    public void abstractModifierCombinations(@FromDataPoints("abstractAccess") String accessMod,
-                                             @FromDataPoints("abstractKeyword") String abstractMod) {
+    public void abstractModifierCombinations(@FromDataPoints("reducedAccess") String accessMod,
+                                             @FromDataPoints("reducedNonAccess") String nonAccessMod) {
 
         QFClassSettings qfClassSettings = new QFClassSettings();
         ArrayList<ClassInfo> classInfos = new ArrayList<>();
         ClassInfo classInfo = new ClassInfo();
+
         ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
+        String classType = "class";
+        if(nonAccessMod.equals("default")) {
+            classType = "interface";
+            classKeywordConfig.setInterfaceType(KeywordChoice.YES.toString());
+            classKeywordConfig.setClassType(KeywordChoice.DONTCARE.toString());
+        }
+
         classInfo.setClassKeywordConfig(classKeywordConfig);
 
         List<MethodKeywordConfig> methodKeywordConfigs = new ArrayList<>();
         MethodKeywordConfig method = new MethodKeywordConfig();
         setAccessModifier(method, accessMod);
-        setNonAccessModifier(method, abstractMod);
+        setNonAccessModifier(method, nonAccessMod);
         method.setMethodType("int");
         method.setName("test");
 
@@ -105,10 +119,10 @@ public class MethodModifierTest {
         classInfos.add(classInfo);
         qfClassSettings.setClassInfos(classInfos);
 
-        String source = "class TestClass {" +
+        String source = classType+" TestClass {" +
                 accessMod +
                 " "
-                + abstractMod +
+                + nonAccessMod +
                 " int test() {}" +
                 "}";
 
@@ -133,6 +147,14 @@ public class MethodModifierTest {
         ArrayList<ClassInfo> classInfos = new ArrayList<>();
         ClassInfo classInfo = new ClassInfo();
         ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
+
+        String classType = "class";
+        if(nonAccessMod.equals("default")) {
+            classType = "interface";
+            classKeywordConfig.setInterfaceType(KeywordChoice.YES.toString());
+            classKeywordConfig.setClassType(KeywordChoice.DONTCARE.toString());
+        }
+
         classInfo.setClassKeywordConfig(classKeywordConfig);
 
         List<MethodKeywordConfig> methodKeywordConfigs = new ArrayList<>();
@@ -148,7 +170,7 @@ public class MethodModifierTest {
         classInfos.add(classInfo);
         qfClassSettings.setClassInfos(classInfos);
 
-        String source = "class TestClass {" +
+        String source = classType+" TestClass {" +
                 accessMod +
                 " "
                 + nonAccessMod +

@@ -250,7 +250,7 @@ class InheritanceChecker {
             if(type.equals(ClassType.INTERFACE.toString())) {
                 inheritanceFeedback.add(findInterfaceNameViolation(classTypeName, implementedInterfaces));
             } else if(type.equals(ClassType.CLASS.toString())) {
-                inheritanceFeedback.add(findClassNameViolation(classTypeName, extendedClasses, elemInfo.getNonAccessModifiers()));
+                inheritanceFeedback.add(findClassNameViolation(classTypeName, extendedClasses, elemInfo.getPossibleNonAccessModifiers()));
             }
         } else {
             inheritanceFeedback.add(findTypeViolation(classTypeName, implementedNameMatch, extendedNameMatch));

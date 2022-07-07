@@ -4,7 +4,7 @@ public enum KeywordChoice {
 
     YES("yes"),
     NO("no"),
-    IGNORE("ignore");
+    DONTCARE("dontcare");
 
     private final String choice;
     KeywordChoice(final String choice) {

@@ -5,16 +5,26 @@ import java.util.Objects;
 
 public class ExpectedElement {
 
+    private boolean isExactMatch;
     private List<String> possibleAccessModifiers;
-    private List<String> nonAccessModifiers;
+    private List<String> possibleNonAccessModifiers;
     private String type;
     private String name;
 
-    public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, String type, String name) {
+    public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, String type, String name, boolean isExactMatch) {
+        this.isExactMatch = isExactMatch;
         this.possibleAccessModifiers = accessMod;
-        this.nonAccessModifiers = nonAccessMods;
+        this.possibleNonAccessModifiers = nonAccessMods;
         this.type = type;
         this.name = name;
+    }
+
+    public boolean isExactMatch() {
+        return isExactMatch;
+    }
+
+    public void setExactMatch(boolean exactMatch) {
+        isExactMatch = exactMatch;
     }
 
     public List<String> getPossibleAccessModifiers() {
@@ -25,12 +35,12 @@ public class ExpectedElement {
         this.possibleAccessModifiers = possibleAccessModifiers;
     }
 
-    public List<String> getNonAccessModifiers() {
-        return nonAccessModifiers;
+    public List<String> getPossibleNonAccessModifiers() {
+        return possibleNonAccessModifiers;
     }
 
-    public void setNonAccessModifiers(List<String> nonAccessModifiers) {
-        this.nonAccessModifiers = nonAccessModifiers;
+    public void setPossibleNonAccessModifiers(List<String> possibleNonAccessModifiers) {
+        this.possibleNonAccessModifiers = possibleNonAccessModifiers;
     }
 
     public String getType() {
@@ -55,12 +65,12 @@ public class ExpectedElement {
         if (o == null || getClass() != o.getClass()) return false;
         ExpectedElement that = (ExpectedElement) o;
         return Objects.equals(possibleAccessModifiers, that.possibleAccessModifiers) &&
-                Objects.equals(nonAccessModifiers, that.nonAccessModifiers) &&
+                Objects.equals(possibleNonAccessModifiers, that.possibleNonAccessModifiers) &&
                 Objects.equals(type, that.type) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(possibleAccessModifiers, nonAccessModifiers, type, name);
+        return Objects.hash(possibleAccessModifiers, possibleNonAccessModifiers, type, name);
     }
 }

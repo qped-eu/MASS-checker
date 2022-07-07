@@ -304,7 +304,12 @@ class ClassMemberChecker<T extends Node> {
     private List<Boolean> getMatchingResult(NodeWithModifiers<T> presentElement, ExpectedElement expectedElement) {
         List<Boolean> matching = new ArrayList<>();
         boolean accessMatch = CheckerUtils.isAccessMatch(presentElement.getAccessSpecifier().asString(), expectedElement.getPossibleAccessModifiers());
-        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(presentElement.getModifiers(), expectedElement.getNonAccessModifiers());
+        boolean nonAccessMatch;
+        if(expectedElement.isExactMatch()) {
+            nonAccessMatch = CheckerUtils.isExactNonAccessMatch(presentElement.getModifiers(), expectedElement.getPossibleNonAccessModifiers());
+        } else {
+            nonAccessMatch = CheckerUtils.isNonAccessMatch(presentElement.getModifiers(), expectedElement.getPossibleNonAccessModifiers());
+        }
         boolean typeMatch = isElementTypeMatch(presentElement, expectedElement.getType());
         boolean nameMatch = isElementNameMatch(presentElement, expectedElement.getName());
         matching.add(accessMatch);
