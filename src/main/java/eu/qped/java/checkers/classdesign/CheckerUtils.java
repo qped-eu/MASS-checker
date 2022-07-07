@@ -18,20 +18,24 @@ public final class CheckerUtils {
     private CheckerUtils() { }
 
     public static List<String> getPossibleAccessModifiers(KeywordConfig keywordConfig) {
-        List<String> possibleAccessMods = new ArrayList<>();
-        boolean containsYes = false;
         Map<String, String> keywordChoiceMap = new HashMap<>();
         keywordChoiceMap.put("public", keywordConfig.getPublicModifier());
         keywordChoiceMap.put("protected", keywordConfig.getProtectedModifier());
         keywordChoiceMap.put("private", keywordConfig.getPrivateModifier());
         keywordChoiceMap.put("", keywordConfig.getPackagePrivateModifier());
 
+        return getPossibleModifiers(keywordChoiceMap);
+    }
+
+    public static List<String> getPossibleModifiers(Map<String, String> keywordChoiceMap) {
+        boolean containsYes = false;
+        List<String> possibleMods = new ArrayList<>();
         for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
             String modifier = entry.getKey();
             String choice = entry.getValue();
 
             if(choice.equals(KeywordChoice.YES.toString())) {
-                possibleAccessMods.add(modifier);
+                possibleMods.add(modifier);
                 containsYes = true;
             }
         }
@@ -42,46 +46,13 @@ public final class CheckerUtils {
                 String choice = entry.getValue();
 
                 if(!choice.equals(KeywordChoice.NO.toString())) {
-                    possibleAccessMods.add(modifier);
+                    possibleMods.add(modifier);
                 }
             }
         }
-        return possibleAccessMods;
+        return possibleMods;
     }
 
-    public static boolean getOnlyAllowedNonAccess(KeywordConfig keywordConfig, List<String> nonAccessMods) {
-        boolean containsYes = false;
-
-        if(keywordConfig.getStaticModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("static");
-            containsYes = true;
-        }
-        if(keywordConfig.getFinalModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("final");
-            containsYes = true;
-        }
-        if(keywordConfig.getEmptyNonAccessModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("");
-            containsYes = true;
-        }
-
-        return containsYes;
-    }
-
-    public static void getRestAllowedNonAccess(KeywordConfig keywordConfig, List<String> nonAccessMods, boolean containsYes) {
-        if(!containsYes) {
-
-            if(!keywordConfig.getStaticModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("static");
-            }
-            if(!keywordConfig.getFinalModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("final");
-            }
-            if(!keywordConfig.getEmptyNonAccessModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("");
-            }
-        }
-    }
 
     public static String getNameFromConfig(KeywordConfig keywordConfig) {
         return keywordConfig.getName();
@@ -107,29 +78,15 @@ public final class CheckerUtils {
     }
 
     public static List<String> getNonAccessModifiersFromFieldConfig(FieldKeywordConfig keywordConfig) {
-        List<String> nonAccessMods = new ArrayList<>();
-        boolean containsYes = getOnlyAllowedNonAccess(keywordConfig, nonAccessMods);
+        List<String> nonAccessMods;
+        Map<String, String> keywordChoiceMap = getCommonNonAccessModifiers(keywordConfig);
+//        keywordChoiceMap.put("static", keywordConfig.getStaticModifier());
+//        keywordChoiceMap.put("final", keywordConfig.getFinalModifier());
+//        keywordChoiceMap.put("", keywordConfig.getEmptyNonAccessModifier());
+        keywordChoiceMap.put("transient", keywordConfig.getTransientModifier());
+        keywordChoiceMap.put("volatile", keywordConfig.getVolatileModifier());
 
-        if(keywordConfig.getTransientModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("transient");
-            containsYes = true;
-        }
-        if(keywordConfig.getVolatileModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("volatile");
-            containsYes = true;
-        }
-
-        getRestAllowedNonAccess(keywordConfig, nonAccessMods, containsYes);
-
-        if(!containsYes) {
-            if(!keywordConfig.getTransientModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("transient");
-            }
-            if(!keywordConfig.getVolatileModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("volatile");
-            }
-        }
-
+        nonAccessMods = getPossibleModifiers(keywordChoiceMap);
         return nonAccessMods;
     }
 
@@ -154,45 +111,16 @@ public final class CheckerUtils {
 
 
     public static List<String> getNonAccessModifiersFromMethodConfig(MethodKeywordConfig keywordConfig) {
-        List<String> nonAccessMods = new ArrayList<>();
-        boolean containsYes = getOnlyAllowedNonAccess(keywordConfig, nonAccessMods);
+        Map<String, String> keywordChoiceMap = getCommonNonAccessModifiers(keywordConfig);
+//        keywordChoiceMap.put("static", keywordConfig.getStaticModifier());
+//        keywordChoiceMap.put("final", keywordConfig.getFinalModifier());
+//        keywordChoiceMap.put("", keywordConfig.getEmptyNonAccessModifier());
+        keywordChoiceMap.put("abstract", keywordConfig.getAbstractModifier());
+        keywordChoiceMap.put("synchronized", keywordConfig.getSynchronizedModifier());
+        keywordChoiceMap.put("native", keywordConfig.getNativeModifier());
+        keywordChoiceMap.put("default", keywordConfig.getDefaultModifier());
 
-        if(keywordConfig.getAbstractModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("abstract");
-            containsYes = true;
-        }
-        if(keywordConfig.getSynchronizedModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("synchronized");
-            containsYes = true;
-        }
-        if(keywordConfig.getNativeModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("native");
-            containsYes = true;
-        }
-        if(keywordConfig.getDefaultModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("default");
-            containsYes = true;
-        }
-
-        getRestAllowedNonAccess(keywordConfig, nonAccessMods, containsYes);
-
-        if(!containsYes) {
-            if(!keywordConfig.getAbstractModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("abstract");
-            }
-            if(!keywordConfig.getSynchronizedModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("synchronized");
-            }
-            if(!keywordConfig.getNativeModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("native");
-            }
-            if(!keywordConfig.getDefaultModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("default");
-            }
-        }
-
-
-        return nonAccessMods;
+        return getPossibleModifiers(keywordChoiceMap);
     }
 
     public static String getTypeFromMethodConfig(MethodKeywordConfig keywordConfig) {
@@ -208,21 +136,13 @@ public final class CheckerUtils {
      */
     public static ExpectedElement extractExpectedClassInfo(ClassKeywordConfig classKeywordConfig) {
         List<String> possibleAccess = getPossibleAccessModifiers(classKeywordConfig);
-        List<String> nonAccessMods = new ArrayList<>();
-        boolean containsYes = getOnlyAllowedNonAccess(classKeywordConfig, nonAccessMods);
+        Map<String, String> keywordChoiceMap = getCommonNonAccessModifiers(classKeywordConfig);
+//        keywordChoiceMap.put("static", classKeywordConfig.getStaticModifier());
+//        keywordChoiceMap.put("final", classKeywordConfig.getFinalModifier());
+//        keywordChoiceMap.put("", classKeywordConfig.getEmptyNonAccessModifier());
+        keywordChoiceMap.put("abstract", classKeywordConfig.getAbstractModifier());
+        List<String> nonAccessMods = getPossibleModifiers(keywordChoiceMap);
 
-        if(classKeywordConfig.getAbstractModifier().equals(KeywordChoice.YES.toString())) {
-            nonAccessMods.add("abstract");
-            containsYes = true;
-        }
-
-        getRestAllowedNonAccess(classKeywordConfig, nonAccessMods, containsYes);
-
-        if(!containsYes) {
-            if(!classKeywordConfig.getAbstractModifier().equals(KeywordChoice.NO.toString())) {
-                nonAccessMods.add("abstract");
-            }
-        }
 
         String type = getTypeFromClassConfig(classKeywordConfig);
         String name = getNameFromConfig(classKeywordConfig);
@@ -307,7 +227,15 @@ public final class CheckerUtils {
         return possibleAccess;
     }
 
-    public static String getRandomAllowedAccess(List<String> modifiers, String disallowedMod) {
+    private static Map<String, String> getCommonNonAccessModifiers(KeywordConfig keywordConfig) {
+        Map<String, String> keywordChoiceMap = new HashMap<>();
+        keywordChoiceMap.put("static", keywordConfig.getStaticModifier());
+        keywordChoiceMap.put("final", keywordConfig.getFinalModifier());
+        keywordChoiceMap.put("", keywordConfig.getEmptyNonAccessModifier());
+        return keywordChoiceMap;
+    }
+
+    public static String getAllowedAccess(List<String> modifiers, String disallowedMod) {
         String mod = disallowedMod;
         while(mod.equals(disallowedMod)) {
             int rnd = new Random().nextInt(modifiers.size());
