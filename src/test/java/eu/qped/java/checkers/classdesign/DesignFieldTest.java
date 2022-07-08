@@ -32,11 +32,11 @@ public class DesignFieldTest {
         field1Config.setPublicModifier(KeywordChoice.YES.toString());
         field1Config.setFinalModifier(KeywordChoice.YES.toString());
         field1Config.setStaticModifier(KeywordChoice.YES.toString());
-        field1Config.setFieldType("int");
+        field1Config.setType("int");
         field1Config.setName("a");
         FieldKeywordConfig field2Config = new FieldKeywordConfig();
         field2Config.setPublicModifier(KeywordChoice.YES.toString());
-        field2Config.setFieldType("int");
+        field2Config.setType("int");
         field2Config.setName("b");
 
         fieldKeywordConfigs.add(field1Config);

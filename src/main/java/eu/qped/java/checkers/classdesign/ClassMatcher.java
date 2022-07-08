@@ -150,12 +150,7 @@ class ClassMatcher {
      */
     public List<ClassFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo, List<String> customFeedback) {
         boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getPossibleAccessModifiers());
-        boolean nonAccessMatch;
-        if(elemInfo.isExactMatch()) {
-            nonAccessMatch = CheckerUtils.isExactNonAccessMatch(classDecl.getModifiers(), elemInfo.getPossibleNonAccessModifiers());
-        } else {
-            nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getPossibleNonAccessModifiers());
-        }
+        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getPossibleNonAccessModifiers(), elemInfo.isExactMatch());
         boolean typeMatch = isClassTypeMatch(classDecl, elemInfo.getType());
         return findViolation(accessMatch, nonAccessMatch, typeMatch, classDecl, customFeedback);
     }

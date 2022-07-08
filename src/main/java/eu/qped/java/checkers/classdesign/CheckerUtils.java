@@ -18,13 +18,15 @@ public final class CheckerUtils {
     private CheckerUtils() { }
 
     public static List<String> getPossibleAccessModifiers(KeywordConfig keywordConfig) {
-        Map<String, String> keywordChoiceMap = new HashMap<>();
-        keywordChoiceMap.put("public", keywordConfig.getPublicModifier());
-        keywordChoiceMap.put("protected", keywordConfig.getProtectedModifier());
-        keywordChoiceMap.put("private", keywordConfig.getPrivateModifier());
-        keywordChoiceMap.put("", keywordConfig.getPackagePrivateModifier());
+        return getPossibleModifiers(keywordConfig.getAccessModifierMap());
+    }
 
-        return getPossibleModifiers(keywordChoiceMap);
+    public static List<String> getPossibleNonAccessModifiers(KeywordConfig keywordConfig) {
+        return getPossibleModifiers(keywordConfig.getNonAccessModifierMap());
+    }
+
+    public static String getTypeFromConfig(KeywordConfig keywordConfig) {
+        return keywordConfig.getType();
     }
 
     public static List<String> getPossibleModifiers(Map<String, String> keywordChoiceMap) {
@@ -64,111 +66,20 @@ public final class CheckerUtils {
 
     /**
      * Extract all possible modifiers, type and name from the field configuration provided by json
-     * @param fieldKeywordConfig field keyword modifiers from json
+     * @param keywordConfig field keyword modifiers from json
      * @return expected element with all possible modifiers
      */
 
-    public static ExpectedElement extractExpectedFieldInfo(FieldKeywordConfig fieldKeywordConfig) {
-        List<String> accessMod = getPossibleAccessModifiers(fieldKeywordConfig);
-        List<String> nonAccessMods = getNonAccessModifiersFromFieldConfig(fieldKeywordConfig);
-        String type = getTypeFromFieldConfig(fieldKeywordConfig);
-        String name = getNameFromConfig(fieldKeywordConfig);
-        boolean allowExactMatch = getAllowExactMatch(fieldKeywordConfig);
-        return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch);
-    }
-
-    public static List<String> getNonAccessModifiersFromFieldConfig(FieldKeywordConfig keywordConfig) {
-        List<String> nonAccessMods;
-        Map<String, String> keywordChoiceMap = getCommonNonAccessModifiers(keywordConfig);
-//        keywordChoiceMap.put("static", keywordConfig.getStaticModifier());
-//        keywordChoiceMap.put("final", keywordConfig.getFinalModifier());
-//        keywordChoiceMap.put("", keywordConfig.getEmptyNonAccessModifier());
-        keywordChoiceMap.put("transient", keywordConfig.getTransientModifier());
-        keywordChoiceMap.put("volatile", keywordConfig.getVolatileModifier());
-
-        nonAccessMods = getPossibleModifiers(keywordChoiceMap);
-        return nonAccessMods;
-    }
-
-    public static String getTypeFromFieldConfig(FieldKeywordConfig fieldKeywordConfig) {
-        return fieldKeywordConfig.getFieldType();
-    }
-
-    /**
-     * Extract all possible modifiers, type and name from the method configuration provided by json
-     * @param methodKeywordConfig method keyword configuration from json
-     * @return expected element with all possible modifiers
-     */
-
-    public static ExpectedElement extractExpectedMethodInfo(MethodKeywordConfig methodKeywordConfig) {
-        List<String> accessMod = getPossibleAccessModifiers(methodKeywordConfig);
-        List<String> nonAccessMods = getNonAccessModifiersFromMethodConfig(methodKeywordConfig);
-        String type = getTypeFromMethodConfig(methodKeywordConfig);
-        String name = getNameFromConfig(methodKeywordConfig);
-        boolean allowExactMatch = getAllowExactMatch(methodKeywordConfig);
-        return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch);
-    }
-
-
-    public static List<String> getNonAccessModifiersFromMethodConfig(MethodKeywordConfig keywordConfig) {
-        Map<String, String> keywordChoiceMap = getCommonNonAccessModifiers(keywordConfig);
-//        keywordChoiceMap.put("static", keywordConfig.getStaticModifier());
-//        keywordChoiceMap.put("final", keywordConfig.getFinalModifier());
-//        keywordChoiceMap.put("", keywordConfig.getEmptyNonAccessModifier());
-        keywordChoiceMap.put("abstract", keywordConfig.getAbstractModifier());
-        keywordChoiceMap.put("synchronized", keywordConfig.getSynchronizedModifier());
-        keywordChoiceMap.put("native", keywordConfig.getNativeModifier());
-        keywordChoiceMap.put("default", keywordConfig.getDefaultModifier());
-
-        return getPossibleModifiers(keywordChoiceMap);
-    }
-
-    public static String getTypeFromMethodConfig(MethodKeywordConfig keywordConfig) {
-        return keywordConfig.getMethodType();
-    }
-
-
-
-    /**
-     * Class Info Stuff
-     * @param classKeywordConfig class keyword configuration from json
-     * @return expected element with all possible modifiers
-     */
-    public static ExpectedElement extractExpectedClassInfo(ClassKeywordConfig classKeywordConfig) {
-        List<String> possibleAccess = getPossibleAccessModifiers(classKeywordConfig);
-        Map<String, String> keywordChoiceMap = getCommonNonAccessModifiers(classKeywordConfig);
-//        keywordChoiceMap.put("static", classKeywordConfig.getStaticModifier());
-//        keywordChoiceMap.put("final", classKeywordConfig.getFinalModifier());
-//        keywordChoiceMap.put("", classKeywordConfig.getEmptyNonAccessModifier());
-        keywordChoiceMap.put("abstract", classKeywordConfig.getAbstractModifier());
-        List<String> nonAccessMods = getPossibleModifiers(keywordChoiceMap);
-
-
-        String type = getTypeFromClassConfig(classKeywordConfig);
-        String name = getNameFromConfig(classKeywordConfig);
-
-        boolean allowExactMatch = getAllowExactMatch(classKeywordConfig);
-        return new ExpectedElement(possibleAccess, nonAccessMods, type, name, allowExactMatch);
-    }
-
-    public static String getTypeFromClassConfig(ClassKeywordConfig classKeywordConfig) {
-        return classKeywordConfig.getInterfaceType().equals(KeywordChoice.YES.toString()) ? ClassType.INTERFACE.toString() : ClassType.CLASS.toString();
-    }
-
-    /**
-     * Inherits From Info Stuff
-     * @param keywordConfig keyword configuration about inherited classes from json
-     * @return expected element with all possible modifiers
-     */
-    public static ExpectedElement extractExpectedInheritsFromInfo(InheritsFromConfig keywordConfig) {
-        String type = getTypeFromInheritsConfig(keywordConfig);
+    public static ExpectedElement extractExpectedInfo(KeywordConfig keywordConfig) {
+        List<String> accessMod = getPossibleAccessModifiers(keywordConfig);
+        List<String> nonAccessMods = getPossibleNonAccessModifiers(keywordConfig);
+        String type = getTypeFromConfig(keywordConfig);
         String name = getNameFromConfig(keywordConfig);
-        return new ExpectedElement(new ArrayList<>(), new ArrayList<>(), type, name, false);
+        boolean allowExactMatch = getAllowExactMatch(keywordConfig);
+        return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch);
     }
 
-    public static String getTypeFromInheritsConfig(InheritsFromConfig keywordConfig) {
-        return keywordConfig.getInterfaceType().equals(KeywordChoice.YES.toString()) ? ClassType.INTERFACE.toString() : ClassType.CLASS.toString();
-    }
+
 
     /**
      * Checks if the expected access modifier matches up with the present element access modifier
@@ -180,8 +91,12 @@ public final class CheckerUtils {
         return expectedAccessModifiers.contains(presentAccessMod.trim());
     }
 
-    public static boolean isExactNonAccessMatch(List<Modifier> presentModifiers, List<String> expectedNonAccessModifiers) {
+    public static boolean isNonAccessMatch(List<Modifier> presentModifiers, List<String> expectedNonAccessModifiers, boolean isExactMatch) {
         List<String> actualModifiers = getActualNonAccessModifiers(presentModifiers);
+        if(!isExactMatch) {
+            return expectedNonAccessModifiers.containsAll(actualModifiers);
+        }
+
         if(expectedNonAccessModifiers.size() > 1) {
             expectedNonAccessModifiers.remove("");
         }
@@ -227,30 +142,4 @@ public final class CheckerUtils {
         return possibleAccess;
     }
 
-    private static Map<String, String> getCommonNonAccessModifiers(KeywordConfig keywordConfig) {
-        Map<String, String> keywordChoiceMap = new HashMap<>();
-        keywordChoiceMap.put("static", keywordConfig.getStaticModifier());
-        keywordChoiceMap.put("final", keywordConfig.getFinalModifier());
-        keywordChoiceMap.put("", keywordConfig.getEmptyNonAccessModifier());
-        return keywordChoiceMap;
-    }
-
-    public static String getAllowedAccess(List<String> modifiers, String disallowedMod) {
-        String mod = disallowedMod;
-        while(mod.equals(disallowedMod)) {
-            int rnd = new Random().nextInt(modifiers.size());
-            mod = modifiers.get(rnd);
-        }
-        return mod;
-    }
-
-    public static List<String> getAllowedNonAccess(List<String> modifiers, List<String> disallowedNonAccess) {
-        List<String> allowedMods = new ArrayList<>();
-        for (String modifier : modifiers) {
-            if(!disallowedNonAccess.contains(modifier)) {
-                allowedMods.add(modifier);
-            }
-        }
-        return allowedMods;
-    }
 }

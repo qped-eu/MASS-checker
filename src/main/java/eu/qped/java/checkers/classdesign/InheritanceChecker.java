@@ -325,7 +325,7 @@ class InheritanceChecker {
         ClassOrInterfaceDeclaration parentClassDecl = null;
         for (Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry: matchedInfoDecl.entrySet()) {
             ClassInfo parentInfo = entry.getKey();
-            ExpectedElement parentElement = CheckerUtils.extractExpectedClassInfo(parentInfo.getClassKeywordConfig());
+            ExpectedElement parentElement = CheckerUtils.extractExpectedInfo(parentInfo.getClassKeywordConfig());
             if(parentElement.getName().equals(expectedParent.getName())) {
                 parentClassDecl = matchedInfoDecl.get(parentInfo);
                 break;

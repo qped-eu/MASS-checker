@@ -1,6 +1,8 @@
 package eu.qped.java.checkers.classdesign.config;
 
+import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+import java.util.Map;
 
 public class ClassKeywordConfig extends KeywordConfig {
 
@@ -13,6 +15,18 @@ public class ClassKeywordConfig extends KeywordConfig {
         classType = KeywordChoice.DONTCARE.toString();
         interfaceType = KeywordChoice.DONTCARE.toString();
         setName("TestClass");
+    }
+
+    @Override
+    public Map<String, String> getNonAccessModifierMap() {
+        Map<String, String> keywordChoiceMap = super.getNonAccessModifierMap();
+        keywordChoiceMap.put("abstract", getAbstractModifier());
+        return keywordChoiceMap;
+    }
+
+    @Override
+    public String getType() {
+        return getInterfaceType().equals(KeywordChoice.YES.toString()) ? ClassType.INTERFACE.toString() : ClassType.CLASS.toString();
     }
 
     public String getAbstractModifier() {

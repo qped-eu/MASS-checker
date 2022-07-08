@@ -7,7 +7,6 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
-import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.InheritsFromConfig;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
 import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
@@ -61,6 +60,7 @@ public class ClassChecker implements Checker {
 
             List<KeywordConfig> fieldKeywordConfigs = new ArrayList<>(classInfo.getFieldKeywordConfigs());
             List<KeywordConfig> methodKeywordConfigs = new ArrayList<>(classInfo.getMethodKeywordConfigs());
+            List<KeywordConfig> inheritsFromConfigs = new ArrayList<>(classInfo.getInheritsFrom());
 
             ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(ClassMemberType.FIELD,
                     classInfo.getCustomFieldFeedback());
@@ -69,10 +69,10 @@ public class ClassChecker implements Checker {
 
             InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo, classInfo.getCustomInheritanceFeedback());
 
-            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, CheckerUtils.extractExpectedClassInfo(classInfo.getClassKeywordConfig()), classInfo.getCustomClassFeedback()));
-            classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getInheritsFromInfos(classInfo.getInheritsFrom())));
-            classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getFieldInfos(fieldKeywordConfigs)));
-            classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getMethodInfos(methodKeywordConfigs)));
+            classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, CheckerUtils.extractExpectedInfo(classInfo.getClassKeywordConfig()), classInfo.getCustomClassFeedback()));
+            classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getExpectedInfos(inheritsFromConfigs)));
+            classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getExpectedInfos(fieldKeywordConfigs)));
+            classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getExpectedInfos(methodKeywordConfigs)));
 
         }
     }
@@ -91,31 +91,15 @@ public class ClassChecker implements Checker {
         return classDeclarations;
     }
 
-    private List<ExpectedElement> getInheritsFromInfos(List<InheritsFromConfig> keywordConfigs) {
+
+    private List<ExpectedElement> getExpectedInfos(List<KeywordConfig> keywordConfigs) {
         List<ExpectedElement> infos = new ArrayList<>();
-        for (InheritsFromConfig keywords: keywordConfigs) {
-            infos.add(CheckerUtils.extractExpectedInheritsFromInfo(keywords));
+        for (KeywordConfig keywords: keywordConfigs) {
+            infos.add(CheckerUtils.extractExpectedInfo(keywords));
         }
         return infos;
     }
 
-    private List<ExpectedElement> getFieldInfos(List<KeywordConfig> fieldKeywordConfigs) {
-        List<ExpectedElement> infos = new ArrayList<>();
-        for (KeywordConfig keywords: fieldKeywordConfigs) {
-            FieldKeywordConfig fieldKeywordConfig = (FieldKeywordConfig) keywords;
-            infos.add(CheckerUtils.extractExpectedFieldInfo(fieldKeywordConfig));
-        }
-        return infos;
-    }
-
-    private List<ExpectedElement> getMethodInfos(List<KeywordConfig> methodKeywordConfigs) {
-        List<ExpectedElement> infos = new ArrayList<>();
-        for (KeywordConfig keywords: methodKeywordConfigs) {
-            MethodKeywordConfig methodKeywordConfig = (MethodKeywordConfig) keywords;
-            infos.add(CheckerUtils.extractExpectedMethodInfo(methodKeywordConfig));
-        }
-        return infos;
-    }
 
     public void addSource(String source) {
         compilationUnits.add(parseCompUnit(source));

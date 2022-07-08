@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.type.ClassKey;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
+import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.mass.QFClassSettings;
+import org.junit.Assume;
 import org.junit.experimental.theories.*;
 import org.junit.runner.RunWith;
 
@@ -16,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(Theories.class)
 public class ClassModifierTest {
+
+    private QFClassSettings qfClassSettings;
+    private ArrayList<ClassInfo> classInfos;
+    private ClassInfo classInfo;
+    private ClassKeywordConfig classConfig;
 
     @DataPoints("outerClassAccess")
     public static String[] accessValues() {
@@ -45,7 +52,7 @@ public class ClassModifierTest {
         return new String[]{
                 "abstract",
                 "final",
-                "",
+//                "",
                 "static"
 
         };
@@ -58,13 +65,11 @@ public class ClassModifierTest {
         };
     }
 
+    @DataPoints("exactMatching")
+    public static String[] exactValues() {
+        return new String[] {"true", "false"};
+    }
 
-    //test access modifier
-    //test non access modifier
-
-
-    //test type
-    //test name
 
     private static void setAccessModifier(KeywordConfig field, String accessMod, String choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
@@ -85,34 +90,64 @@ public class ClassModifierTest {
         runnableMap.get(nonAccessMod).run();
     }
 
+    private void init() {
+        qfClassSettings = new QFClassSettings();
+        classInfos = new ArrayList<>();
+        classInfo = new ClassInfo();
+        classConfig = new ClassKeywordConfig();
+    }
+
+    private void setup() {
+        classInfo.setClassKeywordConfig(classConfig);
+        classInfos.add(classInfo);
+        qfClassSettings.setClassInfos(classInfos);
+    }
+
+    //test access modifier
+    //test non access modifier
+
+
+    //test type
+    //test name
+
+
+
     @Theory
-    public void innerClassCorrect(@FromDataPoints("innerClassAccess") String accessMod,
-                                           @FromDataPoints("innerClassNonAccess") String nonAccessMod,
-                                            @FromDataPoints("choices") String choice) {
+    public void innerClassCorrect(@FromDataPoints("innerClassAccess") String correctMod,
+                                  @FromDataPoints("innerClassAccess") String wrongMod,
+                                  @FromDataPoints("innerClassNonAccess") String correctNonAccess,
+                                  @FromDataPoints("choices") String choice,
+                                  @FromDataPoints("exactMatching") String isExactMatch) {
 
-        if(nonAccessMod.equals("abstract") && (accessMod.equals("private") || accessMod.equals("protected"))) return;
+        Assume.assumeFalse(correctNonAccess.equals("abstract") && (correctMod.equals("private") || correctMod.equals("protected")));
+        Assume.assumeFalse(correctMod.equals(wrongMod));
 
-
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo outerClassInfo = new ClassInfo();
-        ClassKeywordConfig outerClassConfig = new ClassKeywordConfig();
-        outerClassInfo.setClassKeywordConfig(outerClassConfig);
+        init();
 
         ClassInfo innerClassInfo = new ClassInfo();
         ClassKeywordConfig innerClassConfig = new ClassKeywordConfig();
         innerClassConfig.setName("InnerClass");
-        setAccessModifier(innerClassConfig, accessMod, choice);
-        setNonAccessModifier(innerClassConfig, nonAccessMod, choice);
+        innerClassConfig.setAllowExactModifierMatching(isExactMatch);
+        setAccessModifier(innerClassConfig, correctMod, choice);
+        setNonAccessModifier(innerClassConfig, correctNonAccess, choice);
         innerClassInfo.setClassKeywordConfig(innerClassConfig);
 
-        classInfos.add(outerClassInfo);
         classInfos.add(innerClassInfo);
-        qfClassSettings.setClassInfos(classInfos);
+
+        String allowedAccess = correctMod;
+        List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            allowedAccess = wrongMod;
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(innerClassNonAccess()), Collections.singletonList(correctNonAccess));
+            Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
+        }
+
 
         String source = " class TestClass {" +
-                accessMod+" "+nonAccessMod+" class InnerClass {}"+
+                allowedAccess+" "+String.join(" ", allowedNonAccess)+" class InnerClass {}"+
                 "}";
+
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
@@ -123,11 +158,7 @@ public class ClassModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(choice.equals(KeywordChoice.NO.toString())) {
-            assertEquals(1, classChecker.getClassFeedbacks().size());
-        } else {
-            assertEquals(0, classChecker.getClassFeedbacks().size());
-        }
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Theory
@@ -135,30 +166,37 @@ public class ClassModifierTest {
                                             @FromDataPoints("innerClassAccess") String wrongAccess,
                                             @FromDataPoints("innerClassNonAccess") String correctNonAccess,
                                             @FromDataPoints("innerClassNonAccess") String wrongNonAccess,
-                                            @FromDataPoints("choices") String choice) {
+                                            @FromDataPoints("choices") String choice,
+                                            @FromDataPoints("exactMatching") String isExactMatch) {
 
-        if(correctAccess.equals(wrongAccess) || correctNonAccess.equals(wrongNonAccess)) return;
+        Assume.assumeFalse(correctAccess.equals(wrongAccess) || correctNonAccess.equals(wrongNonAccess));
 
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo outerClassInfo = new ClassInfo();
-        ClassKeywordConfig outerClassConfig = new ClassKeywordConfig();
-        outerClassInfo.setClassKeywordConfig(outerClassConfig);
+        init();
+
 
         ClassInfo innerClassInfo = new ClassInfo();
         ClassKeywordConfig innerClassConfig = new ClassKeywordConfig();
         innerClassConfig.setName("InnerClass");
         setAccessModifier(innerClassConfig, correctAccess, choice);
         setNonAccessModifier(innerClassConfig, correctNonAccess, choice);
+        innerClassConfig.setAllowExactModifierMatching(isExactMatch);
         innerClassInfo.setClassKeywordConfig(innerClassConfig);
 
-        classInfos.add(outerClassInfo);
         classInfos.add(innerClassInfo);
-        qfClassSettings.setClassInfos(classInfos);
 
-        String source = " class TestClass {" +
-                wrongAccess+" "+String.join(" ", wrongNonAccess)+" class InnerClass {}"+
+        String allowedAccess = correctAccess;
+        List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
+        if(choice.equals(KeywordChoice.YES.toString())) {
+            allowedAccess = wrongAccess;
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(innerClassNonAccess()), Collections.singletonList(correctNonAccess));
+            Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
+        }
+
+        String source = "class TestClass {" +
+                allowedAccess+" "+String.join(" ", allowedNonAccess)+" class InnerClass {}"+
                 "}";
+
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
@@ -169,31 +207,34 @@ public class ClassModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(choice.equals(KeywordChoice.NO.toString())) {
-            assertEquals(0, classChecker.getClassFeedbacks().size());
-        } else {
-            assertEquals(1, classChecker.getClassFeedbacks().size());
-        }
+        assertEquals(1, classChecker.getClassFeedbacks().size());
+
     }
 
     @Theory
-    public void outerClassCorrect(@FromDataPoints("outerClassAccess") String accessMod,
-                                        @FromDataPoints("nonAccessModifiers") String firstNonAccess,
-                                        @FromDataPoints("choices") String choice) {
+    public void outerClassCorrect(  @FromDataPoints("outerClassAccess") String correctMod,
+                                    @FromDataPoints("outerClassAccess") String wrongMod,
+                                    @FromDataPoints("nonAccessModifiers") String correctNonAccess,
+                                    @FromDataPoints("choices") String choice) {
 
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo classInfo = new ClassInfo();
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        setAccessModifier(classKeywordConfig, accessMod, choice);
-        setNonAccessModifier(classKeywordConfig, firstNonAccess, choice);
-        classInfo.setClassKeywordConfig(classKeywordConfig);
+        Assume.assumeFalse(correctMod.equals(wrongMod));
 
-        classInfos.add(classInfo);
-        qfClassSettings.setClassInfos(classInfos);
+        init();
 
-        String source = accessMod +" "+ firstNonAccess +" class TestClass {" +
+        setAccessModifier(classConfig, correctMod, choice);
+        setNonAccessModifier(classConfig, correctNonAccess, choice);
+
+        String allowedAccess = correctMod;
+        List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            allowedAccess = wrongMod;
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(correctNonAccess));
+            Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
+        }
+        String source = allowedAccess +" "+ String.join(" ", allowedNonAccess) +" class TestClass {" +
                 "}";
+
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
@@ -204,11 +245,7 @@ public class ClassModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(choice.equals(KeywordChoice.NO.toString())) {
-            assertEquals(1, classChecker.getClassFeedbacks().size());
-        } else {
-            assertEquals(0, classChecker.getClassFeedbacks().size());
-        }
+        assertEquals(0, classChecker.getClassFeedbacks().size());
 
     }
 
@@ -216,24 +253,25 @@ public class ClassModifierTest {
     public void outerClassWrong(@FromDataPoints("outerClassAccess") String correctAccess,
                                 @FromDataPoints("outerClassAccess") String wrongAccess,
                                 @FromDataPoints("nonAccessModifiers") String correctNonAccess,
-                                @FromDataPoints("nonAccessModifiers") String wrongNonAccess,
                                 @FromDataPoints("choices") String choice) {
 
-        if(correctAccess.equals(wrongAccess) || correctNonAccess.equals(wrongNonAccess)) return;
+        Assume.assumeFalse(correctAccess.equals(wrongAccess));
 
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo classInfo = new ClassInfo();
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        setAccessModifier(classKeywordConfig, correctAccess, choice);
-        setNonAccessModifier(classKeywordConfig, correctNonAccess, choice);
-        classInfo.setClassKeywordConfig(classKeywordConfig);
+        init();
+        setAccessModifier(classConfig, correctAccess, choice);
+        setNonAccessModifier(classConfig, correctNonAccess, choice);
 
-        classInfos.add(classInfo);
-        qfClassSettings.setClassInfos(classInfos);
-
-        String source = wrongAccess +" "+ wrongNonAccess +" class TestClass {" +
+        String allowedAccess = correctAccess;
+        List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
+        if(choice.equals(KeywordChoice.YES.toString())) {
+            allowedAccess = wrongAccess;
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(correctNonAccess));
+            Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
+        }
+        String source = allowedAccess +" "+ String.join(" ", allowedNonAccess) +" class TestClass {" +
                 "}";
+
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
@@ -245,12 +283,7 @@ public class ClassModifierTest {
             e.printStackTrace();
         }
 
-        if(choice.equals(KeywordChoice.NO.toString())) {
-            assertEquals(0, classChecker.getClassFeedbacks().size());
-        } else {
-            assertEquals(1, classChecker.getClassFeedbacks().size());
-        }
-
+        assertEquals(1, classChecker.getClassFeedbacks().size());
 
     }
 

@@ -2,20 +2,40 @@ package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
+import java.util.Map;
+
 public class MethodKeywordConfig extends KeywordConfig {
 
     private String abstractModifier;
     private String synchronizedModifier;
     private String nativeModifier;
     private String defaultModifier;
-    private String methodType;
+    private String type;
 
     public MethodKeywordConfig() {
         abstractModifier = KeywordChoice.DONTCARE.toString();
         synchronizedModifier = KeywordChoice.DONTCARE.toString();
         nativeModifier = KeywordChoice.DONTCARE.toString();
         defaultModifier = KeywordChoice.DONTCARE.toString();
-        methodType = "";
+        type = "";
+    }
+
+    @Override
+    public Map<String, String> getNonAccessModifierMap() {
+        Map<String, String> keywordChoiceMap = super.getNonAccessModifierMap();
+        keywordChoiceMap.put("abstract", getAbstractModifier());
+        keywordChoiceMap.put("synchronized", getSynchronizedModifier());
+        keywordChoiceMap.put("native", getNativeModifier());
+        keywordChoiceMap.put("default", getDefaultModifier());
+        return keywordChoiceMap;
+    }
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getAbstractModifier() {
@@ -50,12 +70,6 @@ public class MethodKeywordConfig extends KeywordConfig {
         this.nativeModifier = nativeModifier;
     }
 
-    public String getMethodType() {
-        return methodType;
-    }
 
-    public void setMethodType(String methodType) {
-        this.methodType = methodType;
-    }
 
 }

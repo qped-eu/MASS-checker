@@ -12,6 +12,11 @@ public class InheritsFromConfig extends KeywordConfig {
         interfaceType = KeywordChoice.DONTCARE.toString();
     }
 
+    @Override
+    public String getType() {
+        return getInterfaceType().equals(KeywordChoice.YES.toString()) ? "interface" : "class";
+    }
+
     public String getClassType() {
         return classType;
     }

@@ -10,10 +10,17 @@ import org.junit.runner.RunWith;
 
 import java.util.*;
 
+import static org.junit.Assume.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(Theories.class)
 public class FieldModifierTest {
+
+    private QFClassSettings qfClassSettings;
+    private ArrayList<ClassInfo> classInfos;
+    private ClassInfo classInfo;
+    private List<FieldKeywordConfig> fieldKeywordConfigs;
+    private FieldKeywordConfig field;
 
 
     @DataPoints("accessModifiers")
@@ -39,20 +46,10 @@ public class FieldModifierTest {
     @DataPoints("allNonAccessModifierCombinations")
     public static String[][] allNonAccessValues() {
         String[] possibleNonAccess = nonAccessValues();
-        List<String[]> combinationList = new ArrayList<>();
-        // Start i at 1, so that we do not include the empty set in the results
-        for (long i = 1; i < Math.pow(2, possibleNonAccess.length); i++ ) {
-            List<String> portList = new ArrayList<>();
-            for ( int j = 0; j < possibleNonAccess.length; j++ ) {
-                if ( (i & (long) Math.pow(2, j)) > 0 ) {
-                    // Include j in set
-                    portList.add(possibleNonAccess[j]);
-                }
-            }
-            combinationList.add(portList.toArray(new String[0]));
-        }
-        return combinationList.toArray(new String[0][0]);
+        return TestUtils.getAllSubsets(Arrays.asList(possibleNonAccess));
     }
+
+
 
     @DataPoints("choices")
     public static String[] choiceValues() {
@@ -102,22 +99,36 @@ public class FieldModifierTest {
     //test missing fields
     //test hidden?
 
+    private void init() {
+        qfClassSettings = new QFClassSettings();
+        classInfos = new ArrayList<>();
+        classInfo = new ClassInfo();
+        fieldKeywordConfigs = new ArrayList<>();
+        field = new FieldKeywordConfig();
+        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
+        classInfo.setClassKeywordConfig(classKeywordConfig);
+    }
+
+    private void setup() {
+        field.setType("int");
+        field.setName("a");
+        fieldKeywordConfigs.add(field);
+        classInfo.setFieldKeywordConfigs(fieldKeywordConfigs);
+
+        classInfos.add(classInfo);
+        qfClassSettings.setClassInfos(classInfos);
+    }
+
     @Theory
     public void emptyNonAccessCorrect(@FromDataPoints("accessModifiers") String correctMod,
                                       @FromDataPoints("accessModifiers") String wrongMod,
-                                           @FromDataPoints("emptyModifier") String emptyNonAccess,
-                                           @FromDataPoints("choices") String choice,
-                                           @FromDataPoints("exactMatching") String isExactMatch) {
+                                       @FromDataPoints("emptyModifier") String emptyNonAccess,
+                                       @FromDataPoints("choices") String choice,
+                                       @FromDataPoints("exactMatching") String isExactMatch) {
 
-        if(correctMod.equals(wrongMod)) return;
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo classInfo = new ClassInfo();
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classInfo.setClassKeywordConfig(classKeywordConfig);
+        assumeFalse(correctMod.equals(wrongMod));
+        init();
 
-        List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
-        FieldKeywordConfig field = new FieldKeywordConfig();
         chooseAccessModifier(field, correctMod, choice);
         chooseNonAccessModifier(field, emptyNonAccess, choice);
         field.setAllowExactModifierMatching(isExactMatch);
@@ -126,22 +137,14 @@ public class FieldModifierTest {
         List<String> allowedNonAccess = Collections.singletonList(emptyNonAccess);
         if(choice.equals(KeywordChoice.NO.toString())) {
             allowedAccess = wrongMod;
-            allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), allowedNonAccess);
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), allowedNonAccess);
         }
         String source = "class TestClass {" + allowedAccess;
         source += " "+String.join(" ", allowedNonAccess);
         source += " int a;"+
                 "}";
 
-        field.setFieldType("int");
-        field.setName("a");
-
-        fieldKeywordConfigs.add(field);
-        classInfo.setFieldKeywordConfigs(fieldKeywordConfigs);
-
-        classInfos.add(classInfo);
-        qfClassSettings.setClassInfos(classInfos);
-
+        setup();
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
         classChecker.addSource(source);
@@ -161,16 +164,8 @@ public class FieldModifierTest {
                                     @FromDataPoints("emptyModifier") String emptyNonAccess,
                                     @FromDataPoints("choices") String choice,
                                     @FromDataPoints("exactMatching") String isExactMatch) {
-        if(correctMod.equals(wrongMod)) return;
-
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo classInfo = new ClassInfo();
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classInfo.setClassKeywordConfig(classKeywordConfig);
-
-        List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
-        FieldKeywordConfig field = new FieldKeywordConfig();
+        assumeFalse(correctMod.equals(wrongMod));
+        init();
         chooseAccessModifier(field, correctMod, choice);
         chooseNonAccessModifier(field, emptyNonAccess, choice);
         field.setAllowExactModifierMatching(isExactMatch);
@@ -179,7 +174,7 @@ public class FieldModifierTest {
         List<String> allowedNonAccess = Collections.singletonList(emptyNonAccess);
         if(choice.equals(KeywordChoice.YES.toString())) {
             allowedAccess = wrongMod;
-            allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), allowedNonAccess);
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), allowedNonAccess);
         }
 
         String source = "class TestClass {" + allowedAccess;
@@ -187,14 +182,7 @@ public class FieldModifierTest {
         source += " int a;"+
                 "}";
 
-        field.setFieldType("int");
-        field.setName("a");
-
-        fieldKeywordConfigs.add(field);
-        classInfo.setFieldKeywordConfigs(fieldKeywordConfigs);
-
-        classInfos.add(classInfo);
-        qfClassSettings.setClassInfos(classInfos);
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
@@ -215,38 +203,31 @@ public class FieldModifierTest {
                                 @FromDataPoints("choices") String choice,
                                 @FromDataPoints("exactMatching") String isExactMatch) {
 
-        if(correctMod.equals(wrongMod)) return;
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo classInfo = new ClassInfo();
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classInfo.setClassKeywordConfig(classKeywordConfig);
-
-        List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
-        FieldKeywordConfig field = new FieldKeywordConfig();
+        assumeFalse(correctMod.equals(wrongMod));
+        init();
         chooseAccessModifier(field, correctMod, choice);
         field.setAllowExactModifierMatching(isExactMatch);
+
+
         for (String nonAccess: nonAccessComb) {
             chooseNonAccessModifier(field, nonAccess, choice);
         }
-        field.setFieldType("int");
-        field.setName("a");
-
-        fieldKeywordConfigs.add(field);
-        classInfo.setFieldKeywordConfigs(fieldKeywordConfigs);
 
         String source = "class TestClass {";
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Arrays.asList(nonAccessComb);
         if(choice.equals(KeywordChoice.NO.toString())) {
             allowedAccess = wrongMod;
-            allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
+        }
+
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
         source += allowedAccess +" "+String.join(" ", allowedNonAccess) + " int a;}";
 
-        classInfos.add(classInfo);
-        qfClassSettings.setClassInfos(classInfos);
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
@@ -267,37 +248,27 @@ public class FieldModifierTest {
                              @FromDataPoints("choices") String choice,
                              @FromDataPoints("exactMatching") String isExactMatch) {
 
-        if(correctMod.equals(wrongMod)) return;
+        assumeFalse(correctMod.equals(wrongMod));
 
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo classInfo = new ClassInfo();
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classInfo.setClassKeywordConfig(classKeywordConfig);
-
-        List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
-        FieldKeywordConfig field = new FieldKeywordConfig();
+        init();
+        field.setAllowExactModifierMatching(isExactMatch);
         chooseAccessModifier(field, correctMod, choice);
         for (String nonAccess: correctNonAccess) {
             chooseNonAccessModifier(field, nonAccess, choice);
         }
         String source = "class TestClass {";
         String allowedAccess = correctMod;
+        List<String> allowedNonAccess = Arrays.asList(correctNonAccess);
         if(choice.equals(KeywordChoice.YES.toString())) {
             allowedAccess = wrongMod;
         }
-        source += allowedAccess+" "+String.join(" ", correctNonAccess) + " int a;}";
 
-        field.setAllowExactModifierMatching(isExactMatch);
-        field.setFieldType("int");
-        field.setName("a");
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
+        }
 
-
-        fieldKeywordConfigs.add(field);
-        classInfo.setFieldKeywordConfigs(fieldKeywordConfigs);
-
-        classInfos.add(classInfo);
-        qfClassSettings.setClassInfos(classInfos);
+        source += allowedAccess+" "+String.join(" ", allowedNonAccess) + " int a;}";
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
@@ -319,19 +290,9 @@ public class FieldModifierTest {
 
         List<String> expectedList = Arrays.asList(expectedNonAccess);
 
-        QFClassSettings qfClassSettings = new QFClassSettings();
-        ArrayList<ClassInfo> classInfos = new ArrayList<>();
-        ClassInfo classInfo = new ClassInfo();
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classInfo.setClassKeywordConfig(classKeywordConfig);
-
-        List<FieldKeywordConfig> fieldKeywordConfigs = new ArrayList<>();
-        FieldKeywordConfig field = new FieldKeywordConfig();
+        init();
         chooseAccessModifier(field, accessMod, KeywordChoice.YES.toString());
         field.setAllowExactModifierMatching(isExactMatch);
-        field.setFieldType("int");
-        field.setName("a");
-
         for (String nonAccess: expectedNonAccess) {
             chooseNonAccessModifier(field, nonAccess, choice);
         }
@@ -339,16 +300,63 @@ public class FieldModifierTest {
         String source = "class TestClass {";
         List<String> allowedNonAccess = expectedList;
         if(choice.equals(KeywordChoice.YES.toString())) {
-            allowedNonAccess = CheckerUtils.getAllowedNonAccess(Arrays.asList(nonAccessValues()), expectedList);
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
+        }
+
+
         source += accessMod+" "+String.join(" ", allowedNonAccess);
         source += " int a;}";
 
-        fieldKeywordConfigs.add(field);
-        classInfo.setFieldKeywordConfigs(fieldKeywordConfigs);
+        setup();
 
-        classInfos.add(classInfo);
-        qfClassSettings.setClassInfos(classInfos);
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(1, classChecker.getClassFeedbacks().size());
+    }
+
+    @Theory
+    public void accessAndNonAccessFault(@FromDataPoints("accessModifiers") String correctMod,
+                               @FromDataPoints("accessModifiers") String wrongMod,
+                               @FromDataPoints("allNonAccessModifierCombinations") String[] expectedNonAccess,
+                               @FromDataPoints("choices") String choice,
+                               @FromDataPoints("exactMatching") String isExactMatch) {
+
+        assumeFalse(correctMod.equals(wrongMod));
+        List<String> expectedList = Arrays.asList(expectedNonAccess);
+
+        init();
+        chooseAccessModifier(field, correctMod, KeywordChoice.YES.toString());
+        field.setAllowExactModifierMatching(isExactMatch);
+        for (String nonAccess: expectedNonAccess) {
+            chooseNonAccessModifier(field, nonAccess, choice);
+        }
+
+        String source = "class TestClass {";
+        List<String> allowedNonAccess = expectedList;
+        String allowedAccess = correctMod;
+        if(choice.equals(KeywordChoice.YES.toString())) {
+            allowedAccess = wrongMod;
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
+        }
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
+        }
+
+
+        source += allowedAccess+" "+String.join(" ", allowedNonAccess);
+        source += " int a;}";
+
+        setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);

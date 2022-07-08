@@ -2,17 +2,32 @@ package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
+import java.util.Map;
+
 public class FieldKeywordConfig extends KeywordConfig {
 
     private String transientModifier;
     private String volatileModifier;
-    private String fieldType;
+    private String type;
 
     public FieldKeywordConfig() {
 
         transientModifier = KeywordChoice.DONTCARE.toString();
         volatileModifier = KeywordChoice.DONTCARE.toString();
-        fieldType = "";
+        type = "";
+    }
+
+    @Override
+    public Map<String, String> getNonAccessModifierMap() {
+        Map<String, String> keywordChoiceMap = super.getNonAccessModifierMap();
+        keywordChoiceMap.put("transient", getTransientModifier());
+        keywordChoiceMap.put("volatile", getVolatileModifier());
+        return keywordChoiceMap;
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 
     public String getTransientModifier() {
@@ -31,11 +46,7 @@ public class FieldKeywordConfig extends KeywordConfig {
         this.volatileModifier = volatileModifier;
     }
 
-    public String getFieldType() {
-        return fieldType;
-    }
-
-    public void setFieldType(String fieldType) {
-        this.fieldType = fieldType;
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -2,7 +2,10 @@ package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
-public class KeywordConfig {
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class KeywordConfig {
 
     private String allowExactModifierMatching;
 
@@ -30,6 +33,25 @@ public class KeywordConfig {
 
         name = "";
     }
+
+    public Map<String, String> getAccessModifierMap() {
+        Map<String, String> keywordChoiceMap = new HashMap<>();
+        keywordChoiceMap.put("public", getPublicModifier());
+        keywordChoiceMap.put("protected", getProtectedModifier());
+        keywordChoiceMap.put("private", getPrivateModifier());
+        keywordChoiceMap.put("", getPackagePrivateModifier());
+        return keywordChoiceMap;
+    }
+
+    public Map<String, String> getNonAccessModifierMap() {
+        Map<String, String> keywordChoiceMap = new HashMap<>();
+        keywordChoiceMap.put("static", getStaticModifier());
+        keywordChoiceMap.put("final", getFinalModifier());
+        keywordChoiceMap.put("", getEmptyNonAccessModifier());
+        return keywordChoiceMap;
+    }
+
+    public abstract String getType();
 
     public String getAllowExactModifierMatching() {
         return allowExactModifierMatching;
