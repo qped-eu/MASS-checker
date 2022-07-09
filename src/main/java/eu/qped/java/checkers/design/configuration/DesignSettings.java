@@ -12,8 +12,6 @@ import lombok.*;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class DesignSettings extends QfObjectBase {
 
@@ -51,11 +49,6 @@ public class DesignSettings extends QfObjectBase {
      * Coupled classes: classes that use this class (efferent)
      */
     private MetricThreshold ce;
-
-    /**
-     * Class interface size
-     */
-    private MetricThreshold cis;
 
     /**
      * Data Access metric

@@ -8,6 +8,7 @@ import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.design.DesignChecker;
+import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
@@ -31,6 +32,9 @@ public class Mass implements Checker {
     private QfMass mass;
 
     @QfProperty
+    private QFSemSettings semSettings;
+
+    @QfProperty
     private QFClassSettings classSettings;
 
     private final static String NEW_LINE = "\n" + "\n";
@@ -38,7 +42,7 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-            MainSettings mainSettings = new MainSettings(this.mainSettings);
+        MainSettings mainSettings = new MainSettings(this.mainSettings);
 
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
@@ -56,7 +60,7 @@ public class Mass implements Checker {
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
         // Design Checker
-        DesignChecker designChecker = DesignChecker.builder().build(); //TODO is this correct?
+        DesignChecker designChecker = DesignChecker.builder().qfDesignSettings(mass.getMetrics()).build();
 
         //Class Checker
         ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(this.classSettings);
@@ -78,10 +82,13 @@ public class Mass implements Checker {
         List<SemanticFeedback> semanticFeedbacks;
         semanticFeedbacks = massExecutor.getSemanticFeedbacks();
 
+        List<DesignFeedback> designFeedbacks;
+        designFeedbacks = massExecutor.getDesignFeedbacks();
+
         List<ClassFeedback> classFeedbacks;
         classFeedbacks = massExecutor.getClassFeedbacks();
 
-        String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + syntaxFeedbacks.size() + classFeedbacks.size() + 100];
+        String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + designFeedbacks.size() + classFeedbacks.size() + syntaxFeedbacks.size() + 100];
 
         int i = 0;
 
@@ -108,6 +115,22 @@ public class Mass implements Checker {
             i = i + 2;
         }
 
+        for (DesignFeedback df : designFeedbacks) {
+            result[i] = "design Feedback";
+            result[i + 1] =
+                    "In class '" + df.getClassName() + ".java'"
+                            + NEW_LINE
+                            + df.getMetric() + " (" + df.getBody() + ")"
+                            + NEW_LINE
+                            + df.getMetric() + " (" + df.getBody() + ")"
+                            + NEW_LINE
+                            + "Measured with value: " + df.getValue()
+                            + NEW_LINE
+                            + df.getSuggestion()
+                            + "------------------------------------------------------------------------------";
+            i = i + 2;
+        }
+
         for (ClassFeedback classFeedback : classFeedbacks) {
             result[i] = "class Feedback";
             result[i + 1] = classFeedback.getBody() + NEW_LINE
@@ -119,12 +142,9 @@ public class Mass implements Checker {
             result[i + 1] = ""
                     + syntax.toString()
                     + NEW_LINE
-                    + "--------------------------------------------------"
-            ;
+                    + "--------------------------------------------------";
             i = i + 2;
         }
-
-
         qfObject.setFeedback(result);
     }
 
