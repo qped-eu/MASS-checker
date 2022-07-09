@@ -1,6 +1,8 @@
 package eu.qped.java.checkers.classdesign;
 
+import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
@@ -11,6 +13,7 @@ import org.junit.runner.RunWith;
 import java.util.*;
 
 import static org.junit.Assume.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(Theories.class)
@@ -83,19 +86,6 @@ public class FieldModifierTest {
     }
 
 
-    //test access modifier
-    //test non access modifier
-    //test exact and inexact matching
-    //test allowing and disallowing variables
-    //test empty
-
-    //test exact matching differently?
-
-    //test multiple fields once?
-
-
-    //test type
-    //test name
     //test missing fields
     //test hidden?
 
@@ -193,7 +183,9 @@ public class FieldModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(1, classChecker.getClassFeedbacks().size());
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
 
     @Theory
@@ -279,7 +271,9 @@ public class FieldModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(1, classChecker.getClassFeedbacks().size());
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
 
     @Theory
@@ -321,7 +315,9 @@ public class FieldModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(1, classChecker.getClassFeedbacks().size());
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
 
     @Theory
@@ -335,7 +331,7 @@ public class FieldModifierTest {
         List<String> expectedList = Arrays.asList(expectedNonAccess);
 
         init();
-        chooseAccessModifier(field, correctMod, KeywordChoice.YES.toString());
+        chooseAccessModifier(field, correctMod, choice);
         field.setAllowExactModifierMatching(isExactMatch);
         for (String nonAccess: expectedNonAccess) {
             chooseNonAccessModifier(field, nonAccess, choice);
@@ -367,6 +363,117 @@ public class FieldModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(1, classChecker.getClassFeedbacks().size());
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Theory
+    public void multipleFieldsAccessFaults(@FromDataPoints("accessModifiers") String correctMod,
+                            @FromDataPoints("accessModifiers") String wrongMod,
+                            @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
+                            @FromDataPoints("choices") String choice,
+                            @FromDataPoints("exactMatching") String isExactMatch) {
+
+        assumeFalse(correctMod.equals(wrongMod));
+
+        init();
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+        field2.setAllowExactModifierMatching(isExactMatch);
+
+        field.setAllowExactModifierMatching(isExactMatch);
+        chooseAccessModifier(field, correctMod, choice);
+        chooseAccessModifier(field2, correctMod, choice);
+        for (String nonAccess: correctNonAccess) {
+            chooseNonAccessModifier(field, nonAccess, choice);
+            chooseNonAccessModifier(field2, nonAccess, choice);
+        }
+        String source = "class TestClass {";
+        String allowedAccess = correctMod;
+        List<String> allowedNonAccess = Arrays.asList(correctNonAccess);
+        if(choice.equals(KeywordChoice.YES.toString())) {
+            allowedAccess = wrongMod;
+        }
+
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
+        }
+
+        source += allowedAccess+" "+String.join(" ", allowedNonAccess) + " int a;";
+        source += allowedAccess+" "+String.join(" ", allowedNonAccess) + " int b;";
+        source += "}";
+
+        field2.setType("int");
+        field2.setName("b");
+        fieldKeywordConfigs.add(field2);
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Theory
+    public void multipleFieldsNonAccessFaults(@FromDataPoints("accessModifiers") String correctMod,
+                                           @FromDataPoints("accessModifiers") String wrongMod,
+                                           @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
+                                           @FromDataPoints("choices") String choice,
+                                           @FromDataPoints("exactMatching") String isExactMatch) {
+
+        assumeFalse(correctMod.equals(wrongMod));
+        List<String> expectedList = Arrays.asList(correctNonAccess);
+
+        init();
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+        field2.setAllowExactModifierMatching(isExactMatch);
+
+        field.setAllowExactModifierMatching(isExactMatch);
+        chooseAccessModifier(field, correctMod, KeywordChoice.YES.toString());
+        chooseAccessModifier(field2, correctMod, KeywordChoice.YES.toString());
+        for (String nonAccess: correctNonAccess) {
+            chooseNonAccessModifier(field, nonAccess, choice);
+            chooseNonAccessModifier(field2, nonAccess, choice);
+        }
+        String source = "class TestClass {";
+        List<String> allowedNonAccess = expectedList;
+        if(choice.equals(KeywordChoice.YES.toString())) {
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
+        }
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
+        }
+
+        source += correctMod+" "+String.join(" ", allowedNonAccess) + " int a;";
+        source += correctMod+" "+String.join(" ", allowedNonAccess) + " int b;";
+        source += "}";
+
+        field2.setType("int");
+        field2.setName("b");
+        fieldKeywordConfigs.add(field2);
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
 }

@@ -2,6 +2,10 @@ package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClassKeywordConfig extends KeywordConfig {
@@ -25,8 +29,31 @@ public class ClassKeywordConfig extends KeywordConfig {
     }
 
     @Override
-    public String getType() {
-        return getInterfaceType().equals(KeywordChoice.YES.toString()) ? ClassType.INTERFACE.toString() : ClassType.CLASS.toString();
+    public List<String> getPossibleTypes() {
+        List<String> possibleTypes = new ArrayList<>();
+        boolean containsYes = false;
+        if(getInterfaceType().equals(KeywordChoice.YES.toString())) {
+            containsYes = true;
+            possibleTypes.add(ClassType.INTERFACE.toString());
+        }
+        if(getClassType().equals(KeywordChoice.YES.toString())) {
+            containsYes = true;
+            possibleTypes.add(ClassType.CLASS.toString());
+        }
+
+        if(!containsYes) {
+            if(!getInterfaceType().equals(KeywordChoice.NO.toString())) {
+                possibleTypes.add(ClassType.INTERFACE.toString());
+            }
+            if(!getClassType().equals(KeywordChoice.NO.toString())) {
+                possibleTypes.add(ClassType.CLASS.toString());
+            }
+        }
+        return possibleTypes;
+//        if(getInterfaceType().equals(KeywordChoice.YES.toString()) || getClassType().equals(KeywordChoice.NO.toString())) {
+//            return ClassType.INTERFACE.toString();
+//        }
+//        return ClassType.CLASS.toString();
     }
 
     public String getAbstractModifier() {

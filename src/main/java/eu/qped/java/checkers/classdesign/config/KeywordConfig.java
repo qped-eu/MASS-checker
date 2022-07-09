@@ -3,6 +3,7 @@ package eu.qped.java.checkers.classdesign.config;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class KeywordConfig {
@@ -51,7 +52,7 @@ public abstract class KeywordConfig {
         return keywordChoiceMap;
     }
 
-    public abstract String getType();
+    public abstract List<String> getPossibleTypes();
 
     public String getAllowExactModifierMatching() {
         return allowExactModifierMatching;

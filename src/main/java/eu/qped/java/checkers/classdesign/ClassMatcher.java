@@ -151,7 +151,7 @@ class ClassMatcher {
     public List<ClassFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo, List<String> customFeedback) {
         boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getPossibleAccessModifiers());
         boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getPossibleNonAccessModifiers(), elemInfo.isExactMatch());
-        boolean typeMatch = isClassTypeMatch(classDecl, elemInfo.getType());
+        boolean typeMatch = isClassTypeMatch(classDecl, elemInfo.getTypes());
         return findViolation(accessMatch, nonAccessMatch, typeMatch, classDecl, customFeedback);
     }
 
@@ -162,11 +162,11 @@ class ClassMatcher {
         ClassFeedbackType violation = null;
         if(!typeMatch) {
             violation = WRONG_CLASS_TYPE;
-        } else if(!nonAccessMatch) {
-            violation = WRONG_CLASS_NON_ACCESS_MODIFIER;
-        } else if(!accessMatch){
+        } else if(!accessMatch) {
+            violation =  WRONG_CLASS_ACCESS_MODIFIER;
+        } else if(!nonAccessMatch){
 
-            violation = WRONG_CLASS_ACCESS_MODIFIER;
+            violation = WRONG_CLASS_NON_ACCESS_MODIFIER;
         }
 
         if(violation != null) {
@@ -185,19 +185,22 @@ class ClassMatcher {
 
     /**
      * Checks if the expected class type matches up with the actual class type
-     * @param classType expected class type
+     * @param classTypes expected class type
      * @param classDecl class declaration to check the class type from
      */
-    private boolean isClassTypeMatch(ClassOrInterfaceDeclaration classDecl, String classType) {
-        boolean foundTypeMatch = false;
-
-        if(classType.equals(ClassType.INTERFACE.toString())) {
-            foundTypeMatch = classDecl.isInterface();
-        } else if (classType.equals(ClassType.CLASS.toString())) {
-            foundTypeMatch = !classDecl.isInterface();
+    private boolean isClassTypeMatch(ClassOrInterfaceDeclaration classDecl, List<String> classTypes) {
+        for (String classType: classTypes) {
+            if(classType.equals(ClassType.INTERFACE.toString())) {
+                if(classDecl.isInterface()) {
+                    return true;
+                }
+            } else if (classType.equals(ClassType.CLASS.toString())) {
+                if(!classDecl.isInterface()) {
+                    return true;
+                }
+            }
         }
-
-        return foundTypeMatch;
+        return false;
     }
 
     private boolean isClassNameMatch(ClassOrInterfaceDeclaration classDecl, String className) {

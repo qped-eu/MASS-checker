@@ -46,6 +46,8 @@ public final class ClassFeedbackGenerator {
                 "Expected interface implementation missing in "+classPlaceholder+".");
         feedbackMap.put(MISSING_CLASS_EXTENSION,
                 "Expected class extension missing in "+classPlaceholder+".");
+        feedbackMap.put(MISSING_SUPER_CLASS,
+                "Expected super class missing in "+classPlaceholder+".");
         feedbackMap.put(WRONG_CLASS_TYPE,
                 "Different type for "+classPlaceholder+" expected.");
         feedbackMap.put(WRONG_CLASS_NAME,

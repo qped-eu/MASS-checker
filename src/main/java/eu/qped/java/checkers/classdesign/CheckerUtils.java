@@ -2,7 +2,6 @@ package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Modifier;
 import eu.qped.java.checkers.classdesign.config.*;
-import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.infos.*;
 
@@ -25,8 +24,8 @@ public final class CheckerUtils {
         return getPossibleModifiers(keywordConfig.getNonAccessModifierMap());
     }
 
-    public static String getTypeFromConfig(KeywordConfig keywordConfig) {
-        return keywordConfig.getType();
+    public static List<String> getPossibleTypes(KeywordConfig keywordConfig) {
+        return keywordConfig.getPossibleTypes();
     }
 
     public static List<String> getPossibleModifiers(Map<String, String> keywordChoiceMap) {
@@ -73,7 +72,7 @@ public final class CheckerUtils {
     public static ExpectedElement extractExpectedInfo(KeywordConfig keywordConfig) {
         List<String> accessMod = getPossibleAccessModifiers(keywordConfig);
         List<String> nonAccessMods = getPossibleNonAccessModifiers(keywordConfig);
-        String type = getTypeFromConfig(keywordConfig);
+        List<String> type = getPossibleTypes(keywordConfig);
         String name = getNameFromConfig(keywordConfig);
         boolean allowExactMatch = getAllowExactMatch(keywordConfig);
         return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch);

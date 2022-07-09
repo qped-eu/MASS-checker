@@ -2,6 +2,8 @@ package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class FieldKeywordConfig extends KeywordConfig {
@@ -26,8 +28,8 @@ public class FieldKeywordConfig extends KeywordConfig {
     }
 
     @Override
-    public String getType() {
-        return type;
+    public List<String> getPossibleTypes() {
+        return Collections.singletonList(type);
     }
 
     public String getTransientModifier() {

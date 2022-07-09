@@ -74,14 +74,23 @@ class InheritanceChecker {
                                               List<ClassOrInterfaceType> implementedInterfaces,
                                               ExpectedElement elemInfo) {
 
-        String type = elemInfo.getType();
-        if(type.equals(ClassType.INTERFACE.toString())) {
-            String interfaceMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), true);
-            return !interfaceMatch.isBlank();
-        } else if(type.equals(ClassType.CLASS.toString())) {
-            String classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
-            return !classMatch.isBlank();
+        List<String> possibleTypes = elemInfo.getTypes();
+        for (String type : possibleTypes) {
+            if(type.equals(ClassType.INTERFACE.toString())) {
+                String interfaceMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), true);
+                if(!interfaceMatch.isBlank()) {
+                    return true;
+                }
+//                return !interfaceMatch.isBlank();
+            } else if(type.equals(ClassType.CLASS.toString())) {
+                String classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
+                if(!classMatch.isBlank()) {
+                    return true;
+                }
+//                return !classMatch.isBlank();
+            }
         }
+
         return false;
     }
 
@@ -246,11 +255,21 @@ class InheritanceChecker {
         String implementedNameMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), false);
         String extendedNameMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), false);
         if(implementedNameMatch.isBlank() && extendedNameMatch.isBlank()) {
-            String type = elemInfo.getType();
-            if(type.equals(ClassType.INTERFACE.toString())) {
-                inheritanceFeedback.add(findInterfaceNameViolation(classTypeName, implementedInterfaces));
-            } else if(type.equals(ClassType.CLASS.toString())) {
-                inheritanceFeedback.add(findClassNameViolation(classTypeName, extendedClasses, elemInfo.getPossibleNonAccessModifiers()));
+            List<String> possibleTypes = elemInfo.getTypes();
+            if(possibleTypes.size() > 1) {
+                //means that both interface and class were possible and none were found (probably not possible)
+                ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(classTypeName, "",
+                        MISSING_SUPER_CLASS,
+                        String.join("\n", customFeedback));
+                inheritanceFeedback.add(fb);
+            } else {
+                for (String type : possibleTypes) {
+                    if(type.equals(ClassType.INTERFACE.toString())) {
+                        inheritanceFeedback.add(findInterfaceNameViolation(classTypeName, implementedInterfaces));
+                    } else if(type.equals(ClassType.CLASS.toString())) {
+                        inheritanceFeedback.add(findClassNameViolation(classTypeName, extendedClasses, elemInfo.getPossibleNonAccessModifiers()));
+                    }
+                }
             }
         } else {
             inheritanceFeedback.add(findTypeViolation(classTypeName, implementedNameMatch, extendedNameMatch));

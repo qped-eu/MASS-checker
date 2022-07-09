@@ -1,11 +1,19 @@
 package eu.qped.java.checkers.classdesign;
 
+import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public final class TestUtils {
 
     private TestUtils() {}
+
+    public static ClassFeedback getFeedback(String className, String elementName, ClassFeedbackType violation) {
+        return ClassFeedbackGenerator.generateFeedback(className, elementName, violation, "");
+    }
 
     public static String[][] getAllSubsets(List<String> modifierList) {
         List<String[]> combinationList = new ArrayList<>();

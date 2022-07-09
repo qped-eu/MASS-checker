@@ -2,9 +2,11 @@ package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
-public class MethodKeywordConfig extends KeywordConfig {
+public class MethodKeywordConfig extends KeywordConfig  {
 
     private String abstractModifier;
     private String synchronizedModifier;
@@ -30,8 +32,8 @@ public class MethodKeywordConfig extends KeywordConfig {
         return keywordChoiceMap;
     }
     @Override
-    public String getType() {
-        return type;
+    public List<String> getPossibleTypes() {
+        return Collections.singletonList(type);
     }
 
     public void setType(String type) {

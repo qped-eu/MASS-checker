@@ -19,6 +19,7 @@ public enum ClassFeedbackType {
     HIDDEN_METHOD("HiddenMethodError"),
 
     //Class Errors
+    MISSING_SUPER_CLASS("MissingSuperClass"),
     MISSING_INTERFACE_IMPLEMENTATION("MissingInterfaceImplementationError"),
     MISSING_CLASS_EXTENSION("MissingClassExtensionError"),
     WRONG_CLASS_TYPE("ClassTypeError"),

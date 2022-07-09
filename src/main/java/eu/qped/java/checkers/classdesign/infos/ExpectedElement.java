@@ -8,14 +8,14 @@ public class ExpectedElement {
     private boolean isExactMatch;
     private List<String> possibleAccessModifiers;
     private List<String> possibleNonAccessModifiers;
-    private String type;
+    private List<String> types;
     private String name;
 
-    public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, String type, String name, boolean isExactMatch) {
+    public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, List<String> types, String name, boolean isExactMatch) {
         this.isExactMatch = isExactMatch;
         this.possibleAccessModifiers = accessMod;
         this.possibleNonAccessModifiers = nonAccessMods;
-        this.type = type;
+        this.types = types;
         this.name = name;
     }
 
@@ -43,12 +43,12 @@ public class ExpectedElement {
         this.possibleNonAccessModifiers = possibleNonAccessModifiers;
     }
 
-    public String getType() {
-        return type;
+    public List<String> getTypes() {
+        return types;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 
     public String getName() {
@@ -66,11 +66,11 @@ public class ExpectedElement {
         ExpectedElement that = (ExpectedElement) o;
         return Objects.equals(possibleAccessModifiers, that.possibleAccessModifiers) &&
                 Objects.equals(possibleNonAccessModifiers, that.possibleNonAccessModifiers) &&
-                Objects.equals(type, that.type) && Objects.equals(name, that.name);
+                Objects.equals(types, that.types) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(possibleAccessModifiers, possibleNonAccessModifiers, type, name);
+        return Objects.hash(possibleAccessModifiers, possibleNonAccessModifiers, types, name);
     }
 }

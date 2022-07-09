@@ -224,11 +224,11 @@ class ClassMemberChecker<T extends Node> {
     /**
      * Check the type of the element.
      * @param elem the element to check
-     * @param expectedType expected field / return type
+     * @param expectedTypes expected field / return type
      * @return true if exact match
      */
-    private boolean isElementTypeMatch(NodeWithModifiers<T> elem, String expectedType) {
-        if(expectedType.isBlank()) {
+    private boolean isElementTypeMatch(NodeWithModifiers<T> elem, List<String> expectedTypes) {
+        if(expectedTypes.isEmpty()) {
             return false;
         }
 
@@ -240,7 +240,8 @@ class ClassMemberChecker<T extends Node> {
             MethodDeclaration methodElement = (MethodDeclaration) elem;
             presentType = methodElement.getType().asString();
         }
-        return presentType.equalsIgnoreCase(expectedType);
+        return expectedTypes.contains(presentType.toLowerCase());
+//        return presentType.equalsIgnoreCase(expectedTypes);
     }
 
     /**
@@ -305,7 +306,7 @@ class ClassMemberChecker<T extends Node> {
         List<Boolean> matching = new ArrayList<>();
         boolean accessMatch = CheckerUtils.isAccessMatch(presentElement.getAccessSpecifier().asString(), expectedElement.getPossibleAccessModifiers());
         boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(presentElement.getModifiers(), expectedElement.getPossibleNonAccessModifiers(), expectedElement.isExactMatch());
-        boolean typeMatch = isElementTypeMatch(presentElement, expectedElement.getType());
+        boolean typeMatch = isElementTypeMatch(presentElement, expectedElement.getTypes());
         boolean nameMatch = isElementNameMatch(presentElement, expectedElement.getName());
         matching.add(accessMatch);
         matching.add(nonAccessMatch);
