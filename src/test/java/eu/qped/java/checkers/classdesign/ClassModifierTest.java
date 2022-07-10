@@ -1,11 +1,8 @@
 package eu.qped.java.checkers.classdesign;
 
-import com.fasterxml.jackson.databind.type.ClassKey;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
-import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
-import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
@@ -171,7 +168,6 @@ public class ClassModifierTest {
         ClassKeywordConfig innerClassConfig = new ClassKeywordConfig();
         innerClassConfig.setName("InnerClass");
         setAccessModifier(innerClassConfig, correctAccess, choice);
-        setNonAccessModifier(innerClassConfig, correctNonAccess, KeywordChoice.YES.toString());
         innerClassConfig.setAllowExactModifierMatching(isExactMatch);
         innerClassInfo.setClassKeywordConfig(innerClassConfig);
 
@@ -219,7 +215,6 @@ public class ClassModifierTest {
         ClassInfo innerClassInfo = new ClassInfo();
         ClassKeywordConfig innerClassConfig = new ClassKeywordConfig();
         innerClassConfig.setName("InnerClass");
-        setAccessModifier(innerClassConfig, correctAccess, KeywordChoice.YES.toString());
         setNonAccessModifier(innerClassConfig, correctNonAccess, choice);
         innerClassConfig.setAllowExactModifierMatching(isExactMatch);
         innerClassInfo.setClassKeywordConfig(innerClassConfig);
@@ -351,7 +346,6 @@ public class ClassModifierTest {
         Assume.assumeFalse(correctAccess.equals(wrongAccess));
 
         init();
-        setAccessModifier(classConfig, correctAccess, KeywordChoice.YES.toString());
         setNonAccessModifier(classConfig, correctNonAccess, choice);
 
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
@@ -390,7 +384,6 @@ public class ClassModifierTest {
 
         init();
         setAccessModifier(classConfig, correctAccess, choice);
-        setNonAccessModifier(classConfig, correctNonAccess, KeywordChoice.YES.toString());
 
         String allowedAccess = correctAccess;
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);

@@ -9,10 +9,11 @@ import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import eu.qped.java.checkers.classdesign.enums.*;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
-import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
+import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 
 /**
  * Keyword Checker for fields and methods, checking for access, non access modifiers, types and names
@@ -39,7 +40,7 @@ class ClassMemberChecker<T extends Node> {
      * The order to split the string is important, as they depend on the previous operation.
      //* @param expectedElements expected modifiers in a node
      */
-    public List<ClassFeedback> checkModifiers(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedElements) {
+    public List<ClassFeedback> checkModifiers(ClassOrInterfaceDeclaration classDecl, List<ExpectedElement> expectedElements, boolean matchExactAmount) {
         if(expectedElements.isEmpty()) {
             return new ArrayList<>();
         }
@@ -49,7 +50,7 @@ class ClassMemberChecker<T extends Node> {
         String classTypeName = classType +" " +className;
         List<NodeWithModifiers<T>> presentElements = getAllFieldsOrMethods(classDecl);
 
-        ClassFeedback sizeFb = checkIfLessThanExpectedPresent(classTypeName, presentElements, expectedElements);
+        ClassFeedback sizeFb = checkIfLessThanExpectedPresent(classTypeName, presentElements, expectedElements, matchExactAmount);
         if(sizeFb != null) {
             modifierFeedback.add(sizeFb);
         }
@@ -189,16 +190,18 @@ class ClassMemberChecker<T extends Node> {
      * @param expectedElements expected keywords, gives the size of the expected elements
      */
     private ClassFeedback checkIfLessThanExpectedPresent(String classTypeName, List<NodeWithModifiers<T>> presentElements,
-                                                         List<ExpectedElement> expectedElements) {
-
+                                                         List<ExpectedElement> expectedElements, boolean matchExactAmount) {
+        ClassFeedbackType violation;
         if(expectedElements.size() > presentElements.size()) {
-            ClassFeedbackType violation;
-            if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
-                violation = MISSING_FIELDS;
-            } else {
-                violation = MISSING_METHODS;
-            }
+            violation = CHECKER_TYPE.equals(ClassMemberType.FIELD) ? MISSING_FIELDS : MISSING_METHODS;
             return ClassFeedbackGenerator.generateFeedback(classTypeName, "", violation, String.join("\n", customFeedback));
+        }
+
+        if(matchExactAmount) {
+            if(expectedElements.size() < presentElements.size()) {
+                violation = CHECKER_TYPE.equals(ClassMemberType.FIELD) ? TOO_MANY_FIELDS : TOO_MANY_METHODS;
+                return ClassFeedbackGenerator.generateFeedback(classTypeName, "", violation, String.join("\n", customFeedback));
+            }
         }
         return null;
     }
@@ -241,7 +244,6 @@ class ClassMemberChecker<T extends Node> {
             presentType = methodElement.getType().asString();
         }
         return expectedTypes.contains(presentType.toLowerCase());
-//        return presentType.equalsIgnoreCase(expectedTypes);
     }
 
     /**
@@ -305,7 +307,10 @@ class ClassMemberChecker<T extends Node> {
     private List<Boolean> getMatchingResult(NodeWithModifiers<T> presentElement, ExpectedElement expectedElement) {
         List<Boolean> matching = new ArrayList<>();
         boolean accessMatch = CheckerUtils.isAccessMatch(presentElement.getAccessSpecifier().asString(), expectedElement.getPossibleAccessModifiers());
-        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(presentElement.getModifiers(), expectedElement.getPossibleNonAccessModifiers(), expectedElement.isExactMatch());
+        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(presentElement.getModifiers(),
+                expectedElement.getPossibleNonAccessModifiers(),
+                expectedElement.isExactMatch(),
+                expectedElement.isContainsYes());
         boolean typeMatch = isElementTypeMatch(presentElement, expectedElement.getTypes());
         boolean nameMatch = isElementNameMatch(presentElement, expectedElement.getName());
         matching.add(accessMatch);

@@ -3,11 +3,10 @@ package eu.qped.java.checkers.classdesign;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 
 import eu.qped.java.checkers.classdesign.config.InheritsFromConfig;
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.Assume;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(Theories.class)
-public class InheritanceTest {
+public class ClassInheritanceTest {
 
     private QFClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;

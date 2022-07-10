@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.classdesign;
 
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 

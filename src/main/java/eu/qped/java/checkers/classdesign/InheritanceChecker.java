@@ -5,7 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
@@ -15,7 +15,7 @@ import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
+import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 
 /**
  * Checker that concerns itself with inherited classes
@@ -55,10 +55,11 @@ class InheritanceChecker {
 
             if (!matchFound) {
                 inheritanceFeedback.addAll(findInheritanceViolation(classTypeName, extendedClasses, implementedInterfaces, elemInfo));
-            } else {
-                inheritanceFeedback.addAll(checkInheritedMethods(classTypeName, classDecl, elemInfo));
-                inheritanceFeedback.addAll(checkInheritedFields(classTypeName, classDecl, elemInfo));
             }
+//            else {
+//                inheritanceFeedback.addAll(checkInheritedMethods(classTypeName, classDecl, elemInfo));
+//                inheritanceFeedback.addAll(checkInheritedFields(classTypeName, classDecl, elemInfo));
+//            }
         }
 
         return inheritanceFeedback;
@@ -257,7 +258,7 @@ class InheritanceChecker {
         if(implementedNameMatch.isBlank() && extendedNameMatch.isBlank()) {
             List<String> possibleTypes = elemInfo.getTypes();
             if(possibleTypes.size() > 1) {
-                //means that both interface and class were possible and none were found (probably not possible)
+                //means that both interface and class were possible and none were found
                 ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(classTypeName, "",
                         MISSING_SUPER_CLASS,
                         String.join("\n", customFeedback));
@@ -267,7 +268,7 @@ class InheritanceChecker {
                     if(type.equals(ClassType.INTERFACE.toString())) {
                         inheritanceFeedback.add(findInterfaceNameViolation(classTypeName, implementedInterfaces));
                     } else if(type.equals(ClassType.CLASS.toString())) {
-                        inheritanceFeedback.add(findClassNameViolation(classTypeName, extendedClasses, elemInfo.getPossibleNonAccessModifiers()));
+                        inheritanceFeedback.add(findClassNameViolation(classTypeName, extendedClasses));
                     }
                 }
             }
@@ -296,27 +297,12 @@ class InheritanceChecker {
      * Find the corresponding class violation with it having a different name or missing entirely
      * @param currentClassName name of the current class
      * @param extendedClasses extended classes from the current class
-     * @param expectedNonAccess non access modifiers to determine the missing class extension
      */
-    private ClassFeedback findClassNameViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses, List<String> expectedNonAccess) {
-        //TODO: SOMETHING WRONG
-        ClassFeedbackType violation = null;
-        Map<String, ClassFeedbackType> modifierMap = new LinkedHashMap<>();
-//        modifierMap.put("abstract", MISSING_ABSTRACT_CLASS_EXTENSION);
-//        modifierMap.put("final", MISSING_FINAL_CLASS_EXTENSION);
-//        modifierMap.put("static", MISSING_STATIC_CLASS_EXTENSION);
-        //modifierMap.put(CheckerUtils.EMPTY_MODIFIER, DesignFeedbackGenerator.MISSING_CLASS_IMPLEMENTATION);
+    private ClassFeedback findClassNameViolation(String currentClassName, List<ClassOrInterfaceType> extendedClasses) {
+        ClassFeedbackType violation;
 
         if(extendedClasses.isEmpty()) {
-            for (Map.Entry<String, ClassFeedbackType> entry: modifierMap.entrySet()) {
-                if(expectedNonAccess.contains(entry.getKey())) {
-                    violation = entry.getValue();
-                    break;
-                }
-            }
-            if(violation == null) {
-                violation = MISSING_CLASS_EXTENSION;
-            }
+            violation = MISSING_CLASS_EXTENSION;
         } else {
             violation = DIFFERENT_CLASS_NAMES_EXPECTED;
         }

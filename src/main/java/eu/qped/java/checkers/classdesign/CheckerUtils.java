@@ -16,21 +16,35 @@ public final class CheckerUtils {
 
     private CheckerUtils() { }
 
-    public static List<String> getPossibleAccessModifiers(KeywordConfig keywordConfig) {
-        return getPossibleModifiers(keywordConfig.getAccessModifierMap());
+    /**
+     * Extract all possible modifiers, type and name from the field configuration provided by json
+     * @param keywordConfig field keyword modifiers from json
+     * @return expected element with all possible modifiers
+     */
+
+    public static ExpectedElement extractExpectedInfo(KeywordConfig keywordConfig) {
+        List<String> accessMod = new ArrayList<>();
+        fillWithPossibleAccessModifiers(keywordConfig, accessMod);
+
+        List<String> nonAccessMods = new ArrayList<>();
+        boolean containsYes = fillWithPossibleNonAccessModifiers(keywordConfig, nonAccessMods);
+
+        List<String> type = getPossibleTypes(keywordConfig);
+        String name = getNameFromConfig(keywordConfig);
+        boolean allowExactMatch = getAllowExactMatch(keywordConfig);
+        return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch, containsYes);
     }
 
-    public static List<String> getPossibleNonAccessModifiers(KeywordConfig keywordConfig) {
-        return getPossibleModifiers(keywordConfig.getNonAccessModifierMap());
+    private static void fillWithPossibleAccessModifiers(KeywordConfig keywordConfig, List<String> possibleMods) {
+        fillWithPossibleModifiers(keywordConfig.getAccessModifierMap(), possibleMods);
     }
 
-    public static List<String> getPossibleTypes(KeywordConfig keywordConfig) {
-        return keywordConfig.getPossibleTypes();
+    private static boolean fillWithPossibleNonAccessModifiers(KeywordConfig keywordConfig, List<String> possibleMods) {
+        return fillWithPossibleModifiers(keywordConfig.getNonAccessModifierMap(), possibleMods);
     }
 
-    public static List<String> getPossibleModifiers(Map<String, String> keywordChoiceMap) {
+    private static boolean fillWithPossibleModifiers(Map<String, String> keywordChoiceMap, List<String> possibleMods) {
         boolean containsYes = false;
-        List<String> possibleMods = new ArrayList<>();
         for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
             String modifier = entry.getKey();
             String choice = entry.getValue();
@@ -51,31 +65,19 @@ public final class CheckerUtils {
                 }
             }
         }
-        return possibleMods;
+        return containsYes;
     }
 
+    private static List<String> getPossibleTypes(KeywordConfig keywordConfig) {
+        return keywordConfig.getPossibleTypes();
+    }
 
-    public static String getNameFromConfig(KeywordConfig keywordConfig) {
+    private static String getNameFromConfig(KeywordConfig keywordConfig) {
         return keywordConfig.getName();
     }
 
-    public static boolean getAllowExactMatch(KeywordConfig keywordConfig) {
+    private static boolean getAllowExactMatch(KeywordConfig keywordConfig) {
         return Boolean.parseBoolean(keywordConfig.getAllowExactModifierMatching());
-    }
-
-    /**
-     * Extract all possible modifiers, type and name from the field configuration provided by json
-     * @param keywordConfig field keyword modifiers from json
-     * @return expected element with all possible modifiers
-     */
-
-    public static ExpectedElement extractExpectedInfo(KeywordConfig keywordConfig) {
-        List<String> accessMod = getPossibleAccessModifiers(keywordConfig);
-        List<String> nonAccessMods = getPossibleNonAccessModifiers(keywordConfig);
-        List<String> type = getPossibleTypes(keywordConfig);
-        String name = getNameFromConfig(keywordConfig);
-        boolean allowExactMatch = getAllowExactMatch(keywordConfig);
-        return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch);
     }
 
 
@@ -90,9 +92,17 @@ public final class CheckerUtils {
         return expectedAccessModifiers.contains(presentAccessMod.trim());
     }
 
-    public static boolean isNonAccessMatch(List<Modifier> presentModifiers, List<String> expectedNonAccessModifiers, boolean isExactMatch) {
+    /**
+     * Compares the expected non access modifiers with the modifiers from the present element
+     * @param presentModifiers present modifiers to check
+     * @param expectedNonAccessModifiers expected modifiers to compare to
+     * @return true, if the expected non access modifiers match up with the actual non access modifiers
+     */
+    public static boolean isNonAccessMatch(List<Modifier> presentModifiers, List<String> expectedNonAccessModifiers,
+                                           boolean isExactMatch,
+                                           boolean containsYes) {
         List<String> actualModifiers = getActualNonAccessModifiers(presentModifiers);
-        if(!isExactMatch) {
+        if(!isExactMatch || !containsYes) {
             return expectedNonAccessModifiers.containsAll(actualModifiers);
         }
 
@@ -100,17 +110,6 @@ public final class CheckerUtils {
             expectedNonAccessModifiers.remove("");
         }
         return expectedNonAccessModifiers.containsAll(actualModifiers) && actualModifiers.containsAll(expectedNonAccessModifiers);
-    }
-
-    /**
-     * Compares the expected non access modifiers with the modifiers from the present element
-     * @param presentModifiers present modifiers to check
-     * @param expectedNonAccessModifiers expected modifiers to compare to
-     * @return true, if the expected non access modifiers match up with the actual non access modifiers
-     */
-    public static boolean isNonAccessMatch(List<Modifier> presentModifiers, List<String> expectedNonAccessModifiers) {
-        List<String> actualModifiers = getActualNonAccessModifiers(presentModifiers);
-        return expectedNonAccessModifiers.containsAll(actualModifiers);
     }
 
     private static List<String> getActualNonAccessModifiers(List<Modifier> presentModifiers) {

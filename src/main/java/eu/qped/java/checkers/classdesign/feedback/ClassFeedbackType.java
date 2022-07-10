@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.classdesign.enums;
+package eu.qped.java.checkers.classdesign.feedback;
 
 public enum ClassFeedbackType {
     //Keyword Errors
@@ -11,10 +11,12 @@ public enum ClassFeedbackType {
 
     //Field Errors
     MISSING_FIELDS("MissingFieldsError"),
+    TOO_MANY_FIELDS("TooManyFieldsError"),
     HIDDEN_FIELD("HiddenFieldError"),
 
     //Method Errors
     MISSING_METHODS("MissingMethodsError"),
+    TOO_MANY_METHODS("TooManyMethodsError"),
     OVERWRITTEN_METHOD("OverwrittenMethodError"),
     HIDDEN_METHOD("HiddenMethodError"),
 

@@ -69,10 +69,13 @@ public class ClassChecker implements Checker {
 
             InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo, classInfo.getCustomInheritanceFeedback());
 
+            boolean matchExactFieldAmount = Boolean.parseBoolean(classInfo.getMatchExactFieldAmount());
+            boolean matchExactMethodAmount = Boolean.parseBoolean(classInfo.getMatchExactMethodAmount());
+
             classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, CheckerUtils.extractExpectedInfo(classInfo.getClassKeywordConfig()), classInfo.getCustomClassFeedback()));
             classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getExpectedInfos(inheritsFromConfigs)));
-            classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getExpectedInfos(fieldKeywordConfigs)));
-            classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getExpectedInfos(methodKeywordConfigs)));
+            classFeedbacks.addAll(fieldChecker.checkModifiers(classDecl, getExpectedInfos(fieldKeywordConfigs), matchExactFieldAmount));
+            classFeedbacks.addAll(methodChecker.checkModifiers(classDecl, getExpectedInfos(methodKeywordConfigs), matchExactMethodAmount));
 
         }
     }

@@ -16,9 +16,8 @@ public class ClassInfo {
     private List<FieldKeywordConfig> fieldKeywordConfigs;
     private List<MethodKeywordConfig> methodKeywordConfigs;
 
-    private String allowMethodOverride;
-    private String allowMethodOverload;
-    private String allowHelperMethods;
+    private String matchExactFieldAmount;
+    private String matchExactMethodAmount;
 
     private List<String> customFieldFeedback;
     private List<String> customMethodFeedback;
@@ -34,9 +33,8 @@ public class ClassInfo {
         fieldKeywordConfigs = new ArrayList<>();
         methodKeywordConfigs = new ArrayList<>();
 
-        allowMethodOverride = "";
-        allowMethodOverload = "";
-        allowHelperMethods = "";
+        matchExactFieldAmount = "false";
+        matchExactMethodAmount = "false";
 
         customFieldFeedback = new ArrayList<>();
         customMethodFeedback = new ArrayList<>();
@@ -78,28 +76,12 @@ public class ClassInfo {
         this.methodKeywordConfigs = methodKeywords;
     }
 
-    public String getAllowMethodOverride() {
-        return allowMethodOverride;
+    public String getMatchExactMethodAmount() {
+        return matchExactMethodAmount;
     }
 
-    public void setAllowMethodOverride(String allowMethodOverride) {
-        this.allowMethodOverride = allowMethodOverride;
-    }
-
-    public String getAllowMethodOverload() {
-        return allowMethodOverload;
-    }
-
-    public void setAllowMethodOverload(String allowMethodOverload) {
-        this.allowMethodOverload = allowMethodOverload;
-    }
-
-    public String getAllowHelperMethods() {
-        return allowHelperMethods;
-    }
-
-    public void setAllowHelperMethods(String allowHelperMethods) {
-        this.allowHelperMethods = allowHelperMethods;
+    public void setMatchExactMethodAmount(String matchExactMethodAmount) {
+        this.matchExactMethodAmount = matchExactMethodAmount;
     }
 
     public List<String> getCustomFieldFeedback() {
@@ -140,5 +122,13 @@ public class ClassInfo {
 
     public void setFullyQualifiedName(String fullyQualifiedName) {
         this.fullyQualifiedName = fullyQualifiedName;
+    }
+
+    public String getMatchExactFieldAmount() {
+        return matchExactFieldAmount;
+    }
+
+    public void setMatchExactFieldAmount(String matchExactFieldAmount) {
+        this.matchExactFieldAmount = matchExactFieldAmount;
     }
 }

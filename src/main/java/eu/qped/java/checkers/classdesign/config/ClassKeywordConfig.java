@@ -4,7 +4,6 @@ import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,10 +49,6 @@ public class ClassKeywordConfig extends KeywordConfig {
             }
         }
         return possibleTypes;
-//        if(getInterfaceType().equals(KeywordChoice.YES.toString()) || getClassType().equals(KeywordChoice.NO.toString())) {
-//            return ClassType.INTERFACE.toString();
-//        }
-//        return ClassType.CLASS.toString();
     }
 
     public String getAbstractModifier() {

@@ -1,7 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FieldTest {
+public class ClassFieldTest {
 
     private QFClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
@@ -136,12 +136,13 @@ public class FieldTest {
     @Test
     public void expectedMoreFields() {
         String source = "class TestClass { double b;"+ "}";
-        field.setType("int");
-        field.setName("a");
-
-        FieldKeywordConfig field2 = new FieldKeywordConfig();
         field.setType("double");
         field.setName("b");
+
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+
+        field2.setType("int");
+        field2.setName("a");
         fieldKeywordConfigs.add(field2);
 
         setup();
@@ -155,9 +156,58 @@ public class FieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.MISSING_FIELDS);
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.MISSING_FIELDS);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Test
+    public void expectedFewerFields() {
+        String source = "class TestClass { double a, b;"+ "}";
+        field.setType("double");
+        field.setName("b");
+
+        classInfo.setMatchExactFieldAmount("true");
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.TOO_MANY_FIELDS);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Test
+    public void unrollVariablesTest() {
+        String source = "class TestClass { double a = 1, b = 2;"+ "}";
+        field.setType("double");
+        field.setName("a");
+
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+        field2.setType("double");
+        field2.setName("b");
+        fieldKeywordConfigs.add(field2);
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
 }

@@ -1,11 +1,10 @@
 package eu.qped.java.checkers.classdesign.feedback;
 
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 
 import java.util.*;
 
-import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
+import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 
 public final class ClassFeedbackGenerator {
 
@@ -34,10 +33,14 @@ public final class ClassFeedbackGenerator {
                 "Different non access modifiers for "+classPlaceholder+"  expected.");
         feedbackMap.put(MISSING_FIELDS,
                 "Expected fields in "+classPlaceholder+" missing.");
+        feedbackMap.put(TOO_MANY_FIELDS,
+                "The "+classPlaceholder+" has more fields than expected.");
         feedbackMap.put(HIDDEN_FIELD,
                 "The field "+elementPlaceholder+" in "+classPlaceholder+" is hiding a superclass' field.");
         feedbackMap.put(MISSING_METHODS,
                 "Expected methods in "+classPlaceholder+" missing." );
+        feedbackMap.put(TOO_MANY_METHODS,
+                "The "+classPlaceholder+" has more methods than expected.");
         feedbackMap.put(OVERWRITTEN_METHOD,
                 "The method "+elementPlaceholder+" in "+classPlaceholder+" is overwriting a method in a parent class.");
         feedbackMap.put(HIDDEN_METHOD,

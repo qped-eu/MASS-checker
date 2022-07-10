@@ -1,7 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
@@ -11,7 +11,7 @@ import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
 
-import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
+import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 
 /**
  * Matches the provided class declarations with the expected class infos
@@ -150,7 +150,10 @@ class ClassMatcher {
      */
     public List<ClassFeedback> checkClassMatch(ClassOrInterfaceDeclaration classDecl, ExpectedElement elemInfo, List<String> customFeedback) {
         boolean accessMatch = CheckerUtils.isAccessMatch(classDecl.getAccessSpecifier().asString(), elemInfo.getPossibleAccessModifiers());
-        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(), elemInfo.getPossibleNonAccessModifiers(), elemInfo.isExactMatch());
+        boolean nonAccessMatch = CheckerUtils.isNonAccessMatch(classDecl.getModifiers(),
+                elemInfo.getPossibleNonAccessModifiers(),
+                elemInfo.isExactMatch(),
+                elemInfo.isContainsYes());
         boolean typeMatch = isClassTypeMatch(classDecl, elemInfo.getTypes());
         return findViolation(accessMatch, nonAccessMatch, typeMatch, classDecl, customFeedback);
     }

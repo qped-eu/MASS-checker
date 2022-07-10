@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.classdesign;
 
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(Theories.class)
-public class MethodModifierTest {
+public class ClassMethodModifierTest {
 
     private QFClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
@@ -31,26 +31,32 @@ public class MethodModifierTest {
         return new String[]{"public", "private", "protected", ""};
     }
 
+    @DataPoints("reducedAccess")
+    public static String[] abstractAccessValues() {
+        return new String[] {"public", "protected", ""};
+    }
+
+
     @DataPoints("nonAccessModifiers")
     public static String[] nonAccessValues() {
         return new String[]{
                 "static",
                 "final",
                 "synchronized",
-                "native",
+                "native"
         };
     }
 
-    @DataPoints("reducedAccess")
-    public static String[] abstractAccessValues() {
-        return new String[] {"public", "protected", ""};
-    }
+
 
     @DataPoint("abstractKeyword")
     public static String abstractKeyword = "abstract";
 
     @DataPoint("defaultKeyword")
     public static String defaultKeyword = "default";
+
+    @DataPoint("emptyModifier")
+    public static String emptyModifier = "";
 
     @DataPoints("allNonAccessModifierCombinations")
     public static String[][] allNonAccessValues() {
@@ -72,12 +78,9 @@ public class MethodModifierTest {
 
     //test access modifier
     //test non access modifier
-
     //test type
     //test name
     //test missing
-    //test override/overload?
-    //test hidden?
 
     private static void chooseAccessModifier(MethodKeywordConfig method, String accessMod, String choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
@@ -123,6 +126,100 @@ public class MethodModifierTest {
     }
 
     @Theory
+    public void correctEmptyNonAccess(@FromDataPoints("accessModifiers") String correctMod,
+                               @FromDataPoints("accessModifiers") String wrongMod,
+                               @FromDataPoints("emptyModifier") String nonAccessMod,
+                               @FromDataPoints("choices") String choice,
+                               @FromDataPoints("exactMatching") String isExactMatch) {
+
+        assumeFalse(correctMod.equals(wrongMod));
+
+        init();
+
+        chooseAccessModifier(method, correctMod, choice);
+        chooseNonAccessModifier(method, nonAccessMod, choice);
+        method.setAllowExactModifierMatching(isExactMatch);
+
+        setup();
+        String allowedAccess = correctMod;
+        List<String> allowedNonAccess = Collections.singletonList(nonAccessMod);
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            allowedAccess = wrongMod;
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
+        }
+
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
+        }
+
+        String source = "class TestClass {" +
+                allowedAccess +
+                " "
+                + String.join(" ", allowedNonAccess) +
+                " int test() {}" +
+                "}";
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+    }
+
+    @Theory
+    public void faultEmptyNonAccess(@FromDataPoints("accessModifiers") String correctMod,
+                                   @FromDataPoints("accessModifiers") String wrongMod,
+                                   @FromDataPoints("emptyModifier") String emptyModifier,
+                                   @FromDataPoints("choices") String choice,
+                                   @FromDataPoints("exactMatching") String isExactMatch) {
+
+        assumeFalse(correctMod.equals(wrongMod));
+
+        init();
+
+        chooseAccessModifier(method, correctMod, choice);
+        chooseNonAccessModifier(method, emptyModifier, choice);
+        method.setAllowExactModifierMatching(isExactMatch);
+
+        setup();
+
+        String allowedAccess = wrongMod;
+        List<String> allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyModifier));
+        if(choice.equals(KeywordChoice.NO.toString())) {
+            allowedAccess = correctMod;
+            allowedNonAccess = Collections.singletonList(emptyModifier);
+        }
+        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+            allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
+        }
+
+        String source = "class TestClass {" +
+                allowedAccess +
+                " "
+                + String.join(" ", allowedNonAccess) +
+                " int test() {}" +
+                "}";
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Theory
     public void defaultCorrect(@FromDataPoints("reducedAccess") String correctMod,
                                 @FromDataPoints("reducedAccess") String wrongMod,
                                 @FromDataPoints("defaultKeyword") String nonAccessMod,
@@ -133,13 +230,8 @@ public class MethodModifierTest {
 
         init();
 
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classKeywordConfig.setInterfaceType(KeywordChoice.YES.toString());
-        classInfo.setClassKeywordConfig(classKeywordConfig);
-
         chooseAccessModifier(method, correctMod, choice);
         chooseNonAccessModifier(method, nonAccessMod, choice);
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
         method.setAllowExactModifierMatching(isExactMatch);
 
         setup();
@@ -183,13 +275,8 @@ public class MethodModifierTest {
 
         init();
 
-        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classKeywordConfig.setInterfaceType(KeywordChoice.YES.toString());
-        classInfo.setClassKeywordConfig(classKeywordConfig);
-
         chooseAccessModifier(method, correctMod, choice);
         chooseNonAccessModifier(method, nonAccessMod, choice);
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
         method.setAllowExactModifierMatching(isExactMatch);
 
         setup();
@@ -230,7 +317,7 @@ public class MethodModifierTest {
     @Theory
     public void abstractCorrect(@FromDataPoints("reducedAccess") String correctMod,
                                 @FromDataPoints("reducedAccess") String wrongMod,
-                                @FromDataPoints("abstractKeyword") String nonAccessMod,
+                                @FromDataPoints("abstractKeyword") String abstractKeyword,
                                 @FromDataPoints("choices") String choice,
                                 @FromDataPoints("exactMatching") String isExactMatch) {
 
@@ -239,17 +326,16 @@ public class MethodModifierTest {
         init();
 
         chooseAccessModifier(method, correctMod, choice);
-        chooseNonAccessModifier(method, nonAccessMod, choice);
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
+        chooseNonAccessModifier(method, abstractKeyword, choice);
         method.setAllowExactModifierMatching(isExactMatch);
 
         setup();
 
         String allowedAccess = correctMod;
-        List<String> allowedNonAccess = Collections.singletonList(nonAccessMod);
+        List<String> allowedNonAccess = Collections.singletonList(abstractKeyword);
         if(choice.equals(KeywordChoice.NO.toString())) {
             allowedAccess = wrongMod;
-            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
+            allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(abstractKeyword));
         }
         if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
@@ -276,7 +362,7 @@ public class MethodModifierTest {
     @Theory
     public void abstractAccessFault(@FromDataPoints("reducedAccess") String correctMod,
                                 @FromDataPoints("reducedAccess") String wrongMod,
-                                @FromDataPoints("abstractKeyword") String nonAccessMod,
+                                @FromDataPoints("abstractKeyword") String abstractKeyword,
                                 @FromDataPoints("choices") String choice,
                                 @FromDataPoints("exactMatching") String isExactMatch) {
 
@@ -284,16 +370,16 @@ public class MethodModifierTest {
 
         init();
         chooseAccessModifier(method, correctMod, choice);
-        chooseNonAccessModifier(method, nonAccessMod, choice);
+        chooseNonAccessModifier(method, abstractKeyword, choice);
         method.setAllowExactModifierMatching(isExactMatch);
 
         setup();
 
         String allowedAccess = wrongMod;
-        List<String> allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
+        List<String> allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(abstractKeyword));
         if(choice.equals(KeywordChoice.NO.toString())) {
             allowedAccess = correctMod;
-            allowedNonAccess = Collections.singletonList(nonAccessMod);
+            allowedNonAccess = Collections.singletonList(abstractKeyword);
         }
         if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
@@ -333,8 +419,6 @@ public class MethodModifierTest {
 
         method.setAllowExactModifierMatching(isExactMatch);
         chooseAccessModifier(method, correctMod, choice);
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
         for (String nonAccess: nonAccessComb) {
             chooseNonAccessModifier(method, nonAccess, choice);
         }
@@ -377,11 +461,6 @@ public class MethodModifierTest {
 
         method.setAllowExactModifierMatching(isExactMatch);
         chooseAccessModifier(method, correctMod, choice);
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
-        for (String nonAccess: correctNonAccess) {
-            chooseNonAccessModifier(method, nonAccess, KeywordChoice.YES.toString());
-        }
 
         String source = "class TestClass {";
         String allowedAccess = correctMod;
@@ -418,9 +497,6 @@ public class MethodModifierTest {
         init();
 
         method.setAllowExactModifierMatching(isExactMatch);
-        chooseAccessModifier(method, correctMod, KeywordChoice.YES.toString());
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
         for (String nonAccess: expectedNonAccess) {
             chooseNonAccessModifier(method, nonAccess, choice);
         }
@@ -465,8 +541,6 @@ public class MethodModifierTest {
 
         method.setAllowExactModifierMatching(isExactMatch);
         chooseAccessModifier(method, correctMod, choice);
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
         for (String nonAccess: expectedNonAccess) {
             chooseNonAccessModifier(method, nonAccess, choice);
         }
@@ -515,14 +589,6 @@ public class MethodModifierTest {
 
         chooseAccessModifier(method, correctMod, choice);
         chooseAccessModifier(method2, correctMod, choice);
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method2, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method2, defaultKeyword, KeywordChoice.NO.toString());
-        for (String nonAccess: correctNonAccess) {
-            chooseNonAccessModifier(method, nonAccess, KeywordChoice.YES.toString());
-            chooseNonAccessModifier(method2, nonAccess, KeywordChoice.YES.toString());
-        }
 
         String source = "class TestClass {";
         String allowedAccess = correctMod;
@@ -568,13 +634,6 @@ public class MethodModifierTest {
         method2.setAllowExactModifierMatching(isExactMatch);
         method.setAllowExactModifierMatching(isExactMatch);
 
-        chooseAccessModifier(method, correctMod, KeywordChoice.YES.toString());
-        chooseAccessModifier(method2, correctMod, KeywordChoice.YES.toString());
-
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method2, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method2, defaultKeyword, KeywordChoice.NO.toString());
         for (String nonAccess: correctNonAccess) {
             chooseNonAccessModifier(method, nonAccess, choice);
             chooseNonAccessModifier(method2, nonAccess, choice);
@@ -631,10 +690,6 @@ public class MethodModifierTest {
         chooseAccessModifier(method, correctMod, choice);
         chooseAccessModifier(method2, correctMod, choice);
 
-        chooseNonAccessModifier(method, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method, defaultKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method2, abstractKeyword, KeywordChoice.NO.toString());
-        chooseNonAccessModifier(method2, defaultKeyword, KeywordChoice.NO.toString());
         for (String nonAccess: correctNonAccess) {
             chooseNonAccessModifier(method, nonAccess, choice);
             chooseNonAccessModifier(method2, nonAccess, choice);

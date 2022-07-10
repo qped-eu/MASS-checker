@@ -1,9 +1,8 @@
 package eu.qped.java.checkers.classdesign;
 
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
-import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.mass.QFClassSettings;
@@ -16,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MethodTest {
+public class ClassMethodTest {
 
     private QFClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
@@ -154,7 +153,31 @@ public class MethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a()", ClassFeedbackType.MISSING_METHODS);
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.MISSING_METHODS);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Test
+    public void expectedFewerMethods() {
+        String source = "class TestClass { double b(){} double a(){}"+ "}";
+
+        method.setType("double");
+        method.setName("b");
+        classInfo.setMatchExactMethodAmount("true");
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.TOO_MANY_METHODS);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }

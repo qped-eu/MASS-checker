@@ -1,28 +1,21 @@
 package eu.qped.java.checkers.classdesign;
 
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
-import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
-import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
-import eu.qped.java.checkers.classdesign.enums.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static eu.qped.java.checkers.classdesign.enums.ClassFeedbackType.*;
+import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -62,6 +55,48 @@ public class ClassTest {
     @DataPoints("choices")
     public static String[] choiceValues() {
         return new String[] {KeywordChoice.YES.toString(), KeywordChoice.NO.toString()};
+    }
+
+    @Theory
+    public void matchFullyQualifiedNameTest() {
+        init();
+
+        classInfo.setFullyQualifiedName("NotTestClass");
+        String source = "class NotTestClass {}";
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+    }
+
+    @Theory
+    public void matchProvidedName() {
+        init();
+
+        classConfig.setName("NotTestClass");
+        String source = "class NotTestClass {}";
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
 

@@ -38,10 +38,6 @@ public class InheritsFromConfig extends KeywordConfig {
             }
         }
         return possibleTypes;
-//        if(getInterfaceType().equals(KeywordChoice.YES.toString()) || getClassType().equals(KeywordChoice.NO.toString())) {
-//            return ClassType.INTERFACE.toString();
-//        }
-//        return ClassType.CLASS.toString();
     }
 
     public String getClassType() {
