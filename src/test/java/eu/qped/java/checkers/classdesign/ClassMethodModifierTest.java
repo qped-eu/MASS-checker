@@ -126,6 +126,33 @@ public class ClassMethodModifierTest {
     }
 
     @Theory
+    public void dontCareTest(@FromDataPoints("accessModifiers") String correctMod,
+                                @FromDataPoints("allNonAccessModifierCombinations") String[] nonAccessComb,
+                                @FromDataPoints("exactMatching") String isExactMatch) {
+
+        init();
+
+        method.setAllowExactModifierMatching(isExactMatch);
+
+        String source = "class TestClass {";
+        source += correctMod + " " + String.join(" ", nonAccessComb) + " int test() {}" + "}";
+
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+    }
+
+
+    @Theory
     public void correctEmptyNonAccess(@FromDataPoints("accessModifiers") String correctMod,
                                @FromDataPoints("accessModifiers") String wrongMod,
                                @FromDataPoints("emptyModifier") String nonAccessMod,

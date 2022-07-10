@@ -71,6 +71,30 @@ public class ClassInheritanceTest {
         return new String[] {KeywordChoice.YES.toString(), KeywordChoice.NO.toString()};
     }
 
+    @Theory
+    public void dontCareTest(@FromDataPoints("classTypes") String inheritsType,
+                            @FromDataPoints("inheritsKeyword") String inheritsKeyword) {
+        init();
+
+        Assume.assumeFalse(inheritsType.equals("class") && inheritsKeyword.equals("implements"));
+        Assume.assumeFalse(inheritsType.equals("interface") && inheritsKeyword.equals("extends"));
+
+        String source = "class TestClass "+ inheritsKeyword +" SuperClass{}";
+        inheritsConfig.setName("SuperClass");
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+    }
 
     @Theory
     public void correctType(@FromDataPoints("classTypes") String inheritsType,

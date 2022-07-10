@@ -104,6 +104,30 @@ public class ClassModifierTest {
     }
 
     @Theory
+    public void dontCareTest(@FromDataPoints("outerClassAccess") String correctMod,
+                                  @FromDataPoints("nonAccessModifiers") String correctNonAccess) {
+
+
+        init();
+        String source = correctMod +" "+ correctNonAccess+" class TestClass {" +
+                "}";
+
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+
+    }
+
+    @Theory
     public void innerClassCorrect(@FromDataPoints("innerClassAccess") String correctMod,
                                   @FromDataPoints("innerClassAccess") String wrongMod,
                                   @FromDataPoints("innerClassNonAccess") String correctNonAccess,
