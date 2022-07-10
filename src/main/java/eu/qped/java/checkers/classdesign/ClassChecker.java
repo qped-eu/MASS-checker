@@ -7,9 +7,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
-import eu.qped.java.checkers.classdesign.config.InheritsFromConfig;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
-import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.*;
@@ -60,7 +58,7 @@ public class ClassChecker implements Checker {
 
             List<KeywordConfig> fieldKeywordConfigs = new ArrayList<>(classInfo.getFieldKeywordConfigs());
             List<KeywordConfig> methodKeywordConfigs = new ArrayList<>(classInfo.getMethodKeywordConfigs());
-            List<KeywordConfig> inheritsFromConfigs = new ArrayList<>(classInfo.getInheritsFrom());
+            List<KeywordConfig> inheritsFromConfigs = new ArrayList<>(classInfo.getInheritsFromConfigs());
 
             ClassMemberChecker<FieldDeclaration> fieldChecker = new ClassMemberChecker<>(ClassMemberType.FIELD,
                     classInfo.getCustomFieldFeedback());

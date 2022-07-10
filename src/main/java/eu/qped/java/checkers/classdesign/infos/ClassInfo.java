@@ -12,7 +12,7 @@ public class ClassInfo {
 
     private String fullyQualifiedName;
     private ClassKeywordConfig classKeywordConfig;
-    private List<InheritsFromConfig> inheritsFrom;
+    private List<InheritsFromConfig> inheritsFromConfigs;
     private List<FieldKeywordConfig> fieldKeywordConfigs;
     private List<MethodKeywordConfig> methodKeywordConfigs;
 
@@ -29,7 +29,7 @@ public class ClassInfo {
         fullyQualifiedName = "";
 
         classKeywordConfig = new ClassKeywordConfig();
-        inheritsFrom = new ArrayList<>();
+        inheritsFromConfigs = new ArrayList<>();
         fieldKeywordConfigs = new ArrayList<>();
         methodKeywordConfigs = new ArrayList<>();
 
@@ -52,12 +52,12 @@ public class ClassInfo {
         this.classKeywordConfig = classKeywordConfig;
     }
 
-    public List<InheritsFromConfig> getInheritsFrom() {
-        return inheritsFrom;
+    public List<InheritsFromConfig> getInheritsFromConfigs() {
+        return inheritsFromConfigs;
     }
 
-    public void setInheritsFrom(List<InheritsFromConfig> inheritsFrom) {
-        this.inheritsFrom = inheritsFrom;
+    public void setInheritsFromConfigs(List<InheritsFromConfig> inheritsFromConfigs) {
+        this.inheritsFromConfigs = inheritsFromConfigs;
     }
 
     public List<FieldKeywordConfig> getFieldKeywordConfigs() {

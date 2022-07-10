@@ -253,6 +253,9 @@ class ClassMemberChecker<T extends Node> {
      * @return true if exact match
      */
     private boolean isElementNameMatch(NodeWithModifiers<T> elem, String expectedElementName) {
+        if(expectedElementName.equals(KeywordType.OPTIONAL.toString())) {
+            return true;
+        }
         String elementName = getVariableName(elem);
         return expectedElementName.equals(elementName);
     }

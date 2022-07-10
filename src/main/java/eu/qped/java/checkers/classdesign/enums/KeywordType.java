@@ -3,7 +3,7 @@ package eu.qped.java.checkers.classdesign.enums;
 public enum KeywordType {
 
     EMPTY(""),
-    OPTIONAL("*");
+    OPTIONAL("?");
 
     private final String type;
     KeywordType(final String type) {

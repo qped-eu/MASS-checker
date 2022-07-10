@@ -44,7 +44,7 @@ public class ClassInheritanceTest {
         classInfo.setClassKeywordConfig(classKeywordConfig);
 
         inheritsFromConfigList.add(inheritsConfig);
-        classInfo.setInheritsFrom(inheritsFromConfigList);
+        classInfo.setInheritsFromConfigs(inheritsFromConfigList);
         classInfos.add(classInfo);
         qfClassSettings.setClassInfos(classInfos);
     }

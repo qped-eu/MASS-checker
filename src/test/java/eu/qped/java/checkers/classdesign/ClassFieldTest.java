@@ -47,6 +47,26 @@ public class ClassFieldTest {
     }
 
     @Test
+    public void optionalName() {
+        String source = "class TestClass { int a;"+ "}";
+        field.setType("int");
+        field.setName("?");
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+    }
+
+    @Test
     public void correctNameAndType() {
         String source = "class TestClass { int a;"+ "}";
         field.setType("int");
