@@ -32,9 +32,6 @@ public class Mass implements Checker {
     private QfMass mass;
 
     @QfProperty
-    private QFSemSettings semSettings;
-
-    @QfProperty
     private QFClassSettings classSettings;
 
     private final static String NEW_LINE = "\n" + "\n";

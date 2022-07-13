@@ -208,9 +208,9 @@ public class MassExecutor {
 
         QFMainSettings qfMainSettings = new QFMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
-        qfMainSettings.setSemanticNeeded("false");
+        qfMainSettings.setSemanticNeeded("true");
         qfMainSettings.setStyleNeeded("false");
-        qfMainSettings.setDesignNeeded("true");
+        qfMainSettings.setDesignNeeded("false");
         qfMainSettings.setPreferredLanguage("en");
 
 
@@ -232,9 +232,8 @@ public class MassExecutor {
 
         QFStyleSettings qfStyleSettings = new QFStyleSettings();
         qfStyleSettings.setNamesLevel("ADV");
-        qfStyleSettings.setCompLevel("ADV");
+        qfStyleSettings.setComplexityLevel("ADV");
         qfStyleSettings.setMainLevel("ADV");
-        qfStyleSettings.setMethodName("[AA]");
         qfStyleSettings.setBasisLevel("ADVANCED");
         qfStyleSettings.setClassLength("10");
         qfStyleSettings.setMethodLength("10");
