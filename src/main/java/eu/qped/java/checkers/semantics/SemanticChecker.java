@@ -64,6 +64,7 @@ public class SemanticChecker {
         System.out.println(settings);
         System.out.println("check 2");
 
+        System.out.println(targetProjectPath);
 
         // per File
         settings.forEach(
