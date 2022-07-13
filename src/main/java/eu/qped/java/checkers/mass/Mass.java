@@ -51,16 +51,11 @@ public class Mass implements Checker {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
         // Style Checker
-
-        System.out.println("init style");
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         // Semantic Checker
-
-        System.out.println("init semantic");
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
-        System.out.println("init designChecker");
         // Design Checker
         DesignChecker designChecker = DesignChecker.builder().qfDesignSettings(mass.getMetrics()).build();
 
@@ -90,24 +85,18 @@ public class Mass implements Checker {
         List<ClassFeedback> classFeedbacks;
         classFeedbacks = massExecutor.getClassFeedbacks();
 
-        System.out.println(">>>>>>>>>>>>>>>>>44444444444");
-
-        System.out.println(styleFeedbacks.size());
-        System.out.println(semanticFeedbacks.size());
-        System.out.println(designFeedbacks.size());
-//        System.out.println(classFeedbacks.size());
-        System.out.println(syntaxFeedbacks.size());
-
-        System.out.println(">>>>>>>>>>>>>>>>>44444444444");
-
-//        String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + designFeedbacks.size() + classFeedbacks.size() + syntaxFeedbacks.size() + 100];
-        String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + designFeedbacks.size()  + syntaxFeedbacks.size() + 100];
-
-        int i = 0;
+        int resultLength = 100
+                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
+                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
+                + ((designFeedbacks != null) ? designFeedbacks.size() : 0)
+                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
+                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
+        String[] result = new String[resultLength];
+        int resultIndex = 0;
 
         for (StyleFeedback styleFeedback : styleFeedbacks) {
-            result[i] = "style Feedback";
-            result[i + 1] =
+            result[resultIndex] = "style Feedback";
+            result[resultIndex + 1] =
                     styleFeedback.getFile()
                             + NEW_LINE
                             + styleFeedback.getDesc()
@@ -118,45 +107,47 @@ public class Mass implements Checker {
                             + NEW_LINE
                             + styleFeedback.getExample()
                             + NEW_LINE;
-            i = i + 2;
+            resultIndex = resultIndex + 2;
         }
-        System.out.println(">>>>>>>>>>>>>>>>>333333333333333333");
+
         for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
-            result[i] = "semantic Feedback";
-            result[i + 1] = semanticFeedback.getBody() + NEW_LINE
+            result[resultIndex] = "semantic Feedback";
+            result[resultIndex + 1] = semanticFeedback.getBody() + NEW_LINE
                     + "--------------------------------------------------";
-            i = i + 2;
+            resultIndex = resultIndex + 2;
         }
-        System.out.println(">>>>>>>>>>>>>>>>>333333333333333333");
-//        for (DesignFeedback df : designFeedbacks) {
-//            result[i] = "design Feedback";
-//            result[i + 1] =
-//                    "In class '" + df.getClassName() + ".java'"
-//                            + NEW_LINE
-//                            + df.getMetric() + " (" + df.getBody() + ")"
-//                            + NEW_LINE
-//                            + df.getMetric() + " (" + df.getBody() + ")"
-//                            + NEW_LINE
-//                            + "Measured with value: " + df.getValue()
-//                            + NEW_LINE
-//                            + df.getSuggestion()
-//                            + "------------------------------------------------------------------------------";
-//            i = i + 2;
-//        }
-//
-//        for (ClassFeedback classFeedback : classFeedbacks) {
-//            result[i] = "class Feedback";
-//            result[i + 1] = classFeedback.getBody() + NEW_LINE
-//                    + "--------------------------------------------------";
-//            i = i + 2;
-//        }
+
+
+        for (DesignFeedback df : designFeedbacks) {
+            result[resultIndex] = "design Feedback";
+            result[resultIndex + 1] =
+                    "In class '" + df.getClassName() + ".java'"
+                            + NEW_LINE
+                            + df.getMetric() + " (" + df.getBody() + ")"
+                            + NEW_LINE
+                            + df.getMetric() + " (" + df.getBody() + ")"
+                            + NEW_LINE
+                            + "Measured with value: " + df.getValue()
+                            + NEW_LINE
+                            + df.getSuggestion()
+                            + "------------------------------------------------------------------------------";
+            resultIndex = resultIndex + 2;
+        }
+
+
+        for (ClassFeedback classFeedback : classFeedbacks) {
+            result[resultIndex] = "class Feedback";
+            result[resultIndex + 1] = classFeedback.getBody() + NEW_LINE
+                    + "--------------------------------------------------";
+            resultIndex = resultIndex + 2;
+        }
 
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
-            result[i + 1] = ""
+            result[resultIndex + 1] = ""
                     + syntax.toString()
                     + NEW_LINE
                     + "--------------------------------------------------";
-            i = i + 2;
+            resultIndex = resultIndex + 2;
         }
 
         qfObject.setFeedback(result);
