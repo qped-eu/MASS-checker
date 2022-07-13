@@ -139,11 +139,13 @@ public class SemanticChecker {
         return parseFromResourceType(path);
     }
 
-    private CompilationUnit parseFromResourceType(final String path) {
+    private CompilationUnit parseFromResourceType(String path) {
         ParserConfiguration configuration = new ParserConfiguration();
         JavaParser javaParser = new JavaParser(configuration);
         try {
             System.out.println("before parse");
+            System.out.println(path);
+            path = path.substring(1);
             System.out.println(path);
             var unit = javaParser.parse(Path.of(path));
             System.out.println("after parse");
