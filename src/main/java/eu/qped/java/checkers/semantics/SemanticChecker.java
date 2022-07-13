@@ -80,12 +80,33 @@ public class SemanticChecker {
                     fileSettingEntry.getSettingItems().forEach(
                             semanticSettingItem -> {
                                 try {
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("start of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                     BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName());
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("targetedMethod of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                     StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("statementsVisitorHelper of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                     calculateUsedLoop(statementsVisitorHelper);
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("calculateUsedLoop of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                     generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("generateSemanticStatementsFeedback of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                     MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("recursiveCheckHelper of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                     generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("generateSemanticRecursionFeedback of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                     checkReturnTyp(semanticSettingItem.getReturnType());
                                     System.out.println("---------------------MERO---------------------");
                                     System.out.println("end of checking");
