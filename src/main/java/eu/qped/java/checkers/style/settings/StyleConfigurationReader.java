@@ -37,7 +37,6 @@ public class StyleConfigurationReader {
             styleSettings.setVarNamesRegEx(qfStyleSettings.getVariableNamePattern() != null ? qfStyleSettings.getVariableNamePattern() : "undefined");
             styleSettings.setMethodNamesRegEx(qfStyleSettings.getMethodNamePattern() != null ? qfStyleSettings.getMethodNamePattern() : "undefined");
             styleSettings.setClassNameRegEx(qfStyleSettings.getClassNamePattern() != null ? qfStyleSettings.getClassNamePattern() : "undefined");
-            styleSettings.setMainLevel(isCheckLevel(qfStyleSettings.getMainLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getMainLevel())) : CheckLevel.BEGINNER);
             styleSettings.setNamesLevel(isCheckLevel(qfStyleSettings.getNamesLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getNamesLevel())) : CheckLevel.BEGINNER);
             styleSettings.setComplexityLevel(isCheckLevel(qfStyleSettings.getComplexityLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getComplexityLevel())) : CheckLevel.BEGINNER);
             styleSettings.setBasisLevel(isCheckLevel(qfStyleSettings.getBasisLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getBasisLevel())) : CheckLevel.BEGINNER);

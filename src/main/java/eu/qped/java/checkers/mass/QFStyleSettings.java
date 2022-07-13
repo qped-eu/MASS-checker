@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QFStyleSettings extends QfObjectBase {
 
-    private String mainLevel;
 
     private String basisLevel;
     private String complexityLevel;
