@@ -51,6 +51,7 @@ public class Mass implements Checker {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
         // Style Checker
+        System.out.println(">>>>>>>>>" + mass.getStyle().toString());
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         // Semantic Checker
