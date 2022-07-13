@@ -53,6 +53,9 @@ public class Mass implements Checker {
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         // Semantic Checker
+        System.out.println("MERO");
+        System.out.println(mass.getSemantic().getSemantics());
+        System.out.println("MERO");
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
         // Design Checker
