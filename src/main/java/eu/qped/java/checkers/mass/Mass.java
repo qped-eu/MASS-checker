@@ -6,9 +6,7 @@ import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.design.DesignChecker;
-import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
@@ -71,8 +69,7 @@ public class Mass implements Checker {
         /*
          feedbacks
          */
-        List<StyleFeedback> styleFeedbacks;
-        styleFeedbacks = massExecutor.getStyleFeedbacks();
+        List<StyleFeedback> styleFeedbacks = massExecutor.getStyleFeedbacks();
 
         List<SyntaxFeedback> syntaxFeedbacks;
         syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
@@ -80,17 +77,17 @@ public class Mass implements Checker {
         List<SemanticFeedback> semanticFeedbacks;
         semanticFeedbacks = massExecutor.getSemanticFeedbacks();
 
-        List<DesignFeedback> designFeedbacks;
-        designFeedbacks = massExecutor.getDesignFeedbacks();
-
-        List<ClassFeedback> classFeedbacks;
-        classFeedbacks = massExecutor.getClassFeedbacks();
+//        List<DesignFeedback> designFeedbacks;
+//        designFeedbacks = massExecutor.getDesignFeedbacks();
+//
+//        List<ClassFeedback> classFeedbacks;
+//        classFeedbacks = massExecutor.getClassFeedbacks();
 
         int resultLength = 100
                 + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
                 + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
-                + ((designFeedbacks != null) ? designFeedbacks.size() : 0)
-                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
+//                + ((designFeedbacks != null) ? designFeedbacks.size() : 0)
+//                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
                 + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
         String[] result = new String[resultLength];
         int resultIndex = 0;
@@ -119,29 +116,29 @@ public class Mass implements Checker {
         }
 
 
-        for (DesignFeedback df : designFeedbacks) {
-            result[resultIndex] = "design Feedback";
-            result[resultIndex + 1] =
-                    "In class '" + df.getClassName() + ".java'"
-                            + NEW_LINE
-                            + df.getMetric() + " (" + df.getBody() + ")"
-                            + NEW_LINE
-                            + df.getMetric() + " (" + df.getBody() + ")"
-                            + NEW_LINE
-                            + "Measured with value: " + df.getValue()
-                            + NEW_LINE
-                            + df.getSuggestion()
-                            + "------------------------------------------------------------------------------";
-            resultIndex = resultIndex + 2;
-        }
+//        for (DesignFeedback df : designFeedbacks) {
+//            result[resultIndex] = "design Feedback";
+//            result[resultIndex + 1] =
+//                    "In class '" + df.getClassName() + ".java'"
+//                            + NEW_LINE
+//                            + df.getMetric() + " (" + df.getBody() + ")"
+//                            + NEW_LINE
+//                            + df.getMetric() + " (" + df.getBody() + ")"
+//                            + NEW_LINE
+//                            + "Measured with value: " + df.getValue()
+//                            + NEW_LINE
+//                            + df.getSuggestion()
+//                            + "------------------------------------------------------------------------------";
+//            resultIndex = resultIndex + 2;
+//        }
 
 
-        for (ClassFeedback classFeedback : classFeedbacks) {
-            result[resultIndex] = "class Feedback";
-            result[resultIndex + 1] = classFeedback.getBody() + NEW_LINE
-                    + "--------------------------------------------------";
-            resultIndex = resultIndex + 2;
-        }
+//        for (ClassFeedback classFeedback : classFeedbacks) {
+//            result[resultIndex] = "class Feedback";
+//            result[resultIndex + 1] = classFeedback.getBody() + NEW_LINE
+//                    + "--------------------------------------------------";
+//            resultIndex = resultIndex + 2;
+//        }
 
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
             result[resultIndex + 1] = ""
