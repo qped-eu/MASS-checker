@@ -122,12 +122,13 @@ public class MassExecutor {
             System.out.println(">>>>>>>>>>>>>" );
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
             syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
+            System.out.println(">>>>>>>>>>>>>222" );
         }
 
         // translate Feedback body if needed
-        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded, designNeeded);
-        }
+//        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
+//            translate(styleNeeded, semanticNeeded, designNeeded);
+//        }
     }
 
     private void init() {
