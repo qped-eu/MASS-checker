@@ -153,6 +153,7 @@ public class SemanticChecker {
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             throw new IllegalArgumentException();
         }
     }
