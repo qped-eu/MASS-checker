@@ -119,6 +119,7 @@ public class MassExecutor {
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
+            System.out.println(">>>>>>>>>>>>>" );
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
             syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
         }
