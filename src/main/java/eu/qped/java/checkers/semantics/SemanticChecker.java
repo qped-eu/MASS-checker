@@ -62,8 +62,12 @@ public class SemanticChecker {
         var settings = reader.groupByFileName();
 
         System.out.println(settings);
-        System.out.println("check 1");
+        System.out.println("check 2");
 
+        System.out.println("PATH");
+        System.out.println(settings.get(0).getFilePath());
+        System.out.println(settings.get(1).getFilePath());
+        System.out.println("PATH");
         // per File
         settings.forEach(
                 fileSettingEntry -> {
