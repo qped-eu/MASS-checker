@@ -101,11 +101,11 @@ public class CheckerRunner {
 					}
 				}
 				System.out.println(">>>>>>>>>>>>>" + fileInfo.getMimetype());
-				if (fileInfo.getMimetype().equals("application/zip")) {
+				if (fileInfo.getMimetype().equals("application/x-zip-compressed")) {
 					try {
 						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
 						tempFiles.add(unzipTarget);
-
+						System.out.println(">>>>>>>>>>>>>" + fileInfo.getMimetype());
 						ZipFile zipFile = new ZipFile(submittedFile);
 						zipFile.extractAll(unzipTarget.toString());
 
