@@ -46,6 +46,7 @@ public class Mass implements Checker {
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
+            System.out.println("file is ! null !!!!!!!! mero !!!!");
             syntaxChecker.setTargetProject(file.getUnzipped().getPath());
         } else {
             System.out.println("file is null !!!!!!!! mero !!!!");
