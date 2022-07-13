@@ -59,6 +59,7 @@ public class StyleChecker {
         styleSettings = styleConfigurationReader.getStyleSettings();
         System.out.println(">>>>>>>>2");
         xmlFileManager = new XmlFileManager();
+        System.out.println(">>>>>>>>2" + styleSettings.toString());
         addNameRules(styleSettings.getNamesLevel());
         System.out.println(">>>>>>>>3");
         addComplexityRules(styleSettings.getComplexityLevel());
