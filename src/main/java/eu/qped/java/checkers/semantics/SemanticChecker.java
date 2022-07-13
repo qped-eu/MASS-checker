@@ -86,7 +86,9 @@ public class SemanticChecker {
                             path = fileSettingEntry.getFilePath();
                         }
                     }
+                    System.out.println("before parse");
                     var compilationUnit = parse(path); // AST per File
+                    System.out.println("after parse");
 
                     // AST per Method in File
                     fileSettingEntry.getSettingItems().forEach(
