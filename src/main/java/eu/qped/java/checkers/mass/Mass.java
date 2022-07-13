@@ -90,12 +90,12 @@ public class Mass implements Checker {
         List<ClassFeedback> classFeedbacks;
         classFeedbacks = massExecutor.getClassFeedbacks();
 
-        System.out.println(">>>>>>>>>>>>>>>>>44444444444");
+
 
         String[] result = new String[styleFeedbacks.size() + semanticFeedbacks.size() + designFeedbacks.size() + classFeedbacks.size() + syntaxFeedbacks.size() + 100];
 
         int i = 0;
-
+        System.out.println(">>>>>>>>>>>>>>>>>44444444444");
         for (StyleFeedback styleFeedback : styleFeedbacks) {
             result[i] = "style Feedback";
             result[i + 1] =
@@ -111,7 +111,7 @@ public class Mass implements Checker {
                             + NEW_LINE;
             i = i + 2;
         }
-
+        System.out.println(">>>>>>>>>>>>>>>>>333333333333333333");
         for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
             result[i] = "semantic Feedback";
             result[i + 1] = semanticFeedback.getBody() + NEW_LINE
