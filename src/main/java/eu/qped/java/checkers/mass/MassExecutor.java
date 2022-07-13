@@ -97,7 +97,7 @@ public class MassExecutor {
                 System.out.println("checked Style");
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
                 System.out.println("generate Feedback");
-
+                System.out.println(styleFeedbacks);
             }
             if (semanticNeeded) {
                 semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
@@ -124,9 +124,9 @@ public class MassExecutor {
         }
 
         // translate Feedback body if needed
-//        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-//            translate(styleNeeded, semanticNeeded, designNeeded);
-//        }
+        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
+            translate(styleNeeded, semanticNeeded, designNeeded);
+        }
     }
 
     private void init() {
