@@ -155,7 +155,7 @@ public class SemanticChecker {
         } catch (IOException e) {
             System.out.println("msg");
             System.out.println(e.getMessage());
-            System.out.println(e.getCause().toString());
+            e.printStackTrace();
             System.out.println("msg");
             throw new IllegalArgumentException();
         }
