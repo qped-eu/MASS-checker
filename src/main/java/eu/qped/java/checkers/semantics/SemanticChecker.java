@@ -145,8 +145,6 @@ public class SemanticChecker {
         try {
             System.out.println("before parse");
             System.out.println(path);
-            path = path.substring(1);
-            System.out.println(path);
             var unit = javaParser.parse(Path.of(path));
             System.out.println("after parse");
             if (unit.getResult().isPresent()) {
