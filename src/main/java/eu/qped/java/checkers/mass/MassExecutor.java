@@ -212,8 +212,8 @@ public class MassExecutor {
 
         QFMainSettings qfMainSettings = new QFMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
-        qfMainSettings.setSemanticNeeded("true");
-        qfMainSettings.setStyleNeeded("false");
+        qfMainSettings.setSemanticNeeded("false");
+        qfMainSettings.setStyleNeeded("true");
         qfMainSettings.setDesignNeeded("false");
         qfMainSettings.setPreferredLanguage("en");
 
@@ -241,6 +241,7 @@ public class MassExecutor {
         qfStyleSettings.setBasisLevel("ADVANCED");
         qfStyleSettings.setClassLength("10");
         qfStyleSettings.setMethodLength("10");
+
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(qfStyleSettings).build();
 
