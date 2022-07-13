@@ -118,7 +118,7 @@ public class Mass implements Checker {
                     + "--------------------------------------------------";
             i = i + 2;
         }
-
+        System.out.println(">>>>>>>>>>>>>>>>>333333333333333333");
         for (DesignFeedback df : designFeedbacks) {
             result[i] = "design Feedback";
             result[i + 1] =
@@ -141,7 +141,7 @@ public class Mass implements Checker {
                     + "--------------------------------------------------";
             i = i + 2;
         }
-        System.out.println(">>>>>>>>>>>>>>>>>333333333333333333");
+
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
             result[i + 1] = ""
                     + syntax.toString()
