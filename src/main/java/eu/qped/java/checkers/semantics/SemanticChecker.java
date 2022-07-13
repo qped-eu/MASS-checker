@@ -56,16 +56,8 @@ public class SemanticChecker {
 
     public void check() {
 
-        System.out.println("check 1");
-
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
         var settings = reader.groupByFileName();
-
-        System.out.println(settings);
-        System.out.println("check 2");
-
-        System.out.println(targetProjectPath);
-
         // per File
         settings.forEach(
                 fileSettingEntry -> {
@@ -76,55 +68,27 @@ public class SemanticChecker {
                     if (fileSettingEntry.getFilePath().charAt(0) == '/') {
                         path = targetProjectPath + fileSettingEntry.getFilePath();
                     } else {
-                        System.out.println("should be here");
                         if (!Objects.equals(targetProjectPath, "")) {
-                            System.out.println("should be here");
                             path = targetProjectPath + "/" + fileSettingEntry.getFilePath();
                             System.out.println(path);
                         } else {
-                            System.out.println("not here");
                             path = fileSettingEntry.getFilePath();
                         }
                     }
-                    System.out.println("before parse");
+
                     var compilationUnit = parse(path); // AST per File
-                    System.out.println("after parse");
 
                     // AST per Method in File
                     fileSettingEntry.getSettingItems().forEach(
                             semanticSettingItem -> {
                                 try {
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("start of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                     BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName());
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("targetedMethod of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                     StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("statementsVisitorHelper of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                     calculateUsedLoop(statementsVisitorHelper);
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("calculateUsedLoop of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                     generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("generateSemanticStatementsFeedback of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                     MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("recursiveCheckHelper of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                     generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("generateSemanticRecursionFeedback of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                     checkReturnTyp(semanticSettingItem.getReturnType());
-                                    System.out.println("---------------------MERO---------------------");
-                                    System.out.println("end of checking");
-                                    System.out.println("---------------------MERO---------------------");
                                 } catch (NoSuchMethodException e) {
                                     System.out.println(e.getMessage() + " " + e.getCause());
                                 }
@@ -143,22 +107,15 @@ public class SemanticChecker {
         ParserConfiguration configuration = new ParserConfiguration();
         JavaParser javaParser = new JavaParser(configuration);
         try {
-            System.out.println("before parse");
             System.out.println(path);
             System.out.println(Path.of(path));
             var unit = javaParser.parse(Path.of(path));
-            System.out.println("after parse");
             if (unit.getResult().isPresent()) {
                 return unit.getResult().get();
             } else {
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
-            System.out.println(e.getClass().getSimpleName());
-            System.out.println("msg");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            System.out.println("msg");
             throw new IllegalArgumentException();
         }
     }

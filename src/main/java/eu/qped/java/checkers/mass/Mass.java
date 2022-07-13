@@ -40,8 +40,6 @@ public class Mass implements Checker {
 
         MainSettings mainSettings = new MainSettings(this.mainSettings);
 
-        System.out.println("reading Main setting");
-
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
@@ -53,9 +51,6 @@ public class Mass implements Checker {
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         // Semantic Checker
-        System.out.println("MERO");
-        System.out.println(mass.getSemantic().getSemantics());
-        System.out.println("MERO");
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
         // Design Checker

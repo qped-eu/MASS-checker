@@ -54,22 +54,15 @@ public class StyleChecker {
     private StyleConfigurationReader styleConfigurationReader;
 
     public void check() {
-        System.out.println(">>>>>>>>1");
         StyleConfigurationReader styleConfigurationReader = StyleConfigurationReader.builder().qfStyleSettings(qfStyleSettings).build();
         styleSettings = styleConfigurationReader.getStyleSettings();
-        System.out.println(">>>>>>>>2");
         xmlFileManager = new XmlFileManager();
-        System.out.println(">>>>>>>>2" + styleSettings.toString());
         addNameRules(styleSettings.getNamesLevel());
-        System.out.println(">>>>>>>>3");
         addComplexityRules(styleSettings.getComplexityLevel());
         addBasicRules(styleSettings.getBasisLevel());
-        System.out.println(">>>>>>>>4");
         applySettingsOnMainRuleset();
         executePMD();
-        System.out.println(">>>>>>>>5");
         prepareFeedbacks();
-        System.out.println(">>>>>>>>6");
     }
 
 

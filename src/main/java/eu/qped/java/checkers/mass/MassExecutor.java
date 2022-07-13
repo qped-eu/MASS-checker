@@ -90,21 +90,13 @@ public class MassExecutor {
 
         if (syntaxCheckReport.isCompilable()) {
             if (styleNeeded) {
-                System.out.println("running Style");
                 styleChecker.setTargetPath(syntaxCheckReport.getPath());
-                System.out.println("checking Style");
                 styleChecker.check();
-                System.out.println("checked Style");
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
-                System.out.println("generate Feedback");
-                System.out.println(styleFeedbacks);
             }
             if (semanticNeeded) {
-                System.out.println("true");
                 semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
-                System.out.println("before");
                 semanticChecker.check();
-                System.out.println("after ceheck");
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
             if (designNeeded) {
