@@ -87,6 +87,9 @@ public class SemanticChecker {
                                     MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
                                     generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
                                     checkReturnTyp(semanticSettingItem.getReturnType());
+                                    System.out.println("---------------------MERO---------------------");
+                                    System.out.println("end of checking");
+                                    System.out.println("---------------------MERO---------------------");
                                 } catch (NoSuchMethodException e) {
                                     System.out.println(e.getMessage() + " " + e.getCause());
                                 }
