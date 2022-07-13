@@ -100,8 +100,11 @@ public class MassExecutor {
                 System.out.println(styleFeedbacks);
             }
             if (semanticNeeded) {
+                System.out.println("true");
                 semanticChecker.setTargetProjectPath(syntaxCheckReport.getPath());
+                System.out.println("before");
                 semanticChecker.check();
+                System.out.println("after ceheck");
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
             if (designNeeded) {

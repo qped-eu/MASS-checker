@@ -55,8 +55,14 @@ public class SemanticChecker {
     }
 
     public void check() {
+
+        System.out.println("check 1");
+
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
         var settings = reader.groupByFileName();
+
+        System.out.println(settings);
+        System.out.println("check 1");
 
         // per File
         settings.forEach(
