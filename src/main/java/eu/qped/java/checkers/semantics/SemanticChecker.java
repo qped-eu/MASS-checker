@@ -137,7 +137,7 @@ public class SemanticChecker {
         JavaParser javaParser = new JavaParser(configuration);
         try {
 
-            var unit = javaParser.parse(Path.of("/" + path));
+            var unit = javaParser.parse(Path.of(path));
             if (unit.getResult().isPresent()) {
                 return unit.getResult().get();
             } else {
