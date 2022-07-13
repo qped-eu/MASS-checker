@@ -71,7 +71,7 @@ public class Mass implements Checker {
         //Mass
         MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, classChecker, mainSettings);
         massExecutor.execute();
-
+        System.out.println(">>>>>>>>>>>>>>>>>333333333333333333");
         /*
          feedbacks
          */
@@ -147,6 +147,7 @@ public class Mass implements Checker {
                     + "--------------------------------------------------";
             i = i + 2;
         }
+        System.out.println(">>>>>>>>>>>>>>>>>44444444444");
         qfObject.setFeedback(result);
     }
 
