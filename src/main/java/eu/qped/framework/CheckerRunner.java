@@ -100,7 +100,7 @@ public class CheckerRunner {
 						}
 					}
 				}
-
+				System.out.println(">>>>>>>>>>>>>" + fileInfo.getMimetype());
 				if (fileInfo.getMimetype().equals("application/zip")) {
 					try {
 						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
