@@ -7,6 +7,7 @@ import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
 import eu.qped.java.checkers.design.DesignChecker;
+import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
@@ -49,7 +50,6 @@ public class Mass implements Checker {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
         // Style Checker
-        System.out.println(">>>>>>>>>" + mass.getStyle().toString());
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         // Semantic Checker
@@ -77,8 +77,7 @@ public class Mass implements Checker {
         List<SemanticFeedback> semanticFeedbacks;
         semanticFeedbacks = massExecutor.getSemanticFeedbacks();
 
-//        List<DesignFeedback> designFeedbacks;
-//        designFeedbacks = massExecutor.getDesignFeedbacks();
+        List<DesignFeedback> designFeedbacks = massExecutor.getDesignFeedbacks();
 //
 //        List<ClassFeedback> classFeedbacks;
 //        classFeedbacks = massExecutor.getClassFeedbacks();
@@ -116,21 +115,21 @@ public class Mass implements Checker {
         }
 
 
-//        for (DesignFeedback df : designFeedbacks) {
-//            result[resultIndex] = "design Feedback";
-//            result[resultIndex + 1] =
-//                    "In class '" + df.getClassName() + ".java'"
-//                            + NEW_LINE
-//                            + df.getMetric() + " (" + df.getBody() + ")"
-//                            + NEW_LINE
-//                            + df.getMetric() + " (" + df.getBody() + ")"
-//                            + NEW_LINE
-//                            + "Measured with value: " + df.getValue()
-//                            + NEW_LINE
-//                            + df.getSuggestion()
-//                            + "------------------------------------------------------------------------------";
-//            resultIndex = resultIndex + 2;
-//        }
+        for (DesignFeedback df : designFeedbacks) {
+            result[resultIndex] = "design Feedback";
+            result[resultIndex + 1] =
+                    "In class '" + df.getClassName() + ".java'"
+                            + NEW_LINE
+                            + df.getMetric() + " (" + df.getBody() + ")"
+                            + NEW_LINE
+                            + df.getMetric() + " (" + df.getBody() + ")"
+                            + NEW_LINE
+                            + "Measured with value: " + df.getValue()
+                            + NEW_LINE
+                            + df.getSuggestion()
+                            + "------------------------------------------------------------------------------";
+            resultIndex = resultIndex + 2;
+        }
 
 
 //        for (ClassFeedback classFeedback : classFeedbacks) {
