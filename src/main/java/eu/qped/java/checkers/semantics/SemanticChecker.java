@@ -257,13 +257,13 @@ public class SemanticChecker {
         System.out.println(Path.of("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java"));
 
         var bagCalcPriceSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .filePath("/tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
                 .methodName("calcPrice")
                 .returnType("void")
                 .whileLoop(0)
                 .build();
         var bagCalcRecSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .filePath("/tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
                 .methodName("calcRec")
                 .returnType("int")
                 .recursive(false)
