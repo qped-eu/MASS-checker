@@ -14,6 +14,6 @@ import java.util.List;
 @Builder
 public class QFSemSettings extends QfObjectBase {
 
-    private List<SemanticSettingItem> semantic;
+    private List<SemanticSettingItem> semantics;
 
 }

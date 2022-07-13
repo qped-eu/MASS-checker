@@ -193,13 +193,13 @@ public class SemanticChecker {
 
     private void generateSemanticRecursionFeedback(SemanticSettingItem settingItem, MethodCalledChecker recursiveCheckHelper) {
         var hasUsedRecursive = recursiveCheckHelper.check(settingItem.getMethodName());
-        if ((!hasUsedRecursive && settingItem.getRecursionAllowed() && !usedALoop)) {
+        if ((!hasUsedRecursive && settingItem.getRecursive() && !usedALoop)) {
             feedbacks.add(new SemanticFeedback("you have to solve the method recursive in " + settingItem.getFilePath()));
-        } else if (settingItem.getRecursionAllowed() && usedALoop && hasUsedRecursive) {
+        } else if (settingItem.getRecursive() && usedALoop && hasUsedRecursive) {
             feedbacks.add(new SemanticFeedback("you have used a Loop with your recursive Call in " + settingItem.getFilePath()));
-        } else if (settingItem.getRecursionAllowed() && usedALoop && !hasUsedRecursive) {
+        } else if (settingItem.getRecursive() && usedALoop && !hasUsedRecursive) {
             feedbacks.add(new SemanticFeedback("you have used a Loop without a recursive Call, you have to solve it just recursive in " + settingItem.getFilePath()));
-        } else if (hasUsedRecursive && !settingItem.getRecursionAllowed()) {
+        } else if (hasUsedRecursive && !settingItem.getRecursive()) {
             feedbacks.add(new SemanticFeedback("yor are not allowed to use recursive in the method in " + settingItem.getFilePath() + " " + settingItem.getMethodName()));
         }
     }
@@ -221,7 +221,7 @@ public class SemanticChecker {
                 .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
                 .methodName("calcRec")
                 .returnType("int")
-                .recursionAllowed(false)
+                .recursive(false)
                 .build();
 
         settingItems.add(bagCalcPriceSettingItem);

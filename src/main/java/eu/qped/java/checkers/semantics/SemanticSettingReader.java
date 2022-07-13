@@ -24,10 +24,10 @@ public class SemanticSettingReader {
     private QFSemSettings qfSemSettings;
 
     private void setDefault() {
-        qfSemSettings.getSemantic().forEach(
+        qfSemSettings.getSemantics().forEach(
                 semanticSettingItem -> {
-                    if (semanticSettingItem.getRecursionAllowed() == null) {
-                        semanticSettingItem.setRecursionAllowed(REC_ALLOWED_DEFAULT);
+                    if (semanticSettingItem.getRecursive() == null) {
+                        semanticSettingItem.setRecursive(REC_ALLOWED_DEFAULT);
                     }
                     if (semanticSettingItem.getWhileLoop() == null) {
                         semanticSettingItem.setWhileLoop(MAX_STMT_DEFAULT);
@@ -54,7 +54,7 @@ public class SemanticSettingReader {
 
         List<FileSettingEntry> result = new ArrayList<>();
 
-        qfSemSettings.getSemantic()
+        qfSemSettings.getSemantics()
                 .stream()
                 .collect(Collectors.groupingBy(SemanticSettingItem::getFilePath))
                 .forEach((filePath, semanticSettingItems) ->

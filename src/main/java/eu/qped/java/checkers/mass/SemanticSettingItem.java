@@ -15,7 +15,7 @@ public class SemanticSettingItem {
 
     private String methodName;
 
-    private Boolean recursionAllowed;
+    private Boolean recursive;
 
     private Integer whileLoop;
 
