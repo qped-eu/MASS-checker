@@ -64,10 +64,7 @@ public class SemanticChecker {
         System.out.println(settings);
         System.out.println("check 2");
 
-        System.out.println("PATH");
-        System.out.println(settings.get(0).getFilePath());
-        System.out.println(settings.get(1).getFilePath());
-        System.out.println("PATH");
+
         // per File
         settings.forEach(
                 fileSettingEntry -> {
@@ -140,7 +137,7 @@ public class SemanticChecker {
         JavaParser javaParser = new JavaParser(configuration);
         try {
 
-            var unit = javaParser.parse(Path.of(path));
+            var unit = javaParser.parse(Path.of("/" + path));
             if (unit.getResult().isPresent()) {
                 return unit.getResult().get();
             } else {
