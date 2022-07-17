@@ -62,7 +62,8 @@ public class SemanticChecker {
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
         var settings = reader.groupByFileName();
 
-        System.out.println("not here");
+        System.out.println(settings);
+
         // per File
         settings.forEach(
                 fileSettingEntry -> {
