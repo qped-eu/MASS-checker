@@ -74,10 +74,12 @@ public class SemanticChecker {
                     if (fileSettingEntry.getFilePath().charAt(0) == '/') {
                         path = targetProjectPath + fileSettingEntry.getFilePath();
                     } else {
+                        System.out.println("in else");
                         if (!Objects.equals(targetProjectPath, "")) {
                             path = targetProjectPath + "/" + fileSettingEntry.getFilePath();
                             System.out.println(path);
                         } else {
+                            System.out.println("in else");
                             path = fileSettingEntry.getFilePath();
                         }
                     }
