@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.mass;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
@@ -25,9 +26,6 @@ public class Mass implements Checker {
     private FileInfo file;
 
     @QfProperty
-    private QFMainSettings mainSettings;
-
-    @QfProperty
     private QfMass mass;
 
     @QfProperty
@@ -38,8 +36,17 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        MainSettings mainSettings = new MainSettings(this.mainSettings);
-
+        MainSettings mainSettings = new MainSettings();
+        mainSettings.setDesignNeeded(mass.isMetricsSelected());
+        mainSettings.setStyleNeeded(mass.isStyleSelected());
+        mainSettings.setSemanticNeeded(mass.isSemanticSelected());
+        mainSettings.setClassNeeded(mass.isClassSelected());
+        mainSettings.setPreferredLanguage("en");
+        try {
+            mainSettings.setSyntaxLevel(CheckLevel.valueOf(mass.getSyntax().getLevel()));
+        } catch (Exception e) {
+            mainSettings.setSyntaxLevel(CheckLevel.BEGINNER);
+        }
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
