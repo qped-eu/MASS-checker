@@ -56,13 +56,8 @@ public class SemanticChecker {
 
     public void check() {
 
-        System.out.println("checking");
-        System.out.println(targetProjectPath);
-
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
         var settings = reader.groupByFileName();
-
-        System.out.println(settings);
 
         // per File
         settings.forEach(
@@ -72,27 +67,17 @@ public class SemanticChecker {
                         targetProjectPath = "";
                     }
                     var path = "";
-                    System.out.println("before edit path");
                     if (fileSettingEntry.getFilePath() != null && !"".equals(fileSettingEntry.getFilePath())) {
                         if ('/' == fileSettingEntry.getFilePath().charAt(0)) {
-                            System.out.println("in if");
                             path = targetProjectPath + fileSettingEntry.getFilePath();
                         } else {
-                            System.out.println("in else");
                             if (!Objects.equals(targetProjectPath, "")) {
                                 path = targetProjectPath + "/" + fileSettingEntry.getFilePath();
-                                System.out.println(path);
                             } else {
-                                System.out.println("in else");
                                 path = fileSettingEntry.getFilePath();
                             }
                         }
                     } else path = targetProjectPath;  // answer is string
-
-
-                    System.out.println("------------");
-                    System.out.println(path);
-                    System.out.println("------------");
 
                     var compilationUnit = parse(path); // AST per File
 
