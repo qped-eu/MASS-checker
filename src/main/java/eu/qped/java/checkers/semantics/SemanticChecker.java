@@ -73,7 +73,7 @@ public class SemanticChecker {
                     }
                     var path = "";
                     System.out.println("before edit path");
-                    if (fileSettingEntry.getFilePath().charAt(0) == '/') {
+                    if ('/' == fileSettingEntry.getFilePath().charAt(0)) {
                         System.out.println("in if");
                         path = targetProjectPath + fileSettingEntry.getFilePath();
                     } else {
