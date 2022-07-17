@@ -67,11 +67,13 @@ public class SemanticChecker {
         // per File
         settings.forEach(
                 fileSettingEntry -> {
+                    System.out.println("in for each");
                     if (targetProjectPath == null) {
                         targetProjectPath = "";
                     }
                     var path = "";
                     if (fileSettingEntry.getFilePath().charAt(0) == '/') {
+                        System.out.println("in if");
                         path = targetProjectPath + fileSettingEntry.getFilePath();
                     } else {
                         System.out.println("in else");
