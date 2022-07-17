@@ -76,6 +76,10 @@ public class SemanticChecker {
                         }
                     }
 
+                    System.out.println("------------");
+                    System.out.println(path);
+                    System.out.println("------------");
+
                     var compilationUnit = parse(path); // AST per File
 
                     // AST per Method in File
