@@ -56,6 +56,9 @@ public class SemanticChecker {
 
     public void check() {
 
+        System.out.println("checking");
+        System.out.println(targetProjectPath);
+
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
         var settings = reader.groupByFileName();
         // per File
