@@ -108,19 +108,19 @@ public class ByMethod implements Comparable<ByMethod> {
 
             switch (aClass.byIndex(i ++)) {
                 case FULL:
-                    head = "&#x1F7E9 ";
+                    head = ":white_check_mark: ";
                     break;
                 case NOT:
-                    head = "&#x1F7E5 ";
+                    head = ":red_circle: ";
                     break;
                 case PARTLY:
-                    head = "&#x1F7E8 ";
+                    head = ":large_orange_diamond: ";
                     break;
                 default:
-                    head = "&#x1F7E6 ";
+                    head = ":large_blue_diamond: ";
                     break;
             }
-            builder.append(head).append(line).append("");
+            builder.append(head).append(line).append(" \n ");
         }
         contentString =  builder.append("```").toString();
     }
