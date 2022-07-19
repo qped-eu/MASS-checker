@@ -9,11 +9,7 @@ import eu.qped.java.checkers.coverage.framework.ast.*;
 import eu.qped.java.checkers.coverage.framework.coverage.*;
 import eu.qped.java.checkers.coverage.framework.test.*;
 import eu.qped.java.utils.compiler.Com;
-import eu.qped.java.utils.compiler.Compiler;
-import org.apache.commons.lang.ArrayUtils;
 
-import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,8 +24,6 @@ import java.util.stream.Collectors;
  */
 public class CoverageChecker implements Checker {
 
-
-
     // frameworks
     // defines what frameworks are used
     private static final String COVERAGE_FRAMEWORK = "JACOCO", AST_FRAMEWORK = "JAVA_PARSER", TEST_FRAMEWORK = "JUNIT5";
@@ -37,29 +31,6 @@ public class CoverageChecker implements Checker {
     // conventions
     // defines what classnames and testclass are
     private static final String MAVEN = "MAVEN", JAVA = "JAVA";
-
-    private final static ZipService.Classname mavenClassName = (file) -> {
-        Pattern pattern = Pattern.compile(".*src/+(test|main)+/java/(.*)\\.java$");
-        Matcher matcher = pattern.matcher(file.getPath());
-        if (matcher.find()) {
-            return matcher.group(2);
-        }
-        return null;
-    };
-    private final static ZipService.TestClass mavenTestClass = (file) -> {
-        return Pattern.matches("src/test/java.*\\.java$", file.getPath());
-    };
-    private final static ZipService.Classname javaClassName = (file) -> {
-        Pattern pattern = Pattern.compile(".*/exam-results\\d+/(.*)\\.java$");
-        Matcher matcher = pattern.matcher(file.getPath());
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
-    };
-    private final static ZipService.TestClass javaTestClass = (file) -> {
-        return Pattern.matches(".*Test\\.java$", file.getPath());
-    };
 
     private class Info implements CovInformation {
         private final byte[] byteCode;
@@ -94,8 +65,11 @@ public class CoverageChecker implements Checker {
     }
 
     QfCovSetting covSetting;
+    @QfProperty
     FileInfo file = null;
-    FileInfo additional = null;
+    @QfProperty
+    String privateImplementation = null;
+    @QfProperty
     String answer = null;
 
     public CoverageChecker() {
@@ -105,7 +79,7 @@ public class CoverageChecker implements Checker {
     public CoverageChecker(QfCovSetting covSetting) {
         this.covSetting = covSetting;
         this.file = covSetting.getFile();
-        this.additional = covSetting.getAdditional();
+        this.privateImplementation = covSetting.getPrivateImplementation();
         this.answer = covSetting.getAnswer();
     }
 
@@ -120,6 +94,7 @@ public class CoverageChecker implements Checker {
     }
 
     private String[] setUp() {
+
         try {
             Zip zip = new Zip();
             ZipService.Extracted extracted = extract(zip);
@@ -142,13 +117,12 @@ public class CoverageChecker implements Checker {
                 }
             }
 
-
             if (! compiler.compileSource(extracted.root())) {
                 System.out.println(compiler.protocol());
                 List<String> failed = compiler.protocol().stream().map(s-> s.toString()).collect(Collectors.toList());
                 System.out.println(compiler.protocol());
                 failed.add(0, "Ups there are some compile issues: ");
-                return (String[]) failed.toArray();
+                return failed.toArray(String[]::new);
             }
 
             if (classes.isEmpty())
@@ -156,14 +130,14 @@ public class CoverageChecker implements Checker {
             if (testClasses.isEmpty())
                 throw new IllegalStateException("Ups something went wrong! Needs at least one test class." );
 
-
             Summary summary = checker(
                     preprocessing(fileByClassname, testClasses),
                     preprocessing(fileByClassname, classes));
             zip.cleanUp();
+
             return Formatter.format(covSetting.getFormat(), summary);
         } catch (Exception e) {
-            return new String[]{"Ups something  went wrong! " + e};
+            return new String[]{"Ups something  went wrong!" + e.getCause() + e.getMessage()};
         }
     }
 
@@ -172,28 +146,30 @@ public class CoverageChecker implements Checker {
         try {
             ZipService.Classname classname;
             ZipService.TestClass testClass;
+
             if (covSetting.getConvention().equals(JAVA)) {
-                classname = javaClassName;
-                testClass = javaTestClass;
+                classname = ZipService.JAVA_CLASS_NAME;
+                testClass = ZipService.JAVA_TEST_CLASS;
+            } else if (covSetting.getConvention().equals(MAVEN)) {
+                classname = ZipService.MAVEN_CLASS_NAME;
+                testClass = ZipService.MAVEN_TEST_CLASS;
             } else {
-                classname = mavenClassName;
-                testClass = mavenTestClass;
+                throw new IllegalStateException("Ups something went wrong!");
             }
 
-            if (Objects.nonNull(file) && Objects.nonNull(additional)) {
+            if (Objects.nonNull(file) && (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank())) {
                 return zipService.extractBoth(
-                        zipService.download(file),
-                        zipService.download(additional),
+                        file.getUnzipped(),
+                        zipService.download(privateImplementation),
                         testClass,
                         classname);
             } else if (Objects.nonNull(file)) {
-                return zipService.extract(zipService.download(file),testClass, classname);
-            } else if (Objects.nonNull(additional)) {
-                return zipService.extract(zipService.download(additional),testClass, classname);
+                return zipService.extract(file.getSubmittedFile(),testClass, classname);
+            } else if (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank()) {
+                return zipService.extract(zipService.download(privateImplementation),testClass, classname);
             }
             throw new Exception();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalStateException("Ups something went wrong!");
         }
     }
@@ -217,10 +193,11 @@ public class CoverageChecker implements Checker {
                     new LinkedList<>(classes));
 
             summary.analyze(new ParserWF().parse(covSetting.getLanguage(), covSetting.getFeedback()));
+
             return summary;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new InternalError("Ups there is a internal error!");
+            throw new InternalError("Ups there is a internal error! 3" + e.getMessage() + e.getCause().toString());
         }
     }
 

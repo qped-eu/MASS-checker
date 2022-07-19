@@ -1,5 +1,7 @@
 package eu.qped.framework;
 
+import eu.qped.java.checkers.coverage.Zip;
+import eu.qped.java.checkers.coverage.ZipService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

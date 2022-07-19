@@ -39,6 +39,7 @@ public class Com {
     }
 
     public boolean compileSource(File source, List<String> options) {
+
         LinkedList<File> stack = new LinkedList<>();
         LinkedList<File> java = new LinkedList<>();
         stack.add(source);
@@ -57,6 +58,20 @@ public class Com {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<>();
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(collector, Locale.GERMANY, Charset.defaultCharset());
+        try {
+            fileManager.setLocation(StandardLocation.CLASS_PATH,
+                    Arrays.asList(
+                            source,
+                            Path.of("lib/junit-jupiter-api-5.8.2.jar").toFile()
+                    ));
+            fileManager.setLocation(StandardLocation.CLASS_OUTPUT,
+                    Arrays.asList(
+                            source
+                    ));
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         if (Objects.isNull(options))
             options = DEFAULT_OPTIONS;

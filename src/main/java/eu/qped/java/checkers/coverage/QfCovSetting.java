@@ -14,7 +14,7 @@ public class QfCovSetting extends QfObjectBase {
     private String convention = "JAVA";
     private String answer = null;
     private FileInfo file = null;
-    private FileInfo additional = null;
+    private String privateImplementation = null;
     private String language = "de";
 
     public String getLanguage() {
@@ -81,11 +81,11 @@ public class QfCovSetting extends QfObjectBase {
         this.file = file;
     }
 
-    public FileInfo getAdditional() {
-        return additional;
+    public void setPrivateImplementation(String privateImplementation) {
+        this.privateImplementation = privateImplementation;
     }
 
-    public void setAdditional(FileInfo additional) {
-        this.additional = additional;
+    public String getPrivateImplementation() {
+        return privateImplementation;
     }
 }

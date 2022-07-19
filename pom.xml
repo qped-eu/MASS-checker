@@ -10,46 +10,6 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
-				<configuration>
-					<!-- Exclude test suites as tests would otherwise run twice. -->
-					<excludes>
-						<exclude>eu.qped.java.JavaCheckerTests</exclude>
-						<exclude>eu.qped.python.PythonCheckerTests</exclude>
-					</excludes>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>net.sourceforge.pmd</groupId>
-						<artifactId>pmd-java</artifactId>
-						<version>6.43.0</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-                    <execution>
-						<id>CheckerRunner</id>
-						<goals>
-							<goal>java</goal>
-						</goals>
-                        <configuration>
-                            <mainClass>eu.qped.framework.CheckerRunner</mainClass>
-                            <classpathScope>runtime</classpathScope>
-                            <addResourcesToClasspath>true</addResourcesToClasspath>
-                        </configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
     <!-- DEPENDENCIES FOR CHECKER TOOLS -->
     <dependencies>
@@ -131,7 +91,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.8.2</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -186,6 +145,12 @@
 
         <!--coverage checker-->
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
             <version>1.8.2</version>
@@ -201,4 +166,38 @@
             <version>1.6.2</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <!-- Exclude test suites as tests would otherwise run twice. -->
+                    <excludes>
+                        <exclude>eu.qped.java.JavaCheckerTests</exclude>
+                        <exclude>eu.qped.python.PythonCheckerTests</exclude>
+                    </excludes>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-java</artifactId>
+                        <version>6.43.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <mainClass>eu.qped.framework.CheckerRunner</mainClass>
+                    <addResourcesToClasspath>true</addResourcesToClasspath>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
 </project>
