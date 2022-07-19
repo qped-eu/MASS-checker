@@ -108,16 +108,16 @@ public class ByMethod implements Comparable<ByMethod> {
 
             switch (aClass.byIndex(i ++)) {
                 case FULL:
-                    head = "\n[O] ";
+                    head = "\n\n[O] ";
                     break;
                 case NOT:
-                    head = "\n[X] ";
+                    head = "\n\n[X] ";
                     break;
                 case PARTLY:
-                    head = "\n[ ] ";
+                    head = "\n\n[  ] ";
                     break;
                 default:
-                    head = "\n[ ] ";
+                    head = "\n\n[  ] ";
                     break;
             }
             builder.append(head).append(line).append("");
