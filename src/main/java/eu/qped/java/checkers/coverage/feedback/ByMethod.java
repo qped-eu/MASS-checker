@@ -98,7 +98,7 @@ public class ByMethod implements Comparable<ByMethod> {
         statementsFB.addAll(flatt);
 
         StringBuilder builder = new StringBuilder();
-        builder.append("\n");
+        builder.append("\n ```java \n");
 
         int i = content.start();
         for (String line : Arrays
@@ -122,7 +122,7 @@ public class ByMethod implements Comparable<ByMethod> {
             }
             builder.append(head).append(line).append(" \n\n ");
         }
-        contentString =  builder.append("\n").toString();
+        contentString =  builder.append("``` \n").toString();
     }
 
     public CoverageCount branch() {
