@@ -120,7 +120,7 @@ public class ByMethod implements Comparable<ByMethod> {
                     head = ":large_blue_diamond: ";
                     break;
             }
-            builder.append(head).append(line).append(" \n ");
+            builder.append(head).append(line).append(" \n\n ");
         }
         contentString =  builder.append("\n").toString();
     }
