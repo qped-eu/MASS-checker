@@ -1,36 +1,61 @@
 package eu.qped.java.checkers.design.configuration;
 
 import eu.qped.java.checkers.design.ckjm.DesignCheckEntryHandler.Metric;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
+ * Represents a class to define a {@link #lowerBound} and an {@link #upperBound} to a specific {@link #metric}.
+ * The boundaries are meant to be inclusive.
+ *
  * @author Jannik Seus
  */
-@Data
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@Builder
-public class MetricThreshold {
+@Getter
+@Setter
+public class MetricThreshold implements Comparable<MetricThreshold> {
 
     private Metric metric;
-    private double minThreshold;
-    private double maxThreshold;
+    private double lowerBound;
+    private double upperBound;
 
-
-    public MetricThreshold(double minThreshold, double maxThreshold) {
-        this.minThreshold = minThreshold;
-        this.maxThreshold = maxThreshold;
+    public MetricThreshold(Metric metric) {
+        this.metric = metric;
+        if (this.metric == null) {
+            throw new IllegalStateException("A metric must be specified.");
+        }
+        this.lowerBound = this.metric.getMinimum();
+        this.upperBound = this.metric.getMaximum();
     }
 
-    public void setDefaultThresholdMin() {
-        this.minThreshold = metric.getDefaultThresholdMin();
+    public MetricThreshold(Metric metric, double bound, boolean lower) {
+        this.metric = metric;
+        if (lower) {
+            this.lowerBound = bound;
+            this.upperBound = this.metric.getMaximum();
+        } else {
+            this.lowerBound = this.metric.getMinimum();
+            this.upperBound = bound;
+        }
     }
 
-    public void setDefaultThresholdMax() {
-        this.maxThreshold = metric.getDefaultThresholdMax();
+
+    public MetricThreshold(Metric metric, double lowerBound, double upperBound) {
+        this.metric = metric;
+        if (this.metric == null) {
+            throw new IllegalStateException("A metric must be specified.");
+        }
+        if (lowerBound <= upperBound) {
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+        } else {
+            this.lowerBound = upperBound;
+            this.upperBound = lowerBound;
+        }
     }
 
-
+    @Override
+    public int compareTo(MetricThreshold o) {
+        if (o == null) return 1;
+        return this.metric.toString().compareTo(o.getMetric().toString());
+    }
 }

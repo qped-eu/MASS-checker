@@ -1,19 +1,16 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.qf.QfObjectBase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class QFSemSettings extends QfObjectBase {
+public class QfSyntaxSettings {
 
-    private List<SemanticSettingItem> semantics;
+    private String level;
 
 }
