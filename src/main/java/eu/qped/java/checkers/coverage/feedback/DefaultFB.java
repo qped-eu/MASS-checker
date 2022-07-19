@@ -23,7 +23,7 @@ public class DefaultFB {
     private static final String ENGLISH = "en";
     private static final Set<String> SUPPORTED_LANGUAGES = new HashSet<>() {{
         add(ENGLISH);
-        add("ger");
+        add("de");
     }};
 
     /**

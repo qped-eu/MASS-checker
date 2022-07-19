@@ -98,7 +98,7 @@ public class ByMethod implements Comparable<ByMethod> {
         statementsFB.addAll(flatt);
 
         StringBuilder builder = new StringBuilder();
-        builder.append("<pre>");
+        builder.append("```");
 
         int i = content.start();
         for (String line : Arrays
@@ -108,21 +108,21 @@ public class ByMethod implements Comparable<ByMethod> {
 
             switch (aClass.byIndex(i ++)) {
                 case FULL:
-                    head = "<fb style='background-color:green'>";
+                    head = "&#x1F7E9 ";
                     break;
                 case NOT:
-                    head = "<fb style='background-color:red'>";
+                    head = "&#x1F7E5 ";
                     break;
                 case PARTLY:
-                    head = "<fb style='background-color:orange'>";
+                    head = "&#x1F7E8 ";
                     break;
                 default:
-                    head = "<fb style='background-color:lightGrey'>";
+                    head = "&#x1F7E6 ";
                     break;
             }
-            builder.append(head).append(line).append("</fb><br>");
+            builder.append(head).append(line).append("");
         }
-        contentString =  builder.append("</pre>").toString();
+        contentString =  builder.append("```").toString();
     }
 
     public CoverageCount branch() {
