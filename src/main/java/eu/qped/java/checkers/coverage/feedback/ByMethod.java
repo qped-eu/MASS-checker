@@ -98,7 +98,7 @@ public class ByMethod implements Comparable<ByMethod> {
         statementsFB.addAll(flatt);
 
         StringBuilder builder = new StringBuilder();
-        builder.append("\n ```java \n");
+        builder.append("```java \n\n");
 
         int i = content.start();
         for (String line : Arrays
@@ -108,21 +108,21 @@ public class ByMethod implements Comparable<ByMethod> {
 
             switch (aClass.byIndex(i ++)) {
                 case FULL:
-                    head = ":white_check_mark: ";
+                    head = "\n[O] ";
                     break;
                 case NOT:
-                    head = ":red_circle: ";
+                    head = "\n[X] ";
                     break;
                 case PARTLY:
-                    head = ":large_orange_diamond: ";
+                    head = "\n[ ] ";
                     break;
                 default:
-                    head = ":large_blue_diamond: ";
+                    head = "\n[ ] ";
                     break;
             }
-            builder.append(head).append(line).append(" \n\n ");
+            builder.append(head).append(line).append("");
         }
-        contentString =  builder.append("``` \n").toString();
+        contentString =  builder.append("``` \n\n").toString();
     }
 
     public CoverageCount branch() {
