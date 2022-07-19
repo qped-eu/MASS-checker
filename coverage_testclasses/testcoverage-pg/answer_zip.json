@@ -27,7 +27,7 @@
    "score":null,
    "mass":{
       "coverage": {
-         "privateImplementation": "file:coverage_testclasses/testcoverage-pg/PG-Bag-ASSIGNMENT.zip",
+         "privateImplementation": "https://github.com/herfurthe/QPED-O3/blob/dev_erik/coverage_testclasses/testcoverage-pg/PG-Bag-ASSIGNMENT.zip?raw=true",
          "excludeByTypeSet" : [],
          "excludeBYNameSet" : [],
          "format" : "",
@@ -44,6 +44,6 @@
       "extension":".zip",
       "path":"",
       "mimetype":"application/zip",
-      "url": "file:coverage_testclasses/testcoverage-pg/PG-Bag-ANSWER.zip"
+      "url": "https://github.com/herfurthe/QPED-O3/blob/dev_erik/coverage_testclasses/testcoverage-pg/PG-Bag-ANSWER.zip?raw=true"
    }
 }
