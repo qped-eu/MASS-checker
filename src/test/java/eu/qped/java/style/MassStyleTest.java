@@ -47,7 +47,7 @@ class MassStyleTest {
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
         MassExecutor massE = new MassExecutor(styleChecker, null, syntaxChecker,
-                null, null, mainSettingsConfiguratorConf, null);
+                null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 

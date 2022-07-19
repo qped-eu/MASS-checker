@@ -7,6 +7,8 @@ import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
+import eu.qped.java.checkers.coverage.CoverageChecker;
+import eu.qped.java.checkers.coverage.QfCovSetting;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -31,6 +33,9 @@ public class Mass implements Checker {
     @QfProperty
     private QFClassSettings classSettings;
 
+
+
+
     private final static String NEW_LINE = "\n" + "\n";
 
     @Override
@@ -41,6 +46,7 @@ public class Mass implements Checker {
         mainSettings.setStyleNeeded(mass.isStyleSelected());
         mainSettings.setSemanticNeeded(mass.isSemanticSelected());
         mainSettings.setClassNeeded(mass.isClassSelected());
+        mainSettings.setCoverageNeeded(mass.isCoverageSelected());
         mainSettings.setPreferredLanguage("en");
         try {
             mainSettings.setSyntaxLevel(CheckLevel.valueOf(mass.getSyntax().getLevel()));
@@ -67,8 +73,18 @@ public class Mass implements Checker {
         ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(this.classSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
+        //CoverageChecker
+        CoverageChecker coverageChecker = null;
+        if (mainSettings.isCoverageNeeded()) {
+            QfCovSetting covSetting = mass.getCoverage();
+            covSetting.setAnswer(qfObject.getAnswer());
+            covSetting.setLanguage(mainSettings.getPreferredLanguage());
+            covSetting.setFile(file);
+            coverageChecker = new CoverageChecker(covSetting);
+        }
+
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, classChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, classChecker, coverageChecker, mainSettings);
         massExecutor.execute();
 
         /*
@@ -87,12 +103,24 @@ public class Mass implements Checker {
 //        List<ClassFeedback> classFeedbacks;
 //        classFeedbacks = massExecutor.getClassFeedbacks();
 
-        int resultLength = 100
-                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
-                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
-//                + ((designFeedbacks != null) ? designFeedbacks.size() : 0)
-//                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
-                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
+//        Warum 100? Im Fall das viel Feedback generiert wird, wird das Array nicht ausreichend Kapazität besitzen, oder?
+//        Warum braucht das syntaxFeedbacks immer zwei Stellten des Arrays?
+//        int resultLength = 100
+//                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
+//                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
+////                + ((designFeedbacks != null) ? designFeedbacks.size() : 0)
+////                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
+//                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
+
+
+        int resultLength = 2 * (
+                ((styleFeedbacks != null) ? styleFeedbacks.size() : 0) +
+                ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0) +
+//                ((designFeedbacks != null) ? designFeedbacks.size() : 0)
+//                ((classFeedbacks != null) ? classFeedbacks.size() : 0)
+                ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0)) +
+                massExecutor.getCoverageFeedbacks().size();
+
         String[] result = new String[resultLength];
         int resultIndex = 0;
 
@@ -150,6 +178,12 @@ public class Mass implements Checker {
                     + NEW_LINE
                     + "--------------------------------------------------";
             resultIndex = resultIndex + 2;
+
+        }
+
+
+        for (String feedback : massExecutor.getCoverageFeedbacks()) {
+            result[resultIndex++] = feedback;
         }
 
         qfObject.setFeedback(result);

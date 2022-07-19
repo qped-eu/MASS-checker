@@ -92,11 +92,13 @@ public class Zip implements ZipService {
 
 
     @Override
-    public Extracted extractBoth(File unzipTarget, File fileB, TestClass testClass, Classname classname) throws Exception {
-        if (! isZip(fileB) || ! unzipTarget.exists())
+    public Extracted extractBoth(File fileA, File fileB, TestClass testClass, Classname classname) throws Exception {
+        if (! isZip(fileB) || ! isZip(fileA))
             return null;
-
+        File unzipTarget = Files.createTempDirectory(ZipService.UNZIPPED_NAME).toFile();
         toDelete.add(unzipTarget);
+        ZipFile zipFileA = new ZipFile(fileA);
+        zipFileA.extractAll(unzipTarget.toString());
         ZipFile zipFileB = new ZipFile(fileB);
         zipFileB.extractAll(unzipTarget.toString());
         return extracted(unzipTarget, testClass, classname);

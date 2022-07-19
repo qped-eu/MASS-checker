@@ -40,7 +40,7 @@ class MassSyntaxTest {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, null, mainSettingsConfiguratorConf, null);
+                null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -56,7 +56,7 @@ class MassSyntaxTest {
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, null, mainSettingsConfiguratorConf, null);
+                null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -72,7 +72,7 @@ class MassSyntaxTest {
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, null, mainSettingsConfiguratorConf, null);
+                null, null,null, mainSettingsConfiguratorConf);
 
 
         massE.execute();

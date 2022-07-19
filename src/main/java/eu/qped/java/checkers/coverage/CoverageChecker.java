@@ -159,7 +159,7 @@ public class CoverageChecker implements Checker {
 
             if (Objects.nonNull(file) && (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank())) {
                 return zipService.extractBoth(
-                        file.getUnzipped(),
+                        file.getSubmittedFile(),
                         zipService.download(privateImplementation),
                         testClass,
                         classname);
