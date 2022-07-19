@@ -21,7 +21,7 @@ public class ByMethod implements Comparable<ByMethod> {
     final LinkedList<StmtFB> statementsFB = new LinkedList<>();
     AstMethod content;
     Coverage coverage;
-    String contentString;
+    String contentString = " ";
 
     ByMethod(Node node) {
         insert(node);
@@ -108,16 +108,16 @@ public class ByMethod implements Comparable<ByMethod> {
 
             switch (aClass.byIndex(i ++)) {
                 case FULL:
-                    head = "\n\n[O] ";
+                    head = "\n[O] ";
                     break;
                 case NOT:
-                    head = "\n\n[X] ";
+                    head = "\n[X] ";
                     break;
                 case PARTLY:
-                    head = "\n\n[  ] ";
+                    head = "\n[_] ";
                     break;
                 default:
-                    head = "\n\n[  ] ";
+                    head = "\n[_] ";
                     break;
             }
             builder.append(head).append(line).append("");
