@@ -33,13 +33,12 @@ public class StyleConfigurationReader {
             styleSettings.setMaxClassLength(qfStyleSettings.getClassLength() != null ? Integer.parseInt(qfStyleSettings.getClassLength()) : -1);
             styleSettings.setMaxMethodLength(qfStyleSettings.getMethodLength() != null ? Integer.parseInt(qfStyleSettings.getMethodLength()) : -1);
             styleSettings.setMaxFieldsCount(qfStyleSettings.getFieldsCount() != null ? Integer.parseInt(qfStyleSettings.getFieldsCount()) : -1);
-            styleSettings.setMaxCycloComplexity(qfStyleSettings.getCycloComplexity() != null ? Integer.parseInt(qfStyleSettings.getCycloComplexity()) : -1);
-            styleSettings.setVarNamesRegEx(qfStyleSettings.getVarName() != null ? qfStyleSettings.getVarName() : "undefined");
-            styleSettings.setMethodNamesRegEx(qfStyleSettings.getMethodName() != null ? qfStyleSettings.getMethodName() : "undefined");
-            styleSettings.setClassNameRegEx(qfStyleSettings.getClassName() != null ? qfStyleSettings.getClassName() : "undefined");
-            styleSettings.setMainLevel(isCheckLevel(qfStyleSettings.getMainLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getMainLevel())) : CheckLevel.BEGINNER);
+            styleSettings.setMaxCycloComplexity(qfStyleSettings.getCyclomaticComplexity() != null ? Integer.parseInt(qfStyleSettings.getCyclomaticComplexity()) : -1);
+            styleSettings.setVarNamesRegEx(qfStyleSettings.getVariableNamePattern() != null ? qfStyleSettings.getVariableNamePattern() : "undefined");
+            styleSettings.setMethodNamesRegEx(qfStyleSettings.getMethodNamePattern() != null ? qfStyleSettings.getMethodNamePattern() : "undefined");
+            styleSettings.setClassNameRegEx(qfStyleSettings.getClassNamePattern() != null ? qfStyleSettings.getClassNamePattern() : "undefined");
             styleSettings.setNamesLevel(isCheckLevel(qfStyleSettings.getNamesLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getNamesLevel())) : CheckLevel.BEGINNER);
-            styleSettings.setComplexityLevel(isCheckLevel(qfStyleSettings.getCompLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getCompLevel())) : CheckLevel.BEGINNER);
+            styleSettings.setComplexityLevel(isCheckLevel(qfStyleSettings.getComplexityLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getComplexityLevel())) : CheckLevel.BEGINNER);
             styleSettings.setBasisLevel(isCheckLevel(qfStyleSettings.getBasisLevel()) ? (CheckLevel.valueOf(qfStyleSettings.getBasisLevel())) : CheckLevel.BEGINNER);
         } catch (IllegalArgumentException | NullPointerException e) {
             LogManager.getLogger(getClass()).warn(e.getMessage());

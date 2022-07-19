@@ -25,16 +25,6 @@ import java.util.logging.Logger;
 public class QPEDMetricsFilter implements ICountingProperities {
 
     /**
-     * True if the measurements should include calls to the Java JDK into account
-     */
-    private boolean includeJdk = false;
-
-    /**
-     * True if the reports should only include public classes.
-     */
-    private boolean onlyPublic = false;
-
-    /**
      * The same instance of MoaClassVisitor must be used to process all class, so it must be a class field.
      */
     private final MoaClassVisitor moaVisitor;
@@ -45,80 +35,69 @@ public class QPEDMetricsFilter implements ICountingProperities {
     private final IClassMetricsContainer metricsContainer;
 
     public QPEDMetricsFilter() {
+
         metricsContainer = new ClassMetricsContainer(this);
         moaVisitor = new MoaClassVisitor(metricsContainer);
     }
 
     /**
-     * The interface for other Java based applications.
-     * implement the output handler to catch the results
-     *
-     * @param files class files to be analyzed
-     * @param outputHandler an implementation of the CkjmOutputHandler interface
-     */
-    public static void runMetrics(List<String> files, CkjmOutputHandler outputHandler, boolean includeJDK) {
-        QPEDMetricsFilter qmf = new QPEDMetricsFilter();
-        qmf.includeJdk = includeJDK;
-
-        qmf.runMetricsInternal(files, outputHandler);
-    }
-
-    /**
-     * Return true if the measurements should include calls to the Java JDK into account
+     * @return true if the measurements should include calls to the Java JDK into account
      */
     public boolean isJdkIncluded() {
-        return includeJdk;
+        //TODO Possible feature for later, include into design settings
+        // True if the measurements should include calls to the Java JDK into account
+
+        boolean dontIncludeJdk = true;
+        return !dontIncludeJdk;
     }
 
     /**
      * @return true if the measurements should include all classes
      */
     public boolean includeAll() {
+        //TODO Possible feature for later, include into design settings
+        // True if the reports should only include public classes.
+
+        boolean onlyPublic = false;
         return !onlyPublic;
-    }
-
-    public void setIncludeJdk(boolean mIncludeJdk) {
-        this.includeJdk = mIncludeJdk;
-    }
-
-    public void setOnlyPublic(boolean mOnlyPublic) {
-        this.onlyPublic = mOnlyPublic;
     }
 
     /**
      * Load and parse the specified class.
      * The class specification can be either a class file name, or
      * a jarfile, followed by space, followed by a class file name.
+     *
+     * @param classSpecification the specification of the current class
      */
-    void processClass(String clspec) {
-        JavaClass jc = null;
+    void processClass(String classSpecification) {
+        JavaClass jc;
 
-        if (clspec.toLowerCase().endsWith(".jar")) {
+        if (classSpecification.toLowerCase().endsWith(".jar")) {
             JarFile jf;
             try {
-                jf = new JarFile(clspec);
+                jf = new JarFile(classSpecification);
                 Enumeration<JarEntry> entries = jf.entries();
 
                 while (entries.hasMoreElements()) {
                     String cl = entries.nextElement().getName();
                     if (cl.toLowerCase().endsWith(".class")) {
                         try {
-                            jc = new ClassParser(clspec, cl).parse();
+                            jc = new ClassParser(classSpecification, cl).parse();
                             processClass(jc);
                         } catch (IOException e) {
-                            LoggerHelper.printError("Error loading " + cl + " from " + clspec + ": " + e);
+                            LoggerHelper.printError("Error loading " + cl + " from " + classSpecification + ": " + e);
                         }
                     }
                 }
             } catch (IOException ex) {
-                Logger.getLogger(QPEDMetricsFilter.class.getName()).log(Level.SEVERE, "Unable to load jar file " + clspec, ex);
+                Logger.getLogger(QPEDMetricsFilter.class.getName()).log(Level.SEVERE, "Unable to load jar file " + classSpecification, ex);
             }
         } else {
             try {
-                jc = new ClassParser(clspec).parse();
+                jc = new ClassParser(classSpecification).parse();
                 processClass(jc);
             } catch (IOException e) {
-                LoggerHelper.printError("Error loading " + clspec + ": " + e);
+                LoggerHelper.printError("Error loading " + classSpecification + ": " + e);
             }
         }
     }
@@ -129,25 +108,32 @@ public class QPEDMetricsFilter implements ICountingProperities {
      * @param javaClass the given class
      */
     private void processClass(JavaClass javaClass) {
+
         if (javaClass != null) {
             ClassVisitor visitor = new ClassVisitor(javaClass, metricsContainer, this);
             visitor.start();
             visitor.end();
+
             LocClassVisitor locVisitor = new LocClassVisitor(metricsContainer);
             locVisitor.visitJavaClass(javaClass);
+
             DamClassVisitor damVisitor = new DamClassVisitor(javaClass, metricsContainer);
             damVisitor.visitJavaClass(javaClass);
+
             moaVisitor.visitJavaClass(javaClass);
             MfaClassVisitor mfaVisitor = new MfaClassVisitor(metricsContainer);
             mfaVisitor.visitJavaClass(javaClass);
+
             CamClassVisitor camVisitor = new CamClassVisitor(metricsContainer);
             camVisitor.visitJavaClass(javaClass);
-            QPEDIcAndCbmClassVisitor icVisitor = new QPEDIcAndCbmClassVisitor(metricsContainer);
-            icVisitor.visitJavaClass(javaClass);
+
+            QPEDIcAndCbmClassVisitor icAndCbmClassVisitor = new QPEDIcAndCbmClassVisitor(metricsContainer);
+            icAndCbmClassVisitor.visitJavaClass(javaClass);
+
             AmcClassVisitor amcVisitor = new AmcClassVisitor(metricsContainer);
             amcVisitor.visitJavaClass(javaClass);
         } else {
-            LoggerHelper.printError("Given class ist null.");
+            LoggerHelper.printError("Given class is null.");
         }
     }
 
@@ -160,9 +146,7 @@ public class QPEDMetricsFilter implements ICountingProperities {
      */
     public void runMetricsInternal(List<String> files, CkjmOutputHandler outputHandler) {
 
-        for (String file : files) {
-            processClass(file);
-        }
+        files.forEach(this::processClass);
         moaVisitor.end();
         metricsContainer.printMetrics(outputHandler);
     }

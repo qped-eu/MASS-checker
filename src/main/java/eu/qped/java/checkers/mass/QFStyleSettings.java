@@ -12,18 +12,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QFStyleSettings extends QfObjectBase {
 
-    private String mainLevel;
 
     private String basisLevel;
-    private String compLevel;
+    private String complexityLevel;
     private String namesLevel;
 
     private String classLength;
     private String methodLength;
-    private String cycloComplexity;
+    private String cyclomaticComplexity;
     private String fieldsCount;
 
-    private String varName;
-    private String methodName;
-    private String className;
+    private String variableNamePattern;
+    private String methodNamePattern;
+    private String classNamePattern;
 }

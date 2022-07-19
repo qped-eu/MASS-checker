@@ -1,20 +1,16 @@
 package eu.qped.java.style;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
-import eu.qped.java.checkers.design.DesignChecker;
-import eu.qped.java.checkers.mass.QFMainSettings;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
+import eu.qped.java.checkers.mass.QFMainSettings;
 import eu.qped.java.checkers.mass.QFStyleSettings;
 import eu.qped.java.checkers.style.StyleChecker;
-
 import eu.qped.java.checkers.syntax.SyntaxChecker;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MassStyleTest {
 
@@ -35,7 +31,7 @@ class MassStyleTest {
 
         QFStyleSettings qfStyleSettings = new QFStyleSettings();
         qfStyleSettings.setNamesLevel(CheckLevel.ADVANCED.name());
-        qfStyleSettings.setMethodName("[a-z][a-zA-Z0-9_]*");
+        qfStyleSettings.setMethodNamePattern("[a-z][a-zA-Z0-9_]*");
 
 
         styleChecker = StyleChecker.builder().qfStyleSettings(qfStyleSettings).build();

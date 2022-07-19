@@ -55,25 +55,30 @@ public class SemanticChecker {
     }
 
     public void check() {
+
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
         var settings = reader.groupByFileName();
 
         // per File
         settings.forEach(
                 fileSettingEntry -> {
+                    System.out.println("in for each");
                     if (targetProjectPath == null) {
                         targetProjectPath = "";
                     }
                     var path = "";
-                    if (fileSettingEntry.getFilePath().charAt(0) == '/') {
-                        path = targetProjectPath + fileSettingEntry.getFilePath();
-                    } else {
-                        if (!Objects.equals(targetProjectPath, "")) {
-                            path = targetProjectPath + "/" + fileSettingEntry.getFilePath();
+                    if (fileSettingEntry.getFilePath() != null && !"".equals(fileSettingEntry.getFilePath())) {
+                        if ('/' == fileSettingEntry.getFilePath().charAt(0)) {
+                            path = targetProjectPath + fileSettingEntry.getFilePath();
                         } else {
-                            path = fileSettingEntry.getFilePath();
+                            if (!Objects.equals(targetProjectPath, "")) {
+                                path = targetProjectPath + "/" + fileSettingEntry.getFilePath();
+                            } else {
+                                path = fileSettingEntry.getFilePath();
+                            }
                         }
-                    }
+                    } else path = targetProjectPath;  // answer is string
+
                     var compilationUnit = parse(path); // AST per File
 
                     // AST per Method in File
@@ -101,11 +106,12 @@ public class SemanticChecker {
         return parseFromResourceType(path);
     }
 
-    private CompilationUnit parseFromResourceType(final String path) {
+    private CompilationUnit parseFromResourceType(String path) {
         ParserConfiguration configuration = new ParserConfiguration();
         JavaParser javaParser = new JavaParser(configuration);
         try {
-
+            System.out.println(path);
+            System.out.println(Path.of(path));
             var unit = javaParser.parse(Path.of(path));
             if (unit.getResult().isPresent()) {
                 return unit.getResult().get();
@@ -193,13 +199,13 @@ public class SemanticChecker {
 
     private void generateSemanticRecursionFeedback(SemanticSettingItem settingItem, MethodCalledChecker recursiveCheckHelper) {
         var hasUsedRecursive = recursiveCheckHelper.check(settingItem.getMethodName());
-        if ((!hasUsedRecursive && settingItem.getRecursionAllowed() && !usedALoop)) {
+        if ((!hasUsedRecursive && settingItem.getRecursive() && !usedALoop)) {
             feedbacks.add(new SemanticFeedback("you have to solve the method recursive in " + settingItem.getFilePath()));
-        } else if (settingItem.getRecursionAllowed() && usedALoop && hasUsedRecursive) {
+        } else if (settingItem.getRecursive() && usedALoop && hasUsedRecursive) {
             feedbacks.add(new SemanticFeedback("you have used a Loop with your recursive Call in " + settingItem.getFilePath()));
-        } else if (settingItem.getRecursionAllowed() && usedALoop && !hasUsedRecursive) {
+        } else if (settingItem.getRecursive() && usedALoop && !hasUsedRecursive) {
             feedbacks.add(new SemanticFeedback("you have used a Loop without a recursive Call, you have to solve it just recursive in " + settingItem.getFilePath()));
-        } else if (hasUsedRecursive && !settingItem.getRecursionAllowed()) {
+        } else if (hasUsedRecursive && !settingItem.getRecursive()) {
             feedbacks.add(new SemanticFeedback("yor are not allowed to use recursive in the method in " + settingItem.getFilePath() + " " + settingItem.getMethodName()));
         }
     }
@@ -212,16 +218,16 @@ public class SemanticChecker {
         System.out.println(Path.of("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java"));
 
         var bagCalcPriceSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .filePath("/tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
                 .methodName("calcPrice")
                 .returnType("void")
                 .whileLoop(0)
                 .build();
         var bagCalcRecSettingItem = SemanticSettingItem.builder()
-                .filePath("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
+                .filePath("/tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
                 .methodName("calcRec")
                 .returnType("int")
-                .recursionAllowed(false)
+                .recursive(false)
                 .build();
 
         settingItems.add(bagCalcPriceSettingItem);
