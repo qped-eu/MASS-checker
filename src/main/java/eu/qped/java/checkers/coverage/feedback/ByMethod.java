@@ -98,7 +98,7 @@ public class ByMethod implements Comparable<ByMethod> {
         statementsFB.addAll(flatt);
 
         StringBuilder builder = new StringBuilder();
-        builder.append("```java \n\n");
+        builder.append("```java");
 
         int i = content.start();
         for (String line : Arrays
@@ -114,7 +114,7 @@ public class ByMethod implements Comparable<ByMethod> {
                     head = "\n[X] ";
                     break;
                 case PARTLY:
-                    head = "\n[_] ";
+                    head = "\n[P] ";
                     break;
                 default:
                     head = "\n[_] ";
@@ -122,7 +122,7 @@ public class ByMethod implements Comparable<ByMethod> {
             }
             builder.append(head).append(line).append("");
         }
-        contentString =  builder.append("``` \n\n").toString();
+        contentString =  builder.append("\n``` \n\n").toString();
     }
 
     public CoverageCount branch() {
