@@ -122,7 +122,7 @@ public class ByMethod implements Comparable<ByMethod> {
             }
             builder.append(head).append(line).append("");
         }
-        contentString =  builder.append("\n``` \n\n").toString();
+        contentString =  builder.append("\n```\n\n\n").toString();
     }
 
     public CoverageCount branch() {
