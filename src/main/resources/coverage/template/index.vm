@@ -1,5 +1,6 @@
-<div>
 #foreach($fb in $summary.feedbacks())
-<p>$fb.getBody()</p>
+---
+
+$fb.getBody() \n
 #end
-</div>
+
