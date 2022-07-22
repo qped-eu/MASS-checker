@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
  */
 public class ByMethod implements Comparable<ByMethod> {
     final LinkedList<StmtFB> statementsFB = new LinkedList<>();
-    AstMethod content;
-    Coverage coverage;
+    public AstMethod content;
+    public Coverage coverage;
     String contentString = " ";
 
     ByMethod(Node node) {
@@ -98,12 +98,10 @@ public class ByMethod implements Comparable<ByMethod> {
         statementsFB.addAll(flatt);
 
         StringBuilder builder = new StringBuilder();
-        builder.append("\n```java");
+        builder.append("");
 
         int i = content.start();
-        for (String line : Arrays
-                .stream(content.content().split("\n"))
-                .collect(Collectors.toList())) {
+        for (String line : content.content()) {
             String head = "";
 
             switch (aClass.byIndex(i ++)) {

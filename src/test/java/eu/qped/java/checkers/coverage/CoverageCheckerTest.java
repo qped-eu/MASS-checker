@@ -8,6 +8,8 @@ import eu.qped.framework.Feedback;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.framework.qf.QfUser;
+import eu.qped.java.checkers.coverage.feedback.ByClass;
+import eu.qped.java.checkers.coverage.feedback.ByMethod;
 import eu.qped.java.checkers.coverage.feedback.Formatter;
 import eu.qped.java.checkers.coverage.feedback.Summary;
 import eu.qped.java.checkers.coverage.testhelp.*;
@@ -40,7 +42,7 @@ class CoverageCheckerTest {
 
             assertArrayEquals(
                     new String[] {
-                            "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
+                            "---Equals method: You have not tested the equals method with an empty bag as parameter."},
                     Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
             got.setFeedback(new String[]{});
         } catch (Exception e) {
@@ -62,7 +64,7 @@ class CoverageCheckerTest {
             Arrays.stream(got.getFeedback()).forEach(System.out::println);
             assertArrayEquals(
                     new String[] {
-                            "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
+                            "---Equals method: You have not tested the equals method with an empty bag as parameter."},
                     Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
             got.setFeedback(new String[]{});
         } catch (Exception e) {
@@ -136,12 +138,12 @@ class CoverageCheckerTest {
         setting.setLanguage("en");
         genericTest(
                 Arrays.asList(
-                        "In class <b>Bag</b. the method <b>add</b> in line <b>28</b> is never used.",
-                        "In class <b>Bag</b. the method <b>remove</b> in line <b>50</b> is never used.",
-                        "In class <b>Bag</b. the method <b>length</b> in line <b>69</b> is never used.",
-                        "In class <b>Bag</b. the method <b>equals</b> in line <b>76</b> is never used.",
-                        "In class <b>Bag</b. the method <b>getElems</b> in line <b>117</b> is never used.",
-                        "In class <b>Bag</b. the method <b>cardinality</b> in line <b>128</b> is never used."),
+                        "In class **Bag** the method **add** in line **28** is never used.",
+                        "In class **Bag** the method **remove** in line **50** is never used.",
+                        "In class **Bag** the method **length** in line **69** is never used.",
+                        "In class **Bag** the method **equals** in line **76** is never used.",
+                        "In class **Bag** the method **getElems** in line **117** is never used.",
+                        "In class **Bag** the method **cardinality** in line **128** is never used."),
                 List.of("case_no_method"),
                 List.of("adt.Bag"),
                 setting);
@@ -188,12 +190,12 @@ class CoverageCheckerTest {
         setting.setLanguage("en");
         genericTest(
                 Arrays.asList(
-                        "In class <b>Bag</b> at the method <b>add</b> the if statement in line <b>32</b> is always wrong.",
-                        "In class <b>Bag</b> at the method <b>remove</b> the if statement in line <b>51</b> is always wrong.",
-                        "In class <b>Bag</b. the method <b>equals</b> in line <b>76</b> is never used.",
-                        "In class <b>Bag</b> at the method <b>getElems</b> the for-loop in line <b>119</b> is always wrong.",
-                        "In class <b>Bag</b> at the method <b>cardinality</b> the if statement in line <b>132</b> is always wrong.",
-                        "In class <b>Bag</b> at the method <b>cardinality</b> the if statement in line <b>136</b> is always wrong."),
+                        "In class **Bag** at the method **add** the if statement in line **32** is always wrong.",
+                        "In class **Bag** at the method **remove** the if statement in line **51** is always wrong.",
+                        "In class **Bag** the method **equals** in line **76** is never used.",
+                        "In class **Bag** at the method **getElems** the for-loop in line **119** is always wrong.",
+                        "In class **Bag** at the method **cardinality** the if statement in line **132** is always wrong.",
+                        "In class **Bag** at the method **cardinality** the if statement in line **136** is always wrong."),
                 List.of("case_all_method"),
                 List.of("adt.Bag"),
                 setting);
@@ -232,12 +234,13 @@ class CoverageCheckerTest {
     @Test
     public void bagTestCaseAllStmtCOVERAGE() {
         QfCovSetting setting = new QfCovSetting();
+
         setting.setFeedback(Arrays.asList(":COVERAGE"));
         setting.setLanguage("en");
         genericTest(
                 Arrays.asList(
-                        "In class <b>Bag</b> at the method <b>equals</b> the if statement in line <b>81</b> is always wrong.",
-                        "In class <b>Bag</b> at the method <b>equals</b> the if statement in line <b>101</b> is always wrong."
+                        "In class **Bag** at the method **equals** the if statement in line **81** is always wrong.",
+                        "In class **Bag** at the method **equals** the if statement in line **101** is always wrong."
                 ),
                 List.of("case_all_stmt"),
                 List.of("adt.Bag"),
@@ -256,6 +259,13 @@ class CoverageCheckerTest {
         toTest.covSetting = setting;
 
         Summary summary = toTest.checker(p.getTestClasses(), p.getClasses());
+
+        for (ByClass c : summary.byClass()) {
+            for (ByMethod m : c.byMethods()) {
+                System.out.println(m.content());
+                System.out.println(m.content.content());
+            }
+        }
 
         assertEquals(wantFB.size(), summary.feedbacks().size());
         Iterator<Feedback> iterator = summary.feedbacks().iterator();
