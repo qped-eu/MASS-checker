@@ -13,6 +13,8 @@ import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 
 /**
@@ -104,21 +106,24 @@ class ClassMemberChecker<T extends Node> {
 
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
-        for (NodeWithModifiers<T> presentElement : presentElements) {
-            if(expectedElements.isEmpty()) {
-                return collectedFeedback;
-            }
-            Map<ExpectedElement, List<Boolean>> likelyMatchMap  = getMostLikelyMatchResult(presentElement, expectedElements);
+        HashMap<NodeWithModifiers<T>, List<ExpectedElement>> presentElemsPref = getPresentElementPreferenceList(presentElements, expectedElements);
+        HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElemsPref = getExpectedElementPreferenceList(presentElements, expectedElements);
 
-            ExpectedElement matchingElement = null;
-            Optional<ExpectedElement> optionalElem = likelyMatchMap.keySet().stream().findFirst();
-            if(optionalElem.isPresent()) {
-                matchingElement = optionalElem.get();
-            }
-            List<Boolean> mostLikelyMatch = likelyMatchMap.get(matchingElement);
+        Map<NodeWithModifiers<T>, ExpectedElement> matches;
 
-            ClassFeedbackType violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(mostLikelyMatch);
+        if(presentElements.size() > expectedElements.size()) {
+            //ExpectedElement has to propose first
+            matches = findExpectedElemMatching(presentElemsPref, expectedElemsPref);
+        } else {
+            //PresentElements have to propose first
+            matches = findPresentElemMatching(presentElemsPref, expectedElemsPref);
+        }
 
+        for (Map.Entry<NodeWithModifiers<T>, ExpectedElement> match : matches.entrySet()) {
+            NodeWithModifiers<T> presentElement = match.getKey();
+            ExpectedElement expectedElement = match.getValue();
+            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
+            ClassFeedbackType violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(matchingResult);
             String elementName = getVariableName(presentElement);
             if (CHECKER_TYPE.equals(ClassMemberType.METHOD)) {
                 if (!elementName.contains("()")) {
@@ -134,56 +139,273 @@ class ClassMemberChecker<T extends Node> {
         return collectedFeedback;
     }
 
-    /**
-     * Determine the most likely match for a keyword issue. This is accomplished by iterating through all possible
-     * expected keyword pairs and picking the most likely one. The likeliness is determined by the amount of correct
-     * matches between keywords. The higher the match count, the more likely that this is the correct expectedElement object
-     * for the present element.
-     * If there are ties between matches, and no better can be found, we determine the order by selecting the object,
-     * that possesses the first "false" match, as this indicates a more important error, thus needing a feedback message
-     * more than the other object.
-     * If no match can be found, we assume that the expected element simply does not exist and return that.
-     * @param presentElement Element to find a match for
-     //* @param expectedElements all possible expected elements
-     * @return the most likely match, in form of a boolean list, indicating the presence of keywords in the declaration
-     */
-    private Map<ExpectedElement, List<Boolean>> getMostLikelyMatchResult(NodeWithModifiers<T> presentElement, List<ExpectedElement> expectedElements) {
-        int maxCount = 0;
-        ExpectedElement maxExpectedElement = expectedElements.get(0);
-        List<Boolean> maxMatchingResult = Arrays.asList(false, false, false, false); //Assume that the element is missing
-        Map<ExpectedElement, List<Boolean>> matchingMap = new HashMap<>();
+    private HashMap<NodeWithModifiers<T>, List<ExpectedElement>> getPresentElementPreferenceList(List<NodeWithModifiers<T>>  presentElements,
+                                                                                             List<ExpectedElement> expectedElements) {
+        HashMap<NodeWithModifiers<T>, List<ExpectedElement>> prefList = new HashMap<>();
+        for (NodeWithModifiers<T> presentElem : presentElements) {
+            Map<ExpectedElement, List<Boolean>> elemMatchingMap = new HashMap<>();
 
+            for (ExpectedElement expectedElem : expectedElements) {
+                List<Boolean> matchingResult = getMatchingResult(presentElem, expectedElem);
+                elemMatchingMap.put(expectedElem, matchingResult);
+            }
+
+            List<Map.Entry<ExpectedElement, List<Boolean>>> sortedList = new ArrayList<>(elemMatchingMap.entrySet());
+            sortedList.sort((e1, e2) ->  CheckerUtils.compareMatchingLists(e1.getValue(), e2.getValue()));
+            List<ExpectedElement> preferenceArr = new ArrayList<>();
+            for (Map.Entry<ExpectedElement, List<Boolean>> entry: sortedList) {
+                preferenceArr.add(entry.getKey());
+            }
+            prefList.put(presentElem, preferenceArr);
+        }
+
+        return prefList;
+    }
+
+    private HashMap<ExpectedElement, List<NodeWithModifiers<T>>> getExpectedElementPreferenceList(List<NodeWithModifiers<T>>  presentElements,
+                                                                                             List<ExpectedElement> expectedElements) {
+        HashMap<ExpectedElement, List<NodeWithModifiers<T>>> prefList = new HashMap<>();
         for (ExpectedElement expectedElement : expectedElements) {
-            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
+            Map<NodeWithModifiers<T>, List<Boolean>> elemMatchingMap = new HashMap<>();
 
-            int countMatchings = 0;
-            for (Boolean match : matchingResult) {
-                if (match) {
-                    countMatchings++;
-                }
-                if (countMatchings > maxCount) {
-                    maxCount = countMatchings;
-                    maxMatchingResult = matchingResult;
-                    maxExpectedElement = expectedElement;
-                } else if (countMatchings == maxCount && countMatchings > 0) {
-                    for (int i = 0; i < matchingResult.size(); i++) {
-                        if (!matchingResult.get(i).equals(maxMatchingResult.get(i))) {
-                            //Find the one that is wrong first
-                            if (!matchingResult.get(i)) {
-                                maxMatchingResult = matchingResult;
-                                maxExpectedElement = expectedElement;
-                            }
-                            break;
-                        }
+            for (NodeWithModifiers<T> presentElems : presentElements) {
+                List<Boolean> matchingResult = getMatchingResult(presentElems, expectedElement);
+                elemMatchingMap.put(presentElems, matchingResult);
+            }
+
+            List<Map.Entry<NodeWithModifiers<T>, List<Boolean>>> sortedList = new ArrayList<>(elemMatchingMap.entrySet());
+            sortedList.sort((e1, e2) ->  CheckerUtils.compareMatchingLists(e1.getValue(), e2.getValue()));
+            List<NodeWithModifiers<T>> preferenceArr = new ArrayList<>();
+            for (Map.Entry<NodeWithModifiers<T>, List<Boolean>> entry: sortedList) {
+                preferenceArr.add(entry.getKey());
+            }
+            prefList.put(expectedElement, preferenceArr);
+        }
+
+        return prefList;
+    }
+
+
+
+
+    private Map<NodeWithModifiers<T>, ExpectedElement> findPresentElemMatching(HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref,
+                                                                                   HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElemsPref) {
+        //actualElems = women
+        //expectedElems = men
+
+        Map<NodeWithModifiers<T>, ExpectedElement> matches = new HashMap<>();
+
+        for (NodeWithModifiers<T> actualElem: actualElemsPref.keySet()) {
+            matches.put(actualElem, null);
+        }
+        Set<ExpectedElement> bachelors = new HashSet<>(expectedElemsPref.keySet());
+
+        int bachelorCount = bachelors.size();
+
+        while(bachelorCount>0){
+            ExpectedElement currentBachelor = bachelors.iterator().next();
+            List<NodeWithModifiers<T>> menPrefList = expectedElemsPref.get(currentBachelor);
+            boolean noMatchFound = true;
+
+            for (NodeWithModifiers<T> woman: menPrefList) {
+                if(matches.get(woman) == null){
+                    noMatchFound = false;
+                    matches.put(woman, currentBachelor);
+                    bachelors.remove(currentBachelor);
+                    break;
+                } else {
+                    ExpectedElement alreadyAcceptedMan = matches.get(woman);
+                    if(willChangeExpectedElement(currentBachelor, alreadyAcceptedMan, woman, actualElemsPref)){
+                        noMatchFound = false;
+                        matches.put(woman, currentBachelor);
+                        bachelors.add(alreadyAcceptedMan);
+                        bachelors.remove(currentBachelor);
+                        break;
                     }
                 }
             }
-        }
-        expectedElements.remove(maxExpectedElement);
 
-        matchingMap.put(maxExpectedElement, maxMatchingResult);
-        return matchingMap;
+            if(noMatchFound) {
+                bachelors.remove(currentBachelor);
+            }
+            bachelorCount = bachelors.size();
+        }
+        return matches;
     }
+
+    private Map<NodeWithModifiers<T>, ExpectedElement> findExpectedElemMatching(HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref,
+                                                                                   HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElemsPref) {
+
+        HashMap<ExpectedElement, NodeWithModifiers<T>> matches = new HashMap<>();
+
+        for (ExpectedElement expectedElement: expectedElemsPref.keySet()) {
+            matches.put(expectedElement, null);
+        }
+
+        Set<NodeWithModifiers<T>> bachelors = new HashSet<>(actualElemsPref.keySet());
+        int bachelorCount = bachelors.size();
+        while(bachelorCount>0){
+            NodeWithModifiers<T> currentBachelor = bachelors.iterator().next();
+            List<ExpectedElement> womanPrefList = actualElemsPref.get(currentBachelor);
+            boolean noMatchFound = true;
+
+            for (ExpectedElement man: womanPrefList) {
+                if(matches.get(man) == null){
+                    noMatchFound = false;
+                    matches.put(man, currentBachelor);
+                    bachelors.remove(currentBachelor);
+                    break;
+                } else {
+                    NodeWithModifiers<T> alreadyAcceptedWoman = matches.get(man);
+                    if(willChangePresentElement(currentBachelor, alreadyAcceptedWoman, man, expectedElemsPref)){
+                        noMatchFound = false;
+                        matches.put(man, currentBachelor);
+                        bachelors.add(alreadyAcceptedWoman);
+                        bachelors.remove(currentBachelor);
+                        break;
+                    }
+                }
+            }
+            if(noMatchFound) {
+                bachelors.remove(currentBachelor);
+            }
+            bachelorCount = bachelors.size();
+        }
+
+        return matches.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+    }
+
+    boolean willChangePresentElement(NodeWithModifiers<T> currentBachelor, NodeWithModifiers<T> alreadyAcceptedWoman, ExpectedElement currentMan,
+                              HashMap<ExpectedElement, List<NodeWithModifiers<T>>> actualElemsPref) {
+
+        NodeWithModifiers<T> pref_currentBachelor = null;
+        NodeWithModifiers<T> pref_alreadyAcceptedWoman = null;
+
+        List<NodeWithModifiers<T>> womanPrefList = actualElemsPref.get(currentMan);
+        //get the preferences of both the men
+        for (NodeWithModifiers<T> presentElement : womanPrefList) {
+
+            if (presentElement.equals(currentBachelor)) {
+                pref_currentBachelor = presentElement;
+            }
+
+            if (presentElement.equals(alreadyAcceptedWoman)) {
+                pref_alreadyAcceptedWoman = presentElement;
+            }
+
+        }
+
+        if(pref_alreadyAcceptedWoman == null) {
+            return true;
+        }
+
+        if(pref_currentBachelor == null) {
+            return false;
+        }
+
+        //women will accept the current bachelor only if he has higher preference
+        //than the man she had accepted earlier
+        //compute the matching of each with the woman, higher one gets assigned
+        //if a tie exists, use the modifier ranking to determine winner
+        List<Boolean> currentBachelorMatching = getMatchingResult(pref_currentBachelor, currentMan);
+        List<Boolean> alreadyAcceptedMatching = getMatchingResult(pref_alreadyAcceptedWoman, currentMan);
+
+        int result = CheckerUtils.compareMatchingLists(currentBachelorMatching, alreadyAcceptedMatching);
+        return result < 0;
+    }
+
+    boolean willChangeExpectedElement(ExpectedElement currentBachelor, ExpectedElement alreadyAcceptedMan, NodeWithModifiers<T> currentWoman,
+                                      HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref){
+
+        ExpectedElement pref_currentBachelor = null;
+        ExpectedElement pref_alreadyAcceptedMan = null;
+
+        List<ExpectedElement> womanPrefList = actualElemsPref.get(currentWoman);
+
+        //Does the current and preferred person exist in the pref list?
+        for (ExpectedElement expectedElement : womanPrefList) {
+
+            if (expectedElement.equals(currentBachelor)) {
+                pref_currentBachelor = expectedElement;
+            }
+
+            if (expectedElement.equals(alreadyAcceptedMan)) {
+                pref_alreadyAcceptedMan = expectedElement;
+            }
+        }
+        //If one of them is null, that means that the assigned element does not exist in the preference list of the other
+        //Thus we can remove and say and it wants to change.
+        if(pref_alreadyAcceptedMan == null) {
+            return true;
+        }
+
+        //If the preferred current bachelor does not exist, that means that the pref list does not contain this one
+        //and we can say that we do not want to change
+        if(pref_currentBachelor == null) {
+            return false;
+        }
+
+        //women will accept the current bachelor only if he has higher preference
+        //than the man she had accepted earlier
+        //compute the matching of each with the woman, higher one gets assigned
+        //if a tie exists, use the modifier ranking to determine winner
+        List<Boolean> currentBachelorMatching = getMatchingResult(currentWoman, pref_currentBachelor);
+        List<Boolean> alreadyAcceptedMatching = getMatchingResult(currentWoman, pref_alreadyAcceptedMan);
+
+        int result = CheckerUtils.compareMatchingLists(currentBachelorMatching, alreadyAcceptedMatching);
+        return result < 0;
+    }
+
+//    /**
+//     * Determine the most likely match for a keyword issue. This is accomplished by iterating through all possible
+//     * expected keyword pairs and picking the most likely one. The likeliness is determined by the amount of correct
+//     * matches between keywords. The higher the match count, the more likely that this is the correct expectedElement object
+//     * for the present element.
+//     * If there are ties between matches, and no better can be found, we determine the order by selecting the object,
+//     * that possesses the first "false" match, as this indicates a more important error, thus needing a feedback message
+//     * more than the other object.
+//     * If no match can be found, we assume that the expected element simply does not exist and return that.
+//     * @param presentElement Element to find a match for
+//     //* @param expectedElements all possible expected elements
+//     * @return the most likely match, in form of a boolean list, indicating the presence of keywords in the declaration
+//     */
+//    private Map<ExpectedElement, List<Boolean>> getMostLikelyMatchResult(NodeWithModifiers<T> presentElement, List<ExpectedElement> expectedElements) {
+//        int maxCount = 0;
+//        ExpectedElement maxExpectedElement = expectedElements.get(0);
+//        List<Boolean> maxMatchingResult = Arrays.asList(false, false, false, false); //Assume that the element is missing
+//        Map<ExpectedElement, List<Boolean>> matchingMap = new HashMap<>();
+//
+//        for (ExpectedElement expectedElement : expectedElements) {
+//            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
+//
+//            int countMatchings = 0;
+//            for (Boolean match : matchingResult) {
+//                if (match) {
+//                    countMatchings++;
+//                }
+//                if (countMatchings > maxCount) {
+//                    maxCount = countMatchings;
+//                    maxMatchingResult = matchingResult;
+//                    maxExpectedElement = expectedElement;
+//                } else if (countMatchings == maxCount && countMatchings > 0) {
+//                    for (int i = 0; i < matchingResult.size(); i++) {
+//                        if (!matchingResult.get(i).equals(maxMatchingResult.get(i))) {
+//                            //Find the one that is wrong first
+//                            if (!matchingResult.get(i)) {
+//                                maxMatchingResult = matchingResult;
+//                                maxExpectedElement = expectedElement;
+//                            }
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        expectedElements.remove(maxExpectedElement);
+//
+//        matchingMap.put(maxExpectedElement, maxMatchingResult);
+//        return matchingMap;
+//    }
 
     /**
      * Checks if more or equal elements are there compared to the expected amount

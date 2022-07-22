@@ -644,8 +644,9 @@ public class ClassMethodModifierTest {
         }
         ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 
     @Theory
@@ -693,10 +694,12 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
         ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest()", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 
     @Theory
@@ -753,8 +756,9 @@ public class ClassMethodModifierTest {
         }
         ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 
 }

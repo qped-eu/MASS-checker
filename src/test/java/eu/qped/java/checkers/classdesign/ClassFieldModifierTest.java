@@ -431,10 +431,10 @@ public class ClassFieldModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 
     @Theory
@@ -486,8 +486,8 @@ public class ClassFieldModifierTest {
         }
         ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
         ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 
     @Theory
@@ -543,7 +543,95 @@ public class ClassFieldModifierTest {
         }
         ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
+    }
+
+    @Theory
+    public void fewerExpectedFields() {
+        init();
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+
+        chooseAccessModifier(field, "private", KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, "final", KeywordChoice.YES.toString());
+        field.setType("int");
+        field.setName("a");
+
+        chooseAccessModifier(field2, "private", KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field2, "final", KeywordChoice.YES.toString());
+        field2.setType("int");
+        field2.setName("b");
+        fieldKeywordConfigs.add(field2);
+
+        String source = "class TestClass {";
+        source += "public final int a;";
+        source += "public static int b;";
+        source += "public static int c;";
+        source += "}";
+
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
+    }
+
+    @Theory
+    public void moreExpectedFields() {
+        init();
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+        FieldKeywordConfig field3 = new FieldKeywordConfig();
+
+        chooseAccessModifier(field, "private", KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field, "final", KeywordChoice.YES.toString());
+        field.setType("int");
+        field.setName("a");
+
+        chooseAccessModifier(field2, "public", KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field2, "final", KeywordChoice.YES.toString());
+        field2.setType("int");
+        field2.setName("b");
+        fieldKeywordConfigs.add(field2);
+
+
+        chooseAccessModifier(field3, "private", KeywordChoice.YES.toString());
+        chooseNonAccessModifier(field3, "final", KeywordChoice.YES.toString());
+        field3.setType("int");
+        field3.setName("c");
+        fieldKeywordConfigs.add(field3);
+
+        String source = "class TestClass {";
+        source += "public final int a;";
+        source += "public static int b;";
+        source += "}";
+
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb3 = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.MISSING_FIELDS);
+
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2, fb3));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 }

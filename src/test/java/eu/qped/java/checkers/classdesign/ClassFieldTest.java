@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 
+import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
@@ -44,6 +45,42 @@ public class ClassFieldTest {
 
         classInfos.add(classInfo);
         qfClassSettings.setClassInfos(classInfos);
+    }
+
+    @Test
+    public void testFunct() {
+        String source = "class TestClass { " +
+                "public final int num;" +
+                "private final int notNum;" +
+                ""+ "}";
+        field.setPrivateModifier(KeywordChoice.YES.toString());
+        field.setFinalModifier(KeywordChoice.YES.toString());
+        field.setType("String");
+        field.setName("num");
+
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+        field2.setPrivateModifier(KeywordChoice.YES.toString());
+        field2.setFinalModifier(KeywordChoice.YES.toString());
+        field2.setType("String");
+        field2.setName("notNum");
+
+        fieldKeywordConfigs.add(field2);
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "num", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "notNum", ClassFeedbackType.WRONG_ELEMENT_TYPE);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb, fb1};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
 
     @Test

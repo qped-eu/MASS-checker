@@ -165,11 +165,10 @@ class ClassMatcher {
         ClassFeedbackType violation = null;
         if(!typeMatch) {
             violation = WRONG_CLASS_TYPE;
-        } else if(!accessMatch) {
-            violation =  WRONG_CLASS_ACCESS_MODIFIER;
-        } else if(!nonAccessMatch){
-
+        } else if(!nonAccessMatch) {
             violation = WRONG_CLASS_NON_ACCESS_MODIFIER;
+        } else if(!accessMatch){
+            violation = WRONG_CLASS_ACCESS_MODIFIER;
         }
 
         if(violation != null) {

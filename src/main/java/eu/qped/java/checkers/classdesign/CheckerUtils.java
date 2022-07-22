@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Modifier;
+import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import eu.qped.java.checkers.classdesign.config.*;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.infos.*;
@@ -140,4 +141,31 @@ public final class CheckerUtils {
         return possibleAccess;
     }
 
+    public static int compareMatchingLists(List<Boolean> firstMatch, List<Boolean> secondMatch) {
+        int countCurrent = 0;
+        int countAccepted = 0;
+
+        for (int i = 0; i < firstMatch.size(); i++) {
+            if (firstMatch.get(i)) {
+                countCurrent++;
+            }
+            if (secondMatch.get(i)) {
+                countAccepted++;
+            }
+        }
+
+        if (countCurrent == countAccepted && countCurrent > 0) {
+            for (int i = 0; i < firstMatch.size(); i++) {
+                if (!firstMatch.get(i).equals(secondMatch.get(i))) {
+                    //Find the one that's false first, this is the one that has to be treated first!
+                    if (!firstMatch.get(i)) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+            }
+        }
+        return countAccepted - countCurrent;
+    }
 }
