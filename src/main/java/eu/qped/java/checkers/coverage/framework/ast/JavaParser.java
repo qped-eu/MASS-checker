@@ -92,7 +92,7 @@ class JavaParser implements AstFramework {
                 method.getName().asString(),
                 method.getBegin().get().line,
                 method.getEnd().get().line,
-                content.subList(method.getBegin().get().line, method.getEnd().get().line+1)));
+                content.subList(method.getBegin().get().line - 1, method.getEnd().get().line+1)));
 
         return method.getName().asString();
     }
@@ -104,7 +104,7 @@ class JavaParser implements AstFramework {
                 constructor.getName().asString(),
                 constructor.getBegin().get().line,
                 constructor.getEnd().get().line,
-                content.subList(constructor.getBegin().get().line, constructor.getEnd().get().line)));
+                content.subList(constructor.getBegin().get().line - 1, constructor.getEnd().get().line)));
 
         return constructor.getName().asString();
     }
