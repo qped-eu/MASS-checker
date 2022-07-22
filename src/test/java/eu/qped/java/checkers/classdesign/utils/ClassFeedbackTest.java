@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.classdesign;
+package eu.qped.java.checkers.classdesign.utils;
 
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;

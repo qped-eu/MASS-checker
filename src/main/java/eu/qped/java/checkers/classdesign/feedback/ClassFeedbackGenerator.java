@@ -51,6 +51,8 @@ public final class ClassFeedbackGenerator {
                 "Expected class extension missing in "+classPlaceholder+".");
         feedbackMap.put(MISSING_SUPER_CLASS,
                 "Expected super class missing in "+classPlaceholder+".");
+        feedbackMap.put(MISSING_CLASSES,
+                "Expected classes missing.");
         feedbackMap.put(WRONG_CLASS_TYPE,
                 "Different type for "+classPlaceholder+" expected.");
         feedbackMap.put(WRONG_CLASS_NAME,

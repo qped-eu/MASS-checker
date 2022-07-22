@@ -10,12 +10,18 @@ import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.infos.*;
 
 import java.util.*;
 
 /**
- * Main Checker that delegates work to each class element checker.
+ * Main Checker that delegates work to each individual checker.
+ * These are:
+ * - ClassMatcher
+ * - ClassMemberChecker
+ * - InheritanceChecker
  *
  * @author Paul Engelmann
  */
@@ -37,16 +43,18 @@ public class ClassChecker implements Checker {
         if(classConfigurator == null) {
             classConfigurator = ClassConfigurator.createDefaultClassConfigurator();
         }
-        checkClass();
+        checkClasses();
     }
 
     /**
      * Check the parsed compilation units and compare them to the expected elements in class infos to generate
      * feedback. This method delegates each task to each class and collects all feedback
      */
-    private void checkClass() {
+    private void checkClasses() {
         List<ClassInfo> classInfos = classConfigurator.getClassInfos();
         List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
+
+        checkClassAmount(classInfos, classDecls);
 
         ClassMatcher classMatcher = new ClassMatcher();
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
@@ -78,6 +86,16 @@ public class ClassChecker implements Checker {
         }
     }
 
+    /**
+     * Make sure that the amount of provided classes matches up with the amount of expected classes
+     * @param classInfos expected class information
+     * @param classDecls provided classes
+     */
+    private void checkClassAmount(List<ClassInfo> classInfos, List<ClassOrInterfaceDeclaration> classDecls) {
+        if(classInfos.size() > classDecls.size()) {
+            classFeedbacks.add(ClassFeedbackGenerator.generateFeedback("", "", ClassFeedbackType.MISSING_CLASSES, ""));
+        }
+    }
     /**
      * Find all class declarations in all compilation units such that we can analyse them later
      * @param compilationUnits compilation units from source code given

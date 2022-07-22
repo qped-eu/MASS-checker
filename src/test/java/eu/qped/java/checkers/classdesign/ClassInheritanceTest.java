@@ -8,6 +8,7 @@ import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.classdesign.utils.TestUtils;
 import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.Assume;
 import org.junit.experimental.theories.DataPoints;

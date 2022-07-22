@@ -4,6 +4,7 @@ import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.classdesign.utils.TestUtils;
 import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
@@ -229,4 +230,36 @@ public class ClassTest {
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
+
+    @Theory
+    public void notEnoughClasses() {
+        init();
+
+        chooseClassType(classConfig, "class", KeywordChoice.YES.toString());
+
+        ClassInfo classInfo1 = new ClassInfo();
+        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
+        classKeywordConfig.setClassType(KeywordChoice.YES.toString());
+        classKeywordConfig.setName("NotTestClass");
+        classInfo1.setClassKeywordConfig(classKeywordConfig);
+        classInfos.add(classInfo1);
+
+        String source = "class TestClass {}";
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ClassFeedback fb = TestUtils.getFeedback("", "", MISSING_CLASSES);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
 }

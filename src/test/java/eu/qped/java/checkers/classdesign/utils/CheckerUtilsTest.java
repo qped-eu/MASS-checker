@@ -1,7 +1,8 @@
-package eu.qped.java.checkers.classdesign;
+package eu.qped.java.checkers.classdesign.utils;
 
 import com.github.javaparser.ast.Modifier;
 import eu.qped.framework.Checker;
+import eu.qped.java.checkers.classdesign.CheckerUtils;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.enums.KeywordType;

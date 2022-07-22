@@ -1,5 +1,8 @@
-package eu.qped.java.checkers.classdesign;
+package eu.qped.java.checkers.classdesign.modifierTest;
 
+import eu.qped.java.checkers.classdesign.ClassChecker;
+import eu.qped.java.checkers.classdesign.ClassConfigurator;
+import eu.qped.java.checkers.classdesign.utils.TestUtils;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;

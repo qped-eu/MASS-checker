@@ -190,8 +190,6 @@ class ClassMemberChecker<T extends Node> {
 
     private Map<NodeWithModifiers<T>, ExpectedElement> findPresentElemMatching(HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref,
                                                                                    HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElemsPref) {
-        //actualElems = women
-        //expectedElems = men
 
         Map<NodeWithModifiers<T>, ExpectedElement> matches = new HashMap<>();
 
@@ -275,7 +273,7 @@ class ClassMemberChecker<T extends Node> {
         return matches.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
     }
 
-    boolean willChangePresentElement(NodeWithModifiers<T> currentBachelor, NodeWithModifiers<T> alreadyAcceptedWoman, ExpectedElement currentMan,
+    private boolean willChangePresentElement(NodeWithModifiers<T> currentBachelor, NodeWithModifiers<T> alreadyAcceptedWoman, ExpectedElement currentMan,
                               HashMap<ExpectedElement, List<NodeWithModifiers<T>>> actualElemsPref) {
 
         NodeWithModifiers<T> pref_currentBachelor = null;
@@ -314,7 +312,7 @@ class ClassMemberChecker<T extends Node> {
         return result < 0;
     }
 
-    boolean willChangeExpectedElement(ExpectedElement currentBachelor, ExpectedElement alreadyAcceptedMan, NodeWithModifiers<T> currentWoman,
+    private boolean willChangeExpectedElement(ExpectedElement currentBachelor, ExpectedElement alreadyAcceptedMan, NodeWithModifiers<T> currentWoman,
                                       HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref){
 
         ExpectedElement pref_currentBachelor = null;
@@ -355,57 +353,6 @@ class ClassMemberChecker<T extends Node> {
         int result = CheckerUtils.compareMatchingLists(currentBachelorMatching, alreadyAcceptedMatching);
         return result < 0;
     }
-
-//    /**
-//     * Determine the most likely match for a keyword issue. This is accomplished by iterating through all possible
-//     * expected keyword pairs and picking the most likely one. The likeliness is determined by the amount of correct
-//     * matches between keywords. The higher the match count, the more likely that this is the correct expectedElement object
-//     * for the present element.
-//     * If there are ties between matches, and no better can be found, we determine the order by selecting the object,
-//     * that possesses the first "false" match, as this indicates a more important error, thus needing a feedback message
-//     * more than the other object.
-//     * If no match can be found, we assume that the expected element simply does not exist and return that.
-//     * @param presentElement Element to find a match for
-//     //* @param expectedElements all possible expected elements
-//     * @return the most likely match, in form of a boolean list, indicating the presence of keywords in the declaration
-//     */
-//    private Map<ExpectedElement, List<Boolean>> getMostLikelyMatchResult(NodeWithModifiers<T> presentElement, List<ExpectedElement> expectedElements) {
-//        int maxCount = 0;
-//        ExpectedElement maxExpectedElement = expectedElements.get(0);
-//        List<Boolean> maxMatchingResult = Arrays.asList(false, false, false, false); //Assume that the element is missing
-//        Map<ExpectedElement, List<Boolean>> matchingMap = new HashMap<>();
-//
-//        for (ExpectedElement expectedElement : expectedElements) {
-//            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
-//
-//            int countMatchings = 0;
-//            for (Boolean match : matchingResult) {
-//                if (match) {
-//                    countMatchings++;
-//                }
-//                if (countMatchings > maxCount) {
-//                    maxCount = countMatchings;
-//                    maxMatchingResult = matchingResult;
-//                    maxExpectedElement = expectedElement;
-//                } else if (countMatchings == maxCount && countMatchings > 0) {
-//                    for (int i = 0; i < matchingResult.size(); i++) {
-//                        if (!matchingResult.get(i).equals(maxMatchingResult.get(i))) {
-//                            //Find the one that is wrong first
-//                            if (!matchingResult.get(i)) {
-//                                maxMatchingResult = matchingResult;
-//                                maxExpectedElement = expectedElement;
-//                            }
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        expectedElements.remove(maxExpectedElement);
-//
-//        matchingMap.put(maxExpectedElement, maxMatchingResult);
-//        return matchingMap;
-//    }
 
     /**
      * Checks if more or equal elements are there compared to the expected amount

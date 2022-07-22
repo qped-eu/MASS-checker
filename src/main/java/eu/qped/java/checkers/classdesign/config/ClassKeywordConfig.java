@@ -63,8 +63,8 @@ public class ClassKeywordConfig extends KeywordConfig {
         return classType;
     }
 
-    public void setClassType(String classType) {
-        this.classType = classType;
+    public void setClassType(String choice) {
+        this.classType = choice;
     }
 
     public String getInterfaceType() {
