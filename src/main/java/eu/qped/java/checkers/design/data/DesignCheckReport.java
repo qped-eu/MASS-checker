@@ -10,8 +10,7 @@ import java.util.List;
  *
  * @author Jannik Seus
  */
-@Data
-@NoArgsConstructor
+
 @AllArgsConstructor
 @Builder
 @Getter
@@ -20,4 +19,5 @@ public class DesignCheckReport {
 
     private List<String> pathsToClassFiles;
     private List<DesignCheckEntry> metricsMap;
+
 }

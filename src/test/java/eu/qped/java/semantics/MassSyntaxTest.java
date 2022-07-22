@@ -35,7 +35,7 @@ class MassSyntaxTest {
 //		qfSemSettings.setDoWhileLoop("-1");
 //		qfSemSettings.setReturnType("null");
 //
-//		SemanticConfigurator semanticConfigurator = SemanticConfigurator.createSemanticConfigurator(qfSemSettings);
+//		SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemSettings);
 //
 //		String code = " void rec (){\n" + "        System.out.println(\"pretty\");\n" + "    }";
 //
@@ -46,7 +46,7 @@ class MassSyntaxTest {
 //		StyleConfigurationReader styleConfigurationReader = StyleConfigurationReader.createStyleConfigurator(qfStyleSettings);
 //
 //		StyleChecker styleChecker = StyleCheckerFactory.createStyleChecker(styleConfigurationReader);
-//		SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticConfigurator);
+//		SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticSettingReader);
 //		SyntaxErrorChecker syntaxErrorChecker = SyntaxErrorChecker.createSyntaxErrorChecker(code);
 //		final StyleChecker styleChecker1 = styleChecker;
 //		final SemanticChecker semanticChecker1 = semanticChecker;
@@ -56,7 +56,7 @@ class MassSyntaxTest {
 //		MassExecutor massE = new MassExecutor(styleChecker1, semanticChecker1, syntaxErrorChecker1,
 //				mainSettingsConfigurator);
 //
-////		        MassExecutor massExecutor = MassExecutorFactory.createExecutor(styleConfigurationReader, semanticConfigurator, mainSettingsConf, code);
+////		        MassExecutor massExecutor = MassExecutorFactory.createExecutor(styleConfigurationReader, semanticSettingReader, mainSettingsConf, code);
 //		massE.execute();
 ////		        new ArrayList<StyleViolation>(massExecutor.getViolations()).forEach(x -> System.out.println(x.getRule()));
 //
