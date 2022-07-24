@@ -8,7 +8,7 @@ import java.util.Map;
 
 public abstract class KeywordConfig {
 
-    private String allowExactModifierMatching;
+    private boolean allowExactModifierMatching;
 
     private String publicModifier;
     private String protectedModifier;
@@ -22,7 +22,7 @@ public abstract class KeywordConfig {
     private String name;
 
     public KeywordConfig() {
-        allowExactModifierMatching = "false";
+        allowExactModifierMatching = false;
         publicModifier = KeywordChoice.DONTCARE.toString();
         protectedModifier = KeywordChoice.DONTCARE.toString();
         privateModifier = KeywordChoice.DONTCARE.toString();
@@ -54,11 +54,11 @@ public abstract class KeywordConfig {
 
     public abstract List<String> getPossibleTypes();
 
-    public String getAllowExactModifierMatching() {
+    public boolean isAllowExactModifierMatching() {
         return allowExactModifierMatching;
     }
 
-    public void setAllowExactModifierMatching(String allowExactModifierMatching) {
+    public void setAllowExactModifierMatching(boolean allowExactModifierMatching) {
         this.allowExactModifierMatching = allowExactModifierMatching;
     }
 

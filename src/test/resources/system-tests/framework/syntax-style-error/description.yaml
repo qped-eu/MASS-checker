@@ -2,3 +2,4 @@ title: "MASS checks for syntax and style - no errors"
 description: |
     Runs MASS checks for syntax and style, but without any viloations. 
 author: "Christoph Bockisch"
+disabled: true

@@ -28,7 +28,7 @@ public class CheckerUtilsTest {
         field.setFinalModifier(KeywordChoice.YES.toString());
         field.setType("int");
         field.setName("a");
-        field.setAllowExactModifierMatching("false");
+        field.setAllowExactModifierMatching(false);
 
         ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(field);
         ExpectedElement expectedElement = new ExpectedElement(

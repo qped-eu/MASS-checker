@@ -20,6 +20,8 @@ public class QfMass extends QfObjectBase {
 
     private QfSyntaxSettings syntax;
 
+    private QFClassSettings classSettings;
+
     private boolean styleSelected;
     private boolean semanticSelected;
     private boolean metricsSelected;

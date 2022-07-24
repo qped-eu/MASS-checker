@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.classdesign.modifierTest;
+package eu.qped.java.checkers.classdesign.modifiers;
 
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
@@ -61,8 +61,8 @@ public class ClassFieldModifierTest {
     }
 
     @DataPoints("exactMatching")
-    public static String[] exactValues() {
-        return new String[] {"true", "false"};
+    public static Boolean[] exactValues() {
+        return new Boolean[] {true, false};
     }
 
 
@@ -109,7 +109,7 @@ public class ClassFieldModifierTest {
     @Theory
     public void dontCareTest(@FromDataPoints("accessModifiers") String correctMod,
                              @FromDataPoints("allNonAccessModifierCombinations") String[] nonAccessComb,
-                              @FromDataPoints("exactMatching") String isExactMatch) {
+                              @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         init();
         field.setAllowExactModifierMatching(isExactMatch);
@@ -138,7 +138,7 @@ public class ClassFieldModifierTest {
                                       @FromDataPoints("accessModifiers") String wrongMod,
                                        @FromDataPoints("emptyModifier") String emptyNonAccess,
                                        @FromDataPoints("choices") String choice,
-                                       @FromDataPoints("exactMatching") String isExactMatch) {
+                                       @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         init();
@@ -177,7 +177,7 @@ public class ClassFieldModifierTest {
                                     @FromDataPoints("accessModifiers") String wrongMod,
                                     @FromDataPoints("emptyModifier") String emptyNonAccess,
                                     @FromDataPoints("choices") String choice,
-                                    @FromDataPoints("exactMatching") String isExactMatch) {
+                                    @FromDataPoints("exactMatching") Boolean isExactMatch) {
         assumeFalse(correctMod.equals(wrongMod));
         init();
         chooseAccessModifier(field, correctMod, choice);
@@ -217,7 +217,7 @@ public class ClassFieldModifierTest {
                                 @FromDataPoints("accessModifiers") String wrongMod,
                                 @FromDataPoints("allNonAccessModifierCombinations") String[] nonAccessComb,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         init();
@@ -237,7 +237,7 @@ public class ClassFieldModifierTest {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
         }
 
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -262,7 +262,7 @@ public class ClassFieldModifierTest {
                              @FromDataPoints("accessModifiers") String wrongMod,
                              @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                              @FromDataPoints("choices") String choice,
-                             @FromDataPoints("exactMatching") String isExactMatch) {
+                             @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -276,7 +276,7 @@ public class ClassFieldModifierTest {
             allowedAccess = wrongMod;
         }
 
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -301,7 +301,7 @@ public class ClassFieldModifierTest {
     public void nonAccessFault(@FromDataPoints("accessModifiers") String accessMod,
                                                @FromDataPoints("allNonAccessModifierCombinations") String[] expectedNonAccess,
                                                @FromDataPoints("choices") String choice,
-                                               @FromDataPoints("exactMatching") String isExactMatch) {
+                                               @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         List<String> expectedList = Arrays.asList(expectedNonAccess);
 
@@ -316,7 +316,7 @@ public class ClassFieldModifierTest {
         if(choice.equals(KeywordChoice.YES.toString())) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -345,7 +345,7 @@ public class ClassFieldModifierTest {
                                @FromDataPoints("accessModifiers") String wrongMod,
                                @FromDataPoints("allNonAccessModifierCombinations") String[] expectedNonAccess,
                                @FromDataPoints("choices") String choice,
-                               @FromDataPoints("exactMatching") String isExactMatch) {
+                               @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         List<String> expectedList = Arrays.asList(expectedNonAccess);
@@ -364,7 +364,7 @@ public class ClassFieldModifierTest {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -393,7 +393,7 @@ public class ClassFieldModifierTest {
                             @FromDataPoints("accessModifiers") String wrongMod,
                             @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                             @FromDataPoints("choices") String choice,
-                            @FromDataPoints("exactMatching") String isExactMatch) {
+                            @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -412,7 +412,7 @@ public class ClassFieldModifierTest {
             allowedAccess = wrongMod;
         }
 
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -445,7 +445,7 @@ public class ClassFieldModifierTest {
                                            @FromDataPoints("accessModifiers") String wrongMod,
                                            @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                                            @FromDataPoints("choices") String choice,
-                                           @FromDataPoints("exactMatching") String isExactMatch) {
+                                           @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         List<String> expectedList = Arrays.asList(correctNonAccess);
@@ -465,7 +465,7 @@ public class ClassFieldModifierTest {
         if(choice.equals(KeywordChoice.YES.toString())) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -498,7 +498,7 @@ public class ClassFieldModifierTest {
                                               @FromDataPoints("accessModifiers") String wrongMod,
                                               @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                                               @FromDataPoints("choices") String choice,
-                                              @FromDataPoints("exactMatching") String isExactMatch) {
+                                              @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         List<String> expectedList = Arrays.asList(correctNonAccess);
@@ -522,7 +522,7 @@ public class ClassFieldModifierTest {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 

@@ -3,3 +3,4 @@ description: |
     Runs MASS checks for syntax and style as well as the testcoverage checker.
 qfAssignmentShareCode: 1QJX3K 
 author: "Christoph Bockisch, Harrie Passier"
+disabled: true

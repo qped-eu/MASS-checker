@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.classdesign.modifierTest;
+package eu.qped.java.checkers.classdesign.modifiers;
 
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
@@ -69,8 +69,8 @@ public class ClassModifierTest {
     }
 
     @DataPoints("exactMatching")
-    public static String[] exactValues() {
-        return new String[] {"true", "false"};
+    public static Boolean[] exactValues() {
+        return new Boolean[] {true, false};
     }
 
 
@@ -135,7 +135,7 @@ public class ClassModifierTest {
                                   @FromDataPoints("innerClassAccess") String wrongMod,
                                   @FromDataPoints("innerClassNonAccess") String correctNonAccess,
                                   @FromDataPoints("choices") String choice,
-                                  @FromDataPoints("exactMatching") String isExactMatch) {
+                                  @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctNonAccess.equals("abstract") && (correctMod.equals("private") || correctMod.equals("protected")));
         Assume.assumeFalse(correctMod.equals(wrongMod));
@@ -184,7 +184,7 @@ public class ClassModifierTest {
                                 @FromDataPoints("innerClassAccess") String wrongAccess,
                                 @FromDataPoints("innerClassNonAccess") String correctNonAccess,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctAccess.equals(wrongAccess));
 
@@ -232,7 +232,7 @@ public class ClassModifierTest {
                                 @FromDataPoints("innerClassNonAccess") String correctNonAccess,
                                 @FromDataPoints("innerClassNonAccess") String wrongNonAccess,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctNonAccess.equals(wrongNonAccess));
 
@@ -280,7 +280,7 @@ public class ClassModifierTest {
                                             @FromDataPoints("innerClassNonAccess") String correctNonAccess,
                                             @FromDataPoints("innerClassNonAccess") String wrongNonAccess,
                                             @FromDataPoints("choices") String choice,
-                                            @FromDataPoints("exactMatching") String isExactMatch) {
+                                            @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctAccess.equals(wrongAccess) || correctNonAccess.equals(wrongNonAccess));
 

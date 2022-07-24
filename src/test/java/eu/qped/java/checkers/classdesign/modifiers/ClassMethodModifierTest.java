@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.classdesign.modifierTest;
+package eu.qped.java.checkers.classdesign.modifiers;
 
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
@@ -73,8 +73,8 @@ public class ClassMethodModifierTest {
     }
 
     @DataPoints("exactMatching")
-    public static String[] exactValues() {
-        return new String[] {"true", "false"};
+    public static Boolean[] exactValues() {
+        return new Boolean[] {true, false};
     }
 
 
@@ -131,7 +131,7 @@ public class ClassMethodModifierTest {
     @Theory
     public void dontCareTest(@FromDataPoints("accessModifiers") String correctMod,
                                 @FromDataPoints("allNonAccessModifierCombinations") String[] nonAccessComb,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         init();
 
@@ -160,7 +160,7 @@ public class ClassMethodModifierTest {
                                @FromDataPoints("accessModifiers") String wrongMod,
                                @FromDataPoints("emptyModifier") String nonAccessMod,
                                @FromDataPoints("choices") String choice,
-                               @FromDataPoints("exactMatching") String isExactMatch) {
+                               @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -178,7 +178,7 @@ public class ClassMethodModifierTest {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
         }
 
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -206,7 +206,7 @@ public class ClassMethodModifierTest {
                                    @FromDataPoints("accessModifiers") String wrongMod,
                                    @FromDataPoints("emptyModifier") String emptyModifier,
                                    @FromDataPoints("choices") String choice,
-                                   @FromDataPoints("exactMatching") String isExactMatch) {
+                                   @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -224,7 +224,7 @@ public class ClassMethodModifierTest {
             allowedAccess = correctMod;
             allowedNonAccess = Collections.singletonList(emptyModifier);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -254,7 +254,7 @@ public class ClassMethodModifierTest {
                                 @FromDataPoints("reducedAccess") String wrongMod,
                                 @FromDataPoints("defaultKeyword") String nonAccessMod,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -271,7 +271,7 @@ public class ClassMethodModifierTest {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -299,7 +299,7 @@ public class ClassMethodModifierTest {
                                @FromDataPoints("reducedAccess") String wrongMod,
                                @FromDataPoints("defaultKeyword") String nonAccessMod,
                                @FromDataPoints("choices") String choice,
-                               @FromDataPoints("exactMatching") String isExactMatch) {
+                               @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -317,7 +317,7 @@ public class ClassMethodModifierTest {
             allowedAccess = correctMod;
             allowedNonAccess = Collections.singletonList(nonAccessMod);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -349,7 +349,7 @@ public class ClassMethodModifierTest {
                                 @FromDataPoints("reducedAccess") String wrongMod,
                                 @FromDataPoints("abstractKeyword") String abstractKeyword,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -367,7 +367,7 @@ public class ClassMethodModifierTest {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(abstractKeyword));
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -394,7 +394,7 @@ public class ClassMethodModifierTest {
                                 @FromDataPoints("reducedAccess") String wrongMod,
                                 @FromDataPoints("abstractKeyword") String abstractKeyword,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
 
@@ -411,7 +411,7 @@ public class ClassMethodModifierTest {
             allowedAccess = correctMod;
             allowedNonAccess = Collections.singletonList(abstractKeyword);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
 
@@ -442,7 +442,7 @@ public class ClassMethodModifierTest {
                                 @FromDataPoints("accessModifiers") String wrongMod,
                                 @FromDataPoints("allNonAccessModifierCombinations") String[] nonAccessComb,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         init();
@@ -460,7 +460,7 @@ public class ClassMethodModifierTest {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
         source += allowedAccess + " " + String.join(" ", allowedNonAccess) + " int test() {}" + "}";
@@ -484,7 +484,7 @@ public class ClassMethodModifierTest {
                                 @FromDataPoints("accessModifiers") String wrongMod,
                                 @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                                 @FromDataPoints("choices") String choice,
-                                @FromDataPoints("exactMatching") String isExactMatch) {
+                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         init();
@@ -520,7 +520,7 @@ public class ClassMethodModifierTest {
     public void nonAccessFault(@FromDataPoints("accessModifiers") String correctMod,
                             @FromDataPoints("allNonAccessModifierCombinations") String[] expectedNonAccess,
                             @FromDataPoints("choices") String choice,
-                            @FromDataPoints("exactMatching") String isExactMatch) {
+                            @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         List<String> expectedList = Arrays.asList(expectedNonAccess);
 
@@ -536,7 +536,7 @@ public class ClassMethodModifierTest {
         if(choice.equals(KeywordChoice.YES.toString())) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
         source += correctMod + " " + String.join(" ", allowedNonAccess) + " int test() {}" + "}";
@@ -562,7 +562,7 @@ public class ClassMethodModifierTest {
                                @FromDataPoints("accessModifiers") String wrongMod,
                                @FromDataPoints("allNonAccessModifierCombinations") String[] expectedNonAccess,
                                @FromDataPoints("choices") String choice,
-                               @FromDataPoints("exactMatching") String isExactMatch) {
+                               @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         List<String> expectedList = Arrays.asList(expectedNonAccess);
@@ -582,7 +582,7 @@ public class ClassMethodModifierTest {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
         source += allowedAccess + " " + String.join(" ", allowedNonAccess) + " int test() {}" + "}";
@@ -608,7 +608,7 @@ public class ClassMethodModifierTest {
                             @FromDataPoints("accessModifiers") String wrongMod,
                             @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                             @FromDataPoints("choices") String choice,
-                            @FromDataPoints("exactMatching") String isExactMatch) {
+                            @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
         init();
@@ -656,7 +656,7 @@ public class ClassMethodModifierTest {
     public void multipleNonAccessFaults(@FromDataPoints("accessModifiers") String correctMod,
                                      @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                                      @FromDataPoints("choices") String choice,
-                                     @FromDataPoints("exactMatching") String isExactMatch) {
+                                     @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         List<String> expectedList = Arrays.asList(correctNonAccess);
         init();
@@ -675,7 +675,7 @@ public class ClassMethodModifierTest {
         if(choice.equals(KeywordChoice.YES.toString())) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
         source += correctMod + " " + String.join(" ", allowedNonAccess) + " int test() {}";
@@ -710,7 +710,7 @@ public class ClassMethodModifierTest {
                                          @FromDataPoints("accessModifiers") String wrongMod,
                                         @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
                                         @FromDataPoints("choices") String choice,
-                                        @FromDataPoints("exactMatching") String isExactMatch) {
+                                        @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctMod.equals(wrongMod));
         List<String> expectedList = Arrays.asList(correctNonAccess);
@@ -735,7 +735,7 @@ public class ClassMethodModifierTest {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
-        if(!Boolean.parseBoolean(isExactMatch) && !allowedNonAccess.isEmpty()) {
+        if(!isExactMatch && !allowedNonAccess.isEmpty()) {
             allowedNonAccess = Arrays.asList(TestUtils.getAllSubsets(allowedNonAccess)[new Random().nextInt(allowedNonAccess.size())]);
         }
         source += allowedAccess + " " + String.join(" ", allowedNonAccess) + " int test() {}";

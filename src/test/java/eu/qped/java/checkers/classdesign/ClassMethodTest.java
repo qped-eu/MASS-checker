@@ -165,7 +165,7 @@ public class ClassMethodTest {
 
         method.setType("double");
         method.setName("b");
-        classInfo.setMatchExactMethodAmount("true");
+        classInfo.setMatchExactMethodAmount(true);
 
         setup();
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);

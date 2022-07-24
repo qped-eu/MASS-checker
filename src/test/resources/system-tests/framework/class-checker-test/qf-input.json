@@ -1,0 +1,93 @@
+{
+   "answer":"class TestClass {\n public int num;\n}",
+   "attemptCount":1,
+   "feedback":[
+   ],
+   "answers":[
+      "class TestClass {\n public int num;\n}"
+   ],
+   "showSolution":false,
+   "user":{
+      "id":"5fd0de0f30795372827b0f2a",
+      "language":"en"
+   },
+   "assignment":{
+      "id":"6261560949496205f2430680",
+      "title":"Test Class",
+      "files":[
+
+      ]
+   },
+   "question":{
+      "id":"626aa854769943907f5506ea",
+      "text":"Include the public class TestClass",
+      "programmingLanguage":"java"
+   },
+   "files":[
+
+   ],
+   "file":{
+      "id":"TestClass",
+      "label":"Test Class",
+      "extension":".zip",
+      "path":"",
+      "mimetype":"application/zip",
+      "url":"file:./src/test/resources/system-tests/framework/class-checker-test/TestClass.zip"
+   },
+   "comment":"",
+   "score":null,
+   "stop":false,
+   "checkerClass":"eu.qped.java.checkers.mass.Mass",
+   "mass":{
+      "styleSelected": false,
+      "semanticSelected": false,
+      "metricsSelected": false,
+      "coverageSelected": false,
+      "classSelected": true,
+      "classSettings": {
+         "classInfos": [
+            {
+               "fullyQualifiedName": "TestClass",
+               "classKeywordConfig": {
+                  "allowExactModifierMatching": false,
+                  "publicModifier": "no",
+                  "protectedModifier": "no",
+                  "privateModifier": "no",
+                  "packagePrivateModifier": "yes",
+                  "emptyNonAccessModifier": "yes",
+                  "abstractModifier": "no",
+                  "staticModifier": "no",
+                  "finalModifier": "no",
+                  "classType": "yes",
+                  "interfaceType": "no",
+                  "name": "TestClass"
+               },
+               "inheritsFromConfigs": [],
+               "fieldKeywordConfigs":  [
+                  {
+                     "allowExactModifierMatching": false,
+                     "publicModifier": "no",
+                     "protectedModifier": "no",
+                     "privateModifier": "yes",
+                     "packagePrivateModifier": "no",
+                     "emptyNonAccessModifier": "no",
+                     "staticModifier": "no",
+                     "finalModifier": "no",
+                     "transientModifier": "no",
+                     "volatileModifier": "no",
+                     "type": "int",
+                     "name": "?"
+                  }
+               ],
+               "methodKeywordConfigs": [],
+               "matchExactFieldAmount": false,
+               "matchExactMethodAmount": false,
+               "customFieldFeedback": [],
+               "customMethodFeedback": [],
+               "customClassFeedback": [],
+               "customInheritanceFeedback": []
+            }
+         ]
+      }
+   }
+}

@@ -16,8 +16,8 @@ public class ClassInfo {
     private List<FieldKeywordConfig> fieldKeywordConfigs;
     private List<MethodKeywordConfig> methodKeywordConfigs;
 
-    private String matchExactFieldAmount;
-    private String matchExactMethodAmount;
+    private boolean matchExactFieldAmount;
+    private boolean matchExactMethodAmount;
 
     private List<String> customFieldFeedback;
     private List<String> customMethodFeedback;
@@ -33,8 +33,8 @@ public class ClassInfo {
         fieldKeywordConfigs = new ArrayList<>();
         methodKeywordConfigs = new ArrayList<>();
 
-        matchExactFieldAmount = "false";
-        matchExactMethodAmount = "false";
+        matchExactFieldAmount = false;
+        matchExactMethodAmount = false;
 
         customFieldFeedback = new ArrayList<>();
         customMethodFeedback = new ArrayList<>();
@@ -76,13 +76,6 @@ public class ClassInfo {
         this.methodKeywordConfigs = methodKeywords;
     }
 
-    public String getMatchExactMethodAmount() {
-        return matchExactMethodAmount;
-    }
-
-    public void setMatchExactMethodAmount(String matchExactMethodAmount) {
-        this.matchExactMethodAmount = matchExactMethodAmount;
-    }
 
     public List<String> getCustomFieldFeedback() {
         return customFieldFeedback;
@@ -124,11 +117,19 @@ public class ClassInfo {
         this.fullyQualifiedName = fullyQualifiedName;
     }
 
-    public String getMatchExactFieldAmount() {
+    public boolean isMatchExactFieldAmount() {
         return matchExactFieldAmount;
     }
 
-    public void setMatchExactFieldAmount(String matchExactFieldAmount) {
+    public void setMatchExactFieldAmount(boolean matchExactFieldAmount) {
         this.matchExactFieldAmount = matchExactFieldAmount;
+    }
+
+    public boolean isMatchExactMethodAmount() {
+        return matchExactMethodAmount;
+    }
+
+    public void setMatchExactMethodAmount(boolean matchExactMethodAmount) {
+        this.matchExactMethodAmount = matchExactMethodAmount;
     }
 }

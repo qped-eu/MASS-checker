@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
+import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
@@ -12,9 +13,7 @@ import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -239,7 +238,7 @@ public class ClassTest {
 
         ClassInfo classInfo1 = new ClassInfo();
         ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        classKeywordConfig.setClassType(KeywordChoice.YES.toString());
+        chooseClassType(classKeywordConfig, "class", KeywordChoice.YES.toString());
         classKeywordConfig.setName("NotTestClass");
         classInfo1.setClassKeywordConfig(classKeywordConfig);
         classInfos.add(classInfo1);
@@ -259,6 +258,54 @@ public class ClassTest {
 
         ClassFeedback fb = TestUtils.getFeedback("", "", MISSING_CLASSES);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
+        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Theory
+    public void multipleClasses() {
+        init();
+
+        chooseClassType(classConfig, "class", KeywordChoice.YES.toString());
+
+        FieldKeywordConfig field1 = new FieldKeywordConfig();
+        field1.setPrivateModifier(KeywordChoice.YES.toString());
+        field1.setType("String");
+        field1.setName("name");
+
+        classInfo.setFieldKeywordConfigs(Collections.singletonList(field1));
+
+        ClassInfo classInfo1 = new ClassInfo();
+        ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
+        chooseClassType(classKeywordConfig, "class", KeywordChoice.YES.toString());
+        classKeywordConfig.setName("NotTestClass");
+
+        FieldKeywordConfig field2 = new FieldKeywordConfig();
+        field2.setPrivateModifier(KeywordChoice.YES.toString());
+        field2.setType("int");
+        field2.setName("num");
+        classInfo1.setFieldKeywordConfigs(Collections.singletonList(field2));
+        classInfo1.setClassKeywordConfig(classKeywordConfig);
+
+        classInfos.add(classInfo1);
+
+        String source = "class TestClass {public String name;}";
+        String src1 = "class NotTestClass {public int num;}";
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+        classChecker.addSource(src1);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "name", WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class NotTestClass", "num", WRONG_ACCESS_MODIFIER);
+        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb, fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
 

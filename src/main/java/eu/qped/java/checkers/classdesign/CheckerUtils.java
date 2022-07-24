@@ -1,7 +1,6 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import eu.qped.java.checkers.classdesign.config.*;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.infos.*;
@@ -78,7 +77,7 @@ public final class CheckerUtils {
     }
 
     private static boolean getAllowExactMatch(KeywordConfig keywordConfig) {
-        return Boolean.parseBoolean(keywordConfig.getAllowExactModifierMatching());
+        return keywordConfig.isAllowExactModifierMatching();
     }
 
 

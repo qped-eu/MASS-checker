@@ -4,7 +4,12 @@ import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
+import eu.qped.java.checkers.classdesign.ClassConfigurator;
+import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
+import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
+import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -21,6 +26,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -105,6 +112,7 @@ public class MassExecutor {
             }
             if (classNeeded) {
                 try {
+                    classChecker.setTargetPath(syntaxCheckReport.getPath());
                     classChecker.check(null);
                     classFeedbacks = classChecker.getClassFeedbacks();
                 } catch (Exception e) {
@@ -120,7 +128,7 @@ public class MassExecutor {
 
         // translate Feedback body if needed
         if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded, designNeeded);
+            translate(styleNeeded, semanticNeeded, designNeeded, classNeeded);
         }
     }
 
@@ -129,11 +137,13 @@ public class MassExecutor {
         styleFeedbacks = new ArrayList<>();
         semanticFeedbacks = new ArrayList<>();
         designFeedbacks = new ArrayList<>();
+        classFeedbacks = new ArrayList<>();
         syntaxErrors = new ArrayList<>();
+
     }
 
 
-    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean designNeeded) {
+    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean designNeeded, boolean classNeeded) {
         String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
         Translator translator = new Translator();
 
@@ -154,6 +164,11 @@ public class MassExecutor {
         if (designNeeded) {
             for (DesignFeedback feedback : designFeedbacks) {
                 translator.translateDesignBody(prefLanguage, feedback);
+            }
+        }
+        if (classNeeded) {
+            for (Feedback feedback : classFeedbacks) {
+                translator.translateBody(prefLanguage, feedback);
             }
         }
     }
@@ -282,6 +297,11 @@ public class MassExecutor {
         for (Feedback s : massE.semanticFeedbacks) {
             System.out.println(s.getBody());
         }
+
+//        for (Feedback s : massE.classFeedbacks) {
+//            System.out.println(s.getBody());
+//            System.out.println("-----------------------------------------------------------------");
+//        }
 
         /*
         for Style Errors

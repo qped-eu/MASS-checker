@@ -225,7 +225,7 @@ public class ClassFieldTest {
         field.setType("double");
         field.setName("b");
 
-        classInfo.setMatchExactFieldAmount("true");
+        classInfo.setMatchExactFieldAmount(true);
 
         setup();
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
