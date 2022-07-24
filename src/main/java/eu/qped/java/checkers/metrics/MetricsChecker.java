@@ -34,7 +34,7 @@ public class MetricsChecker {
     @Setter(AccessLevel.NONE)
     private QFMetricsSettings qfMetricsSettings;
 
-    private final static String CLASS_FILES_PATH = "src/main/java/eu/qped/java/utils/compiler/compiledFiles";
+    private final static String DEFAULT_CLASS_FILES_PATH = "src/main/java/eu/qped/java/utils/compiler/compiledFiles";
 
     /**
      * Method is able to check one or multiple .class files
@@ -51,7 +51,7 @@ public class MetricsChecker {
         MetricSettings metricSettings = metricSettingsReader.readMetricsCheckerSettings(MetricSettings.builder().build());
         System.out.println("after checking");
         List<File> classFiles
-                = ExtractJavaFilesFromDirectory.builder().dirPath(CLASS_FILES_PATH).build().filesWithExtension("class");
+                = ExtractJavaFilesFromDirectory.builder().dirPath(DEFAULT_CLASS_FILES_PATH).build().filesWithExtension("class");
 
         String[] pathsToClassFiles = classFiles.stream().map(File::getPath).toArray(String[]::new);
 
