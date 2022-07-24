@@ -43,11 +43,13 @@ public class MetricsChecker {
      * @return the built {@link MetricsCheckerReport}
      */
     public MetricsCheckerReport check() {
-
+        System.out.println("before checking");
         MetricsCheckerReport metricsCheckerReport = MetricsCheckerReport.builder().build();
-        MetricSettingsReader metricSettingsReader = MetricSettingsReader.builder().qfMetricsSettings(this.qfMetricsSettings).build();
-        MetricSettings metricSettings = metricSettingsReader.readMetricsCheckerSettings(MetricSettings.builder().build());
 
+        MetricSettingsReader metricSettingsReader = MetricSettingsReader.builder().qfMetricsSettings(this.qfMetricsSettings).build();
+        System.out.println("befvore read setting");
+        MetricSettings metricSettings = metricSettingsReader.readMetricsCheckerSettings(MetricSettings.builder().build());
+        System.out.println("after checking");
         List<File> classFiles
                 = ExtractJavaFilesFromDirectory.builder().dirPath(CLASS_FILES_PATH).build().filesWithExtension("class");
         String[] pathsToClassFiles = classFiles.stream().map(File::getPath).toArray(String[]::new);
