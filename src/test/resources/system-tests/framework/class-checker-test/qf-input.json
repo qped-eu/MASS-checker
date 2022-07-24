@@ -1,8 +1,6 @@
 {
    "answer":"class TestClass {\n public int num;\n}",
    "attemptCount":1,
-   "feedback":[
-   ],
    "answers":[
       "class TestClass {\n public int num;\n}"
    ],
@@ -44,50 +42,27 @@
       "metricsSelected": false,
       "coverageSelected": false,
       "classSelected": true,
-      "classSettings": {
+      "classes": {
          "classInfos": [
             {
                "fullyQualifiedName": "TestClass",
                "classKeywordConfig": {
-                  "allowExactModifierMatching": false,
-                  "publicModifier": "no",
-                  "protectedModifier": "no",
-                  "privateModifier": "no",
                   "packagePrivateModifier": "yes",
                   "emptyNonAccessModifier": "yes",
-                  "abstractModifier": "no",
-                  "staticModifier": "no",
-                  "finalModifier": "no",
                   "classType": "yes",
-                  "interfaceType": "no",
                   "name": "TestClass"
                },
-               "inheritsFromConfigs": [],
                "fieldKeywordConfigs":  [
                   {
-                     "allowExactModifierMatching": false,
-                     "publicModifier": "no",
-                     "protectedModifier": "no",
                      "privateModifier": "yes",
-                     "packagePrivateModifier": "no",
-                     "emptyNonAccessModifier": "no",
-                     "staticModifier": "no",
-                     "finalModifier": "no",
-                     "transientModifier": "no",
-                     "volatileModifier": "no",
                      "type": "int",
                      "name": "?"
                   }
-               ],
-               "methodKeywordConfigs": [],
-               "matchExactFieldAmount": false,
-               "matchExactMethodAmount": false,
-               "customFieldFeedback": [],
-               "customMethodFeedback": [],
-               "customClassFeedback": [],
-               "customInheritanceFeedback": []
+               ]
             }
          ]
       }
-   }
+   },
+   "feedback":[
+   ]
 }

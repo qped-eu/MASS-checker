@@ -82,13 +82,11 @@ class InheritanceChecker {
                 if(!interfaceMatch.isBlank()) {
                     return true;
                 }
-//                return !interfaceMatch.isBlank();
             } else if(type.equals(ClassType.CLASS.toString())) {
                 String classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
                 if(!classMatch.isBlank()) {
                     return true;
                 }
-//                return !classMatch.isBlank();
             }
         }
 

@@ -62,7 +62,7 @@ public class Mass implements Checker {
         DesignChecker designChecker = DesignChecker.builder().qfDesignSettings(mass.getMetrics()).build();
 
         //Class Checker
-        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClassSettings());
+        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClasses());
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
         //Mass

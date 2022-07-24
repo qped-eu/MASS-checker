@@ -7,14 +7,7 @@
       "description": "Holds information for each expected classes.",
       "documentation": "This holds all information about all possible classes inside the given files. Note that not only outer but also inner classes should have infos created here, if you wish to check them for properties.",
       "required": [
-        "classKeywordConfig",
-        "fieldKeywordConfigs",
-        "methodKeywordConfigs",
-        "inheritsFromConfigs",
-        "customFieldFeedback",
-        "customMethodFeedback",
-        "customClassFeedback",
-        "customInheritanceFeedback"
+        "classKeywordConfig"
       ],
       "properties": {
         "fullyQualifiedName": {
@@ -193,10 +186,11 @@
                 "description": "Set to the expected name of super class, that this class is supposed to inherit."
               }
             },
-            "description": "Contains all expected information about the super classes, that this class inherits.",
             "required": [],
             "title": "Configuration for Superclasses "
-          }
+          },
+          "title": "All Information about Expected Super Classes",
+          "description": "Contains all expected information about the super classes, that this class inherits."
         },
         "fieldKeywordConfigs": {
           "type": "array",

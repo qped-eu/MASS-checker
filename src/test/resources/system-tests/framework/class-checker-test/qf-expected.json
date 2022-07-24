@@ -1,9 +1,7 @@
 {
    "answer":"class TestClass {\n public int num;\n}",
    "attemptCount":1,
-   "feedback":[
-      "AccessModifierError: Different access modifiers for \n\n**num** in \n\n**class TestClass** expected."
-   ],
+
    "answers":[
       "class TestClass {\n public int num;\n}"
    ],
@@ -45,50 +43,26 @@
       "metricsSelected": false,
       "coverageSelected": false,
       "classSelected": true,
-      "classSettings": {
+      "classes": {
          "classInfos": [
             {
                "fullyQualifiedName": "TestClass",
                "classKeywordConfig": {
-                  "allowExactModifierMatching": false,
-                  "publicModifier": "no",
-                  "protectedModifier": "no",
-                  "privateModifier": "no",
                   "packagePrivateModifier": "yes",
                   "emptyNonAccessModifier": "yes",
-                  "abstractModifier": "no",
-                  "staticModifier": "no",
-                  "finalModifier": "no",
                   "classType": "yes",
-                  "interfaceType": "no",
                   "name": "TestClass"
                },
-               "inheritsFromConfigs": [],
                "fieldKeywordConfigs":  [
                   {
-                     "allowExactModifierMatching": false,
-                     "publicModifier": "no",
-                     "protectedModifier": "no",
                      "privateModifier": "yes",
-                     "packagePrivateModifier": "no",
-                     "emptyNonAccessModifier": "no",
-                     "staticModifier": "no",
-                     "finalModifier": "no",
-                     "transientModifier": "no",
-                     "volatileModifier": "no",
                      "type": "int",
                      "name": "?"
                   }
-               ],
-               "methodKeywordConfigs": [],
-               "matchExactFieldAmount": false,
-               "matchExactMethodAmount": false,
-               "customFieldFeedback": [],
-               "customMethodFeedback": [],
-               "customClassFeedback": [],
-               "customInheritanceFeedback": []
+               ]
             }
          ]
       }
-   }
+   },
+   "feedback":[ "class Feedback", "AccessModifierError: Different access modifier for \n\n**num** in \n\n**class TestClass** expected.\n\n\n\n--------------------------------------------------", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ]
 }

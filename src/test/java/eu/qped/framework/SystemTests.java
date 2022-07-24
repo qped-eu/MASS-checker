@@ -27,7 +27,7 @@ public class SystemTests {
 	
 	// By setting this to true, the Checker runner is executed in the same process
 	// as the system test runner. This can be used for debugging processes.
-	public static final boolean IN_PROCESS = false;
+	public static final boolean IN_PROCESS = true;
 
 	private static final String SYSTEM_TEST_CONF_YAML = "system-test-conf.yaml";
 	private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
