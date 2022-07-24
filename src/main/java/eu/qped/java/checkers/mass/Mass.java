@@ -7,8 +7,8 @@ import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.design.DesignChecker;
-import eu.qped.java.checkers.design.DesignFeedback;
+import eu.qped.java.checkers.metrics.MetricsChecker;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
@@ -37,7 +37,7 @@ public class Mass implements Checker {
     public void check(QfObject qfObject) throws Exception {
 
         MainSettings mainSettings = new MainSettings();
-        mainSettings.setDesignNeeded(mass.isMetricsSelected());
+        mainSettings.setMetricsNeeded(mass.isMetricsSelected());
         mainSettings.setStyleNeeded(mass.isStyleSelected());
         mainSettings.setSemanticNeeded(mass.isSemanticSelected());
         mainSettings.setClassNeeded(mass.isClassSelected());
@@ -60,15 +60,15 @@ public class Mass implements Checker {
         // Semantic Checker
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
-        // Design Checker
-        DesignChecker designChecker = DesignChecker.builder().qfDesignSettings(mass.getMetrics()).build();
+        // Metrics Checker
+        MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
         //Class Checker
         ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(this.classSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, classChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, classChecker, mainSettings);
         massExecutor.execute();
 
         /*
@@ -82,15 +82,16 @@ public class Mass implements Checker {
         List<SemanticFeedback> semanticFeedbacks;
         semanticFeedbacks = massExecutor.getSemanticFeedbacks();
 
-        List<DesignFeedback> designFeedbacks = massExecutor.getDesignFeedbacks();
-//
-//        List<ClassFeedback> classFeedbacks;
-//        classFeedbacks = massExecutor.getClassFeedbacks();
+        List<MetricsFeedback> metricsFeedbacks = massExecutor.getMetricsFeedbacks();
+
+        //List<ClassFeedback> classFeedbacks;
+        //classFeedbacks = massExecutor.getClassFeedbacks();
+
 
         int resultLength = 100
                 + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
                 + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
-//                + ((designFeedbacks != null) ? designFeedbacks.size() : 0)
+//                + ((metricsCheckerFeedbacks != null) ? metricsCheckerFeedbacks.size() : 0)
 //                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
                 + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
         String[] result = new String[resultLength];
@@ -120,7 +121,7 @@ public class Mass implements Checker {
         }
 
 
-        for (DesignFeedback df : designFeedbacks) {
+        for (MetricsFeedback df : metricsFeedbacks) {
             result[resultIndex] = "design Feedback";
             result[resultIndex + 1] =
                     "In class '" + df.getClassName() + ".java'"

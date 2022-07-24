@@ -16,7 +16,7 @@ public class QfMass extends QfObjectBase {
 
     private QFStyleSettings style;
 
-    private QFDesignSettings metrics;
+    private QFMetricsSettings metrics;
 
     private QfSyntaxSettings syntax;
 

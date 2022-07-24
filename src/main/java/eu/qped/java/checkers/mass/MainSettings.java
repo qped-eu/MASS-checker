@@ -26,8 +26,8 @@ public class MainSettings {
     private String preferredLanguage;
     private boolean styleNeeded;
     private boolean semanticNeeded;
+    private boolean metricsNeeded;
     private boolean classNeeded;
-    private boolean designNeeded;
 
     private QFMainSettings qfMainSettings;
 
@@ -42,7 +42,7 @@ public class MainSettings {
         classNeeded = qfMainSettings.getClassNeeded() != null && Boolean.parseBoolean(qfMainSettings.getClassNeeded());
         styleNeeded = qfMainSettings.getStyleNeeded() != null && Boolean.parseBoolean(qfMainSettings.getStyleNeeded());
         semanticNeeded = qfMainSettings.getSemanticNeeded() != null && Boolean.parseBoolean(qfMainSettings.getSemanticNeeded());
-        designNeeded = qfMainSettings.getDesignNeeded() != null && Boolean.parseBoolean(qfMainSettings.getDesignNeeded());
+        metricsNeeded = qfMainSettings.getMetricsNeeded() != null && Boolean.parseBoolean(qfMainSettings.getMetricsNeeded());
         syntaxLevel = qfMainSettings.getSyntaxLevel() != null ? getSyntaxConfLevel(qfMainSettings.getSyntaxLevel()) : CheckLevel.BEGINNER;
         preferredLanguage = qfMainSettings.getPreferredLanguage() != null ? qfMainSettings.getPreferredLanguage() : "en";
     }

@@ -5,8 +5,8 @@ import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.design.DesignChecker;
-import eu.qped.java.checkers.design.DesignFeedback;
+import eu.qped.java.checkers.metrics.MetricsChecker;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
@@ -41,7 +41,7 @@ public class MassExecutor {
     private List<SemanticFeedback> semanticFeedbacks;
     private List<SyntaxFeedback> syntaxFeedbacks;
     private List<ClassFeedback> classFeedbacks;
-    private List<DesignFeedback> designFeedbacks;
+    private List<MetricsFeedback> metricsFeedbacks;
 
     private List<SyntaxError> syntaxErrors;
 
@@ -49,7 +49,7 @@ public class MassExecutor {
     private final SemanticChecker semanticChecker;
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
-    private DesignChecker designChecker;
+    private MetricsChecker metricsChecker;
 
     /**
      * To create an Object use the factory Class @MassExecutorFactory
@@ -57,19 +57,19 @@ public class MassExecutor {
      * @param styleChecker             style checker component
      * @param semanticChecker          semantic checker component
      * @param syntaxChecker            syntax checker component
-     * @param designChecker            design checker component
+     * @param metricsChecker           metrics checker component
      * @param mainSettingsConfigurator settings
      */
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
-                        final SyntaxChecker syntaxChecker, final DesignChecker designChecker,
+                        final SyntaxChecker syntaxChecker, final MetricsChecker metricsChecker,
                         final ClassChecker classChecker, final MainSettings mainSettingsConfigurator
                         ) {
 
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
         this.syntaxChecker = syntaxChecker;
-        this.designChecker = designChecker;
+        this.metricsChecker = metricsChecker;
         this.classChecker = classChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
     }
@@ -82,7 +82,7 @@ public class MassExecutor {
 
         boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
         boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
-        boolean designNeeded = mainSettingsConfigurator.isDesignNeeded();
+        boolean metricsNeeded = mainSettingsConfigurator.isMetricsNeeded();
         boolean classNeeded = mainSettingsConfigurator.isClassNeeded();
 
 
@@ -99,9 +99,9 @@ public class MassExecutor {
                 semanticChecker.check();
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
-            if (designNeeded) {
-                designChecker.check();
-                designFeedbacks = designChecker.getDesignFeedbacks();
+            if (metricsNeeded) {
+                metricsChecker.check();
+                metricsFeedbacks = metricsChecker.getMetricsFeedbacks();
             }
             if (classNeeded) {
                 try {
@@ -120,7 +120,7 @@ public class MassExecutor {
 
         // translate Feedback body if needed
         if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
-            translate(styleNeeded, semanticNeeded, designNeeded);
+            translate(styleNeeded, semanticNeeded, metricsNeeded);
         }
     }
 
@@ -128,12 +128,12 @@ public class MassExecutor {
         syntaxFeedbacks = new ArrayList<>();
         styleFeedbacks = new ArrayList<>();
         semanticFeedbacks = new ArrayList<>();
-        designFeedbacks = new ArrayList<>();
+        metricsFeedbacks = new ArrayList<>();
         syntaxErrors = new ArrayList<>();
     }
 
 
-    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean designNeeded) {
+    private void translate(boolean styleNeeded, boolean semanticNeeded, boolean metricsNeeded) {
         String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
         Translator translator = new Translator();
 
@@ -151,9 +151,9 @@ public class MassExecutor {
                 translator.translateStyleBody(prefLanguage, feedback);
             }
         }
-        if (designNeeded) {
-            for (DesignFeedback feedback : designFeedbacks) {
-                translator.translateDesignBody(prefLanguage, feedback);
+        if (metricsNeeded) {
+            for (MetricsFeedback feedback : metricsFeedbacks) {
+                translator.translateMetricsBody(prefLanguage, feedback);
             }
         }
     }
@@ -161,12 +161,16 @@ public class MassExecutor {
 
     public static void main(String[] args) {
         long start = System.nanoTime();
-        String code = "import java.util.ArrayList;\n" +
+        String code = "//\n" +
+                "// Source code recreated from a .class file by IntelliJ IDEA\n" +
+                "// (powered by FernFlower decompiler)\n" +
+                "//\n" +
+                "\n" +
+                "import java.util.ArrayList;\n" +
                 "import java.util.List;\n" +
                 "\n" +
-                "public class GrayCode {\n" +
-                "\n" +
-                "    public GrayCode() {\n" +
+                "class GrayCode {\n" +
+                "    GrayCode() {\n" +
                 "    }\n" +
                 "\n" +
                 "    public static List<String> grayCodeStrings(int n) {\n" +
@@ -192,24 +196,38 @@ public class MassExecutor {
                 "        }\n" +
                 "    }\n" +
                 "\n" +
-                "    public int anotherMethod(boolean a, boolean b, double c) {\n" +
+                "    private int anotherMethod(boolean a, boolean b, double c) {\n" +
                 "        if (a) {\n" +
                 "            if (b) {\n" +
-                "                return (int) c;\n" +
+                "                return (int)c;\n" +
+                "            } else if (c >= 43) {\n" +
+                "                return 0;\n" +
                 "            } else {\n" +
-                "                if (((int) c) == 5)\n" +
-                "                    return (int) (4 * c);\n" +
+                "                if (a && !b && c < 231){\n" +
+                "                    if (doSomething()) {\n" +
+                "                        return Integer.MAX_VALUE;\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            }\n" +
+                "\n" +
+                "            if ((int)c == 5) {\n" +
+                "                return (int)(4.0D * c);\n" +
                 "            }\n" +
                 "        }\n" +
-                "        return -1;\n" +
+                "\n" +
+                "        return 0;\n" +
                 "    }\n" +
-                "}";
+                "\n" +
+                "    private boolean doSomething() {\n" +
+                "        return false;\n" +
+                "    }\n" +
+                "}\n";
 
         QFMainSettings qfMainSettings = new QFMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
         qfMainSettings.setSemanticNeeded("false");
-        qfMainSettings.setStyleNeeded("true");
-        qfMainSettings.setDesignNeeded("false");
+        qfMainSettings.setStyleNeeded("false");
+        qfMainSettings.setMetricsNeeded("true");
         qfMainSettings.setPreferredLanguage("en");
 
 
@@ -241,35 +259,58 @@ public class MassExecutor {
 
         SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(qfSemSettings).build();
 
-        QFDesignSettings qfDesignSettings = new QFDesignSettings();
-        qfDesignSettings.setAmc("0.5", "1.0");
-        qfDesignSettings.setCa("0.5", "1.0");
-        qfDesignSettings.setCam("0.5", "1.0");
-        qfDesignSettings.setCbm("0.5", "1.0");
-        qfDesignSettings.setCbo("0.5", "1.0");
-        qfDesignSettings.setCc("0.5", "3");
-        qfDesignSettings.setCe("0.5", "1.0");
-        qfDesignSettings.setDam("0.5", "1.0");
-        qfDesignSettings.setDit("0.5", "1.0");
-        qfDesignSettings.setIc("0.5", "1.0");
-        qfDesignSettings.setLcom("0.5", "1.0");
-        qfDesignSettings.setLcom3("0.5", "1.0");
-        qfDesignSettings.setLoc("15.0", "60.0");
-        qfDesignSettings.setMoa("0.5", "1.0");
-        qfDesignSettings.setMfa("0.5", "1.0");
-        qfDesignSettings.setNoc("0.0", "5.0");
-        qfDesignSettings.setNpm("0.5", "1.0");
-        qfDesignSettings.setRfc("0.5", "1.0");
-        qfDesignSettings.setWmc("0.5", "1.0");
+        QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
+        qfMetricsSettings.setAmc("0.5", "1.0");
+        qfMetricsSettings.setAmcNoMax("false");
+        qfMetricsSettings.setCa("0.5", "1.0");
+        qfMetricsSettings.setCaNoMax("false");
+        qfMetricsSettings.setCam("0.5", "1.0");
+        qfMetricsSettings.setCamNoMax("false");
+        qfMetricsSettings.setCam("0.5", "1.0");
+        qfMetricsSettings.setCamNoMax("false");
+        qfMetricsSettings.setCbm("0.5", "1.0");
+        qfMetricsSettings.setCbmNoMax("false");
+        qfMetricsSettings.setCbo("0.5", "1.0");
+        qfMetricsSettings.setCboNoMax("false");
+        qfMetricsSettings.setCc("0.5", "3.0");
+        qfMetricsSettings.setCcNoMax("false");
+        qfMetricsSettings.setCe("0.5", "1.0");
+        qfMetricsSettings.setCeNoMax("false");
+        qfMetricsSettings.setDam("0.5", "1.0");
+        qfMetricsSettings.setDamNoMax("false");
+        qfMetricsSettings.setDit("0.5", "1.0");
+        qfMetricsSettings.setDitNoMax("false");
+        qfMetricsSettings.setIc("0.5", "1.0");
+        qfMetricsSettings.setIcNoMax("false");
+        qfMetricsSettings.setLcom("0.5", "1.0");
+        qfMetricsSettings.setLcomNoMax("false");
+        qfMetricsSettings.setLcom3("0.5", "1.0");
+        qfMetricsSettings.setLcom3NoMax("false");
+        qfMetricsSettings.setLoc("15.0", "60.0");
+        qfMetricsSettings.setLocNoMax("false");
+        qfMetricsSettings.setMoa("0.5", "1.0");
+        qfMetricsSettings.setMoaNoMax("false");
+        qfMetricsSettings.setMfa("0.5", "1.0");
+        qfMetricsSettings.setMfaNoMax("false");
+        qfMetricsSettings.setNoc("0.0", "5.0");
+        qfMetricsSettings.setNocNoMax("false");
+        qfMetricsSettings.setNpm("0.5", "1.0");
+        qfMetricsSettings.setNpmNoMax("false");
+        qfMetricsSettings.setRfc("0.5", "1.0");
+        qfMetricsSettings.setRfcNoMax("false");
+        qfMetricsSettings.setWmc("0.5", "1.0");
+        qfMetricsSettings.setWmcNoMax("false");
+        qfMetricsSettings.setAmcCustomSuggestionUpper("WHAT ARE YOU DOING?!?!");
+        qfMetricsSettings.includeOnlyPublicClasses("false");
 
-        DesignChecker designChecker = DesignChecker.builder().qfDesignSettings(qfDesignSettings).build();
+        MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(qfMetricsSettings).build();
 
 
         //SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject("src/main/resources/testProject").build();
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, null, mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -297,13 +338,10 @@ public class MassExecutor {
             System.out.println("-----------------------------------------------------------------");
         }
 
-        List<DesignFeedback> designFeedbacks = massE.designFeedbacks;
-        for (DesignFeedback df : designFeedbacks) {
-            System.out.println("In class '" + df.getClassName() + ".java'");
-            System.out.println(df.getMetric() + " (" + df.getBody() + ")");
-            System.out.println("Measured at: " + df.getValue());
-            System.out.println(df.getSuggestion());
-            System.out.println("--------0T0----------");
+        List<MetricsFeedback> metricsFeedbacks = massE.metricsFeedbacks;
+        for (MetricsFeedback df : metricsFeedbacks) {
+            System.out.println(df);
+            System.out.println("---------------------");
         }
 
         /*
