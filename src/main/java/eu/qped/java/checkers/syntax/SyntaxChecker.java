@@ -32,6 +32,8 @@ public class SyntaxChecker implements Runnable {
 
     private String targetProject;
 
+    private String classFilesDestination;
+
     private Compiler compiler;
 
     @Deprecated(forRemoval = true)
@@ -92,10 +94,13 @@ public class SyntaxChecker implements Runnable {
         if (compiler == null) {
             compiler = Compiler.builder().build();
         }
-
+        compiler.addClassFilesDestination("");
         boolean compileResult;
 
         compiler.setCompiledStringResourcePath("src/main/resources/exam-results/src");
+        if (classFilesDestination != null && !"".equals(classFilesDestination)) {
+            compiler.addClassFilesDestination(classFilesDestination);
+        }
 
         if (stringAnswer != null && !stringAnswer.equals("")) {
             compileResult = compiler.compileFromString(stringAnswer);
