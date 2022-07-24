@@ -52,6 +52,7 @@ public class MetricsChecker {
         System.out.println("after checking");
         List<File> classFiles
                 = ExtractJavaFilesFromDirectory.builder().dirPath(CLASS_FILES_PATH).build().filesWithExtension("class");
+
         String[] pathsToClassFiles = classFiles.stream().map(File::getPath).toArray(String[]::new);
 
         runCkjmExtended(metricsCheckerReport, pathsToClassFiles, metricSettings.areCallsToToJdkIncluded(), metricSettings.areOnlyPublicClassesIncluded());
