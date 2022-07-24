@@ -100,6 +100,7 @@ public class MassExecutor {
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
             if (metricsNeeded) {
+                syntaxChecker.setClassFilesDestination("");
                 metricsChecker.check();
                 metricsFeedbacks = metricsChecker.getMetricsFeedbacks();
             }
