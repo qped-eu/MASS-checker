@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import eu.qped.java.checkers.classdesign.exceptions.ClassNameException;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
@@ -22,6 +23,18 @@ import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 class ClassMatcher {
 
     /**
+     * Make sure that the amount of provided classes matches up with the amount of expected classes
+     * @param classInfos expected class information
+     * @param classDecls provided classes
+     */
+    public ClassFeedback checkClassAmount(List<ClassInfo> classInfos, List<ClassOrInterfaceDeclaration> classDecls) {
+        ClassFeedback fb = null;
+        if(classInfos.size() > classDecls.size()) {
+            fb = ClassFeedbackGenerator.generateFeedback("", "", ClassFeedbackType.MISSING_CLASSES, "");
+        }
+        return fb;
+    }
+    /**
      * Matches up class declarations with given class infos. This is done by comparing the given name from the classInfo
      * and seeing if we can find a corresponding class declaration. If we can, those are matched together and removed from
      * both lists.
@@ -31,17 +44,12 @@ class ClassMatcher {
      * @return Map with matches class declarations and class infos
      */
     public Map<ClassInfo, ClassOrInterfaceDeclaration> matchClassNames(List<ClassOrInterfaceDeclaration> classDecls,
-                                                                       List<ClassInfo> classInfos) {
+                                                                       List<ClassInfo> classInfos) throws ClassNameException {
 
 
-        Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = new HashMap<>();
-        Map<ClassInfo, ClassOrInterfaceDeclaration> matchedQualifiedName = matchWithFullyQualifiedName(classDecls, classInfos);
-        Map<ClassInfo, ClassOrInterfaceDeclaration> matchedProvidedName = matchWithProvidedName(classDecls, classInfos);
-        matchedInfoDecl.putAll(matchedQualifiedName);
-        matchedInfoDecl.putAll(matchedProvidedName);
-
+        Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = matchWithName(classDecls, classInfos);
         //Since we only have one of each we can say that they belong to each other and match them up anyway,
-        // even if the name is wrong
+        //even if the name is wrong
         if(classDecls.size() == 1 && classInfos.size() == 1) {
             ClassOrInterfaceDeclaration classDecl = classDecls.get(0);
             ClassInfo classInfo = classInfos.remove(0);
@@ -62,8 +70,8 @@ class ClassMatcher {
      * @param classInfos provided expected class infos
      * @return matched declarations and class infos with provided fully qualified names
      */
-    private Map<ClassInfo, ClassOrInterfaceDeclaration> matchWithFullyQualifiedName(List<ClassOrInterfaceDeclaration> classDecls,
-                                                                                    List<ClassInfo> classInfos) {
+    private Map<ClassInfo, ClassOrInterfaceDeclaration> matchWithName(List<ClassOrInterfaceDeclaration> classDecls,
+                                                                      List<ClassInfo> classInfos) throws ClassNameException {
 
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = new HashMap<>();
         Iterator<ClassOrInterfaceDeclaration> declIterator = classDecls.iterator();
@@ -72,48 +80,28 @@ class ClassMatcher {
             Iterator<ClassInfo> infoIterator = classInfos.iterator();
 
             while (infoIterator.hasNext()) {
+                boolean matchFound = false;
                 ClassInfo classInfo = infoIterator.next();
-                String fullyQualifiedName = classInfo.getFullyQualifiedName();
-                Optional<String> actualQualifiedName = classDecl.getFullyQualifiedName();
-                if(actualQualifiedName.isPresent()) {
-                    if(fullyQualifiedName.equals(actualQualifiedName.get())) {
-                        matchedInfoDecl.put(classInfo, classDecl);
-                        declIterator.remove();
-                        infoIterator.remove();
-                        break;
-                    }
-                }
-            }
-        }
-        return matchedInfoDecl;
-    }
-    /**
-     * If matching up with fully qualified names doesn't work, try matching up the classes with provided class names
-     * @param classDecls class declarations from the solutions given
-     * @param classInfos provided expected class infos
-     * @return matched declarations and class infos with provided class names
-     */
-    private Map<ClassInfo, ClassOrInterfaceDeclaration> matchWithProvidedName(List<ClassOrInterfaceDeclaration> classDecls,
-                                          List<ClassInfo> classInfos) {
 
-        Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = new HashMap<>();
-        Iterator<ClassOrInterfaceDeclaration> declIterator = classDecls.iterator();
-        while(declIterator.hasNext()) {
-            ClassOrInterfaceDeclaration classDecl = declIterator.next();
-            Iterator<ClassInfo> infoIterator = classInfos.iterator();
-
-            while (infoIterator.hasNext()) {
-                ClassInfo classInfo = infoIterator.next();
                 ClassKeywordConfig classKeywordConfig = classInfo.getClassKeywordConfig();
                 String className = classKeywordConfig.getName();
                 boolean nameMatch = isClassNameMatch(classDecl, className);
+
+                String fullyQualifiedName = classInfo.getFullyQualifiedName();
+                Optional<String> actualQualifiedName = classDecl.getFullyQualifiedName();
+                if(actualQualifiedName.isPresent() && fullyQualifiedName.equals(actualQualifiedName.get())) {
+                    matchFound = true;
+                }
                 if(nameMatch) {
+                    matchFound = true;
+                }
+
+                if(matchFound) {
                     matchedInfoDecl.put(classInfo, classDecl);
                     declIterator.remove();
                     infoIterator.remove();
                     break;
                 }
-
             }
         }
         return matchedInfoDecl;
@@ -205,7 +193,10 @@ class ClassMatcher {
         return false;
     }
 
-    private boolean isClassNameMatch(ClassOrInterfaceDeclaration classDecl, String className) {
+    private boolean isClassNameMatch(ClassOrInterfaceDeclaration classDecl, String className) throws ClassNameException {
+        if(className.isBlank()) {
+            throw new ClassNameException();
+        }
         return classDecl.getNameAsString().equals(className);
     }
 }

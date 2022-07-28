@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import eu.qped.java.checkers.classdesign.exceptions.NoModifierException;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
@@ -100,7 +101,7 @@ class InheritanceChecker {
      * @param expectedParent parent info
      * @return list of feedback if overwritten fields have been found
      */
-    private List<ClassFeedback> checkInheritedFields(String currentClassTypeName, ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
+    private List<ClassFeedback> checkInheritedFields(String currentClassTypeName, ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) throws Exception {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
         ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
         if(parentDecl == null) {
@@ -128,13 +129,13 @@ class InheritanceChecker {
                 sameNames.retainAll(currentFieldNames);
 
                 if(!sameNames.isEmpty()) {
-                    for (String sameName: sameNames) {
-                        ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
-                                currentClassTypeName,
-                                sameName,
-                                HIDDEN_FIELD, String.join("\n", customFeedback));
-                        collectedFeedback.add(fb);
-                    }
+//                    for (String sameName: sameNames) {
+//                        ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
+//                                currentClassTypeName,
+//                                sameName,
+//                                HIDDEN_FIELD, String.join("\n", customFeedback));
+//                        collectedFeedback.add(fb);
+//                    }
                     parIterator.remove();
                     curIterator.remove();
                     break;
@@ -153,7 +154,7 @@ class InheritanceChecker {
      * @param expectedParent parent info
      * @return list of feedback, if methods are found to be overwritten or hidden
      */
-    private List<ClassFeedback> checkInheritedMethods(String currentClassTypeName, ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) {
+    private List<ClassFeedback> checkInheritedMethods(String currentClassTypeName, ClassOrInterfaceDeclaration currentClassDecl, ExpectedElement expectedParent) throws Exception {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
         ClassOrInterfaceDeclaration parentDecl = getParentClassDecl(expectedParent);
@@ -187,17 +188,17 @@ class InheritanceChecker {
                         currentParameters.containsAll(parentParameters);
 
                 if(sameName && sameReturnType && sameParameters) {
-                    ClassFeedbackType violation;
-                    if(currentMethod.isStatic() && parentMethod.isStatic()) {
-                        violation = HIDDEN_METHOD;
-                    } else {
-                        violation = OVERWRITTEN_METHOD;
-                    }
-                    ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
-                            currentClassTypeName,
-                            parentMethodName+"()",
-                            violation, String.join("\n", customFeedback));
-                    collectedFeedback.add(fb);
+//                    ClassFeedbackType violation;
+//                    if(currentMethod.isStatic() && parentMethod.isStatic()) {
+//                        violation = HIDDEN_METHOD;
+//                    } else {
+//                        violation = OVERWRITTEN_METHOD;
+//                    }
+//                    ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(
+//                            currentClassTypeName,
+//                            parentMethodName+"()",
+//                            violation, String.join("\n", customFeedback));
+//                    collectedFeedback.add(fb);
                     parIterator.remove();
                     curIterator.remove();
                     break;
@@ -324,7 +325,7 @@ class InheritanceChecker {
      * @param expectedParent parent to find the class declaration out of
      * @return parent declaration if found, otherwise null
      */
-    private ClassOrInterfaceDeclaration getParentClassDecl(ExpectedElement expectedParent) {
+    private ClassOrInterfaceDeclaration getParentClassDecl(ExpectedElement expectedParent) throws NoModifierException {
         ClassOrInterfaceDeclaration parentClassDecl = null;
         for (Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry: matchedInfoDecl.entrySet()) {
             ClassInfo parentInfo = entry.getKey();

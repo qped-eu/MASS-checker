@@ -2,7 +2,7 @@ package eu.qped.java.checkers.classdesign.modifiers;
 
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.classdesign.utils.TestUtils;
+import eu.qped.java.checkers.classdesign.TestUtils;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(Theories.class)
-public class ClassModifierTest {
+public class ClassDeclModifierTest {
 
     private QFClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
@@ -321,7 +321,7 @@ public class ClassModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class InnerClass", "", ClassFeedbackType.WRONG_CLASS_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class InnerClass", "", ClassFeedbackType.WRONG_CLASS_NON_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -472,7 +472,7 @@ public class ClassModifierTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.WRONG_CLASS_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.WRONG_CLASS_NON_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
 

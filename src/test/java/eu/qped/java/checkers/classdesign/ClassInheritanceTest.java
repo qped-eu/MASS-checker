@@ -8,7 +8,6 @@ import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.classdesign.utils.TestUtils;
 import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.Assume;
 import org.junit.experimental.theories.DataPoints;
@@ -70,31 +69,6 @@ public class ClassInheritanceTest {
     @DataPoints("choices")
     public static String[] choiceValues() {
         return new String[] {KeywordChoice.YES.toString(), KeywordChoice.NO.toString()};
-    }
-
-    @Theory
-    public void dontCareTest(@FromDataPoints("classTypes") String inheritsType,
-                            @FromDataPoints("inheritsKeyword") String inheritsKeyword) {
-        init();
-
-        Assume.assumeFalse(inheritsType.equals("class") && inheritsKeyword.equals("implements"));
-        Assume.assumeFalse(inheritsType.equals("interface") && inheritsKeyword.equals("extends"));
-
-        String source = "class TestClass "+ inheritsKeyword +" SuperClass{}";
-        inheritsConfig.setName("SuperClass");
-
-        setup();
-        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
-        ClassChecker classChecker = new ClassChecker(classConfigurator);
-        classChecker.addSource(source);
-
-        try {
-            classChecker.check(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Theory
@@ -290,6 +264,31 @@ public class ClassInheritanceTest {
         ClassFeedback fb = TestUtils.getFeedback("class TestClass", "SuperClass", ClassFeedbackType.MISSING_SUPER_CLASS);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+    }
+
+    @Theory
+    public void dontCareTest(@FromDataPoints("classTypes") String inheritsType,
+                             @FromDataPoints("inheritsKeyword") String inheritsKeyword) {
+        init();
+
+        Assume.assumeFalse(inheritsType.equals("class") && inheritsKeyword.equals("implements"));
+        Assume.assumeFalse(inheritsType.equals("interface") && inheritsKeyword.equals("extends"));
+
+        String source = "class TestClass "+ inheritsKeyword +" SuperClass{}";
+        inheritsConfig.setName("SuperClass");
+
+        setup();
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Theory
@@ -529,8 +528,8 @@ public class ClassInheritanceTest {
 
         ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "NotSuperClass", ClassFeedbackType.DIFFERENT_INTERFACE_NAMES_EXPECTED);
         ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "NotSecondSuperClass", ClassFeedbackType.DIFFERENT_INTERFACE_NAMES_EXPECTED);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1, fb2};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+        assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 }
 

@@ -1,10 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers;
 import eu.qped.java.checkers.classdesign.enums.*;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
@@ -106,18 +103,7 @@ class ClassMemberChecker<T extends Node> {
 
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
-        HashMap<NodeWithModifiers<T>, List<ExpectedElement>> presentElemsPref = getPresentElementPreferenceList(presentElements, expectedElements);
-        HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElemsPref = getExpectedElementPreferenceList(presentElements, expectedElements);
-
-        Map<NodeWithModifiers<T>, ExpectedElement> matches;
-
-        if(presentElements.size() > expectedElements.size()) {
-            //ExpectedElement has to propose first
-            matches = findExpectedElemMatching(presentElemsPref, expectedElemsPref);
-        } else {
-            //PresentElements have to propose first
-            matches = findPresentElemMatching(presentElemsPref, expectedElemsPref);
-        }
+        Map<NodeWithModifiers<T>, ExpectedElement> matches = performMatching(presentElements, expectedElements);
 
         for (Map.Entry<NodeWithModifiers<T>, ExpectedElement> match : matches.entrySet()) {
             NodeWithModifiers<T> presentElement = match.getKey();
@@ -139,6 +125,35 @@ class ClassMemberChecker<T extends Node> {
         return collectedFeedback;
     }
 
+    /**
+     * Perform the Gale-Shapley matching algorithm to get stable matches for each keyword - element pair.
+     * Since elements might not be same size, perform the matching on that list, that is smaller.
+     * @param presentElements Present elements in code
+     * @param expectedElements Expected elements from the configuration
+     * @return stable matches from elements
+     */
+    private Map<NodeWithModifiers<T>, ExpectedElement> performMatching(List<NodeWithModifiers<T>> presentElements, List<ExpectedElement> expectedElements) {
+        Map<NodeWithModifiers<T>, ExpectedElement> matches;
+
+        HashMap<NodeWithModifiers<T>, List<ExpectedElement>> presentElementsPreference = getPresentElementPreferenceList(presentElements, expectedElements);
+        HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElementsPreference = getExpectedElementPreferenceList(presentElements, expectedElements);
+
+        if(presentElements.size() > expectedElements.size()) {
+            matches = findExpectedElemMatching(presentElementsPreference, expectedElementsPreference);
+        } else {
+            matches = findPresentElemMatching(presentElementsPreference, expectedElementsPreference);
+        }
+
+        return matches;
+    }
+
+    /**
+     * For each present element, generate a preference list of expected elements. THe order is determined by
+     * amount of matches the present element has with the expected element.
+     * @param presentElements present elements in the solution
+     * @param expectedElements expected elements from config
+     * @return preference map for each present element
+     */
     private HashMap<NodeWithModifiers<T>, List<ExpectedElement>> getPresentElementPreferenceList(List<NodeWithModifiers<T>>  presentElements,
                                                                                              List<ExpectedElement> expectedElements) {
         HashMap<NodeWithModifiers<T>, List<ExpectedElement>> prefList = new HashMap<>();
@@ -162,6 +177,13 @@ class ClassMemberChecker<T extends Node> {
         return prefList;
     }
 
+    /**
+     * For each expected element, generate a preference list of present elements. THe order is determined by
+     * amount of matches the expected element has with the present element.
+     * @param presentElements present elements in the solution
+     * @param expectedElements expected elements from config
+     * @return preference map for each expected element
+     */
     private HashMap<ExpectedElement, List<NodeWithModifiers<T>>> getExpectedElementPreferenceList(List<NodeWithModifiers<T>>  presentElements,
                                                                                              List<ExpectedElement> expectedElements) {
         HashMap<ExpectedElement, List<NodeWithModifiers<T>>> prefList = new HashMap<>();
@@ -186,8 +208,13 @@ class ClassMemberChecker<T extends Node> {
     }
 
 
-
-
+    /**
+     * Find a matching based on the Gale-Shapley algorithm.
+     * Present elements are proposing, such that they have the better matches in the end.
+     * @param actualElemsPref present elements and their preferences of expected elements
+     * @param expectedElemsPref expected elements and their preferences of present elements
+     * @return a present element dominant matching
+     */
     private Map<NodeWithModifiers<T>, ExpectedElement> findPresentElemMatching(HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref,
                                                                                    HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElemsPref) {
 
@@ -196,41 +223,48 @@ class ClassMemberChecker<T extends Node> {
         for (NodeWithModifiers<T> actualElem: actualElemsPref.keySet()) {
             matches.put(actualElem, null);
         }
-        Set<ExpectedElement> bachelors = new HashSet<>(expectedElemsPref.keySet());
+        Set<ExpectedElement> possibleExpElemChoices = new HashSet<>(expectedElemsPref.keySet());
 
-        int bachelorCount = bachelors.size();
+        int expElemCount = possibleExpElemChoices.size();
 
-        while(bachelorCount>0){
-            ExpectedElement currentBachelor = bachelors.iterator().next();
-            List<NodeWithModifiers<T>> menPrefList = expectedElemsPref.get(currentBachelor);
+        while(expElemCount>0){
+            ExpectedElement currentExpElem = possibleExpElemChoices.iterator().next();
+            List<NodeWithModifiers<T>> expElemPrefList = expectedElemsPref.get(currentExpElem);
             boolean noMatchFound = true;
 
-            for (NodeWithModifiers<T> woman: menPrefList) {
-                if(matches.get(woman) == null){
+            for (NodeWithModifiers<T> presElem: expElemPrefList) {
+                if(matches.get(presElem) == null){
                     noMatchFound = false;
-                    matches.put(woman, currentBachelor);
-                    bachelors.remove(currentBachelor);
+                    matches.put(presElem, currentExpElem);
+                    possibleExpElemChoices.remove(currentExpElem);
                     break;
                 } else {
-                    ExpectedElement alreadyAcceptedMan = matches.get(woman);
-                    if(willChangeExpectedElement(currentBachelor, alreadyAcceptedMan, woman, actualElemsPref)){
+                    ExpectedElement acceptedExpElem = matches.get(presElem);
+                    if(willChangeExpectedElement(currentExpElem, acceptedExpElem, presElem, actualElemsPref)){
                         noMatchFound = false;
-                        matches.put(woman, currentBachelor);
-                        bachelors.add(alreadyAcceptedMan);
-                        bachelors.remove(currentBachelor);
+                        matches.put(presElem, currentExpElem);
+                        possibleExpElemChoices.add(acceptedExpElem);
+                        possibleExpElemChoices.remove(currentExpElem);
                         break;
                     }
                 }
             }
 
             if(noMatchFound) {
-                bachelors.remove(currentBachelor);
+                possibleExpElemChoices.remove(currentExpElem);
             }
-            bachelorCount = bachelors.size();
+            expElemCount = possibleExpElemChoices.size();
         }
         return matches;
     }
 
+    /**
+     * Find a matching based on the Gale-Shapley algorithm.
+     * Expected elements are proposing, such that they have the better matches in the end.
+     * @param actualElemsPref present elements and their preferences of expected elements
+     * @param expectedElemsPref expected elements and their preferences of present elements
+     * @return a expected element dominant matching
+     */
     private Map<NodeWithModifiers<T>, ExpectedElement> findExpectedElemMatching(HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref,
                                                                                    HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expectedElemsPref) {
 
@@ -239,120 +273,114 @@ class ClassMemberChecker<T extends Node> {
         for (ExpectedElement expectedElement: expectedElemsPref.keySet()) {
             matches.put(expectedElement, null);
         }
-
-        Set<NodeWithModifiers<T>> bachelors = new HashSet<>(actualElemsPref.keySet());
-        int bachelorCount = bachelors.size();
-        while(bachelorCount>0){
-            NodeWithModifiers<T> currentBachelor = bachelors.iterator().next();
-            List<ExpectedElement> womanPrefList = actualElemsPref.get(currentBachelor);
+        Set<NodeWithModifiers<T>> possiblePresElemChoices = new HashSet<>(actualElemsPref.keySet());
+        int presElemCount = possiblePresElemChoices.size();
+        while(presElemCount>0){
+            NodeWithModifiers<T> currentPresElem = possiblePresElemChoices.iterator().next();
+            List<ExpectedElement> presElemPrefList = actualElemsPref.get(currentPresElem);
             boolean noMatchFound = true;
 
-            for (ExpectedElement man: womanPrefList) {
-                if(matches.get(man) == null){
+            for (ExpectedElement presElem: presElemPrefList) {
+                if(matches.get(presElem) == null){
                     noMatchFound = false;
-                    matches.put(man, currentBachelor);
-                    bachelors.remove(currentBachelor);
+                    matches.put(presElem, currentPresElem);
+                    possiblePresElemChoices.remove(currentPresElem);
                     break;
                 } else {
-                    NodeWithModifiers<T> alreadyAcceptedWoman = matches.get(man);
-                    if(willChangePresentElement(currentBachelor, alreadyAcceptedWoman, man, expectedElemsPref)){
+                    NodeWithModifiers<T> acceptedExpElem = matches.get(presElem);
+                    if(willChangePresentElement(currentPresElem, acceptedExpElem, presElem, expectedElemsPref)){
                         noMatchFound = false;
-                        matches.put(man, currentBachelor);
-                        bachelors.add(alreadyAcceptedWoman);
-                        bachelors.remove(currentBachelor);
+                        matches.put(presElem, currentPresElem);
+                        possiblePresElemChoices.add(acceptedExpElem);
+                        possiblePresElemChoices.remove(currentPresElem);
                         break;
                     }
                 }
             }
             if(noMatchFound) {
-                bachelors.remove(currentBachelor);
+                possiblePresElemChoices.remove(currentPresElem);
             }
-            bachelorCount = bachelors.size();
+            presElemCount = possiblePresElemChoices.size();
         }
 
         return matches.entrySet().stream().collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
     }
 
-    private boolean willChangePresentElement(NodeWithModifiers<T> currentBachelor, NodeWithModifiers<T> alreadyAcceptedWoman, ExpectedElement currentMan,
-                              HashMap<ExpectedElement, List<NodeWithModifiers<T>>> actualElemsPref) {
+    /**
+     * Checks if the currentExpElem is a better match for currentPresElem than the already matched accepedExpElem
+     * @param currentExpElem currently proposing expected element
+     * @param acceptedExpElem already matched expected element
+     * @param currentPresElem current present element
+     * @param actualElemsPref preference list of present element
+     * @return either stays the current match or currentPresElem forms a new match with currentExpElem over acceptedExpElem
+     */
+    private boolean willChangeExpectedElement(ExpectedElement currentExpElem, ExpectedElement acceptedExpElem, NodeWithModifiers<T> currentPresElem,
+                                              HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref){
 
-        NodeWithModifiers<T> pref_currentBachelor = null;
-        NodeWithModifiers<T> pref_alreadyAcceptedWoman = null;
+        ExpectedElement prefCurrentExpElem = null;
+        ExpectedElement prefAcceptedExpElem = null;
 
-        List<NodeWithModifiers<T>> womanPrefList = actualElemsPref.get(currentMan);
-        //get the preferences of both the men
-        for (NodeWithModifiers<T> presentElement : womanPrefList) {
-
-            if (presentElement.equals(currentBachelor)) {
-                pref_currentBachelor = presentElement;
-            }
-
-            if (presentElement.equals(alreadyAcceptedWoman)) {
-                pref_alreadyAcceptedWoman = presentElement;
-            }
-
-        }
-
-        if(pref_alreadyAcceptedWoman == null) {
-            return true;
-        }
-
-        if(pref_currentBachelor == null) {
-            return false;
-        }
-
-        //women will accept the current bachelor only if he has higher preference
-        //than the man she had accepted earlier
-        //compute the matching of each with the woman, higher one gets assigned
-        //if a tie exists, use the modifier ranking to determine winner
-        List<Boolean> currentBachelorMatching = getMatchingResult(pref_currentBachelor, currentMan);
-        List<Boolean> alreadyAcceptedMatching = getMatchingResult(pref_alreadyAcceptedWoman, currentMan);
-
-        int result = CheckerUtils.compareMatchingLists(currentBachelorMatching, alreadyAcceptedMatching);
-        return result < 0;
-    }
-
-    private boolean willChangeExpectedElement(ExpectedElement currentBachelor, ExpectedElement alreadyAcceptedMan, NodeWithModifiers<T> currentWoman,
-                                      HashMap<NodeWithModifiers<T>, List<ExpectedElement>> actualElemsPref){
-
-        ExpectedElement pref_currentBachelor = null;
-        ExpectedElement pref_alreadyAcceptedMan = null;
-
-        List<ExpectedElement> womanPrefList = actualElemsPref.get(currentWoman);
-
-        //Does the current and preferred person exist in the pref list?
+        List<ExpectedElement> womanPrefList = actualElemsPref.get(currentPresElem);
         for (ExpectedElement expectedElement : womanPrefList) {
 
-            if (expectedElement.equals(currentBachelor)) {
-                pref_currentBachelor = expectedElement;
+            if (expectedElement.equals(currentExpElem)) {
+                prefCurrentExpElem = expectedElement;
             }
 
-            if (expectedElement.equals(alreadyAcceptedMan)) {
-                pref_alreadyAcceptedMan = expectedElement;
+            if (expectedElement.equals(acceptedExpElem)) {
+                prefAcceptedExpElem = expectedElement;
             }
         }
-        //If one of them is null, that means that the assigned element does not exist in the preference list of the other
-        //Thus we can remove and say and it wants to change.
-        if(pref_alreadyAcceptedMan == null) {
+        if(prefAcceptedExpElem == null) {
             return true;
         }
-
-        //If the preferred current bachelor does not exist, that means that the pref list does not contain this one
-        //and we can say that we do not want to change
-        if(pref_currentBachelor == null) {
+        if(prefCurrentExpElem == null) {
             return false;
         }
-
-        //women will accept the current bachelor only if he has higher preference
-        //than the man she had accepted earlier
-        //compute the matching of each with the woman, higher one gets assigned
-        //if a tie exists, use the modifier ranking to determine winner
-        List<Boolean> currentBachelorMatching = getMatchingResult(currentWoman, pref_currentBachelor);
-        List<Boolean> alreadyAcceptedMatching = getMatchingResult(currentWoman, pref_alreadyAcceptedMan);
+        List<Boolean> currentBachelorMatching = getMatchingResult(currentPresElem, prefCurrentExpElem);
+        List<Boolean> alreadyAcceptedMatching = getMatchingResult(currentPresElem, prefAcceptedExpElem);
 
         int result = CheckerUtils.compareMatchingLists(currentBachelorMatching, alreadyAcceptedMatching);
         return result < 0;
     }
+
+    /**
+     * Checks if the currentPresElem is a better match for currentExpElem than the already matched acceptedPresElem
+     * @param currentExpElem currently proposing present element
+     * @param acceptedPresElem already matched present element
+     * @param currentPresElem current expected element
+     * @param expElemPreferences preference list of expected element
+     * @return either stays the current match or currentPresElem forms a new match with currentExpElem over acceptedPresElem
+     */
+    private boolean willChangePresentElement(NodeWithModifiers<T> currentPresElem, NodeWithModifiers<T> acceptedPresElem, ExpectedElement currentExpElem,
+                              HashMap<ExpectedElement, List<NodeWithModifiers<T>>> expElemPreferences) {
+
+        NodeWithModifiers<T> prefCurrentPresElem = null;
+        NodeWithModifiers<T> prefAcceptedPresElem = null;
+
+        List<NodeWithModifiers<T>> currentExpElemPreferences = expElemPreferences.get(currentExpElem);
+        for (NodeWithModifiers<T> presentElement : currentExpElemPreferences) {
+            if (presentElement.equals(currentPresElem)) {
+                prefCurrentPresElem = presentElement;
+            }
+            if (presentElement.equals(acceptedPresElem)) {
+                prefAcceptedPresElem = presentElement;
+            }
+        }
+        if(prefAcceptedPresElem == null) {
+            return true;
+        }
+        if(prefCurrentPresElem == null) {
+            return false;
+        }
+        List<Boolean> currentBachelorMatching = getMatchingResult(prefCurrentPresElem, currentExpElem);
+        List<Boolean> alreadyAcceptedMatching = getMatchingResult(prefAcceptedPresElem, currentExpElem);
+
+        int result = CheckerUtils.compareMatchingLists(currentBachelorMatching, alreadyAcceptedMatching);
+        return result < 0;
+    }
+
+
 
     /**
      * Checks if more or equal elements are there compared to the expected amount
@@ -387,7 +415,12 @@ class ClassMemberChecker<T extends Node> {
         if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
             elementName = ((FieldDeclaration) element).getVariable(0).getNameAsString();
         } else {
-            elementName = ((MethodDeclaration) element).getNameAsString();
+            try{
+                elementName = ((MethodDeclaration) element).getNameAsString();
+            } catch (Exception e) {
+                elementName = ((ConstructorDeclaration) element).getNameAsString();
+            }
+
         }
 
         return elementName;
@@ -400,17 +433,23 @@ class ClassMemberChecker<T extends Node> {
      * @return true if exact match
      */
     private boolean isElementTypeMatch(NodeWithModifiers<T> elem, List<String> expectedTypes) {
-        if(expectedTypes.isEmpty()) {
-            return false;
-        }
-
         String presentType;
         if(CHECKER_TYPE.equals(ClassMemberType.FIELD)) {
+            //no type was provided for the field, treat as any type is allowed.
+            if(expectedTypes.size() == 1 && expectedTypes.contains("")) {
+                return true;
+            }
             FieldDeclaration fieldElement = (FieldDeclaration) elem;
             presentType = fieldElement.getElementType().asString();
         } else {
-            MethodDeclaration methodElement = (MethodDeclaration) elem;
-            presentType = methodElement.getType().asString();
+            try {
+                MethodDeclaration methodElement = (MethodDeclaration) elem;
+                presentType = methodElement.getType().asString();
+            } catch (Exception e) {
+                //If it is not possible to cast to MethodDeclaration, then this element must be a constructor
+                return !expectedTypes.isEmpty();
+            }
+
         }
         return expectedTypes.contains(presentType.toLowerCase());
     }
@@ -422,7 +461,7 @@ class ClassMemberChecker<T extends Node> {
      * @return true if exact match
      */
     private boolean isElementNameMatch(NodeWithModifiers<T> elem, String expectedElementName) {
-        if(expectedElementName.equals(KeywordType.OPTIONAL.toString())) {
+        if(expectedElementName.equals(KeywordType.OPTIONAL.toString()) || expectedElementName.isBlank()) {
             return true;
         }
         String elementName = getVariableName(elem);
@@ -442,6 +481,7 @@ class ClassMemberChecker<T extends Node> {
             unrollVariableDeclarations(foundFields);
             foundFields.forEach(fd -> elementsWithModifiers.add((NodeWithModifiers<T>) fd));
         } else {
+            classDecl.findAll(ConstructorDeclaration.class).forEach(ct -> elementsWithModifiers.add((NodeWithModifiers<T>) ct));
             classDecl.findAll(MethodDeclaration.class).forEach(md -> elementsWithModifiers.add((NodeWithModifiers<T>) md));
         }
 

@@ -1,13 +1,11 @@
 package eu.qped.java.checkers.classdesign;
 
 
-import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
-import eu.qped.java.checkers.classdesign.utils.TestUtils;
 import eu.qped.java.checkers.mass.QFClassSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +24,6 @@ public class ClassFieldTest {
     private ClassInfo classInfo;
     private List<FieldKeywordConfig> fieldKeywordConfigs;
     private FieldKeywordConfig field;
-
 
     @BeforeEach
     private void init() {
@@ -48,24 +45,13 @@ public class ClassFieldTest {
         qfClassSettings.setClassInfos(classInfos);
     }
 
+
+
     @Test
-    public void testFunct() {
-        String source = "class TestClass { " +
-                "public final int num;" +
-                "private final int notNum;" +
-                ""+ "}";
-        field.setPrivateModifier(KeywordChoice.YES.toString());
-        field.setFinalModifier(KeywordChoice.YES.toString());
-        field.setType("String");
-        field.setName("num");
-
-        FieldKeywordConfig field2 = new FieldKeywordConfig();
-        field2.setPrivateModifier(KeywordChoice.YES.toString());
-        field2.setFinalModifier(KeywordChoice.YES.toString());
-        field2.setType("String");
-        field2.setName("notNum");
-
-        fieldKeywordConfigs.add(field2);
+    public void optionalName() {
+        String source = "class TestClass { int a;"+ "}";
+        field.setType("int");
+        field.setName("");
 
         setup();
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
@@ -78,16 +64,13 @@ public class ClassFieldTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "num", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "notNum", ClassFeedbackType.WRONG_ELEMENT_TYPE);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb, fb1};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+        assertEquals(0, classChecker.getClassFeedbacks().size());
     }
 
     @Test
-    public void optionalName() {
+    public void optionalType() {
         String source = "class TestClass { int a;"+ "}";
-        field.setType("int");
+        field.setType("");
         field.setName("?");
 
         setup();

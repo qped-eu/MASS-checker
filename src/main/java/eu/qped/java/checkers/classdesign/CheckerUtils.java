@@ -3,6 +3,7 @@ package eu.qped.java.checkers.classdesign;
 import com.github.javaparser.ast.Modifier;
 import eu.qped.java.checkers.classdesign.config.*;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+import eu.qped.java.checkers.classdesign.exceptions.NoModifierException;
 import eu.qped.java.checkers.classdesign.infos.*;
 
 import java.util.*;
@@ -12,8 +13,6 @@ import java.util.*;
  */
 public final class CheckerUtils {
 
-    public static final List<String> possibleAccessModifiers = createAccessList();
-
     private CheckerUtils() { }
 
     /**
@@ -22,28 +21,20 @@ public final class CheckerUtils {
      * @return expected element with all possible modifiers
      */
 
-    public static ExpectedElement extractExpectedInfo(KeywordConfig keywordConfig) {
+    public static ExpectedElement extractExpectedInfo(KeywordConfig keywordConfig) throws NoModifierException {
         List<String> accessMod = new ArrayList<>();
-        fillWithPossibleAccessModifiers(keywordConfig, accessMod);
+        fillWithPossibleModifiers(keywordConfig.getAccessModifierMap(), accessMod);
 
         List<String> nonAccessMods = new ArrayList<>();
-        boolean containsYes = fillWithPossibleNonAccessModifiers(keywordConfig, nonAccessMods);
+        boolean containsYes = fillWithPossibleModifiers(keywordConfig.getNonAccessModifierMap(), nonAccessMods);
 
         List<String> type = getPossibleTypes(keywordConfig);
         String name = getNameFromConfig(keywordConfig);
-        boolean allowExactMatch = getAllowExactMatch(keywordConfig);
+        boolean allowExactMatch = keywordConfig.isAllowExactModifierMatching();
         return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch, containsYes);
     }
 
-    private static void fillWithPossibleAccessModifiers(KeywordConfig keywordConfig, List<String> possibleMods) {
-        fillWithPossibleModifiers(keywordConfig.getAccessModifierMap(), possibleMods);
-    }
-
-    private static boolean fillWithPossibleNonAccessModifiers(KeywordConfig keywordConfig, List<String> possibleMods) {
-        return fillWithPossibleModifiers(keywordConfig.getNonAccessModifierMap(), possibleMods);
-    }
-
-    private static boolean fillWithPossibleModifiers(Map<String, String> keywordChoiceMap, List<String> possibleMods) {
+    private static boolean fillWithPossibleModifiers(Map<String, String> keywordChoiceMap, List<String> possibleMods) throws NoModifierException {
         boolean containsYes = false;
         for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
             String modifier = entry.getKey();
@@ -65,6 +56,10 @@ public final class CheckerUtils {
                 }
             }
         }
+        if(possibleMods.isEmpty()) {
+            throw new NoModifierException();
+        }
+
         return containsYes;
     }
 
@@ -73,13 +68,12 @@ public final class CheckerUtils {
     }
 
     private static String getNameFromConfig(KeywordConfig keywordConfig) {
-        return keywordConfig.getName();
+        String name = keywordConfig.getName().trim();
+        name = name.replaceAll(";", "");
+        int pos = name.indexOf("(");
+        name = pos != -1 ? name.substring(0, pos) : name;
+        return name;
     }
-
-    private static boolean getAllowExactMatch(KeywordConfig keywordConfig) {
-        return keywordConfig.isAllowExactModifierMatching();
-    }
-
 
 
     /**
@@ -114,6 +108,7 @@ public final class CheckerUtils {
 
     private static List<String> getActualNonAccessModifiers(List<Modifier> presentModifiers) {
         List<String> actualModifiers = new ArrayList<>();
+        List<String> possibleAccessModifiers = createAccessList();
         for (Modifier modifier: presentModifiers) {
             String modifierName = modifier.getKeyword().asString().trim();
             if(possibleAccessModifiers.contains(modifierName)) {
@@ -139,6 +134,14 @@ public final class CheckerUtils {
         possibleAccess.add("protected");
         return possibleAccess;
     }
+
+    /**
+     * Compare two boolean lists with their amount of "true" in each. If both have the same amount, the one with the first
+     * false comes first.
+     * @param firstMatch First boolean list
+     * @param secondMatch Second boolean list
+     * @return ordering of the lists
+     */
 
     public static int compareMatchingLists(List<Boolean> firstMatch, List<Boolean> secondMatch) {
         int countCurrent = 0;

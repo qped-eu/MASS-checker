@@ -12,13 +12,13 @@ public enum ClassFeedbackType {
     //Field Errors
     MISSING_FIELDS("MissingFieldsError"),
     TOO_MANY_FIELDS("TooManyFieldsError"),
-    HIDDEN_FIELD("HiddenFieldError"),
+//    HIDDEN_FIELD("HiddenFieldError"),
 
     //Method Errors
     MISSING_METHODS("MissingMethodsError"),
     TOO_MANY_METHODS("TooManyMethodsError"),
-    OVERWRITTEN_METHOD("OverwrittenMethodError"),
-    HIDDEN_METHOD("HiddenMethodError"),
+//    OVERWRITTEN_METHOD("OverwrittenMethodError"),
+//    HIDDEN_METHOD("HiddenMethodError"),
 
     //Class Errors
     WRONG_CLASS_TYPE("ClassTypeError"),

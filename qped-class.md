@@ -17,7 +17,7 @@ employee. The field is set with the implemented methods ``void sleeping()`` and 
 Programmer also possesses a method ``public String getStatus()``, which returns the current status of the programmer.
 ## Example .json Input
 ```json
-"classes": {    
+{    
    "classInfos": [   
       {    
          "fullyQualifiedName": "Employee",    

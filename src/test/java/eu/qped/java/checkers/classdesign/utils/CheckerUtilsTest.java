@@ -27,18 +27,24 @@ public class CheckerUtilsTest {
         field.setPublicModifier(KeywordChoice.YES.toString());
         field.setFinalModifier(KeywordChoice.YES.toString());
         field.setType("int");
-        field.setName("a");
+        field.setName("a;");
         field.setAllowExactModifierMatching(false);
 
-        ExpectedElement elemInfo = CheckerUtils.extractExpectedInfo(field);
-        ExpectedElement expectedElement = new ExpectedElement(
-                Collections.singletonList("public"),
-                Collections.singletonList("final"),
-                Collections.singletonList("int"),
-                "a",
-                false, false);
+        ExpectedElement elemInfo;
+        try {
+            elemInfo = CheckerUtils.extractExpectedInfo(field);
+            ExpectedElement expectedElement = new ExpectedElement(
+                    Collections.singletonList("public"),
+                    Collections.singletonList("final"),
+                    Collections.singletonList("int"),
+                    "a",
+                    false, false);
 
-        assertEquals(expectedElement, elemInfo);
+            assertEquals(expectedElement, elemInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test

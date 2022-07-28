@@ -2,7 +2,7 @@ package eu.qped.java.checkers.classdesign.modifiers;
 
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.classdesign.utils.TestUtils;
+import eu.qped.java.checkers.classdesign.TestUtils;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
@@ -114,19 +114,52 @@ public class ClassMethodModifierTest {
         classInfo = new ClassInfo();
         methodKeywordConfigs = new ArrayList<>();
         method = new MethodKeywordConfig();
+        method.setType("int");
+        method.setName("test");
         ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
         classInfo.setClassKeywordConfig(classKeywordConfig);
     }
 
     private void setup() {
-        method.setType("int");
-        method.setName("test");
         methodKeywordConfigs.add(method);
         classInfo.setMethodKeywordConfigs(methodKeywordConfigs);
 
         classInfos.add(classInfo);
         qfClassSettings.setClassInfos(classInfos);
     }
+
+    @Theory
+    public void constructorTest(@FromDataPoints("accessModifiers") String correctMod) {
+        init();
+
+        chooseAccessModifier(method, correctMod, KeywordChoice.YES.toString());
+        method.setType("");
+        method.setName("TestClass");
+
+        String source = "class TestClass {";
+        source += correctMod + " TestClass() {} ";
+        source += correctMod + " int test() {}" + "}";
+
+        MethodKeywordConfig method2 = new MethodKeywordConfig();
+        chooseAccessModifier(method2, correctMod, KeywordChoice.YES.toString());
+        method2.setType("int");
+        method2.setName("test");
+        methodKeywordConfigs.add(method2);
+
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        try {
+            classChecker.check(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, classChecker.getClassFeedbacks().size());
+    }
+
 
     @Theory
     public void dontCareTest(@FromDataPoints("accessModifiers") String correctMod,

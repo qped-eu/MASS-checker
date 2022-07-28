@@ -2,7 +2,8 @@ package eu.qped.java.checkers.classdesign.modifiers;
 
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.classdesign.utils.TestUtils;
+import eu.qped.java.checkers.classdesign.exceptions.NoModifierException;
+import eu.qped.java.checkers.classdesign.TestUtils;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
@@ -10,14 +11,16 @@ import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
 import eu.qped.java.checkers.mass.QFClassSettings;
+import org.junit.Rule;
 import org.junit.experimental.theories.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import java.util.*;
 
 import static org.junit.Assume.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(Theories.class)
 public class ClassFieldModifierTest {
@@ -28,6 +31,8 @@ public class ClassFieldModifierTest {
     private List<FieldKeywordConfig> fieldKeywordConfigs;
     private FieldKeywordConfig field;
 
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @DataPoints("accessModifiers")
     public static String[] accessValues() {
@@ -572,6 +577,8 @@ public class ClassFieldModifierTest {
         source += "public static int c;";
         source += "}";
 
+        classInfo.setMatchExactFieldAmount(true);
+
         setup();
 
         ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
@@ -585,8 +592,10 @@ public class ClassFieldModifierTest {
         }
         ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb3 = TestUtils.getFeedback("class TestClass", "", ClassFeedbackType.TOO_MANY_FIELDS);
 
-        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
+
+        HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2, fb3));
         assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
     }
 
@@ -636,5 +645,28 @@ public class ClassFieldModifierTest {
 
         HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2, fb3));
         assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
+    }
+
+    @Theory
+    public void noModifierException() {
+        init();
+        for (String access: accessValues()) {
+            chooseAccessModifier(field, access, KeywordChoice.NO.toString());
+        }
+        for(String nonAccess: nonAccessValues()) {
+            chooseNonAccessModifier(field, nonAccess, KeywordChoice.NO.toString());
+        }
+        field.setEmptyNonAccessModifier(KeywordChoice.NO.toString());
+
+        String source = "class TestClass {}";
+
+        setup();
+
+        ClassConfigurator classConfigurator = new ClassConfigurator(qfClassSettings);
+        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        classChecker.addSource(source);
+
+        NoModifierException e = Assertions.assertThrows(NoModifierException.class, () -> classChecker.check(null));
+        assertEquals("At least one modifier has to be allowed.", e.getMessage());
     }
 }
