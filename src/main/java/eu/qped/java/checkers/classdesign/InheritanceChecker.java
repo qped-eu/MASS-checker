@@ -97,6 +97,9 @@ class InheritanceChecker {
     /**
      * Check if the fields inside the current class declaration are hiding fields from the super classes.
      * If that is the case, generate feedback to suggest renaming the field variable.
+     *
+     * - This feature is not being used by the checker. Works only for expected classes from the config, does not
+     * work for java classes!
      * @param currentClassDecl current class declaration to check the fields for
      * @param expectedParent parent info
      * @return list of feedback if overwritten fields have been found
@@ -150,6 +153,9 @@ class InheritanceChecker {
      * Methods are being overwritten if the name, return type and parameters match exactly. If the method is also static
      * together with the super classes' method, then the method is hiding it instead.
      * If overwritten or hidden, generate feedback to suggest a possible name change to avoid confusion.
+     *
+     * - This feature is currently not being used in the checker, but works for all provided classes. Does not work
+     * for java specific classes.
      * @param currentClassDecl current class declaration to check the methods of
      * @param expectedParent parent info
      * @return list of feedback, if methods are found to be overwritten or hidden

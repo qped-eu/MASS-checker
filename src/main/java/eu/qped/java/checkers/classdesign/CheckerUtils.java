@@ -34,6 +34,14 @@ public final class CheckerUtils {
         return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch, containsYes);
     }
 
+    /**
+     * Fills a list with possible modifiers, based on the choices YES, DON'T CARE OR NO
+     * @param keywordChoiceMap map for all choices and their modifiers
+     * @param possibleMods fills this list with all possible modifiers
+     * @return if the modifier choices contain at least one yes
+     * @throws NoModifierException if ever modifier has been chosen with NO, an exception is being thrown, since that would mean
+     * that every modifier is not allowed.
+     */
     private static boolean fillWithPossibleModifiers(Map<String, String> keywordChoiceMap, List<String> possibleMods) throws NoModifierException {
         boolean containsYes = false;
         for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
