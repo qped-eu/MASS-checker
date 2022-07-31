@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import eu.qped.framework.qf.QfObject;
+import eu.qped.java.checkers.mass.Mass;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
@@ -59,6 +60,8 @@ public class CheckerRunner {
 	public CheckerRunner() throws JsonMappingException, JsonProcessingException, IOException {
 		String qfObjectJsonString = FileUtils.readFileToString(QF_OBJECT_JSON_FILE, Charset.defaultCharset());
 
+		System.out.println(qfObjectJsonString);
+		
 		ObjectMapper mapper = new ObjectMapper();
 
 		// sem, semObj
@@ -72,8 +75,9 @@ public class CheckerRunner {
 //		qfObject = mapper.readValue(qfObjectJsonString, new TypeReference<QfObject>(){});
 
 		String checkerClassName = (String) qfObjectMap.get("checkerClass");
+		// if no Checker class is specified, use Mass as default.
 		if (checkerClassName == null) {
-			throw new IllegalArgumentException("No checker class specified");
+			checkerClassName = Mass.class.getName();
 		}
 
 		try {
