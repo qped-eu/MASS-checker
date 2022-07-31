@@ -36,7 +36,7 @@ public class SystemTests {
 	private static final String QF_EXPECTED_FILE_NAME = "qf-expected.json";
 	private static final String DESCRIPTION_FILE_NAME = "description.yaml";
 	private static final String SYSTEM_TESTS_FOLDER_NAME = "system-tests";
-	private static final File QF_OBJECT_FILE = new File("qf-copy.json");
+	private static final File QF_OBJECT_FILE = new File("qf.json");
 	private static SystemTestConf systemTestConf;
 	private static ObjectMapper yamlMapper;
 	

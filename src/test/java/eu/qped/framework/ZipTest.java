@@ -2,6 +2,8 @@ package eu.qped.framework;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -25,8 +27,9 @@ class ZipTest {
             FileInfo download = zip.download(fileA);
             assertTrue(Pattern.matches("^hello_renamed\\d+", download.getId()), "id not matching");
             assertEquals(".zip", download.getExtension(), "extension not equals");
-            assertTrue(Pattern.matches("^/tmp/hello_renamed\\d+\\.zip", download.getPath()), "path not matching");
+            assertTrue(Pattern.matches("^.*/hello_renamed\\d+\\.zip", download.getPath()), "path not matching");
             assertTrue(Pattern.matches("^file:/.*/hello_renamed\\d+\\.zip", download.getUrl()), "url not matching");
+            assertTrue(new File(download.getPath()).exists(), "downloaded file does not exist");
             zip.cleanUp();
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,17 +40,17 @@ class ZipTest {
     public void extractBoth() {
         FileInfo fileA = new FileInfo();
         fileA.setMimetype("application/zip");
-        fileA.setUrl("file:./src/test/resources/system-tests/framework/testcoverage-pg-bag-copy/PG-Bag-ANSWER.zip");
+        fileA.setUrl("file:./src/test/resources/system-tests/framework/testcoverage-pg-bag/PG-Bag-ANSWER.zip");
         fileA.setExtension(".zip");
         fileA.setId("PG-Bag-ANSWER");
-        fileA.setPath("src/test/resources/system-tests/framework/testcoverage-pg-bag-copy/PG-Bag-ANSWER.zip");
+        fileA.setPath("src/test/resources/system-tests/framework/testcoverage-pg-bag/PG-Bag-ANSWER.zip");
 
         FileInfo fileB = new FileInfo();
         fileB.setMimetype("application/zip");
-        fileB.setUrl("file:./src/test/resources/system-tests/framework/testcoverage-pg-bag-copy/PG-Bag-ASSIGNEMENT.zip");
+        fileB.setUrl("file:./src/test/resources/system-tests/framework/testcoverage-pg-bag/PG-Bag-ASSIGNEMENT.zip");
         fileB.setExtension(".zip");
         fileB.setId("PG-Bag-ASSIGNEMENT");
-        fileB.setPath("src/test/resources/system-tests/framework/testcoverage-pg-bag-copy/PG-Bag-ASSIGNEMENT.zip");
+        fileB.setPath("src/test/resources/system-tests/framework/testcoverage-pg-bag/PG-Bag-ASSIGNEMENT.zip");
 
         try {
             Zip toTest = new Zip();
@@ -58,7 +61,7 @@ class ZipTest {
                     fileB,
                     (file) -> Pattern.matches(".*Test\\.java$", file.getName()),
                     (file) -> {
-                        Pattern pattern = Pattern.compile("tmp/exam-results\\d+/(PG-Bag-ASSIGNEMENT|PG-Bag-ANSWER)/(.*)\\.java$");
+                        Pattern pattern = Pattern.compile("^.*/exam-results\\d+/(PG-Bag-ASSIGNEMENT|PG-Bag-ANSWER)/(.*)\\.java$");
                         Matcher matcher = pattern.matcher(file.getAbsolutePath());
                         if (matcher.find()) {
                             return matcher.group(2);

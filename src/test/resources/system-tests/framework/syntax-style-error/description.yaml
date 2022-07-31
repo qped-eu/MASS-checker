@@ -1,4 +1,5 @@
 title: "MASS checks for syntax and style - no errors"
 description: |
-    Runs MASS checks for syntax and style, but without any viloations. 
+    Runs MASS checks for syntax and style, but without any violations. 
 author: "Christoph Bockisch"
+disabled: false
