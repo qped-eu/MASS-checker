@@ -45,7 +45,18 @@ public class SyntaxChecker implements Runnable {
 
 
     private String getErrorTrigger(Diagnostic<? extends JavaFileObject> diagnostic) {
-
+    	
+    	// When compiling a JUnit test test, the compiler will emit a warning
+    	// because no annotation processor is registered for org.junit.Test.
+    	// Since there is no specific code in the compiled source is responsible
+    	// for this, the diagnostic's source property is empty (null).
+    	// As it is only a warning, and also nothing that a student could do
+    	// anything about, it seems correct to just ignore this diagnostic.
+    	// TODO: check if there are other cases where a diagnostic without a source
+    	// is created and if there is a better, more general way to handle this.
+    	if (diagnostic.getSource() == null)
+    		return "";    	
+    	
         var errorCode = "";
 
         try {

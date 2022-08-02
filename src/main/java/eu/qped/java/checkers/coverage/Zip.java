@@ -1,8 +1,9 @@
 package eu.qped.java.checkers.coverage;
 
-import eu.qped.framework.FileInfo;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -68,7 +69,9 @@ public class Zip implements ZipService {
 
     @Override
     public File download(String url) throws Exception {
-        File download = File.createTempFile("download", SUFFIX);
+        URL fileURL = new URL(url);
+        String fileName = FilenameUtils.getBaseName(fileURL.getFile());
+        File download = File.createTempFile(fileName, SUFFIX);
         toDelete.add(download);
         FileUtils.copyURLToFile(new URL(url), download);
         return download;
@@ -116,11 +119,16 @@ public class Zip implements ZipService {
             File first = stack.removeFirst();
             if (first.isDirectory()) {
                 stack.addAll(0, Arrays.asList(first.listFiles()));
-            } else if (Pattern.matches(".*\\.java$", first.getName())) {
-                String name = classname.parse(first);
-                if (Objects.isNull(name))
-                    continue;
-                name = name.replace("/",".");
+            } else if (Pattern.matches(".*\\.java$", first.getAbsolutePath())) {
+                String fileName = first.getAbsolutePath();
+                String directory = unzipTarget.getAbsolutePath();
+                String relativeName = fileName.substring(directory.length());
+                String extension = "." + FilenameUtils.getExtension(relativeName);
+                String name = relativeName.substring(0, relativeName.length() - extension.length());
+                if(name.startsWith(File.separator)){
+                    name = name.substring(1);
+                }
+                name = name.replace(File.separator,".");
                 files.put(name, first);
                 if (testClass.isTrue(first)) {
                     testClasses.add(name);

@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -111,6 +112,15 @@ public class Compiler implements CompilerInterface {
         options.add("-verbose");
         options.add("-Xlint");
         options.add("-g");
+
+        if (System.getProperty("maven.compile.classpath") != null) {
+            // requires that the corresponding system property is set in the Maven pom
+        	options.addAll(Arrays.asList("-classpath",System.getProperty("maven.compile.classpath")));
+        } else {
+        	// if the checker is not run from Maven (e.g., during testing), inherit classpath from current JVM
+            options.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));        	
+        }
+
     }
 
 
