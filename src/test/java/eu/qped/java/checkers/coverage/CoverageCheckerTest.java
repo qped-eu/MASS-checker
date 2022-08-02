@@ -30,9 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class CoverageCheckerTest {
 
     @Test
-    public void systemTestString() {
+    public void systemTestStringJAVA() {
         try {
-            Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_string.json");
+            Path f = Path.of( "coverage_testclasses/testcoverage-pg-java/answer_string.json");
             Path qf = Path.of("qf.json");
             Files.copy(f, qf, REPLACE_EXISTING);
 
@@ -52,9 +52,31 @@ class CoverageCheckerTest {
     }
 
     @Test
-    public void systemTestZip() {
+    public void systemTestZipJAVA() {
         try {
-            Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_zip.json");
+            Path f = Path.of( "coverage_testclasses/testcoverage-pg-java/answer_zip.json");
+            Path qf = Path.of("qf.json");
+            Files.copy(f, qf, REPLACE_EXISTING);
+
+            CheckerRunner toTest = new CheckerRunner();
+            toTest.check();
+            QfObject got = toTest.getQfObject();
+            Arrays.stream(got.getFeedback()).forEach(System.out::println);
+            assertArrayEquals(
+                    new String[] {
+                            "---Equals method: You have not tested the equals method with an empty bag as parameter."},
+                    Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
+            got.setFeedback(new String[]{});
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertFalse(true, e.getMessage());
+        }
+    }
+
+    @Test
+    public void systemTestZipMAVEN() {
+        try {
+            Path f = Path.of( "coverage_testclasses/testcoverage-pg-maven/answer_zip.json");
             Path qf = Path.of("qf.json");
             Files.copy(f, qf, REPLACE_EXISTING);
 

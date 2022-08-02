@@ -5,6 +5,7 @@ import eu.qped.framework.qf.*;
 import eu.qped.java.checkers.coverage.feedback.Formatter;
 import eu.qped.java.checkers.coverage.feedback.Summary;
 import eu.qped.java.checkers.coverage.feedback.wanted.ParserWF;
+import eu.qped.java.checkers.coverage.feedback.wanted.ProviderWF;
 import eu.qped.java.checkers.coverage.framework.ast.*;
 import eu.qped.java.checkers.coverage.framework.coverage.*;
 import eu.qped.java.checkers.coverage.framework.test.*;
@@ -12,8 +13,11 @@ import eu.qped.java.utils.compiler.Com;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -64,6 +68,8 @@ public class CoverageChecker implements Checker {
         }
     }
 
+    ZipService.Extracted extracted;
+
     QfCovSetting covSetting;
     @QfProperty
     FileInfo file = null;
@@ -97,7 +103,7 @@ public class CoverageChecker implements Checker {
 
         try {
             Zip zip = new Zip();
-            ZipService.Extracted extracted = extract(zip);
+            extracted = extract(zip);
 
             Map<String, File> fileByClassname = extracted.javafileByClassname();
             List<String> testClasses = extracted.testClasses();
@@ -107,6 +113,7 @@ public class CoverageChecker implements Checker {
 
             if (Objects.nonNull(answer) && !answer.isBlank()) {
                 Com.Created f = compiler.createClassFromString(extracted.root(), answer);
+
                 if (f.isTrue) {
                     if (Pattern.matches(".*Test$", f.className)) {
                         testClasses.add(f.className);
@@ -175,12 +182,46 @@ public class CoverageChecker implements Checker {
     }
 
     public Summary checker(List<CovInformation> testClasses, List<CovInformation> classes) {
+//        final Summary summary = new Summary();
         Summary summary = new Summary();
         try {
+            CompletableFuture<ProviderWF> providerWF = CompletableFuture.supplyAsync(() -> {
+                return new ParserWF().parse(covSetting.getLanguage(), covSetting.getFeedback());
+            });
+
             AstFramework ast = AstFrameworkFactoryAbstract.create(AST_FRAMEWORK).create();
             TestFrameworkFactory test = TestFrameworkFactoryAbstract.create(TEST_FRAMEWORK);
             CoverageFramework coverage = CoverageFrameworkFactoryAbstract.create(COVERAGE_FRAMEWORK).create(test);
-
+//
+//            Thread astTread =  new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                      ast.analyze(
+//                            summary,
+//                            new LinkedList<>(classes),
+//                            covSetting.getExcludeByTypeSet(),
+//                            covSetting.getExcludeByNameSet());
+//                }
+//            });
+//            Thread coverageThread = new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        coverage.analyze(
+//                                summary,
+//                                new LinkedList<>(testClasses),
+//                                new LinkedList<>(classes));
+//                    } catch (Exception e) {
+//
+//                    }
+//                }
+//            });
+//            coverageThread.start();
+//            astTread.start();
+//
+//            coverageThread.join();
+//            astTread.join();
+//
             summary = (Summary) ast.analyze(
                     summary,
                     new LinkedList<>(classes),
@@ -192,8 +233,7 @@ public class CoverageChecker implements Checker {
                     new LinkedList<>(testClasses),
                     new LinkedList<>(classes));
 
-            summary.analyze(new ParserWF().parse(covSetting.getLanguage(), covSetting.getFeedback()));
-
+            summary.analyze(providerWF.get());
             return summary;
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,10 +246,20 @@ public class CoverageChecker implements Checker {
             List<String> classname)  {
         LinkedList<CovInformation> infos = new LinkedList<>();
         for (String name : classname) {
-            infos.add(new Info(
-                    readByteCode(javafileByClassname.get(name)),
-                    name,
-                    readJavacontent(javafileByClassname.get(name))));
+            if (covSetting.getConvention().equals(MAVEN)) {
+                infos.add(new Info(
+                        readByteCode(Path.of(extracted.root().getAbsolutePath() +"/" + name.replace(".","/") + ".class").toString()),
+                        name,
+                        readJavacontent(javafileByClassname.get(name))));
+            } else {
+                infos.add(new Info(
+                        readByteCode(javafileByClassname.get(name).getAbsolutePath().replaceAll("\\.java$", ".class")),
+                        name,
+                        readJavacontent(javafileByClassname.get(name))));
+            }
+
+
+
         }
         return infos;
     }
@@ -223,11 +273,12 @@ public class CoverageChecker implements Checker {
         }
     }
 
-    private byte[] readByteCode(File file) {
+    private byte[] readByteCode(String file) {
+        System.out.println("--> " + file);
         try {
-            return Files.readAllBytes(Paths.get(file.getPath().replaceAll("\\.java", ".class")));
+            return Files.readAllBytes(Paths.get(file));
         } catch (Exception e) {
-            throw new InternalError("ERROR::CoverageChecker ERROR-CODE:004");
+            throw new InternalError("ERROR::CoverageChecker ERROR-CODE:004" + e);
         }
     }
 }

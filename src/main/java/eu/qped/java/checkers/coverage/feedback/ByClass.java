@@ -59,8 +59,10 @@ public class ByClass {
                         continue SKIP;
                     }
                 }
-                methodByName.remove(key, byMethod);
-                isNot.put(key, byMethod);
+                if (byMethod.coverage.state().equals(StateOfCoverage.NOT)) {
+                    methodByName.remove(key, byMethod);
+                    isNot.put(key, byMethod);
+                }
             } else {
                 methodByName.remove(key, byMethod);
             }

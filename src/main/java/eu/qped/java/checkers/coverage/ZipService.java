@@ -12,7 +12,7 @@ public interface ZipService {
     static String UNZIPPED_NAME = "unzipped";
 
     TestClass MAVEN_TEST_CLASS = (file) -> {
-        return Pattern.matches("src/test/java.*\\.java$", file.getPath());
+        return Pattern.matches(".*src/test/java/.*\\.java$", file.getPath());
     };
 
     TestClass JAVA_TEST_CLASS = (file) -> {

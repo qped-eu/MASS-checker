@@ -1,0 +1,17 @@
+title: "Coverage Tutorial Dry Run"
+description: |
+    Write the class `EvenTest` which tests the implementation of the class `Even` shown below. This class just contains one method `isTrue` which is supposed to return `true` if the passed integer value is an even number. 
+
+    ```java
+    class Even {
+    	public boolean isTrue(int num) {
+    		if (num % 2 == 0) {
+    			return true;
+    		} else {
+    			return false;
+    		}
+    	}
+    }
+    ```
+qfAssignmentShareCode: CODAGL
+author: "Christoph Bockisch"

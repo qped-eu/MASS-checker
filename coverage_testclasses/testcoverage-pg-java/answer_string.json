@@ -27,7 +27,7 @@
    "score":null,
    "mass":{
       "coverage": {
-         "privateImplementation": "file:coverage_testclasses/testcoverage-pg/PG-Bag-ASSIGNMENT.zip",
+         "privateImplementation": "file:coverage_testclasses/testcoverage-pg-java/PG-Bag-ASSIGNMENT.zip",
          "excludeByTypeSet" : [],
          "excludeBYNameSet" : [],
          "format" : "",

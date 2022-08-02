@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class Summary implements AstCollection, CoverageCollection, TestCollection, FormatterFacade {
     private final Map<String, ByClass> classByName = new HashMap<>();
     private final NodeBuilder builder = new NodeBuilder();
+    private final Object lock = new Object();
 
     public void analyze(ProviderWF provider) {
         analyzeTestFB(provider);
@@ -39,11 +40,13 @@ public class Summary implements AstCollection, CoverageCollection, TestCollectio
     }
 
     private void insert(Node node) {
-        ByClass byClass = classByName.get(node.keyByClass());
-        if (Objects.isNull(byClass)) {
-            classByName.put(node.keyByClass(), new ByClass(node));
-        } else {
-            byClass.insert(node);
+        synchronized (lock) {
+            ByClass byClass = classByName.get(node.keyByClass());
+            if (Objects.isNull(byClass)) {
+                classByName.put(node.keyByClass(), new ByClass(node));
+            } else {
+                byClass.insert(node);
+            }
         }
     }
 
