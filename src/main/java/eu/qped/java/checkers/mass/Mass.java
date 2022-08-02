@@ -2,6 +2,7 @@ package eu.qped.java.checkers.mass;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
+import eu.qped.framework.CheckerRunner;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
@@ -79,7 +80,14 @@ public class Mass implements Checker {
             QfCovSetting covSetting = mass.getCoverage();
             covSetting.setAnswer(qfObject.getAnswer());
             covSetting.setLanguage(mainSettings.getPreferredLanguage());
-            covSetting.setFile(file);
+            
+            String privateImplementation = covSetting.getPrivateImplementation();
+            if (privateImplementation != null) {
+            	FileInfo privImplFileInfo = FileInfo.createForUri(privateImplementation, "application/zip");
+            	CheckerRunner.downloadSubmittedFile(privImplFileInfo);
+                covSetting.setFile(privImplFileInfo);
+            }
+            
             coverageChecker = new CoverageChecker(covSetting);
         }
 

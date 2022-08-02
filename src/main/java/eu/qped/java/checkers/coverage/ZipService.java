@@ -1,7 +1,5 @@
 package eu.qped.java.checkers.coverage;
 
-import eu.qped.framework.FileInfo;
-
 import java.io.File;
 import java.util.List;
 import java.util.Map;

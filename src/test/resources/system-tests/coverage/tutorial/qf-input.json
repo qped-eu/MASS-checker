@@ -1,5 +1,4 @@
 {
-   "checkerClass":"eu.qped.java.checkers.coverage.CoverageChecker",
    "attemptCount":1,
    "feedback":[
       
@@ -28,9 +27,9 @@
    "score":null,
    "stop":false,
    "answers":[
-      "import static org.junit.Assert.*;\n\nimport org.junit.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n"
+      "import static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n"
    ],
-   "answer":"import static org.junit.Assert.*;\n\nimport org.junit.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n",
+   "answer":"import static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n",
    "mass":{
       "styleSelected":false,
       "semanticsSelected":false,
@@ -38,7 +37,7 @@
       "classSelected":false,
       "metricsSelected":false,
       "syntax":{
-         "level":"ADVANCED"
+         "level":"BEGINNER"
       },
       "coverage":{
          "privateImplementation":"https://qped-eu.github.io/mass/files/TeachersImplementation.zip",
