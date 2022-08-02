@@ -119,11 +119,16 @@ public class Zip implements ZipService {
             File first = stack.removeFirst();
             if (first.isDirectory()) {
                 stack.addAll(0, Arrays.asList(first.listFiles()));
-            } else if (Pattern.matches(".*\\.java$", first.getName())) {
-                String name = classname.parse(first);
-                if (Objects.isNull(name))
-                    continue;
-                name = name.replace("/",".");
+            } else if (Pattern.matches(".*\\.java$", first.getAbsolutePath())) {
+                String fileName = first.getAbsolutePath();
+                String directory = unzipTarget.getAbsolutePath();
+                String relativeName = fileName.substring(directory.length());
+                String extension = "." + FilenameUtils.getExtension(relativeName);
+                String name = relativeName.substring(0, relativeName.length() - extension.length());
+                if(name.startsWith(File.separator)){
+                    name = name.substring(1);
+                }
+                name = name.replace(File.separator,".");
                 files.put(name, first);
                 if (testClass.isTrue(first)) {
                     testClasses.add(name);
