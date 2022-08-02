@@ -18,4 +18,5 @@ public class QFMainSettings extends QfObjectBase {
     private String semanticNeeded;
     private String classNeeded;
     private String designNeeded;
+    private String coverageNeeded;
 }

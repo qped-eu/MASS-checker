@@ -28,6 +28,8 @@ public class MainSettings {
     private boolean semanticNeeded;
     private boolean classNeeded;
     private boolean designNeeded;
+    private boolean coverageNeeded;
+
 
     private QFMainSettings qfMainSettings;
 
@@ -39,6 +41,7 @@ public class MainSettings {
 
 
     public void readSettings() {
+        coverageNeeded = qfMainSettings.getCoverageNeeded() != null && Boolean.parseBoolean(qfMainSettings.getCoverageNeeded());
         classNeeded = qfMainSettings.getClassNeeded() != null && Boolean.parseBoolean(qfMainSettings.getClassNeeded());
         styleNeeded = qfMainSettings.getStyleNeeded() != null && Boolean.parseBoolean(qfMainSettings.getStyleNeeded());
         semanticNeeded = qfMainSettings.getSemanticNeeded() != null && Boolean.parseBoolean(qfMainSettings.getSemanticNeeded());

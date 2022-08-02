@@ -1,5 +1,6 @@
-package eu.qped.framework;
+package eu.qped.java.checkers.coverage;
 
+import eu.qped.framework.FileInfo;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.io.FileUtils;
 import java.io.*;
@@ -11,9 +12,8 @@ import java.util.regex.Pattern;
 
 
 public class Zip implements ZipService {
-    private static final int BUFFER_SIZE = 1024;
     private static final String SCHEME = "file:";
-    private static final String MIMETYPE = "application/zip";
+    private static final String SUFFIX = ".zip";
 
 
     public class ZipExtracted implements ZipService.Extracted {
@@ -67,57 +67,39 @@ public class Zip implements ZipService {
     private final List<File> toDelete = new LinkedList<>();
 
     @Override
-    public FileInfo download(FileInfo file) throws Exception {
-        File copy = File.createTempFile(file.getId(), file.getExtension());
-        toDelete.add(copy);
-
-        try (InputStream input = new URL(file.getUrl()).openStream()) {
-            try (OutputStream output = new FileOutputStream(copy)) {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                while (input.available() > BUFFER_SIZE) {
-                    input.read(buffer);
-                    output.write(buffer);
-                }
-                int remaining = input.available();
-                input.read(buffer, 0, remaining);
-                output.write(buffer, 0, remaining);
-            }
-        }
-
-        FileInfo copyInfo =  new FileInfo();
-        copyInfo.setSubmittedFile(copy);
-        copyInfo.setId(copy.getName().substring(0, copy.getName().lastIndexOf(".")));
-        copyInfo.setExtension(file.getExtension());
-        copyInfo.setUrl(SCHEME + copy.getAbsolutePath());
-        copyInfo.setPath(copy.getAbsolutePath());
-        copyInfo.setMimetype(file.getMimetype());
-        return copyInfo;
+    public File download(String url) throws Exception {
+        File download = File.createTempFile("download", SUFFIX);
+        toDelete.add(download);
+        FileUtils.copyURLToFile(new URL(url), download);
+        return download;
     }
 
     @Override
-    public Extracted extract(FileInfo file, TestClass testClass, Classname classname) throws Exception {
-        if (! file.getMimetype().equals(MIMETYPE))
+    public Extracted extract(File file, TestClass testClass, Classname classname) throws Exception {
+        if (! isZip(file))
             return null;
 
-        File unzipTarget = Files.createTempDirectory("exam-results").toFile();
+        File unzipTarget = Files.createTempDirectory(ZipService.UNZIPPED_NAME).toFile();
         toDelete.add(unzipTarget);
-        ZipFile zipFileA = new ZipFile(FileUtils.getFile(file.getPath()));
+        ZipFile zipFileA = new ZipFile(file);
         zipFileA.extractAll(unzipTarget.toString());
         return extracted(unzipTarget, testClass, classname);
     }
 
+    private boolean isZip(File file) {
+        return file.getName().endsWith(".zip");
+    }
+
 
     @Override
-    public Extracted extractBoth(FileInfo fileA, FileInfo fileB, TestClass testClass, Classname classname) throws Exception {
-        if (! (fileA.getMimetype().equals(MIMETYPE) && fileB.getMimetype().equals(MIMETYPE)))
+    public Extracted extractBoth(File fileA, File fileB, TestClass testClass, Classname classname) throws Exception {
+        if (! isZip(fileB) || ! isZip(fileA))
             return null;
-
-        File unzipTarget = Files.createTempDirectory("exam-results").toFile();
-
+        File unzipTarget = Files.createTempDirectory(ZipService.UNZIPPED_NAME).toFile();
         toDelete.add(unzipTarget);
-        ZipFile zipFileA = new ZipFile(FileUtils.getFile(fileA.getPath()));
+        ZipFile zipFileA = new ZipFile(fileA);
         zipFileA.extractAll(unzipTarget.toString());
-        ZipFile zipFileB = new ZipFile(FileUtils.getFile(fileB.getPath()));
+        ZipFile zipFileB = new ZipFile(fileB);
         zipFileB.extractAll(unzipTarget.toString());
         return extracted(unzipTarget, testClass, classname);
     }
