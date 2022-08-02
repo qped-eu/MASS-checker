@@ -25,6 +25,13 @@ import ro.skyah.comparator.JSONCompare;
 
 public class SystemTests {
 	
+	public static final boolean IS_DEBUG;
+
+	static {
+		IS_DEBUG = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString()
+				.indexOf("-agentlib:jdwp") > 0;
+	}
+	
 	// By setting this to true, the Checker runner is executed in the same process
 	// as the system test runner. This can be used for debugging processes.
 	public static final boolean IN_PROCESS = false;
@@ -61,7 +68,16 @@ public class SystemTests {
 			else {
 				ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
 				pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
+				if (IS_DEBUG) {
+					pb.environment().put("DEBUG_MVN", "TRUE");
+				}
 				Process process = pb.start();
+				if (IS_DEBUG) {
+					int exitCode = process.waitFor();
+					if (exitCode != 0) {
+						throw new AssertionError("Cloud Check finished with exit code: " + exitCode);
+					}
+				}
 				if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
 					throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
 				}

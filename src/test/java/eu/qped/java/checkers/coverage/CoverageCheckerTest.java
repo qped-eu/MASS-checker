@@ -28,13 +28,34 @@ import static org.junit.jupiter.api.Assertions.*;
 class CoverageCheckerTest {
 
     @Test
+    public void systemTestStringChristoph() {
+        try {
+            Path f = Path.of( "src/test/resources/system-tests/coverage/tutorial/qf-input.json");
+//            Path qf = Path.of("qf.json");
+//            Files.copy(f, qf, REPLACE_EXISTING);
+
+            CheckerRunner toTest = new CheckerRunner(f.toFile());
+            toTest.check();
+            QfObject got = toTest.getQfObject();
+
+            assertArrayEquals(
+                    new String[] {
+                            "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
+                    Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
+            got.setFeedback(new String[]{});
+        } catch (Exception e) {
+            assertFalse(true, e.getMessage());
+        }
+    }
+
+    @Test
     public void systemTestString() {
         try {
             Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_string.json");
-            Path qf = Path.of("qf.json");
-            Files.copy(f, qf, REPLACE_EXISTING);
+//            Path qf = Path.of("qf.json");
+//            Files.copy(f, qf, REPLACE_EXISTING);
 
-            CheckerRunner toTest = new CheckerRunner();
+            CheckerRunner toTest = new CheckerRunner(f.toFile());
             toTest.check();
             QfObject got = toTest.getQfObject();
 
@@ -52,10 +73,7 @@ class CoverageCheckerTest {
     public void systemTestZip() {
         try {
             Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_zip.json");
-            Path qf = Path.of("qf.json");
-            Files.copy(f, qf, REPLACE_EXISTING);
-
-            CheckerRunner toTest = new CheckerRunner();
+            CheckerRunner toTest = new CheckerRunner(f.toFile());
             toTest.check();
             QfObject got = toTest.getQfObject();
             assertArrayEquals(
