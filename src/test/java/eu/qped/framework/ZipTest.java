@@ -1,13 +1,16 @@
 package eu.qped.framework;
 
+import eu.qped.java.checkers.coverage.Zip;
+import eu.qped.java.checkers.coverage.ZipService;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.net.URI;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.io.FilenameUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,11 +27,16 @@ class ZipTest {
 
         Zip zip = new Zip();
         try {
-            FileInfo download = zip.download(fileA);
-            assertTrue(Pattern.matches("^hello_renamed\\d+", download.getId()), "id not matching");
-            assertEquals(".zip", download.getExtension(), "extension not equals");
-            assertTrue(Pattern.matches("^.*/hello_renamed\\d+\\.zip", download.getPath()), "path not matching");
-            assertTrue(Pattern.matches("^file:/.*/hello_renamed\\d+\\.zip", download.getUrl()), "url not matching");
+            File downloaded = zip.download(fileA.getUrl());
+            FileInfo download = new FileInfo();
+            download.setPath(downloaded.getPath());
+            download.setUrl("file:"+downloaded.getPath());
+            download.setId(downloaded.getName());
+            download.setExtension(FilenameUtils.getExtension(downloaded.getName()));
+            download.setMimetype(Files.probeContentType(downloaded.toPath()));
+            assertEquals("zip", download.getExtension(), "extension not equals");
+            assertTrue(Pattern.matches("^.*hello_renamed\\d+\\.zip", download.getPath()), "path not matching, was "+download.getPath());
+            assertTrue(Pattern.matches("^file:.*hello_renamed\\d+\\.zip", download.getUrl()), "url not matching, was "+download.getUrl());
             assertTrue(new File(download.getPath()).exists(), "downloaded file does not exist");
             zip.cleanUp();
         } catch (Exception e) {
@@ -54,12 +62,12 @@ class ZipTest {
 
         try {
             Zip toTest = new Zip();
-            fileA = toTest.download(fileA);
-            fileB = toTest.download(fileB);
+            File downloadA = toTest.download(fileA.getUrl());
+            File downloadB = toTest.download(fileB.getUrl());
             ZipService.Extracted extracted = toTest.extractBoth(
-                    fileA,
-                    fileB,
-                    (file) -> Pattern.matches(".*Test\\.java$", file.getName()),
+                    downloadA,
+                    downloadB,
+                    (file) -> Pattern.matches(".*[tT]est\\.java$", file.getName()),
                     (file) -> {
                         Pattern pattern = Pattern.compile("^.*/exam-results\\d+/(PG-Bag-ASSIGNEMENT|PG-Bag-ANSWER)/(.*)\\.java$");
                         Matcher matcher = pattern.matcher(file.getAbsolutePath());
@@ -67,8 +75,8 @@ class ZipTest {
                             return matcher.group(2);
                         }
                         return null;});
-            assertTrue(Objects.deepEquals(List.of("adt.BagTest"), extracted.testClasses()));
-            assertTrue(Objects.deepEquals(List.of("adt.Bag"), extracted.classes()));
+            assertTrue(Objects.deepEquals(List.of("adt.BagTest"), extracted.testClasses()), "Test Classes not matching, was length of "+extracted.testClasses().size());
+            assertTrue(Objects.deepEquals(List.of("adt.Bag"), extracted.classes()), "Classes not matching, was length of"+extracted.classes().size());
             toTest.cleanUp();
         } catch (Exception e) {
             e.printStackTrace();
