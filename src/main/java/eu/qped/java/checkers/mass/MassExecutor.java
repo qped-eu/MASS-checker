@@ -123,10 +123,7 @@ public class MassExecutor {
             if (mainSettingsConfigurator.isCoverageNeeded())
                 coverageFeedbacks = coverageChecker.check();
 
-
-        } else if (mainSettingsConfigurator.isCoverageNeeded()) {
-            coverageFeedbacks = coverageChecker.check();
-        }else {
+        } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();

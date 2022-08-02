@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -32,10 +33,6 @@ public class CheckerRunner {
 	private final QfObject qfObject;
 
 	private final Checker checker;
-
-	private FileInfo fileInfo;
-
-	private File submittedFile;
 
 	private File qfObjectJsonFile;
 	
@@ -87,31 +84,21 @@ public class CheckerRunner {
 			Class<Checker> cls = (Class<Checker>) Class.forName(checkerClassName);
 			this.checker = cls.getDeclaredConstructor().newInstance();
 
+			FileInfo fileInfo;
 			if (qfObjectMap.containsKey(QF_OBJECT_FILE_PROPERTY)) {
 				fileInfo = mapper.readValue(
 						mapper.writeValueAsString(qfObjectMap.get(QF_OBJECT_FILE_PROPERTY)),
 						new TypeReference<FileInfo>() {
 						});
 
-				submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
-				tempFiles.add(submittedFile);
+				downloadSubmittedFile(fileInfo);
 
-				try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
-					try (OutputStream output = new FileOutputStream(submittedFile)) {
-						final int BUFFER_SIZE = 1024;
-						byte[] buffer = new byte[BUFFER_SIZE];
-						int bytesRead;
-						while ((bytesRead = input.read(buffer, 0, BUFFER_SIZE)) != -1) {
-							output.write(buffer, 0, bytesRead);
-						}
-					}
-				}
 				if (fileInfo.getMimetype().contains("application/x-zip-compressed") || fileInfo.getMimetype().contains("application/zip") ) {
 					try {
 						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
 						tempFiles.add(unzipTarget);
 
-						ZipFile zipFile = new ZipFile(submittedFile);
+						ZipFile zipFile = new ZipFile(fileInfo.getSubmittedFile());
 						zipFile.extractAll(unzipTarget.toString());
 
 						fileInfo.setUnzipped(unzipTarget);
@@ -119,11 +106,11 @@ public class CheckerRunner {
 						throw new IllegalArgumentException(e);
 					}
 				}
-				fileInfo.setSubmittedFile(submittedFile);
 
 
 			} else {
-				submittedFile = null;
+				fileInfo = null;
+				//submittedFile = null;
 			}
 
 
@@ -150,6 +137,23 @@ public class CheckerRunner {
 				| NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			throw new IllegalArgumentException("Illegal checker class specified", e);
 		}
+	}
+
+	public static void downloadSubmittedFile(FileInfo fileInfo) throws IOException, FileNotFoundException, MalformedURLException {
+		File submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
+		tempFiles.add(submittedFile);
+
+		try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
+			try (OutputStream output = new FileOutputStream(submittedFile)) {
+				final int BUFFER_SIZE = 1024;
+				byte[] buffer = new byte[BUFFER_SIZE];
+				int bytesRead;
+				while ((bytesRead = input.read(buffer, 0, BUFFER_SIZE)) != -1) {
+					output.write(buffer, 0, bytesRead);
+				}
+			}
+		}
+		fileInfo.setSubmittedFile(submittedFile);
 	}
 	
 	public File getQfObjectJsonFile() {
