@@ -69,13 +69,13 @@ class ZipTest {
                     downloadB,
                     (file) -> Pattern.matches(".*[tT]est\\.java$", file.getName()),
                     (file) -> {
-                        Pattern pattern = Pattern.compile("^.*/exam-results\\d+/(PG-Bag-ASSIGNEMENT|PG-Bag-ANSWER)/(.*)\\.java$");
+                        Pattern pattern = Pattern.compile("^.*(PG-Bag-ASSIGNEMENT|PG-Bag-ANSWER)(.*)\\.java$");
                         Matcher matcher = pattern.matcher(file.getAbsolutePath());
                         if (matcher.find()) {
-                            return matcher.group(2);
+                            return FilenameUtils.getName(matcher.group(2));
                         }
                         return null;});
-            assertTrue(Objects.deepEquals(List.of("adt.BagTest"), extracted.testClasses()), "Test Classes not matching, was length of "+extracted.testClasses().size());
+            assertTrue(Objects.deepEquals(List.of("adt.BagTest"), extracted.testClasses()), "Test Classes not matching, was length of "+extracted.testClasses().size() +" name was "+ extracted.testClasses().get(0));
             assertTrue(Objects.deepEquals(List.of("adt.Bag"), extracted.classes()), "Classes not matching, was length of"+extracted.classes().size());
             toTest.cleanUp();
         } catch (Exception e) {
