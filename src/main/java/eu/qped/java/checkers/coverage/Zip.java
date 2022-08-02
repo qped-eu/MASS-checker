@@ -1,8 +1,9 @@
 package eu.qped.java.checkers.coverage;
 
-import eu.qped.framework.FileInfo;
 import net.lingala.zip4j.ZipFile;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -68,7 +69,9 @@ public class Zip implements ZipService {
 
     @Override
     public File download(String url) throws Exception {
-        File download = File.createTempFile("download", SUFFIX);
+        URL fileURL = new URL(url);
+        String fileName = FilenameUtils.getBaseName(fileURL.getFile());
+        File download = File.createTempFile(fileName, SUFFIX);
         toDelete.add(download);
         FileUtils.copyURLToFile(new URL(url), download);
         return download;
