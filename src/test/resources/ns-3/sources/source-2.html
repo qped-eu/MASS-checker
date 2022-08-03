@@ -1,0 +1,276 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ByMethod</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">eu.qped.java.checkers.coverage.feedback</a>
+</div>
+
+<h1>Coverage Summary for Class: ByMethod (eu.qped.java.checkers.coverage.feedback)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ByMethod</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/58)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ByMethod$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/59)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package eu.qped.java.checkers.coverage.feedback;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import eu.qped.java.checkers.coverage.CoverageCount;
+<i class="no-highlight">4</i>&nbsp;import eu.qped.java.checkers.coverage.enums.StateOfCoverage;
+<i class="no-highlight">5</i>&nbsp;import eu.qped.java.checkers.coverage.feedback.wanted.ProviderWF;
+<i class="no-highlight">6</i>&nbsp;import eu.qped.java.checkers.coverage.framework.ast.AstMethod;
+<i class="no-highlight">7</i>&nbsp;import eu.qped.java.checkers.coverage.framework.coverage.Coverage;
+<i class="no-highlight">8</i>&nbsp;import eu.qped.java.checkers.coverage.framework.coverage.CoverageClass;
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;import java.util.*;
+<i class="no-highlight">11</i>&nbsp;import java.util.stream.Collectors;
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;/**
+<i class="no-highlight">15</i>&nbsp; * Is a part of a tree-structure with the root in the class {@link Summary}.
+<i class="no-highlight">16</i>&nbsp; * In this node all information related to a method is stored.
+<i class="no-highlight">17</i>&nbsp; * @author Herfurth
+<i class="no-highlight">18</i>&nbsp; * @version 1.0
+<i class="no-highlight">19</i>&nbsp; */
+<i class="no-highlight">20</i>&nbsp;public class ByMethod implements Comparable&lt;ByMethod&gt; {
+<b class="nc"><i class="no-highlight">21</i>&nbsp;    final LinkedList&lt;StmtFB&gt; statementsFB = new LinkedList&lt;&gt;();</b>
+<i class="no-highlight">22</i>&nbsp;    AstMethod content;
+<i class="no-highlight">23</i>&nbsp;    Coverage coverage;
+<i class="no-highlight">24</i>&nbsp;    String contentString;
+<i class="no-highlight">25</i>&nbsp;
+<b class="nc"><i class="no-highlight">26</i>&nbsp;    ByMethod(Node node) {</b>
+<b class="nc"><i class="no-highlight">27</i>&nbsp;        insert(node);</b>
+<i class="no-highlight">28</i>&nbsp;    }
+<i class="no-highlight">29</i>&nbsp;
+<i class="no-highlight">30</i>&nbsp;    void insert(Node node) {
+<b class="nc"><i class="no-highlight">31</i>&nbsp;        node.insert(this);</b>
+<i class="no-highlight">32</i>&nbsp;    }
+<i class="no-highlight">33</i>&nbsp;
+<i class="no-highlight">34</i>&nbsp;
+<i class="no-highlight">35</i>&nbsp;    public int start() {
+<b class="nc"><i class="no-highlight">36</i>&nbsp;        return content.start();</b>
+<i class="no-highlight">37</i>&nbsp;    }
+<i class="no-highlight">38</i>&nbsp;
+<i class="no-highlight">39</i>&nbsp;    public int end() {
+<b class="nc"><i class="no-highlight">40</i>&nbsp;        return content.end();</b>
+<i class="no-highlight">41</i>&nbsp;    }
+<i class="no-highlight">42</i>&nbsp;
+<i class="no-highlight">43</i>&nbsp;    boolean hasContent() {
+<b class="nc"><i class="no-highlight">44</i>&nbsp;        return Objects.nonNull(content);</b>
+<i class="no-highlight">45</i>&nbsp;    }
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;    boolean hasCoverage() {
+<b class="nc"><i class="no-highlight">48</i>&nbsp;        return Objects.nonNull(coverage);</b>
+<i class="no-highlight">49</i>&nbsp;    }
+<i class="no-highlight">50</i>&nbsp;
+<i class="no-highlight">51</i>&nbsp;    public StateOfCoverage state() {
+<b class="nc"><i class="no-highlight">52</i>&nbsp;        return coverage.state();</b>
+<i class="no-highlight">53</i>&nbsp;    }
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;    void analyze(ProviderWF provider, CoverageClass aClass) {
+<b class="nc"><i class="no-highlight">56</i>&nbsp;        if (state().equals(StateOfCoverage.FULL)) {</b>
+<b class="nc"><i class="no-highlight">57</i>&nbsp;            statementsFB.clear();</b>
+<i class="no-highlight">58</i>&nbsp;            return;
+<b class="nc"><i class="no-highlight">59</i>&nbsp;        } else if (state().equals(StateOfCoverage.NOT)) {</b>
+<b class="nc"><i class="no-highlight">60</i>&nbsp;            statementsFB.clear();</b>
+<b class="nc"><i class="no-highlight">61</i>&nbsp;            StmtFB notCovered = new StmtFB(content);</b>
+<b class="nc"><i class="no-highlight">62</i>&nbsp;            notCovered.createFeedback(provider);</b>
+<b class="nc"><i class="no-highlight">63</i>&nbsp;            if (! notCovered.getBody().isBlank()) {</b>
+<b class="nc"><i class="no-highlight">64</i>&nbsp;                statementsFB.add(notCovered);</b>
+<i class="no-highlight">65</i>&nbsp;            }
+<i class="no-highlight">66</i>&nbsp;            return;
+<i class="no-highlight">67</i>&nbsp;        }
+<i class="no-highlight">68</i>&nbsp;
+<b class="nc"><i class="no-highlight">69</i>&nbsp;        LinkedList&lt;StmtFB&gt; stack = new LinkedList&lt;&gt;(statementsFB);</b>
+<b class="nc"><i class="no-highlight">70</i>&nbsp;        LinkedList&lt;StmtFB&gt; flatt = new LinkedList&lt;&gt;();</b>
+<b class="nc"><i class="no-highlight">71</i>&nbsp;        Set&lt;String&gt; isDuplicated = new HashSet&lt;&gt;();</b>
+<i class="no-highlight">72</i>&nbsp;
+<i class="no-highlight">73</i>&nbsp;        StmtFB first;
+<i class="no-highlight">74</i>&nbsp;        StateOfCoverage state;
+<i class="no-highlight">75</i>&nbsp;        SKIP:
+<b class="nc"><i class="no-highlight">76</i>&nbsp;        while (! stack.isEmpty()) {</b>
+<b class="nc"><i class="no-highlight">77</i>&nbsp;            first = stack.removeFirst();</b>
+<i class="no-highlight">78</i>&nbsp;            try {
+<b class="nc"><i class="no-highlight">79</i>&nbsp;                for (int i = first.start() + 1; i &lt;= first.end(); i ++) {</b>
+<b class="nc"><i class="no-highlight">80</i>&nbsp;                    state = aClass.byIndex(i);</b>
+<b class="nc"><i class="no-highlight">81</i>&nbsp;                    if (Objects.nonNull(state) &amp;&amp; (state.equals(StateOfCoverage.FULL) || state.equals(StateOfCoverage.PARTLY))) {</b>
+<b class="nc"><i class="no-highlight">82</i>&nbsp;                        stack.addAll(0, first.statementsFB);</b>
+<b class="nc"><i class="no-highlight">83</i>&nbsp;                        continue SKIP;</b>
+<i class="no-highlight">84</i>&nbsp;                    }
+<i class="no-highlight">85</i>&nbsp;                }
+<b class="nc"><i class="no-highlight">86</i>&nbsp;                first.statementsFB.clear();</b>
+<b class="nc"><i class="no-highlight">87</i>&nbsp;                first.createFeedback(provider);</b>
+<b class="nc"><i class="no-highlight">88</i>&nbsp;                if (! isDuplicated.contains(first.getBody()) &amp;&amp; ! first.getBody().isBlank()) {</b>
+<b class="nc"><i class="no-highlight">89</i>&nbsp;                    flatt.add(first);</b>
+<b class="nc"><i class="no-highlight">90</i>&nbsp;                    isDuplicated.add(first.getBody());</b>
+<i class="no-highlight">91</i>&nbsp;                }
+<b class="nc"><i class="no-highlight">92</i>&nbsp;            } catch (IndexOutOfBoundsException i) {</b>
+<b class="nc"><i class="no-highlight">93</i>&nbsp;                continue SKIP;</b>
+<b class="nc"><i class="no-highlight">94</i>&nbsp;            }</b>
+<i class="no-highlight">95</i>&nbsp;        }
+<i class="no-highlight">96</i>&nbsp;
+<b class="nc"><i class="no-highlight">97</i>&nbsp;        statementsFB.clear();</b>
+<b class="nc"><i class="no-highlight">98</i>&nbsp;        statementsFB.addAll(flatt);</b>
+<i class="no-highlight">99</i>&nbsp;
+<b class="nc"><i class="no-highlight">100</i>&nbsp;        StringBuilder builder = new StringBuilder();</b>
+<b class="nc"><i class="no-highlight">101</i>&nbsp;        builder.append(&quot;&lt;pre&gt;&quot;);</b>
+<i class="no-highlight">102</i>&nbsp;
+<b class="nc"><i class="no-highlight">103</i>&nbsp;        int i = content.start();</b>
+<i class="no-highlight">104</i>&nbsp;        for (String line : Arrays
+<b class="nc"><i class="no-highlight">105</i>&nbsp;                .stream(content.content().split(&quot;\n&quot;))</b>
+<b class="nc"><i class="no-highlight">106</i>&nbsp;                .collect(Collectors.toList())) {</b>
+<b class="nc"><i class="no-highlight">107</i>&nbsp;            String head = &quot;&quot;;</b>
+<i class="no-highlight">108</i>&nbsp;
+<b class="nc"><i class="no-highlight">109</i>&nbsp;            switch (aClass.byIndex(i ++)) {</b>
+<i class="no-highlight">110</i>&nbsp;                case FULL:
+<b class="nc"><i class="no-highlight">111</i>&nbsp;                    head = &quot;&lt;fb style=&#39;background-color:green&#39;&gt;&quot;;</b>
+<b class="nc"><i class="no-highlight">112</i>&nbsp;                    break;</b>
+<i class="no-highlight">113</i>&nbsp;                case NOT:
+<b class="nc"><i class="no-highlight">114</i>&nbsp;                    head = &quot;&lt;fb style=&#39;background-color:red&#39;&gt;&quot;;</b>
+<b class="nc"><i class="no-highlight">115</i>&nbsp;                    break;</b>
+<i class="no-highlight">116</i>&nbsp;                case PARTLY:
+<b class="nc"><i class="no-highlight">117</i>&nbsp;                    head = &quot;&lt;fb style=&#39;background-color:orange&#39;&gt;&quot;;</b>
+<b class="nc"><i class="no-highlight">118</i>&nbsp;                    break;</b>
+<i class="no-highlight">119</i>&nbsp;                default:
+<b class="nc"><i class="no-highlight">120</i>&nbsp;                    head = &quot;&lt;fb style=&#39;background-color:lightGrey&#39;&gt;&quot;;</b>
+<i class="no-highlight">121</i>&nbsp;                    break;
+<i class="no-highlight">122</i>&nbsp;            }
+<b class="nc"><i class="no-highlight">123</i>&nbsp;            builder.append(head).append(line).append(&quot;&lt;/fb&gt;&lt;br&gt;&quot;);</b>
+<b class="nc"><i class="no-highlight">124</i>&nbsp;        }</b>
+<b class="nc"><i class="no-highlight">125</i>&nbsp;        contentString =  builder.append(&quot;&lt;/pre&gt;&quot;).toString();</b>
+<i class="no-highlight">126</i>&nbsp;    }
+<i class="no-highlight">127</i>&nbsp;
+<i class="no-highlight">128</i>&nbsp;    public CoverageCount branch() {
+<b class="nc"><i class="no-highlight">129</i>&nbsp;        return coverage.branch();</b>
+<i class="no-highlight">130</i>&nbsp;    }
+<i class="no-highlight">131</i>&nbsp;
+<i class="no-highlight">132</i>&nbsp;    public CoverageCount line() {
+<b class="nc"><i class="no-highlight">133</i>&nbsp;        return coverage.line();</b>
+<i class="no-highlight">134</i>&nbsp;    }
+<i class="no-highlight">135</i>&nbsp;
+<i class="no-highlight">136</i>&nbsp;    public String content() {
+<b class="nc"><i class="no-highlight">137</i>&nbsp;        return contentString;</b>
+<i class="no-highlight">138</i>&nbsp;    }
+<i class="no-highlight">139</i>&nbsp;
+<i class="no-highlight">140</i>&nbsp;    @Override
+<i class="no-highlight">141</i>&nbsp;    public int compareTo(ByMethod byMethod) {
+<b class="nc"><i class="no-highlight">142</i>&nbsp;        return start() - byMethod.start();</b>
+<i class="no-highlight">143</i>&nbsp;    }
+<i class="no-highlight">144</i>&nbsp;
+<i class="no-highlight">145</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-07-18 15:35</div>
+</div>
+</body>
+</html>

@@ -81,7 +81,7 @@ public class Compiler implements CompilerInterface {
             if (files.size() == 0) {
                 return false;
             }
-            files.forEach(System.out::println);
+
         }
         StringWriter stringWriter = new StringWriter();
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);

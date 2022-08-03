@@ -21,7 +21,7 @@ public interface ZipService {
         Pattern pattern = Pattern.compile(".*src/+(test|main)+/java/(.*)\\.java$");
         Matcher matcher = pattern.matcher(file.getPath());
         if (matcher.find()) {
-            return matcher.group(2);
+            return matcher.group(2).replace("/",".");
         }
         return null;
     };
@@ -30,7 +30,7 @@ public interface ZipService {
         Pattern pattern = Pattern.compile(".*/"+UNZIPPED_NAME+"\\d+/(.*)\\.java$");
         Matcher matcher = pattern.matcher(file.getPath());
         if (matcher.find()) {
-            return matcher.group(1);
+            return matcher.group(1).replace("/",".");
         }
         return null;
     };

@@ -100,7 +100,6 @@ public class CoverageChecker implements Checker {
     }
 
     private String[] setUp() {
-
         try {
             Zip zip = new Zip();
             extracted = extract(zip);
@@ -133,18 +132,18 @@ public class CoverageChecker implements Checker {
             }
 
             if (classes.isEmpty())
-                throw new IllegalStateException("Ups something went wrong! Needs at least one class for testing." );
+                throw new IllegalStateException(ErrorMSG.MISSING_CLASS);
             if (testClasses.isEmpty())
-                throw new IllegalStateException("Ups something went wrong! Needs at least one test class." );
+                throw new IllegalStateException(ErrorMSG.MISSING_TESTCLASS);
 
             Summary summary = checker(
                     preprocessing(fileByClassname, testClasses),
                     preprocessing(fileByClassname, classes));
-            zip.cleanUp();
+            //zip.cleanUp();
 
             return Formatter.format(covSetting.getFormat(), summary);
         } catch (Exception e) {
-            return new String[]{"Ups something  went wrong!" + e.getCause() + e.getMessage()};
+            return new String[]{e.getMessage()};
         }
     }
 
@@ -161,7 +160,7 @@ public class CoverageChecker implements Checker {
                 classname = ZipService.MAVEN_CLASS_NAME;
                 testClass = ZipService.MAVEN_TEST_CLASS;
             } else {
-                throw new IllegalStateException("Ups something went wrong!");
+                throw new IllegalStateException(ErrorMSG.UPS);
             }
 
             if (Objects.nonNull(file) && (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank())) {
@@ -175,69 +174,35 @@ public class CoverageChecker implements Checker {
             } else if (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank()) {
                 return zipService.extract(zipService.download(privateImplementation),testClass, classname);
             }
-            throw new Exception();
+            throw new Exception(ErrorMSG.MISSING_FILES);
         } catch (Exception e) {
-            throw new IllegalStateException("Ups something went wrong!");
+            throw new IllegalStateException(e);
         }
     }
 
     public Summary checker(List<CovInformation> testClasses, List<CovInformation> classes) {
-//        final Summary summary = new Summary();
         Summary summary = new Summary();
         try {
-            CompletableFuture<ProviderWF> providerWF = CompletableFuture.supplyAsync(() -> {
-                return new ParserWF().parse(covSetting.getLanguage(), covSetting.getFeedback());
-            });
-
             AstFramework ast = AstFrameworkFactoryAbstract.create(AST_FRAMEWORK).create();
             TestFrameworkFactory test = TestFrameworkFactoryAbstract.create(TEST_FRAMEWORK);
             CoverageFramework coverage = CoverageFrameworkFactoryAbstract.create(COVERAGE_FRAMEWORK).create(test);
-//
-//            Thread astTread =  new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                      ast.analyze(
-//                            summary,
-//                            new LinkedList<>(classes),
-//                            covSetting.getExcludeByTypeSet(),
-//                            covSetting.getExcludeByNameSet());
-//                }
-//            });
-//            Thread coverageThread = new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        coverage.analyze(
-//                                summary,
-//                                new LinkedList<>(testClasses),
-//                                new LinkedList<>(classes));
-//                    } catch (Exception e) {
-//
-//                    }
-//                }
-//            });
-//            coverageThread.start();
-//            astTread.start();
-//
-//            coverageThread.join();
-//            astTread.join();
-//
+
             summary = (Summary) ast.analyze(
                     summary,
                     new LinkedList<>(classes),
-                    covSetting.getExcludeByTypeSet(),
-                    covSetting.getExcludeByNameSet());
+                    covSetting.getExcludeByType(),
+                    covSetting.getExcludeByName());
 
             summary = (Summary) coverage.analyze(
                     summary,
                     new LinkedList<>(testClasses),
                     new LinkedList<>(classes));
 
-            summary.analyze(providerWF.get());
+            summary.analyze(new ParserWF().parse(covSetting.getLanguage(), covSetting.getFeedback()));
             return summary;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new InternalError("Ups there is a internal error! 3" + e.getMessage() + e.getCause().toString());
+            throw new InternalError("Ups there is a internal error!");
         }
     }
 
@@ -257,9 +222,6 @@ public class CoverageChecker implements Checker {
                         name,
                         readJavacontent(javafileByClassname.get(name))));
             }
-
-
-
         }
         return infos;
     }
@@ -267,14 +229,12 @@ public class CoverageChecker implements Checker {
     private String readJavacontent(File file) {
         try {
             return Files.readAllLines(file.toPath()).stream().collect(Collectors.joining("\n"));
-
         } catch (Exception e) {
             throw new InternalError("ERROR::CoverageChecker ERROR-CODE:003");
         }
     }
 
     private byte[] readByteCode(String file) {
-        System.out.println("--> " + file);
         try {
             return Files.readAllBytes(Paths.get(file));
         } catch (Exception e) {

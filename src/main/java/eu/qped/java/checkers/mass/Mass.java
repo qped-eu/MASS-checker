@@ -80,14 +80,14 @@ public class Mass implements Checker {
             QfCovSetting covSetting = mass.getCoverage();
             covSetting.setAnswer(qfObject.getAnswer());
             covSetting.setLanguage(mainSettings.getPreferredLanguage());
-            
+            covSetting.setFile(file);
             String privateImplementation = covSetting.getPrivateImplementation();
-            if (privateImplementation != null) {
-            	FileInfo privImplFileInfo = FileInfo.createForUri(privateImplementation, "application/zip");
-            	CheckerRunner.downloadSubmittedFile(privImplFileInfo);
-                covSetting.setFile(privImplFileInfo);
-            }
-            
+//            if (privateImplementation != null) {
+//            	FileInfo privImplFileInfo = FileInfo.createForUri(privateImplementation, "application/zip");
+//            	CheckerRunner.downloadSubmittedFile(privImplFileInfo);
+//                covSetting.setFile(privImplFileInfo);
+//            }
+//
             coverageChecker = new CoverageChecker(covSetting);
         }
 

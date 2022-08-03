@@ -34,10 +34,12 @@ public class ByClass {
 
         constructorCovered();
         ByMethod byMethod;
-        for (String key : methodByName.keySet()) {
+
+        for (Iterator<String> it = methodByName.keySet().iterator(); it.hasNext(); ) {
+            String key = it.next();
             byMethod = methodByName.get(key);
             if (! byMethod.hasContent() || ! byMethod.hasCoverage()) {
-                methodByName.remove(key, byMethod);
+                it.remove();
                 continue;
             }
             byMethod.analyze(provider, aClass);
@@ -68,7 +70,7 @@ public class ByClass {
             }
         }
 
-        if (isNot.size() == constructorKeys.size()) {
+        if (isNot.size() == constructorKeys.size() && ! isNot.isEmpty()) {
             methodByName = isNot;
         }
 

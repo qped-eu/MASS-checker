@@ -1,0 +1,141 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ProviderByClassWF</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">eu.qped.java.checkers.coverage.feedback.wanted</a>
+</div>
+
+<h1>Coverage Summary for Class: ProviderByClassWF (eu.qped.java.checkers.coverage.feedback.wanted)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProviderByClassWF</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package eu.qped.java.checkers.coverage.feedback.wanted;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import eu.qped.java.checkers.coverage.enums.FeedbackType;
+<i class="no-highlight">4</i>&nbsp;
+<i class="no-highlight">5</i>&nbsp;import java.util.HashMap;
+<i class="no-highlight">6</i>&nbsp;import java.util.Map;
+<i class="no-highlight">7</i>&nbsp;import java.util.Objects;
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;/**
+<i class="no-highlight">11</i>&nbsp; * Is parte of the {@link ProviderWF} tree structure.
+<i class="no-highlight">12</i>&nbsp; * Is only real purpose is to save the {@link #defaultType}.
+<i class="no-highlight">13</i>&nbsp; * @author Herfurth
+<i class="no-highlight">14</i>&nbsp; * @version 1.0
+<i class="no-highlight">15</i>&nbsp; */
+<i class="no-highlight">16</i>&nbsp;class ProviderByClassWF {
+<b class="nc"><i class="no-highlight">17</i>&nbsp;    final Map&lt;String, WantedFeedback&gt; feedbackByIdentifier = new HashMap&lt;&gt;();</b>
+<i class="no-highlight">18</i>&nbsp;    FeedbackType defaultType;
+<i class="no-highlight">19</i>&nbsp;
+<b class="nc"><i class="no-highlight">20</i>&nbsp;    ProviderByClassWF() {}</b>
+<i class="no-highlight">21</i>&nbsp;
+<i class="no-highlight">22</i>&nbsp;    /**
+<i class="no-highlight">23</i>&nbsp;     * GetWanted returns for identifier (method name or line index) the {@link WantedFeedback}
+<i class="no-highlight">24</i>&nbsp;     */
+<i class="no-highlight">25</i>&nbsp;    WantedFeedback provide(String identifier) {
+<b class="nc"><i class="no-highlight">26</i>&nbsp;        WantedFeedback wanted = feedbackByIdentifier.get(identifier);</b>
+<b class="nc"><i class="no-highlight">27</i>&nbsp;        if (Objects.isNull(wanted) &amp;&amp; Objects.nonNull(defaultType)) {</b>
+<b class="nc"><i class="no-highlight">28</i>&nbsp;            if (defaultType.equals(FeedbackType.COVERAGE)) {</b>
+<b class="nc"><i class="no-highlight">29</i>&nbsp;                wanted = ProviderWF.COVERAGE_WF;</b>
+<b class="nc"><i class="no-highlight">30</i>&nbsp;            } else if (defaultType.equals(FeedbackType.TEST)) {</b>
+<b class="nc"><i class="no-highlight">31</i>&nbsp;                wanted = ProviderWF.TEST_WF;</b>
+<i class="no-highlight">32</i>&nbsp;            }
+<i class="no-highlight">33</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">34</i>&nbsp;        return wanted;</b>
+<i class="no-highlight">35</i>&nbsp;    }
+<i class="no-highlight">36</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-07-18 15:35</div>
+</div>
+</body>
+</html>

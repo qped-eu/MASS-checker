@@ -123,6 +123,7 @@ class JavaParser implements AstFramework {
 
     private boolean isExcluded(MethodDeclaration m, Set<String> gs) {
         String methodName = m.getName().asString();
+
         return (
                 m.isStatic() ||
                 hasNoRange(m) ||
