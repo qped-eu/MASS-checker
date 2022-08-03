@@ -29,4 +29,8 @@ public class ErrorMSG {
 
     public static final String NO_ZIP_FOLDER = "Ups something went wrong!\n" +
             "The following folder should end with .zip";
+
+
+    public static final String CANT_READ_FILE = "Ups something went wrong!\n" +
+            "It's not possible to read the following file %s.";
 }

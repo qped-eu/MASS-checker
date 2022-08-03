@@ -110,19 +110,23 @@ public class CoverageChecker implements Checker {
 
             Com compiler = new Com();
 
+            // Creates a class from a string answer
             if (Objects.nonNull(answer) && !answer.isBlank()) {
                 Com.Created f = compiler.createClassFromString(extracted.root(), answer);
 
                 if (f.isTrue) {
                     if (Pattern.matches(".*Test$", f.className)) {
                         testClasses.add(f.className);
+
                     } else {
                         classes.add(f.className);
+
                     }
                     fileByClassname.put(f.className, f.file);
                 }
             }
 
+            // Compiles all classes
             if (! compiler.compileSource(extracted.root())) {
                 System.out.println(compiler.protocol());
                 List<String> failed = compiler.protocol().stream().map(s-> s.toString()).collect(Collectors.toList());
@@ -131,21 +135,24 @@ public class CoverageChecker implements Checker {
                 return failed.toArray(String[]::new);
             }
 
+            // Validates if at least on testclass and on class are present
             if (classes.isEmpty())
                 throw new IllegalStateException(ErrorMSG.MISSING_CLASS);
+
             if (testClasses.isEmpty())
                 throw new IllegalStateException(ErrorMSG.MISSING_TESTCLASS);
 
             Summary summary = checker(
                     preprocessing(fileByClassname, testClasses),
                     preprocessing(fileByClassname, classes));
-            //zip.cleanUp();
+            zip.cleanUp();
 
             return Formatter.format(covSetting.getFormat(), summary);
         } catch (Exception e) {
             return new String[]{e.getMessage()};
         }
     }
+
 
 
     private ZipService.Extracted extract(ZipService zipService) {
@@ -156,11 +163,14 @@ public class CoverageChecker implements Checker {
             if (covSetting.getConvention().equals(JAVA)) {
                 classname = ZipService.JAVA_CLASS_NAME;
                 testClass = ZipService.JAVA_TEST_CLASS;
+
             } else if (covSetting.getConvention().equals(MAVEN)) {
                 classname = ZipService.MAVEN_CLASS_NAME;
                 testClass = ZipService.MAVEN_TEST_CLASS;
+
             } else {
                 throw new IllegalStateException(ErrorMSG.UPS);
+
             }
 
             if (Objects.nonNull(file) && (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank())) {
@@ -169,8 +179,10 @@ public class CoverageChecker implements Checker {
                         zipService.download(privateImplementation),
                         testClass,
                         classname);
+
             } else if (Objects.nonNull(file)) {
                 return zipService.extract(file.getSubmittedFile(),testClass, classname);
+
             } else if (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank()) {
                 return zipService.extract(zipService.download(privateImplementation),testClass, classname);
             }
@@ -216,11 +228,13 @@ public class CoverageChecker implements Checker {
                         readByteCode(Path.of(extracted.root().getAbsolutePath() +"/" + name.replace(".","/") + ".class").toString()),
                         name,
                         readJavacontent(javafileByClassname.get(name))));
+
             } else {
                 infos.add(new Info(
                         readByteCode(javafileByClassname.get(name).getAbsolutePath().replaceAll("\\.java$", ".class")),
                         name,
                         readJavacontent(javafileByClassname.get(name))));
+
             }
         }
         return infos;
@@ -230,7 +244,7 @@ public class CoverageChecker implements Checker {
         try {
             return Files.readAllLines(file.toPath()).stream().collect(Collectors.joining("\n"));
         } catch (Exception e) {
-            throw new InternalError("ERROR::CoverageChecker ERROR-CODE:003");
+            throw new InternalError(String.format(ErrorMSG.CANT_READ_FILE, file.toString()));
         }
     }
 
@@ -238,7 +252,7 @@ public class CoverageChecker implements Checker {
         try {
             return Files.readAllBytes(Paths.get(file));
         } catch (Exception e) {
-            throw new InternalError("ERROR::CoverageChecker ERROR-CODE:004" + e);
+            throw new InternalError(String.format(ErrorMSG.CANT_READ_FILE, file.toString()));
         }
     }
 }

@@ -125,6 +125,7 @@ public class MassExecutor {
 
         } else if (mainSettingsConfigurator.isCoverageNeeded()) {
             coverageFeedbacks = coverageChecker.check();
+
         }else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();

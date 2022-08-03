@@ -37,15 +37,16 @@
       "classSelected":false,
       "metricsSelected":false,
       "syntax":{
-         "level":"BEGINNER"
+         "level":"ADVANCED"
       },
       "coverage":{
          "privateImplementation":"https://qped-eu.github.io/mass/files/TeachersImplementation.zip",
          "convention":"JAVA",
          "feedback":[
+            ":COVERAGE",
             ":TEST",
-            "Even:CUSTOM:4:You only tested the method with odd numbers.",
-            "Even:CUSTOM:6:You only tested the method with even numbers."
+            "Even:CUSTOM:3:You only tested the method with odd numbers.",
+            "Even:CUSTOM:5:You only tested the method with even numbers."
          ]
       }
    }

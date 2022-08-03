@@ -1,9 +1,6 @@
 {
    "attemptCount":1,
-   "feedback":[
-      "You only tested the method with odd numbers.",
-      "You only tested the method with even numbers."
-   ],
+   "feedback":["---\n\nIn class **EvenTest** the test method **test** failed.\n\n---\n\nIn class **Even** the constructor in never called.\n\n"],
    "showSolution":false,
    "user":{
       "id":"5fd0de0f30795372827b0f2a",
@@ -28,9 +25,9 @@
    "score":null,
    "stop":false,
    "answers":[
-      "import static org.junit.Assert.*;\n\nimport org.junit.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n"
+      "import static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n"
    ],
-   "answer":"import static org.junit.Assert.*;\n\nimport org.junit.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n",
+   "answer":"import static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class EvenTest {\n\n\t@Test\n\tpublic void test() {\n\t\tfail(\"Not yet implemented\");\n\t}\n\n}\n",
    "mass":{
       "styleSelected":false,
       "semanticsSelected":false,
@@ -44,9 +41,10 @@
          "privateImplementation":"https://qped-eu.github.io/mass/files/TeachersImplementation.zip",
          "convention":"JAVA",
          "feedback":[
+            ":COVERAGE",
             ":TEST",
-            "Even:CUSTOM:4:You only tested the method with odd numbers.",
-            "Even:CUSTOM:6:You only tested the method with even numbers."
+            "Even:CUSTOM:3:You only tested the method with odd numbers.",
+            "Even:CUSTOM:5:You only tested the method with even numbers."
          ]
       }
    }
