@@ -4,7 +4,10 @@ import eu.qped.java.checkers.coverage.CoverageCount;
 import eu.qped.java.checkers.coverage.enums.StateOfCoverage;
 import eu.qped.java.checkers.coverage.enums.StatementType;
 import eu.qped.java.checkers.coverage.feedback.wanted.ProviderWF;
+import eu.qped.java.checkers.coverage.framework.ast.AstMethod;
+import eu.qped.java.checkers.coverage.framework.coverage.Coverage;
 import eu.qped.java.checkers.coverage.framework.coverage.CoverageClass;
+import eu.qped.java.checkers.coverage.framework.coverage.CoverageMethod;
 
 import java.util.*;
 
@@ -72,7 +75,47 @@ public class ByClass {
 
         if (isNot.size() == constructorKeys.size() && ! isNot.isEmpty()) {
             methodByName = isNot;
+        } else if (constructorKeys.isEmpty() && aClass.state().equals(StateOfCoverage.NOT))  {
+            methodByName.clear();
+            methodByName.put("default", new ByMethod(new Node(aClass) {
+                @Override
+                String keyByClass() {
+                    return null;
+                }
+
+                @Override
+                String className() {
+                    return null;
+                }
+
+                @Override
+                String keyByMethod() {
+                    return null;
+                }
+
+                @Override
+                String methodName() {
+                    return null;
+                }
+
+                @Override
+                void insert(ByMethod byMethod) {
+                    byMethod.coverage = aClass;
+                    byMethod.content = new AstMethod(
+                            StatementType.CONSTRUCTOR,
+                            aClass.className(),
+                            aClass.className(),
+                            0,
+                            0,
+                            List.of("public "+ aClass.className()+"(){",
+                                    "   DEFAULT CONSTRUTOR",
+                                    "}")
+                    );
+                }
+            }));
         }
+
+
 
     }
 

@@ -1,4 +1,5 @@
 testFB : "In Klasse **CLASS** ist die Testmethod **METHOD**  fehlgeschlagen. Es wurde der Wert **WANT** erwartet, aber der Wert ist **GOT**."
+testFailedFB : "In Klasse **CLASS** ist die Testmethod **METHOD**  fehlgeschlagen."
 ifFB : "In der Klasse **CLASS** in der Method **METHOD** ist das if-Statement in der Zeile **INDEX** immer falsch."
 elseFB : "In der Klasse **CLASS** in der Method **METHOD** wird das else-Statement in der Zeile **INDEX** nie ausgefuehrt."
 elseIfFB : "In der Klasse **CLASS** in der Method **METHOD** is das else-if-Statement in der Zeile **INDEX** immer falsch."
