@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import eu.qped.framework.qf.QfObject;
+import eu.qped.java.checkers.mass.Mass;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
@@ -14,10 +15,12 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +28,13 @@ public class CheckerRunner {
 
 	private static final String QF_OBJECT_FILE_PROPERTY = "file";
 
-	private static final File QF_OBJECT_JSON_FILE = new File("qf.json");
+	private static final String QF_OBJECT_JSON_FILE_NAME = "qf.json";
 
 	private final QfObject qfObject;
 
 	private final Checker checker;
 
-	private FileInfo fileInfo;
-
-	private File submittedFile;
+	private File qfObjectJsonFile;
 	
 	private static List<File> tempFiles = new ArrayList<>();
 	
@@ -55,9 +56,10 @@ public class CheckerRunner {
 		}
 		tempFiles.clear();
 	}
-	
-	public CheckerRunner() throws JsonMappingException, JsonProcessingException, IOException {
-		String qfObjectJsonString = FileUtils.readFileToString(QF_OBJECT_JSON_FILE, Charset.defaultCharset());
+
+	public CheckerRunner(File qfObjectJsonFile) throws JsonMappingException, JsonProcessingException, IOException {
+		this.qfObjectJsonFile = qfObjectJsonFile;
+		String qfObjectJsonString = FileUtils.readFileToString(this.qfObjectJsonFile, Charset.defaultCharset());
 
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -72,8 +74,9 @@ public class CheckerRunner {
 		//qfObject = mapper.readValue(qfObjectJsonString, new TypeReference<QfObject>(){});
 
 		String checkerClassName = (String) qfObjectMap.get("checkerClass");
+		// if no Checker class is specified, use Mass as default.
 		if (checkerClassName == null) {
-			throw new IllegalArgumentException("No checker class specified");
+			checkerClassName = Mass.class.getName();
 		}
 
 		try {
@@ -81,31 +84,21 @@ public class CheckerRunner {
 			Class<Checker> cls = (Class<Checker>) Class.forName(checkerClassName);
 			this.checker = cls.getDeclaredConstructor().newInstance();
 
+			FileInfo fileInfo;
 			if (qfObjectMap.containsKey(QF_OBJECT_FILE_PROPERTY)) {
 				fileInfo = mapper.readValue(
 						mapper.writeValueAsString(qfObjectMap.get(QF_OBJECT_FILE_PROPERTY)),
 						new TypeReference<FileInfo>() {
 						});
 
-				submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
-				tempFiles.add(submittedFile);
+				downloadSubmittedFile(fileInfo);
 
-				try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
-					try (OutputStream output = new FileOutputStream(submittedFile)) {
-						final int BUFFER_SIZE = 1024;
-						byte[] buffer = new byte[BUFFER_SIZE];
-						int bytesRead;
-						while ((bytesRead = input.read(buffer, 0, BUFFER_SIZE)) != -1) {
-							output.write(buffer, 0, bytesRead);
-						}
-					}
-				}
 				if (fileInfo.getMimetype().contains("application/x-zip-compressed") || fileInfo.getMimetype().contains("application/zip") ) {
 					try {
 						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
 						tempFiles.add(unzipTarget);
 
-						ZipFile zipFile = new ZipFile(submittedFile);
+						ZipFile zipFile = new ZipFile(fileInfo.getSubmittedFile());
 						zipFile.extractAll(unzipTarget.toString());
 
 						fileInfo.setUnzipped(unzipTarget);
@@ -113,11 +106,11 @@ public class CheckerRunner {
 						throw new IllegalArgumentException(e);
 					}
 				}
-				fileInfo.setSubmittedFile(submittedFile);
 
 
 			} else {
-				submittedFile = null;
+				fileInfo = null;
+				//submittedFile = null;
 			}
 
 
@@ -146,12 +139,46 @@ public class CheckerRunner {
 		}
 	}
 
+	public static void downloadSubmittedFile(FileInfo fileInfo) throws IOException, FileNotFoundException, MalformedURLException {
+		File submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
+		tempFiles.add(submittedFile);
+
+		try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
+			try (OutputStream output = new FileOutputStream(submittedFile)) {
+				final int BUFFER_SIZE = 1024;
+				byte[] buffer = new byte[BUFFER_SIZE];
+				int bytesRead;
+				while ((bytesRead = input.read(buffer, 0, BUFFER_SIZE)) != -1) {
+					output.write(buffer, 0, bytesRead);
+				}
+			}
+		}
+		fileInfo.setSubmittedFile(submittedFile);
+	}
+	
+	public File getQfObjectJsonFile() {
+		return qfObjectJsonFile;
+	}
+
 	public void check() throws Exception {
 		checker.check(qfObject);
 	}
 
 	public static void main(String[] args) throws IOException {
-		CheckerRunner runner = new CheckerRunner();
+		String qfJsonFileName;
+		boolean overwriteJsonFile;
+		if (args.length > 0) {
+			qfJsonFileName = args[0];
+			overwriteJsonFile = false;
+		} else {
+			qfJsonFileName = QF_OBJECT_JSON_FILE_NAME;
+			overwriteJsonFile = true;
+		}
+		
+		File qfJsonFile = new File(qfJsonFileName);
+		
+		CheckerRunner runner = new CheckerRunner(qfJsonFile);
+		
 		try {
 			runner.check();
 		} catch (Exception e) {
@@ -164,9 +191,15 @@ public class CheckerRunner {
 		}
 
 		ObjectMapper mapper = new ObjectMapper();
-
+	
 		ObjectWriter writer = mapper.writer(new MinimalPrettyPrinter());
-		writer.writeValue(QF_OBJECT_JSON_FILE, runner.getQfObject());
+		if (overwriteJsonFile) {
+			writer.writeValue(runner.getQfObjectJsonFile(), runner.getQfObject());
+		}
+		else {
+			writer.writeValue(System.out, runner.getQfObject());
+		}
+		
 		cleanupTempFiles();
 	}
 

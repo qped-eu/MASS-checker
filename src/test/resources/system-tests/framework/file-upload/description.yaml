@@ -2,4 +2,4 @@ title: "URL Cloudcheck can extract ZIP file"
 description: |
     A URL Cloudcheck downloads the file from the specified URL und uses ZIP to extract it.  
 author: "Christoph Bockisch"
-disabled: false
+disabled: true

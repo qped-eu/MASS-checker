@@ -76,19 +76,26 @@ public class ByMethod implements Comparable<ByMethod> {
         while (! stack.isEmpty()) {
             first = stack.removeFirst();
             try {
+                boolean isNoCoverage = false;
                 for (int i = first.start() + 1; i <= first.end(); i ++) {
                     state = aClass.byIndex(i);
                     if (Objects.nonNull(state) && (state.equals(StateOfCoverage.FULL) || state.equals(StateOfCoverage.PARTLY))) {
                         stack.addAll(0, first.statementsFB);
                         continue SKIP;
                     }
+                    if (state.equals(StateOfCoverage.NOT))
+                        isNoCoverage = true;
                 }
-                first.statementsFB.clear();
-                first.createFeedback(provider);
-                if (! isDuplicated.contains(first.getBody()) && ! first.getBody().isBlank()) {
-                    flatt.add(first);
-                    isDuplicated.add(first.getBody());
+                if (isNoCoverage) {
+                    first.statementsFB.clear();
+                    first.createFeedback(provider);
+                    if (! isDuplicated.contains(first.getBody()) && ! first.getBody().isBlank()) {
+                        flatt.add(first);
+                        isDuplicated.add(first.getBody());
+                    }
                 }
+
+
             } catch (IndexOutOfBoundsException i) {
                 continue SKIP;
             }

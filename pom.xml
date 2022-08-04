@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.qped</groupId>
     <artifactId>checkers</artifactId>
@@ -12,6 +10,23 @@
     </properties>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>build-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <outputProperty>maven.compile.classpath</outputProperty>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
@@ -42,6 +57,12 @@
                         </goals>
                         <configuration>
                             <mainClass>eu.qped.framework.CheckerRunner</mainClass>
+                            <systemProperties>
+                                <systemProperty>
+                                    <key>maven.compile.classpath</key>
+                                    <value>${maven.compile.classpath}</value>
+                                </systemProperty>
+                            </systemProperties>
                             <classpathScope>runtime</classpathScope>
                             <addResourcesToClasspath>true</addResourcesToClasspath>
                         </configuration>
@@ -202,5 +223,3 @@
         </dependency>
     </dependencies>
 </project>
-
-

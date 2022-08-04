@@ -47,6 +47,7 @@ public class DefaultFB {
     }
 
     private String testFB = "";
+    private String testFailedFB = "";
     private String ifFB = "";
     private String elseFB = "";
     private String elseIfFB = "";
@@ -56,6 +57,15 @@ public class DefaultFB {
     private String caseFB = "";
     private String methodFB = "";
     private String constructorFB = "";
+
+
+    public String testFailedFB() {
+        return testFailedFB;
+    }
+
+    public void setTestFailedFB(String testFailedFB) {
+        this.testFailedFB = testFailedFB;
+    }
 
     public String constructorFB() {
         return constructorFB;

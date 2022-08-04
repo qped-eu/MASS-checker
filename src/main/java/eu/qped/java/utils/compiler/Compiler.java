@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,7 +81,7 @@ public class Compiler implements CompilerInterface {
             if (files.size() == 0) {
                 return false;
             }
-            files.forEach(System.out::println);
+
         }
         StringWriter stringWriter = new StringWriter();
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);
@@ -88,7 +89,7 @@ public class Compiler implements CompilerInterface {
         if (options == null) {
             setDefaultOptions();
         }
-        addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
+        addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles"); // TODO:: delete compiled class files
         JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
         boolean result = task.call();
 
@@ -111,6 +112,15 @@ public class Compiler implements CompilerInterface {
         options.add("-verbose");
         options.add("-Xlint");
         options.add("-g");
+
+        if (System.getProperty("maven.compile.classpath") != null) {
+            // requires that the corresponding system property is set in the Maven pom
+        	options.addAll(Arrays.asList("-classpath",System.getProperty("maven.compile.classpath")));
+        } else {
+        	// if the checker is not run from Maven (e.g., during testing), inherit classpath from current JVM
+            options.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));        	
+        }
+
     }
 
 
@@ -135,10 +145,14 @@ public class Compiler implements CompilerInterface {
         if (options == null) {
             setDefaultOptions();
         }
-        options.add("-d");
-        options.add(path);
-        options.add("-s");
-        options.add(path);
+        if (! options.contains("-d")) {
+            options.add("-d");
+            options.add(path);
+        }
+        if (! options.contains("-s")) {
+            options.add("-s");
+            options.add(path);
+        }
     }
 
     /**

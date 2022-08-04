@@ -12,6 +12,10 @@ public class CoverageClass implements Coverage {
     private final StateOfCoverage state;
     private final String className;
 
+
+
+
+
     public CoverageClass(
             ArrayList<StateOfCoverage> byIndex,
             CoverageCount branch,
@@ -26,6 +30,10 @@ public class CoverageClass implements Coverage {
         if (!(Objects.nonNull(className) && !className.isBlank()))
             throw new IllegalArgumentException("ERROR::Coverage.new() parameter className can't be null or blank.");
         this.className = className;
+    }
+
+    public int endIndex() {
+        return byIndex.size();
     }
 
     public StateOfCoverage byIndex(int index) {
