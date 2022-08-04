@@ -2,14 +2,12 @@ package eu.qped.java.checkers.mass;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
-import eu.qped.framework.CheckerRunner;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.coverage.CoverageChecker;
-import eu.qped.java.checkers.coverage.QfCovSetting;
+import eu.qped.java.checkers.coverage.*;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -81,6 +79,11 @@ public class Mass implements Checker {
             covSetting.setAnswer(qfObject.getAnswer());
             covSetting.setLanguage(mainSettings.getPreferredLanguage());
             covSetting.setFile(file);
+
+            CoverageSetup coverageSetup = new CoverageSetup(covSetting);
+            CoverageSetup.Data data = coverageSetup.setUp();
+            covSetting.setData(data);
+
             String privateImplementation = covSetting.getPrivateImplementation();
 //            if (privateImplementation != null) {
 //            	FileInfo privImplFileInfo = FileInfo.createForUri(privateImplementation, "application/zip");
@@ -88,7 +91,7 @@ public class Mass implements Checker {
 //                covSetting.setFile(privImplFileInfo);
 //            }
 //
-            coverageChecker = new CoverageChecker(covSetting);
+            coverageChecker = new CoverageMapChecker(covSetting);
         }
 
         //Mass
@@ -127,7 +130,7 @@ public class Mass implements Checker {
 //                ((designFeedbacks != null) ? designFeedbacks.size() : 0)
 //                ((classFeedbacks != null) ? classFeedbacks.size() : 0)
                 ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0)) +
-                massExecutor.getCoverageFeedbacks().size();
+                massExecutor.getCoverageFeedbacks().length;
 
         String[] result = new String[resultLength];
         int resultIndex = 0;
@@ -193,6 +196,8 @@ public class Mass implements Checker {
         for (String feedback : massExecutor.getCoverageFeedbacks()) {
             result[resultIndex++] = feedback;
         }
+
+
 
         qfObject.setFeedback(result);
     }

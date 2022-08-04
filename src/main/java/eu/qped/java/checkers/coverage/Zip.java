@@ -30,6 +30,16 @@ public class Zip implements ZipService {
         }
 
         @Override
+        public void add(String name, File file, boolean isTest) {
+            files.put(name, file);
+            if (isTest) {
+                testClasses.add(name);
+            } else {
+                classes.add(name);
+            }
+        }
+
+        @Override
         public List<String> testClasses() {
             return new LinkedList<>(testClasses);
         }

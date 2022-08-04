@@ -89,7 +89,7 @@ public class Compiler implements CompilerInterface {
         if (options == null) {
             setDefaultOptions();
         }
-        addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
+        addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles"); // TODO:: delete compiled class files
         JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
         boolean result = task.call();
 
@@ -145,10 +145,14 @@ public class Compiler implements CompilerInterface {
         if (options == null) {
             setDefaultOptions();
         }
-        options.add("-d");
-        options.add(path);
-        options.add("-s");
-        options.add(path);
+        if (! options.contains("-d")) {
+            options.add("-d");
+            options.add(path);
+        }
+        if (! options.contains("-s")) {
+            options.add("-s");
+            options.add(path);
+        }
     }
 
     /**

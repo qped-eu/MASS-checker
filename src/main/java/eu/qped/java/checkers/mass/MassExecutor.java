@@ -5,6 +5,7 @@ import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.coverage.CoverageBlockChecker;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
@@ -22,7 +23,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,7 +44,7 @@ public class MassExecutor {
     private List<SyntaxFeedback> syntaxFeedbacks;
     private List<ClassFeedback> classFeedbacks;
     private List<DesignFeedback> designFeedbacks;
-    private List<String> coverageFeedbacks;
+    private String[] coverageFeedbacks;
 
 
     private List<SyntaxError> syntaxErrors;
@@ -80,7 +80,7 @@ public class MassExecutor {
         this.classChecker = classChecker;
         this.coverageChecker = coverageChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
-        this.coverageFeedbacks = new ArrayList<>();
+        this.coverageFeedbacks = new String[]{};
     }
 
     /**

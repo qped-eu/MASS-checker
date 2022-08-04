@@ -50,6 +50,7 @@ public interface ZipService {
 
     interface Extracted {
 
+        void add(String name, File file, boolean isTest);
         List<String> testClasses();
         List<String> classes();
         List<File> files();

@@ -1,13 +1,6 @@
 package eu.qped.java.checkers.coverage;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import eu.qped.framework.CheckerRunner;
 import eu.qped.framework.Feedback;
-import eu.qped.framework.FileInfo;
-import eu.qped.framework.qf.QfObject;
-import eu.qped.framework.qf.QfUser;
 import eu.qped.java.checkers.coverage.feedback.ByClass;
 import eu.qped.java.checkers.coverage.feedback.ByMethod;
 import eu.qped.java.checkers.coverage.feedback.Formatter;
@@ -15,16 +8,9 @@ import eu.qped.java.checkers.coverage.feedback.Summary;
 import eu.qped.java.checkers.coverage.testhelp.*;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CoverageCheckerTest {
@@ -209,7 +195,7 @@ class CoverageCheckerTest {
                 testClasses,
                 classes);
 
-        CoverageChecker toTest = new CoverageChecker();
+        CoverageBlockChecker toTest = new CoverageBlockChecker();
         toTest.covSetting = setting;
 
         Summary summary = toTest.checker(p.getTestClasses(), p.getClasses());

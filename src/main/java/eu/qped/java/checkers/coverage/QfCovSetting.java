@@ -18,6 +18,15 @@ public class QfCovSetting extends QfObjectBase {
     private String privateImplementation = null;
     private String language = "de";
     private boolean debug = false;
+    private CoverageSetup.Data data;
+
+    public CoverageSetup.Data getData() {
+        return data;
+    }
+
+    public void setData(CoverageSetup.Data data) {
+        this.data = data;
+    }
 
     public String getLanguage() {
         return language;
