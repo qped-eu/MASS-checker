@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CoverageClass</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">eu.qped.java.checkers.coverage.framework.coverage</a>
+</div>
+
+<h1>Coverage Summary for Class: CoverageClass (eu.qped.java.checkers.coverage.framework.coverage)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CoverageClass</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package eu.qped.java.checkers.coverage.framework.coverage;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import eu.qped.java.checkers.coverage.CoverageCount;
+<i class="no-highlight">4</i>&nbsp;import eu.qped.java.checkers.coverage.enums.StateOfCoverage;
+<i class="no-highlight">5</i>&nbsp;import java.util.*;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;public class CoverageClass implements Coverage {
+<i class="no-highlight">9</i>&nbsp;    private final ArrayList&lt;StateOfCoverage&gt; byIndex;
+<i class="no-highlight">10</i>&nbsp;    private final CoverageCount branch;
+<i class="no-highlight">11</i>&nbsp;    private final CoverageCount line;
+<i class="no-highlight">12</i>&nbsp;    private final StateOfCoverage state;
+<i class="no-highlight">13</i>&nbsp;    private final String className;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;    public CoverageClass(
+<i class="no-highlight">16</i>&nbsp;            ArrayList&lt;StateOfCoverage&gt; byIndex,
+<i class="no-highlight">17</i>&nbsp;            CoverageCount branch,
+<i class="no-highlight">18</i>&nbsp;            CoverageCount line,
+<i class="no-highlight">19</i>&nbsp;            StateOfCoverage state,
+<b class="nc"><i class="no-highlight">20</i>&nbsp;            String className) {</b>
+<i class="no-highlight">21</i>&nbsp;
+<b class="nc"><i class="no-highlight">22</i>&nbsp;        this.byIndex = Objects.requireNonNull(byIndex, &quot;ERROR::Coverage.new() parameter byIndex can&#39;t be null.&quot;);</b>
+<b class="nc"><i class="no-highlight">23</i>&nbsp;        this.branch = Objects.requireNonNull(branch, &quot;ERROR::Coverage.new() parameter branch can&#39;t be null.&quot;);</b>
+<b class="nc"><i class="no-highlight">24</i>&nbsp;        this.line = Objects.requireNonNull(line, &quot;ERROR::Coverage.new() parameter line can&#39;t be null.&quot;);</b>
+<b class="nc"><i class="no-highlight">25</i>&nbsp;        this.state = Objects.requireNonNull(state, &quot;ERROR::Coverage.new() parameter state can&#39;t be null.&quot;);</b>
+<b class="nc"><i class="no-highlight">26</i>&nbsp;        if (!(Objects.nonNull(className) &amp;&amp; !className.isBlank()))</b>
+<b class="nc"><i class="no-highlight">27</i>&nbsp;            throw new IllegalArgumentException(&quot;ERROR::Coverage.new() parameter className can&#39;t be null or blank.&quot;);</b>
+<b class="nc"><i class="no-highlight">28</i>&nbsp;        this.className = className;</b>
+<i class="no-highlight">29</i>&nbsp;    }
+<i class="no-highlight">30</i>&nbsp;
+<i class="no-highlight">31</i>&nbsp;    public StateOfCoverage byIndex(int index) {
+<i class="no-highlight">32</i>&nbsp;        try {
+<b class="nc"><i class="no-highlight">33</i>&nbsp;            return byIndex.get(index);</b>
+<b class="nc"><i class="no-highlight">34</i>&nbsp;        } catch (IndexOutOfBoundsException i) {</b>
+<b class="nc"><i class="no-highlight">35</i>&nbsp;            return StateOfCoverage.EMPTY;</b>
+<i class="no-highlight">36</i>&nbsp;        }
+<i class="no-highlight">37</i>&nbsp;    }
+<i class="no-highlight">38</i>&nbsp;
+<i class="no-highlight">39</i>&nbsp;    public CoverageCount branch() {
+<b class="nc"><i class="no-highlight">40</i>&nbsp;        return branch;</b>
+<i class="no-highlight">41</i>&nbsp;    }
+<i class="no-highlight">42</i>&nbsp;
+<i class="no-highlight">43</i>&nbsp;    public CoverageCount line() {
+<b class="nc"><i class="no-highlight">44</i>&nbsp;        return line;</b>
+<i class="no-highlight">45</i>&nbsp;    }
+<i class="no-highlight">46</i>&nbsp;
+<i class="no-highlight">47</i>&nbsp;    public StateOfCoverage state() {
+<b class="nc"><i class="no-highlight">48</i>&nbsp;        return state;</b>
+<i class="no-highlight">49</i>&nbsp;    }
+<i class="no-highlight">50</i>&nbsp;
+<i class="no-highlight">51</i>&nbsp;    public String className() {
+<b class="nc"><i class="no-highlight">52</i>&nbsp;        return className;</b>
+<i class="no-highlight">53</i>&nbsp;    }
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;    public StateOfCoverage stateOfClass() {
+<b class="nc"><i class="no-highlight">56</i>&nbsp;        return state;</b>
+<i class="no-highlight">57</i>&nbsp;    }
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;    @Override
+<i class="no-highlight">60</i>&nbsp;    public boolean equals(Object o) {
+<b class="nc"><i class="no-highlight">61</i>&nbsp;        if (this == o) return true;</b>
+<b class="nc"><i class="no-highlight">62</i>&nbsp;        if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="nc"><i class="no-highlight">63</i>&nbsp;        CoverageClass that = (CoverageClass) o;</b>
+<b class="nc"><i class="no-highlight">64</i>&nbsp;        return Objects.deepEquals(byIndex,that.byIndex) &amp;&amp; branch.equals(that.branch) &amp;&amp; line.equals(that.line) &amp;&amp; state == that.state &amp;&amp; className.equals(that.className);</b>
+<i class="no-highlight">65</i>&nbsp;    }
+<i class="no-highlight">66</i>&nbsp;
+<i class="no-highlight">67</i>&nbsp;    @Override
+<i class="no-highlight">68</i>&nbsp;    public int hashCode() {
+<b class="nc"><i class="no-highlight">69</i>&nbsp;        return Objects.hash(byIndex, branch, line, state, className);</b>
+<i class="no-highlight">70</i>&nbsp;    }
+<i class="no-highlight">71</i>&nbsp;
+<i class="no-highlight">72</i>&nbsp;    @Override
+<i class="no-highlight">73</i>&nbsp;    public String toString() {
+<b class="nc"><i class="no-highlight">74</i>&nbsp;        return &quot;CoverageClass{&quot; +</b>
+<i class="no-highlight">75</i>&nbsp;                &quot;byIndex=&quot; + byIndex +
+<i class="no-highlight">76</i>&nbsp;                &quot;, branch=&quot; + branch +
+<i class="no-highlight">77</i>&nbsp;                &quot;, line=&quot; + line +
+<i class="no-highlight">78</i>&nbsp;                &quot;, state=&quot; + state +
+<i class="no-highlight">79</i>&nbsp;                &quot;, className=&#39;&quot; + className + &#39;\&#39;&#39; +
+<i class="no-highlight">80</i>&nbsp;                &#39;}&#39;;
+<i class="no-highlight">81</i>&nbsp;    }
+<i class="no-highlight">82</i>&nbsp;
+<i class="no-highlight">83</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-07-18 15:35</div>
+</div>
+</body>
+</html>

@@ -64,9 +64,7 @@ class JUnit5 implements TestFramework {
 
     private TestCollection convert(TestCollection collection, TestExecutionSummary summary) {
         for (TestExecutionSummary.Failure failure : summary.getFailures()) {
-            if (! parser.parse(failure.getException().toString()))
-                continue;
-
+            boolean hasAssertion = parser.parse(failure.getException().toString());
             String className = null, methodName = null;
             for (UniqueId.Segment segment : failure
                     .getTestIdentifier()
@@ -75,25 +73,25 @@ class JUnit5 implements TestFramework {
 
                 if (SEGMENT_CLASS.equals(segment.getType())) {
                     className = simpleClassName(segment.getValue());
-                    if (Objects.nonNull(methodName)) {
-                        collection.add(new TestResult(
-                                className,
-                                methodName,
-                                parser.want(),
-                                parser.got()));
-                        continue;
-                    }
+                    if (Objects.nonNull(methodName))
+                        break;
                 } else if (SEGMENT_METHOD.equals(segment.getType())) {
                     methodName = convertMethodName(segment.getValue());
-                    if (Objects.nonNull(className)) {
-                        collection.add(new TestResult(
-                                className,
-                                methodName,
-                                parser.want(),
-                                parser.got()));
-                        continue;
-                    }
+                    if (Objects.nonNull(className))
+                        break;
                 }
+            }
+
+            if (hasAssertion) {
+                collection.add(new TestResult(
+                        className,
+                        methodName,
+                        parser.want(),
+                        parser.got()));
+            } else {
+                collection.add(new TestResult(
+                        className,
+                        methodName));
             }
         }
         return collection;

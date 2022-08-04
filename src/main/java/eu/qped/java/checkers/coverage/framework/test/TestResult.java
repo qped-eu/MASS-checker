@@ -13,11 +13,22 @@ public class TestResult {
     private final String want;
     private final String got;
 
+    TestResult(String className, String methodName) {
+        this.className = Objects.requireNonNull(className);
+        this.methodName = Objects.requireNonNull(methodName);
+        this.want = null;
+        this.got = null;
+    }
+
     TestResult(String className, String methodName, String want, String got) {
         this.className = Objects.requireNonNull(className);
         this.methodName = Objects.requireNonNull(methodName);
         this.want = Objects.requireNonNull(want);
         this.got = Objects.requireNonNull(got);
+    }
+
+    public boolean hasFailedWithoutAssertion() {
+        return Objects.isNull(want) && Objects.isNull(got);
     }
 
     public String className() {
@@ -41,7 +52,7 @@ public class TestResult {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TestResult that = (TestResult) o;
-        return className.equals(that.className) && methodName.equals(that.methodName) && want.equals(that.want) && got.equals(that.got);
+        return className.equals(that.className) && methodName.equals(that.methodName) && Objects.equals(want, that.want) && Objects.equals(got, that.got);
     }
 
     @Override

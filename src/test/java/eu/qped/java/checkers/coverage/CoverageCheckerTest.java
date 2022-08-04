@@ -1,13 +1,6 @@
 package eu.qped.java.checkers.coverage;
 
-import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import eu.qped.framework.CheckerRunner;
 import eu.qped.framework.Feedback;
-import eu.qped.framework.FileInfo;
-import eu.qped.framework.qf.QfObject;
-import eu.qped.framework.qf.QfUser;
 import eu.qped.java.checkers.coverage.feedback.ByClass;
 import eu.qped.java.checkers.coverage.feedback.ByMethod;
 import eu.qped.java.checkers.coverage.feedback.Formatter;
@@ -15,83 +8,12 @@ import eu.qped.java.checkers.coverage.feedback.Summary;
 import eu.qped.java.checkers.coverage.testhelp.*;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CoverageCheckerTest {
-
-    @Test
-    public void systemTestStringChristoph() {
-        try {
-            Path f = Path.of( "src/test/resources/system-tests/coverage/tutorial/qf-input.json");
-//            Path qf = Path.of("qf.json");
-//            Files.copy(f, qf, REPLACE_EXISTING);
-
-            CheckerRunner toTest = new CheckerRunner(f.toFile());
-            toTest.check();
-            QfObject got = toTest.getQfObject();
-
-            assertArrayEquals(
-                    new String[] {
-                            "<div><p>Equals method: You have not tested the equals method with an empty bag as parameter.</p></div>"},
-                    Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
-            got.setFeedback(new String[]{});
-        } catch (Exception e) {
-            assertFalse(true, e.getMessage());
-        }
-    }
-
-    @Test
-    public void systemTestString() {
-        try {
-            Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_string.json");
-//            Path qf = Path.of("qf.json");
-//            Files.copy(f, qf, REPLACE_EXISTING);
-
-            CheckerRunner toTest = new CheckerRunner(f.toFile());
-            toTest.check();
-            QfObject got = toTest.getQfObject();
-
-            assertArrayEquals(
-                    new String[] {
-                            "---Equals method: You have not tested the equals method with an empty bag as parameter."},
-                    Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
-            got.setFeedback(new String[]{});
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertFalse(true, e.toString());
-        }
-    }
-
-    @Test
-    public void systemTestZip() {
-        try {
-            Path f = Path.of( "coverage_testclasses/testcoverage-pg/answer_zip.json");
-            CheckerRunner toTest = new CheckerRunner(f.toFile());
-            toTest.check();
-            QfObject got = toTest.getQfObject();
-            Arrays.stream(got.getFeedback()).forEach(System.out::println);
-            assertArrayEquals(
-                    new String[] {
-                            "---Equals method: You have not tested the equals method with an empty bag as parameter."},
-                    Arrays.stream(got.getFeedback()).map(fb -> fb.replace("\n", "")).toArray());
-            got.setFeedback(new String[]{});
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertFalse(true, e.getMessage());
-        }
-    }
-
-
 
     @Test
     public void bagTestCaseNoConstructor() {
@@ -273,7 +195,7 @@ class CoverageCheckerTest {
                 testClasses,
                 classes);
 
-        CoverageChecker toTest = new CoverageChecker();
+        CoverageBlockChecker toTest = new CoverageBlockChecker();
         toTest.covSetting = setting;
 
         Summary summary = toTest.checker(p.getTestClasses(), p.getClasses());

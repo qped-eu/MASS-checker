@@ -1,0 +1,270 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DefaultFB</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">eu.qped.java.checkers.coverage.feedback</a>
+</div>
+
+<h1>Coverage Summary for Class: DefaultFB (eu.qped.java.checkers.coverage.feedback)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DefaultFB</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/38)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DefaultFB$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/41)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package eu.qped.java.checkers.coverage.feedback;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+<i class="no-highlight">4</i>&nbsp;import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+<i class="no-highlight">5</i>&nbsp;import eu.qped.framework.qf.QfUser;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;import java.util.HashSet;
+<i class="no-highlight">8</i>&nbsp;import java.util.Set;
+<i class="no-highlight">9</i>&nbsp;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;/**
+<i class="no-highlight">12</i>&nbsp; * Defines the default feedback for the case the feedback is from type
+<i class="no-highlight">13</i>&nbsp; * {@link eu.qped.java.checkers.coverage.enums.FeedbackType#COVERAGE} or
+<i class="no-highlight">14</i>&nbsp; * {@link eu.qped.java.checkers.coverage.enums.FeedbackType#TEST}.
+<i class="no-highlight">15</i>&nbsp; * @author Herfurth
+<i class="no-highlight">16</i>&nbsp; * @version 1.0
+<i class="no-highlight">17</i>&nbsp; */
+<b class="nc"><i class="no-highlight">18</i>&nbsp;public class DefaultFB {</b>
+<i class="no-highlight">19</i>&nbsp;    /**
+<i class="no-highlight">20</i>&nbsp;     * Defines all supported languages.
+<i class="no-highlight">21</i>&nbsp;     */
+<i class="no-highlight">22</i>&nbsp;    private static final String ENGLISH = &quot;en&quot;;
+<b class="nc"><i class="no-highlight">23</i>&nbsp;    private static final Set&lt;String&gt; SUPPORTED_LANGUAGES = new HashSet&lt;&gt;() {{</b>
+<b class="nc"><i class="no-highlight">24</i>&nbsp;        add(ENGLISH);</b>
+<b class="nc"><i class="no-highlight">25</i>&nbsp;        add(&quot;ger&quot;);</b>
+<i class="no-highlight">26</i>&nbsp;    }};
+<i class="no-highlight">27</i>&nbsp;
+<i class="no-highlight">28</i>&nbsp;    /**
+<i class="no-highlight">29</i>&nbsp;     * Defines the default language if {@link QfUser#getLanguage()} is null or invalid.
+<i class="no-highlight">30</i>&nbsp;     */
+<i class="no-highlight">31</i>&nbsp;    private static final String DEFAULT_LANGUAGE = ENGLISH;
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;    /**
+<i class="no-highlight">34</i>&nbsp;     * creates a new instance of the {@link DefaultFB} for a given language.
+<i class="no-highlight">35</i>&nbsp;     */
+<i class="no-highlight">36</i>&nbsp;    public static DefaultFB load(String language) {
+<b class="nc"><i class="no-highlight">37</i>&nbsp;        if (! SUPPORTED_LANGUAGES.contains(language)) {</b>
+<b class="nc"><i class="no-highlight">38</i>&nbsp;            language = DEFAULT_LANGUAGE;</b>
+<i class="no-highlight">39</i>&nbsp;        }
+<b class="nc"><i class="no-highlight">40</i>&nbsp;        ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());</b>
+<i class="no-highlight">41</i>&nbsp;        try {
+<b class="nc"><i class="no-highlight">42</i>&nbsp;            return yamlMapper.readValue(ClassLoader.getSystemResource(&quot;coverage/language/&quot; + language + &quot;.yaml&quot;), DefaultFB.class);</b>
+<b class="nc"><i class="no-highlight">43</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i class="no-highlight">44</i>&nbsp;            return new DefaultFB();</b>
+<i class="no-highlight">45</i>&nbsp;        }
+<i class="no-highlight">46</i>&nbsp;    }
+<i class="no-highlight">47</i>&nbsp;
+<b class="nc"><i class="no-highlight">48</i>&nbsp;    private String testFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">49</i>&nbsp;    private String ifFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">50</i>&nbsp;    private String elseFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">51</i>&nbsp;    private String elseIfFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">52</i>&nbsp;    private String forFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">53</i>&nbsp;    private String forEachFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">54</i>&nbsp;    private String whileFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">55</i>&nbsp;    private String caseFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">56</i>&nbsp;    private String methodFB = &quot;&quot;;</b>
+<b class="nc"><i class="no-highlight">57</i>&nbsp;    private String constructorFB = &quot;&quot;;</b>
+<i class="no-highlight">58</i>&nbsp;
+<i class="no-highlight">59</i>&nbsp;    public String constructorFB() {
+<b class="nc"><i class="no-highlight">60</i>&nbsp;        return constructorFB;</b>
+<i class="no-highlight">61</i>&nbsp;    }
+<i class="no-highlight">62</i>&nbsp;
+<i class="no-highlight">63</i>&nbsp;    public void setConstructorFB(String constructorFB) {
+<b class="nc"><i class="no-highlight">64</i>&nbsp;        this.constructorFB = constructorFB;</b>
+<i class="no-highlight">65</i>&nbsp;    }
+<i class="no-highlight">66</i>&nbsp;
+<i class="no-highlight">67</i>&nbsp;    public String methodFB() {
+<b class="nc"><i class="no-highlight">68</i>&nbsp;        return methodFB;</b>
+<i class="no-highlight">69</i>&nbsp;    }
+<i class="no-highlight">70</i>&nbsp;
+<i class="no-highlight">71</i>&nbsp;    public void setMethodFB(String methodFB) {
+<b class="nc"><i class="no-highlight">72</i>&nbsp;        this.methodFB = methodFB;</b>
+<i class="no-highlight">73</i>&nbsp;    }
+<i class="no-highlight">74</i>&nbsp;
+<i class="no-highlight">75</i>&nbsp;    public String testFB() {
+<b class="nc"><i class="no-highlight">76</i>&nbsp;        return testFB;</b>
+<i class="no-highlight">77</i>&nbsp;    }
+<i class="no-highlight">78</i>&nbsp;
+<i class="no-highlight">79</i>&nbsp;    public void setTestFB(String testFB) {
+<b class="nc"><i class="no-highlight">80</i>&nbsp;        this.testFB = testFB;</b>
+<i class="no-highlight">81</i>&nbsp;    }
+<i class="no-highlight">82</i>&nbsp;
+<i class="no-highlight">83</i>&nbsp;    public String ifFB() {
+<b class="nc"><i class="no-highlight">84</i>&nbsp;        return ifFB;</b>
+<i class="no-highlight">85</i>&nbsp;    }
+<i class="no-highlight">86</i>&nbsp;
+<i class="no-highlight">87</i>&nbsp;    public void setIfFB(String ifFB) {
+<b class="nc"><i class="no-highlight">88</i>&nbsp;        this.ifFB = ifFB;</b>
+<i class="no-highlight">89</i>&nbsp;    }
+<i class="no-highlight">90</i>&nbsp;
+<i class="no-highlight">91</i>&nbsp;    public String elseFB() {
+<b class="nc"><i class="no-highlight">92</i>&nbsp;        return elseFB;</b>
+<i class="no-highlight">93</i>&nbsp;    }
+<i class="no-highlight">94</i>&nbsp;
+<i class="no-highlight">95</i>&nbsp;    public void setElseFB(String elseFB) {
+<b class="nc"><i class="no-highlight">96</i>&nbsp;        this.elseFB = elseFB;</b>
+<i class="no-highlight">97</i>&nbsp;    }
+<i class="no-highlight">98</i>&nbsp;
+<i class="no-highlight">99</i>&nbsp;    public String elseIfFB() {
+<b class="nc"><i class="no-highlight">100</i>&nbsp;        return elseIfFB;</b>
+<i class="no-highlight">101</i>&nbsp;    }
+<i class="no-highlight">102</i>&nbsp;
+<i class="no-highlight">103</i>&nbsp;    public void setElseIfFB(String elseIfFB) {
+<b class="nc"><i class="no-highlight">104</i>&nbsp;        this.elseIfFB = elseIfFB;</b>
+<i class="no-highlight">105</i>&nbsp;    }
+<i class="no-highlight">106</i>&nbsp;
+<i class="no-highlight">107</i>&nbsp;    public String forFB() {
+<b class="nc"><i class="no-highlight">108</i>&nbsp;        return forFB;</b>
+<i class="no-highlight">109</i>&nbsp;    }
+<i class="no-highlight">110</i>&nbsp;
+<i class="no-highlight">111</i>&nbsp;    public void setForFB(String forFB) {
+<b class="nc"><i class="no-highlight">112</i>&nbsp;        this.forFB = forFB;</b>
+<i class="no-highlight">113</i>&nbsp;    }
+<i class="no-highlight">114</i>&nbsp;
+<i class="no-highlight">115</i>&nbsp;    public String foreachFB() {
+<b class="nc"><i class="no-highlight">116</i>&nbsp;        return forEachFB;</b>
+<i class="no-highlight">117</i>&nbsp;    }
+<i class="no-highlight">118</i>&nbsp;
+<i class="no-highlight">119</i>&nbsp;    public void setForEachFB(String forEachFB) {
+<b class="nc"><i class="no-highlight">120</i>&nbsp;        this.forEachFB = forEachFB;</b>
+<i class="no-highlight">121</i>&nbsp;    }
+<i class="no-highlight">122</i>&nbsp;
+<i class="no-highlight">123</i>&nbsp;    public String whileFB() {
+<b class="nc"><i class="no-highlight">124</i>&nbsp;        return whileFB;</b>
+<i class="no-highlight">125</i>&nbsp;    }
+<i class="no-highlight">126</i>&nbsp;
+<i class="no-highlight">127</i>&nbsp;    public void setWhileFB(String whileFB) {
+<b class="nc"><i class="no-highlight">128</i>&nbsp;        this.whileFB = whileFB;</b>
+<i class="no-highlight">129</i>&nbsp;    }
+<i class="no-highlight">130</i>&nbsp;
+<i class="no-highlight">131</i>&nbsp;    public String caseFB() {
+<b class="nc"><i class="no-highlight">132</i>&nbsp;        return caseFB;</b>
+<i class="no-highlight">133</i>&nbsp;    }
+<i class="no-highlight">134</i>&nbsp;
+<i class="no-highlight">135</i>&nbsp;    public void setCaseFB(String caseFB) {
+<b class="nc"><i class="no-highlight">136</i>&nbsp;        this.caseFB = caseFB;</b>
+<i class="no-highlight">137</i>&nbsp;    }
+<i class="no-highlight">138</i>&nbsp;
+<i class="no-highlight">139</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2022-07-18 15:35</div>
+</div>
+</body>
+</html>

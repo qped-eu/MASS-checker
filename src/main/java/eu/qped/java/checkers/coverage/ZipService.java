@@ -10,7 +10,7 @@ public interface ZipService {
     static String UNZIPPED_NAME = "unzipped";
 
     TestClass MAVEN_TEST_CLASS = (file) -> {
-        return Pattern.matches("src/test/java.*\\.java$", file.getPath());
+        return Pattern.matches(".*src/test/java/.*\\.java$", file.getPath());
     };
 
     TestClass JAVA_TEST_CLASS = (file) -> {
@@ -21,7 +21,7 @@ public interface ZipService {
         Pattern pattern = Pattern.compile(".*src/+(test|main)+/java/(.*)\\.java$");
         Matcher matcher = pattern.matcher(file.getPath());
         if (matcher.find()) {
-            return matcher.group(2);
+            return matcher.group(2).replace("/",".");
         }
         return null;
     };
@@ -30,7 +30,7 @@ public interface ZipService {
         Pattern pattern = Pattern.compile(".*/"+UNZIPPED_NAME+"\\d+/(.*)\\.java$");
         Matcher matcher = pattern.matcher(file.getPath());
         if (matcher.find()) {
-            return matcher.group(1);
+            return matcher.group(1).replace("/",".");
         }
         return null;
     };
@@ -50,6 +50,7 @@ public interface ZipService {
 
     interface Extracted {
 
+        void add(String name, File file, boolean isTest);
         List<String> testClasses();
         List<String> classes();
         List<File> files();
