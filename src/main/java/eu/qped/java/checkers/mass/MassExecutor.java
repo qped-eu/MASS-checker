@@ -124,9 +124,11 @@ public class MassExecutor {
                 coverageFeedbacks = coverageChecker.check();
 
         } else if (mainSettingsConfigurator.isCoverageNeeded()) {
+            // Found no other solution:
+            // The problem is if the student answer needs a klass from a teacher to compile
+            // the syntaxChecker always fails.
             coverageFeedbacks = coverageChecker.check();
-
-        }else {
+        } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();

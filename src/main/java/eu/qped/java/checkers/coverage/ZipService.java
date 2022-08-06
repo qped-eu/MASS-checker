@@ -1,16 +1,27 @@
 package eu.qped.java.checkers.coverage;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public interface ZipService {
+
     static String UNZIPPED_NAME = "unzipped";
 
+    static String sep(String pattern) {
+        if (File.separator.equals("/")) {
+            return pattern;
+        } else {
+            return pattern.replace("/", "\\\\");
+        }
+    }
+
+
     TestClass MAVEN_TEST_CLASS = (file) -> {
-        return Pattern.matches(".*src/test/java/.*\\.java$", file.getPath());
+        return Pattern.matches(sep( ".*src/test/java/.*\\.java$"), file.getPath());
     };
 
     TestClass JAVA_TEST_CLASS = (file) -> {
@@ -18,19 +29,19 @@ public interface ZipService {
     };
 
     Classname MAVEN_CLASS_NAME = (file) -> {
-        Pattern pattern = Pattern.compile(".*src/+(test|main)+/java/(.*)\\.java$");
+        Pattern pattern = Pattern.compile(sep(".*src/(test|main)/java/(.*)\\.java$"));
         Matcher matcher = pattern.matcher(file.getPath());
         if (matcher.find()) {
-            return matcher.group(2).replace("/",".");
+            return matcher.group(2).replace(File.separator,".");
         }
         return null;
     };
 
     Classname JAVA_CLASS_NAME = (file) -> {
-        Pattern pattern = Pattern.compile(".*/"+UNZIPPED_NAME+"\\d+/(.*)\\.java$");
+        Pattern pattern = Pattern.compile(sep(".*/"+UNZIPPED_NAME+"\\d+/(.*)\\.java$"));
         Matcher matcher = pattern.matcher(file.getPath());
         if (matcher.find()) {
-            return matcher.group(1).replace("/",".");
+            return matcher.group(1).replace(File.separator,".");
         }
         return null;
     };

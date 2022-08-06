@@ -57,7 +57,9 @@ class JavaParser implements AstFramework {
                     .filter(n -> typeByClass.containsKey(n.getClass()))
                     .collect(Collectors.toList())) {
 
+
                 if (isNotExcluded && (node instanceof Statement)) {
+
                     convertStatement((Statement) node, className, methodName);
 
                 } else if (node instanceof MethodDeclaration) {
@@ -179,6 +181,7 @@ class JavaParser implements AstFramework {
 
     private void convertIfStmt(IfStmt ifStmt, AstResult current) {
         Statement elseStmt = ifStmt.getElseStmt().get();
+
         if (elseStmt.getBegin().isPresent()) {
             popIfBehind(current);
             current.end = elseStmt.getBegin().get().line - 1;

@@ -15,27 +15,27 @@ public class CoverageCheckerSystemTest {
     // TEST: SET, GET, PUBLIC, PROTECTED, FORMAT
 
 
-    @Test
-    public void map() {
-       assertDoesNotThrow(() -> systemTest(new systemTestValue("MAP", "src/test/resources/system-tests/framework/even-test/qf-input.json" , new String[]{
-               "---In class **EvenTest** the test method **testEven** failed. The expected value is **true** but was actually **false**.",
-               "---You only tested the method with odd numbers."
-
-       })));
-    }
+//    @Test
+//    public void map() {
+//       assertDoesNotThrow(() -> systemTest(new systemTestValue("MAP", "src/test/resources/system-tests/framework/even-test/qf-input.json" , new String[]{
+//               "---In class **EvenTest** the test method **testEven** failed. The expected value is **true** but was actually **false**.",
+//               "---You only tested the method with odd numbers."
+//
+//       })));
+//    }
 
 
     // TEST_SCHEMA:: CONVENTION<JAVA, MAVEB>_ANSWER<STR=STRING, ZIP=ZIP FOLDER >_TEACHER<T=TESTKLASS, K=KLASS>_STUDENT<T=TESTKLASS, K=KLASS>
     @Test
     public void Test_Tutorial_dry_run() {
         systemTestValue[] testValues = new systemTestValue[] {
-                new systemTestValue("TEST 1: JAVA_STR_KT","coverage_testclasses/tutorial-dry-run/JAVA_STR_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
-//                new systemTestValue("TEST 2: JAVA_STR_TK","coverage_testclasses/tutorial-dry-run/JAVA_STR_TK.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
-//                new systemTestValue("TEST 3: JAVA_ZIP_KT","coverage_testclasses/tutorial-dry-run/JAVA_ZIP_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
-//                new systemTestValue("TEST 4: JAVA_ZIP_TK","coverage_testclasses/tutorial-dry-run/JAVA_ZIP_TK.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
-//                new systemTestValue("TEST 5: MAVEN_ZIP_TK","coverage_testclasses/tutorial-dry-run/MAVEN_ZIP_TK.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
-//                new systemTestValue("TEST 6: MAVEN_ZIP_KT","coverage_testclasses/tutorial-dry-run/MAVEN_ZIP_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
-//                new systemTestValue("TEST 7: EMPTY_TEST_JAVA_STR_KT","coverage_testclasses/tutorial-dry-run/EMPTY_TEST_JAVA_STR_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed.---FAILED"}),
+                new systemTestValue("TEST 1: JAVA_STR_KT","coverage_testclasses/even/JAVA_STR_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
+                new systemTestValue("TEST 2: JAVA_STR_TK","coverage_testclasses/even/JAVA_STR_TK.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
+                new systemTestValue("TEST 3: JAVA_ZIP_KT","coverage_testclasses/even/JAVA_ZIP_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
+                new systemTestValue("TEST 4: JAVA_ZIP_TK","coverage_testclasses/even/JAVA_ZIP_TK.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
+                new systemTestValue("TEST 5: MAVEN_ZIP_TK","coverage_testclasses/even/MAVEN_ZIP_TK.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
+                new systemTestValue("TEST 6: MAVEN_ZIP_KT","coverage_testclasses/even/MAVEN_ZIP_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.---You only tested the method with even numbers."}),
+                new systemTestValue("TEST 7: EMPTY_TEST_JAVA_STR_KT","coverage_testclasses/even/EMPTY_TEST_JAVA_STR_KT.json", new String[] {"---In class **EvenTest** the test method **test** failed.---FAILED"}),
         };
 
         for (final systemTestValue value : testValues) {

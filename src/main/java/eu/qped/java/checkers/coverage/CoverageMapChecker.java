@@ -24,13 +24,16 @@ public class CoverageMapChecker implements CoverageChecker {
 
     @Override
     public String[] check() {
-        CoverageSetup.Data data = setting.getData();
-        data.cleanUp();
+        CoverageSetup.Data data = new CoverageSetup(setting).setUp();
+
         if (! data.isCompiled) {
+            data.cleanUp();
             return data.syntaxFeedback.toArray(String[]::new);
         }
 
-        return checker(data.testclasses, data.classes);
+        String[] fb = checker(data.testclasses, data.classes);
+        data.cleanUp();
+        return fb;
     }
 
     public String[] checker(List<CovInformation> testClasses, List<CovInformation> classes) {
