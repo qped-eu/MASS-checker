@@ -1,7 +1,6 @@
 {
-   "feedback":["---\n\nIn class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.\n\n---\n\nYou only tested the method with even numbers.\n\n"],
    "answer":"",
-   "feedback":[],
+   "feedback" : [ "---\n\nIn class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.\n\n---\n\nIn class **Even** at the method **isTrue** the else statement in line **5** is never used.\n\n" ],
    "checkerClass":"eu.qped.java.checkers.mass.Mass",
    "mass":{
       "coverage": {
@@ -10,7 +9,7 @@
          "excludeBYNameSet" : [],
          "convention": "MAVEN",
          "format" : "",
-         "feedback" : [":TEST","Even:CUSTOM:3:You only tested the method with odd numbers.", "Even:CUSTOM:5:You only tested the method with even numbers."]
+         "feedback" : ["Even:COVERAGE",":TEST"]
       },
       "coverageSelected": "true"
    },

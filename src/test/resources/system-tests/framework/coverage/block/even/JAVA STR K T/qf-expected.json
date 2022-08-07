@@ -1,6 +1,6 @@
 {
    "answer":"import org.junit.jupiter.api.Test;\n\nimport static  org.junit.jupiter.api.Assertions.*;\n\npublic class EvenTest {\n\n    @Test\n    public void test() {\n        Even even = new Even();\n        assertFalse(even.isTrue(2));    // This test should fail\n    }\n\n}",
-   "feedback":["---\n\nIn class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.\n\n---\n\nYou only tested the method with even numbers.\n\n"],
+   "feedback" : [ "---\n\nIn class **EvenTest** the test method **test** failed. The expected value is **false** but was actually **true**.\n\n---\n\nIn class **Even** at the method **isTrue** the else statement in line **5** is never used.\n\n" ],
    "checkerClass":"eu.qped.java.checkers.mass.Mass",
    "mass":{
       "coverage": {
@@ -9,7 +9,7 @@
          "excludeBYNameSet" : [],
          "convention": "JAVA",
          "format" : "",
-         "feedback" : [":TEST", "Even:CUSTOM:3:You only tested the method with odd numbers.", "Even:CUSTOM:5:You only tested the method with even numbers."]
+         "feedback" : ["Even:COVERAGE",":TEST"]
       },
       "coverageSelected": "true"
    }

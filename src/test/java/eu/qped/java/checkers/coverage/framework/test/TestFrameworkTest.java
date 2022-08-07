@@ -64,7 +64,7 @@ class TestFrameworkTest {
                 assertEquals(want.get(g.methodName()), g);
             }
         } catch (Exception e) {
-            assertFalse(true, e.getMessage());
+            fail(e);
         }
     }
 
