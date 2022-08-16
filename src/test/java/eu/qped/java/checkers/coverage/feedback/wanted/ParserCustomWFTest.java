@@ -36,10 +36,12 @@ class ParserCustomWFTest {
                 new Test("null: ", null, false, null, null, null, null),
                 new Test("empty: ", "", false, null, null, null, null),
                 new Test("empty no type: " , ":::", false, null, null, null, null),
-                new Test("empty TEST:" , ":TEST::", true, "", FeedbackType.TEST, "", ""),
-                new Test("empty COVERAGE:" , ":COVERAGE::", true, "", FeedbackType.COVERAGE, "", ""),
-                new Test("empty CUSTOM:" , ":CUSTOM::", true, "", FeedbackType.CUSTOM, "", ""),
-                new Test("full CUSTOM:" , "CLASS:CUSTOM:IDENTIFIER:MSG", true, "CLASS", FeedbackType.CUSTOM, "IDENTIFIER", "MSG"));
+                new Test("empty TEST:" , ":TEST::", false, null, null, null, null),
+                new Test("empty COVERAGE:" , ":COVERAGE::", false, null, null, null, null),
+                new Test("empty CUSTOM:" , ":CUSTOM::", false, null, null, null, null),
+                new Test("full CUSTOM:" , "CLASS:CUSTOM:IDENTIFIER:MSG", true, "CLASS", FeedbackType.CUSTOM, "IDENTIFIER", "MSG"),
+                new Test("full TEST:" , "CLASS:TEST:IDENTIFIER:MSG", true, "CLASS", FeedbackType.TEST, "IDENTIFIER", "MSG"),
+                new Test("full COVERAGE:" , "CLASS:COVERAGE:IDENTIFIER:MSG", true, "CLASS", FeedbackType.COVERAGE, "IDENTIFIER", "MSG"));
         ParserCustomWF toTest = new ParserCustomWF();
         for (Test test : tests) {
             assertEquals(test.hasMatch, toTest.parse(test.string), test.testName + "hasMatch not equals");

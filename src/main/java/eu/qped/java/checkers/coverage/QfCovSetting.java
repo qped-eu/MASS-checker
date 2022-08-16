@@ -17,15 +17,14 @@ public class QfCovSetting extends QfObjectBase {
     private FileInfo file = null;
     private String privateImplementation = null;
     private String language = "de";
-    private boolean debug = false;
-    private CoverageSetup.Data data;
+    private boolean useBlock = true;
 
-    public CoverageSetup.Data getData() {
-        return data;
+    public boolean isUseBlock() {
+        return useBlock;
     }
 
-    public void setData(CoverageSetup.Data data) {
-        this.data = data;
+    public void setUseBlock(boolean useBlock) {
+        this.useBlock = useBlock;
     }
 
     public String getLanguage() {

@@ -80,18 +80,11 @@ public class Mass implements Checker {
             covSetting.setLanguage(mainSettings.getPreferredLanguage());
             covSetting.setFile(file);
 
-            CoverageSetup coverageSetup = new CoverageSetup(covSetting);
-            CoverageSetup.Data data = coverageSetup.setUp();
-            covSetting.setData(data);
-
-            String privateImplementation = covSetting.getPrivateImplementation();
-//            if (privateImplementation != null) {
-//            	FileInfo privImplFileInfo = FileInfo.createForUri(privateImplementation, "application/zip");
-//            	CheckerRunner.downloadSubmittedFile(privImplFileInfo);
-//                covSetting.setFile(privImplFileInfo);
-//            }
-//
-            coverageChecker = new CoverageMapChecker(covSetting);
+            if (covSetting.isUseBlock()) {
+                coverageChecker = new CoverageBlockChecker(covSetting);
+            } else  {
+                coverageChecker = new CoverageMapChecker(covSetting);
+            }
         }
 
         //Mass

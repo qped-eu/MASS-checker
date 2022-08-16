@@ -142,7 +142,6 @@ class CoverageCheckerTest {
     }
 
 
-
     @Test
     public void bagTestCaseAllStmtCUSTOM() {
         QfCovSetting setting = new QfCovSetting();
