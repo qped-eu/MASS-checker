@@ -5,7 +5,6 @@ import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.coverage.CoverageBlockChecker;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
@@ -120,8 +119,9 @@ public class MassExecutor {
                     e.printStackTrace();
                 }
             }
-            if (mainSettingsConfigurator.isCoverageNeeded())
+            if (mainSettingsConfigurator.isCoverageNeeded()) {
                 coverageFeedbacks = coverageChecker.check();
+            }
 
         } else if (mainSettingsConfigurator.isCoverageNeeded()) {
             coverageFeedbacks = coverageChecker.check();

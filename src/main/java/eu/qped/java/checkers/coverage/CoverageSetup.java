@@ -3,6 +3,7 @@ package eu.qped.java.checkers.coverage;
 
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
+import eu.qped.java.checkers.coverage.framework.coverage.CoverageFacade;
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.AbstractSyntaxFeedbackGenerator;
@@ -22,47 +23,14 @@ import java.util.stream.Collectors;
 public class CoverageSetup {
     private static final String MAVEN = "MAVEN", JAVA = "JAVA";
 
-
-    public class Info implements CovInformation {
-        private final byte[] byteCode;
-        private final String classname;
-        private final String content;
-
-        public Info(byte[] byteCode, String classname, String content) {
-            this.byteCode = byteCode;
-            this.classname = classname;
-            this.content = content;
-        }
-
-        @Override
-        public String simpleClassName() {
-            return classname.substring(classname.lastIndexOf(".") + 1);
-        }
-
-        @Override
-        public String content() {
-            return content;
-        }
-
-        @Override
-        public String className() {
-            return classname;
-        }
-
-        @Override
-        public byte[] byteCode() {
-            return byteCode;
-        }
-    }
-
     public class Data {
-        public final List<CovInformation> testclasses;
-        public final List<CovInformation> classes;
+        public final List<CoverageFacade> testclasses;
+        public final List<CoverageFacade> classes;
         public final List<String> syntaxFeedback;
         public final boolean isCompiled;
         private final ZipService zipService;
 
-        public Data(List<CovInformation> testclasses, List<CovInformation> classes, List<String> syntaxFeedback, boolean isCompiled, ZipService zipService) {
+        public Data(List<CoverageFacade> testclasses, List<CoverageFacade> classes, List<String> syntaxFeedback, boolean isCompiled, ZipService zipService) {
             this.testclasses = testclasses;
             this.classes = classes;
             this.syntaxFeedback = syntaxFeedback;
@@ -208,14 +176,14 @@ public class CoverageSetup {
         return syntaxChecker.check();
     }
 
-    private LinkedList<CovInformation> preprocessing(
+    private LinkedList<CoverageFacade> preprocessing(
             Map<String, File> javafileByClassname,
             List<String> classname,
             String absolutePath
     )  {
-        LinkedList<CovInformation> infos = new LinkedList<>();
+        LinkedList<CoverageFacade> infos = new LinkedList<>();
         for (String name : classname) {
-            infos.add(new Info(
+            infos.add(new CoverageFacade(
                     readByteCode(Path.of(absolutePath + "/" + name.replace(".","/") + ".class").toString()),
                     name,
                     readJavacontent(javafileByClassname.get(name))));

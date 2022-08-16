@@ -84,14 +84,7 @@ public class Mass implements Checker {
             CoverageSetup.Data data = coverageSetup.setUp();
             covSetting.setData(data);
 
-            String privateImplementation = covSetting.getPrivateImplementation();
-//            if (privateImplementation != null) {
-//            	FileInfo privImplFileInfo = FileInfo.createForUri(privateImplementation, "application/zip");
-//            	CheckerRunner.downloadSubmittedFile(privImplFileInfo);
-//                covSetting.setFile(privImplFileInfo);
-//            }
-//
-            coverageChecker = new CoverageMapChecker(covSetting);
+            coverageChecker = new CoverageChecker(covSetting);
         }
 
         //Mass
