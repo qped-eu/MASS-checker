@@ -38,14 +38,14 @@ public class MetricThreshold implements Comparable<MetricThreshold> {
 
         if (lowerBound <= upperBound) {
             this.lowerBound = lowerBound;
-            if (noMax) {
+            if (noMax && upperBound < 0) {
                 this.upperBound = Double.MAX_VALUE;
             } else {
                 this.upperBound = upperBound;
             }
         } else {
             this.lowerBound = upperBound;
-            if (noMax) {
+            if (noMax && (lowerBound < 0)) {
                 this.upperBound = Double.MAX_VALUE;
             } else {
                 this.upperBound = lowerBound;

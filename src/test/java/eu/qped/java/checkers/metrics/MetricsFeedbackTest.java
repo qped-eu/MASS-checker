@@ -53,21 +53,21 @@ class MetricsFeedbackTest {
 
         assertEquals
                 ("You are within the " + Metric.AMC + "'s threshold.",
-                        MetricsFeedbackGenerator.generateDefaultSuggestions(
+                        MetricsFeedbackGenerator.generateDefaultSuggestion(
                                 Metric.AMC, false, false));
 
         assertEquals
                 ("The " + Metric.AMC + "'s value is too low: Increase your average method size, e.g. by joining multiple methods with mostly the same functionalities from over-engineering.",
-                        MetricsFeedbackGenerator.generateDefaultSuggestions(
+                        MetricsFeedbackGenerator.generateDefaultSuggestion(
                                 Metric.AMC, true, false));
 
         assertEquals
                 ("The " + Metric.AMC + "'s value is too high: Decrease your average method size, e.g. by delegating functionalities to other newly created methods.",
-                        MetricsFeedbackGenerator.generateDefaultSuggestions(
+                        MetricsFeedbackGenerator.generateDefaultSuggestion(
                                 Metric.AMC, false, true));
 
         assertThrows(IllegalArgumentException.class,
-                () -> MetricsFeedbackGenerator.generateDefaultSuggestions(
+                () -> MetricsFeedbackGenerator.generateDefaultSuggestion(
                         Metric.AMC,
                         true,
                         true));

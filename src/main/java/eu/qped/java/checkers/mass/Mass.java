@@ -15,6 +15,7 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.SyntaxFeedback;
+import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +92,7 @@ public class Mass implements Checker {
         int resultLength = 100
                 + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
                 + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
-//                + ((metricsCheckerFeedbacks != null) ? metricsCheckerFeedbacks.size() : 0)
+                + ((metricsFeedbacks != null) ? metricsFeedbacks.size() : 0)
 //                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
                 + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
         String[] result = new String[resultLength];
@@ -121,19 +122,16 @@ public class Mass implements Checker {
         }
 
 
-        for (MetricsFeedback df : metricsFeedbacks) {
-            result[resultIndex] = "design Feedback";
+        result[resultIndex] = MarkdownFormatterUtility.asHeading2("Metrics Feedback");
+        for (MetricsFeedback metricsFeedback : metricsFeedbacks) {
             result[resultIndex + 1] =
-                    "In class '" + df.getClassName() + ".java'"
+                    MarkdownFormatterUtility.asHeading3("In class " + MarkdownFormatterUtility.asMonospace(metricsFeedback.getClassName() + ".java", false, null))
+                            + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
+                            + " measured with value: " + MarkdownFormatterUtility.asMonospace(Double.toString(metricsFeedback.getValue()), false, null)
                             + NEW_LINE
-                            + df.getMetric() + " (" + df.getBody() + ")"
+                            + metricsFeedback.getSuggestion()
                             + NEW_LINE
-                            + df.getMetric() + " (" + df.getBody() + ")"
-                            + NEW_LINE
-                            + "Measured with value: " + df.getValue()
-                            + NEW_LINE
-                            + df.getSuggestion()
-                            + "------------------------------------------------------------------------------";
+                            + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
             resultIndex = resultIndex + 2;
         }
 

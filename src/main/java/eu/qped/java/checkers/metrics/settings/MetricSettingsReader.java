@@ -65,43 +65,43 @@ public class MetricSettingsReader {
         switch (metric) {
 
             case AMC:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getAmcCustomSuggestionLower(), qfMetricsSettings.getAmcCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getAmcSuggestionMin(), qfMetricsSettings.getAmcSuggestionMax()));
             case CA:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCaCustomSuggestionLower(), qfMetricsSettings.getCaCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCaSuggestionMin(), qfMetricsSettings.getCaSuggestionMax()));
             case CAM:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCamCustomSuggestionLower(), qfMetricsSettings.getCamCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCamSuggestionMin(), qfMetricsSettings.getCamSuggestionMax()));
             case CBM:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCbmCustomSuggestionLower(), qfMetricsSettings.getCbmCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCbmSuggestionMin(), qfMetricsSettings.getCbmSuggestionMax()));
             case CBO:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCboCustomSuggestionLower(), qfMetricsSettings.getCboCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCboSuggestionMin(), qfMetricsSettings.getCboSuggestionMax()));
             case CC:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCcCustomSuggestionLower(), qfMetricsSettings.getCcCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCcSuggestionMin(), qfMetricsSettings.getCcSuggestionMax()));
             case CE:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCeCustomSuggestionLower(), qfMetricsSettings.getCeCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getCeSuggestionMin(), qfMetricsSettings.getCeSuggestionMax()));
             case DAM:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getDamCustomSuggestionLower(), qfMetricsSettings.getDamCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getDamSuggestionMin(), qfMetricsSettings.getDamSuggestionMax()));
             case DIT:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getDitCustomSuggestionLower(), qfMetricsSettings.getDitCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getDitSuggestionMin(), qfMetricsSettings.getDitSuggestionMax()));
             case IC:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getIcCustomSuggestionLower(), qfMetricsSettings.getIcCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getIcSuggestionMin(), qfMetricsSettings.getIcSuggestionMax()));
             case LCOM:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getLcomCustomSuggestionLower(), qfMetricsSettings.getLcomCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getLcomSuggestionMin(), qfMetricsSettings.getLcomSuggestionMax()));
             case LCOM3:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getLcom3CustomSuggestionLower(), qfMetricsSettings.getLcom3CustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getLcom3SuggestionMin(), qfMetricsSettings.getLcom3SuggestionMax()));
             case LOC:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getLocCustomSuggestionLower(), qfMetricsSettings.getLocCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getLocSuggestionMin(), qfMetricsSettings.getLocSuggestionMax()));
             case MFA:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getMfaCustomSuggestionLower(), qfMetricsSettings.getMfaCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getMfaSuggestionMin(), qfMetricsSettings.getMfaSuggestionMax()));
             case MOA:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getMoaCustomSuggestionLower(), qfMetricsSettings.getMoaCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getMoaSuggestionMin(), qfMetricsSettings.getMoaSuggestionMax()));
             case NOC:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getNocCustomSuggestionLower(), qfMetricsSettings.getNocCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getNocSuggestionMin(), qfMetricsSettings.getNocSuggestionMax()));
             case NPM:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getNpmCustomSuggestionLower(), qfMetricsSettings.getNpmCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getNpmSuggestionMin(), qfMetricsSettings.getNpmSuggestionMax()));
             case RFC:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getRfcCustomSuggestionLower(), qfMetricsSettings.getRfcCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getRfcSuggestionMin(), qfMetricsSettings.getRfcSuggestionMax()));
             case WMC:
-                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getWmcCustomSuggestionLower(), qfMetricsSettings.getWmcCustomSuggestionUpper()));
+                return new MetricConfig(retrieveMetricThreshold(metric), new MetricsFeedbackSuggestion(qfMetricsSettings.getWmcSuggestionMin(), qfMetricsSettings.getWmcSuggestionMax()));
             default:
                 throw new IllegalArgumentException("Illegal Metric type.");
         }
@@ -114,25 +114,25 @@ public class MetricSettingsReader {
      */
     private HashMap<Metric, MetricsFeedbackSuggestion> readCustomSuggestions() {
         HashMap<Metric, MetricsFeedbackSuggestion> suggestions = new HashMap<>();
-        suggestions.put(AMC, new MetricsFeedbackSuggestion(qfMetricsSettings.getAmcCustomSuggestionLower(), qfMetricsSettings.getAmcCustomSuggestionUpper()));
-        suggestions.put(CA, new MetricsFeedbackSuggestion(qfMetricsSettings.getCaCustomSuggestionLower(), qfMetricsSettings.getCaCustomSuggestionUpper()));
-        suggestions.put(CAM, new MetricsFeedbackSuggestion(qfMetricsSettings.getCamCustomSuggestionLower(), qfMetricsSettings.getCamCustomSuggestionUpper()));
-        suggestions.put(CBM, new MetricsFeedbackSuggestion(qfMetricsSettings.getCbmCustomSuggestionLower(), qfMetricsSettings.getCbmCustomSuggestionUpper()));
-        suggestions.put(CBO, new MetricsFeedbackSuggestion(qfMetricsSettings.getCboCustomSuggestionLower(), qfMetricsSettings.getCboCustomSuggestionUpper()));
-        suggestions.put(CC, new MetricsFeedbackSuggestion(qfMetricsSettings.getCcCustomSuggestionLower(), qfMetricsSettings.getCcCustomSuggestionUpper()));
-        suggestions.put(CE, new MetricsFeedbackSuggestion(qfMetricsSettings.getCeCustomSuggestionLower(), qfMetricsSettings.getCeCustomSuggestionUpper()));
-        suggestions.put(DAM, new MetricsFeedbackSuggestion(qfMetricsSettings.getDamCustomSuggestionLower(), qfMetricsSettings.getDamCustomSuggestionUpper()));
-        suggestions.put(DIT, new MetricsFeedbackSuggestion(qfMetricsSettings.getDitCustomSuggestionLower(), qfMetricsSettings.getDitCustomSuggestionUpper()));
-        suggestions.put(IC, new MetricsFeedbackSuggestion(qfMetricsSettings.getIcCustomSuggestionLower(), qfMetricsSettings.getIcCustomSuggestionUpper()));
-        suggestions.put(LCOM, new MetricsFeedbackSuggestion(qfMetricsSettings.getLcomCustomSuggestionLower(), qfMetricsSettings.getLcomCustomSuggestionUpper()));
-        suggestions.put(LCOM3, new MetricsFeedbackSuggestion(qfMetricsSettings.getLcom3CustomSuggestionLower(), qfMetricsSettings.getLcom3CustomSuggestionUpper()));
-        suggestions.put(LOC, new MetricsFeedbackSuggestion(qfMetricsSettings.getLocCustomSuggestionLower(), qfMetricsSettings.getLocCustomSuggestionUpper()));
-        suggestions.put(MFA, new MetricsFeedbackSuggestion(qfMetricsSettings.getMfaCustomSuggestionLower(), qfMetricsSettings.getMfaCustomSuggestionUpper()));
-        suggestions.put(MOA, new MetricsFeedbackSuggestion(qfMetricsSettings.getMoaCustomSuggestionLower(), qfMetricsSettings.getMoaCustomSuggestionUpper()));
-        suggestions.put(NOC, new MetricsFeedbackSuggestion(qfMetricsSettings.getNocCustomSuggestionLower(), qfMetricsSettings.getNocCustomSuggestionUpper()));
-        suggestions.put(NPM, new MetricsFeedbackSuggestion(qfMetricsSettings.getNpmCustomSuggestionLower(), qfMetricsSettings.getNpmCustomSuggestionUpper()));
-        suggestions.put(RFC, new MetricsFeedbackSuggestion(qfMetricsSettings.getRfcCustomSuggestionLower(), qfMetricsSettings.getRfcCustomSuggestionUpper()));
-        suggestions.put(WMC, new MetricsFeedbackSuggestion(qfMetricsSettings.getWmcCustomSuggestionLower(), qfMetricsSettings.getWmcCustomSuggestionUpper()));
+        suggestions.put(AMC, new MetricsFeedbackSuggestion(qfMetricsSettings.getAmcSuggestionMin(), qfMetricsSettings.getAmcSuggestionMax()));
+        suggestions.put(CA, new MetricsFeedbackSuggestion(qfMetricsSettings.getCaSuggestionMin(), qfMetricsSettings.getCaSuggestionMax()));
+        suggestions.put(CAM, new MetricsFeedbackSuggestion(qfMetricsSettings.getCamSuggestionMin(), qfMetricsSettings.getCamSuggestionMax()));
+        suggestions.put(CBM, new MetricsFeedbackSuggestion(qfMetricsSettings.getCbmSuggestionMin(), qfMetricsSettings.getCbmSuggestionMax()));
+        suggestions.put(CBO, new MetricsFeedbackSuggestion(qfMetricsSettings.getCboSuggestionMin(), qfMetricsSettings.getCboSuggestionMax()));
+        suggestions.put(CC, new MetricsFeedbackSuggestion(qfMetricsSettings.getCcSuggestionMin(), qfMetricsSettings.getCcSuggestionMax()));
+        suggestions.put(CE, new MetricsFeedbackSuggestion(qfMetricsSettings.getCeSuggestionMin(), qfMetricsSettings.getCeSuggestionMax()));
+        suggestions.put(DAM, new MetricsFeedbackSuggestion(qfMetricsSettings.getDamSuggestionMin(), qfMetricsSettings.getDamSuggestionMax()));
+        suggestions.put(DIT, new MetricsFeedbackSuggestion(qfMetricsSettings.getDitSuggestionMin(), qfMetricsSettings.getDitSuggestionMax()));
+        suggestions.put(IC, new MetricsFeedbackSuggestion(qfMetricsSettings.getIcSuggestionMin(), qfMetricsSettings.getIcSuggestionMax()));
+        suggestions.put(LCOM, new MetricsFeedbackSuggestion(qfMetricsSettings.getLcomSuggestionMin(), qfMetricsSettings.getLcomSuggestionMax()));
+        suggestions.put(LCOM3, new MetricsFeedbackSuggestion(qfMetricsSettings.getLcom3SuggestionMin(), qfMetricsSettings.getLcom3SuggestionMax()));
+        suggestions.put(LOC, new MetricsFeedbackSuggestion(qfMetricsSettings.getLocSuggestionMin(), qfMetricsSettings.getLocSuggestionMax()));
+        suggestions.put(MFA, new MetricsFeedbackSuggestion(qfMetricsSettings.getMfaSuggestionMin(), qfMetricsSettings.getMfaSuggestionMax()));
+        suggestions.put(MOA, new MetricsFeedbackSuggestion(qfMetricsSettings.getMoaSuggestionMin(), qfMetricsSettings.getMoaSuggestionMax()));
+        suggestions.put(NOC, new MetricsFeedbackSuggestion(qfMetricsSettings.getNocSuggestionMin(), qfMetricsSettings.getNocSuggestionMax()));
+        suggestions.put(NPM, new MetricsFeedbackSuggestion(qfMetricsSettings.getNpmSuggestionMin(), qfMetricsSettings.getNpmSuggestionMax()));
+        suggestions.put(RFC, new MetricsFeedbackSuggestion(qfMetricsSettings.getRfcSuggestionMin(), qfMetricsSettings.getRfcSuggestionMax()));
+        suggestions.put(WMC, new MetricsFeedbackSuggestion(qfMetricsSettings.getWmcSuggestionMin(), qfMetricsSettings.getWmcSuggestionMax()));
         return suggestions;
     }
 

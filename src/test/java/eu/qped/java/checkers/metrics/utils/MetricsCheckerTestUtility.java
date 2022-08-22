@@ -35,10 +35,10 @@ public class MetricsCheckerTestUtility {
 
     public static QFMetricsSettings generateSampleQFMetricsSettings() {
         QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
-        qfMetricsSettings.setAmcCustomSuggestionUpper("AMC CUSTOM SUGGESTION UPPER BOUND");
-        qfMetricsSettings.setCcCustomSuggestionUpper("CC CUSTOM SUGGESTION UPPER BOUND");
-        qfMetricsSettings.setLcom3CustomSuggestionLower("LCOM3 CUSTOM SUGGESTION LOWER BOUND");
-        qfMetricsSettings.setWmcCustomSuggestionLower("WMC CUSTOM SUGGESTION LOWER BOUND");
+        qfMetricsSettings.setAmcSuggestionMax("AMC CUSTOM SUGGESTION UPPER BOUND");
+        qfMetricsSettings.setCcSuggestionMax("CC CUSTOM SUGGESTION UPPER BOUND");
+        qfMetricsSettings.setLcom3SuggestionMin("LCOM3 CUSTOM SUGGESTION LOWER BOUND");
+        qfMetricsSettings.setWmcSuggestionMin("WMC CUSTOM SUGGESTION LOWER BOUND");
         qfMetricsSettings.includeCallsToJdk("false");
         qfMetricsSettings.includeOnlyPublicClasses("true");
         qfMetricsSettings.setAmc("0.5", "1.0");
@@ -71,10 +71,10 @@ public class MetricsCheckerTestUtility {
         for (int i = 0; i < doublesMin.length; i++) {
 
 
-            qfMetricsSettings.setAmcCustomSuggestionUpper("AMC CUSTOM SUGGESTION UPPER BOUND");
-            qfMetricsSettings.setCcCustomSuggestionUpper("CC CUSTOM SUGGESTION UPPER BOUND");
-            qfMetricsSettings.setLcom3CustomSuggestionLower("LCOM3 CUSTOM SUGGESTION LOWER BOUND");
-            qfMetricsSettings.setWmcCustomSuggestionLower("WMC CUSTOM SUGGESTION LOWER BOUND");
+            qfMetricsSettings.setAmcSuggestionMax("AMC CUSTOM SUGGESTION UPPER BOUND");
+            qfMetricsSettings.setCcSuggestionMax("CC CUSTOM SUGGESTION UPPER BOUND");
+            qfMetricsSettings.setLcom3SuggestionMin("LCOM3 CUSTOM SUGGESTION LOWER BOUND");
+            qfMetricsSettings.setWmcSuggestionMin("WMC CUSTOM SUGGESTION LOWER BOUND");
             qfMetricsSettings.includeCallsToJdk("false");
             qfMetricsSettings.includeOnlyPublicClasses("true");
             qfMetricsSettings.setAmc(String.valueOf(doublesMin[i]), String.valueOf(doublesMax[i]));

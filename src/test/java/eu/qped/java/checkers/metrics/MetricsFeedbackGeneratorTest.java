@@ -23,10 +23,10 @@ class MetricsFeedbackGeneratorTest {
     @ParameterizedTest
     @EnumSource(Metric.class)
     void generateSuggestion(Metric metric) {
-        assertEquals("You are within the " + metric.toString() + "'s threshold.", MetricsFeedbackGenerator.generateDefaultSuggestions(metric, false, false));
-        assertEquals("The " + metric + "'s value is too low: " + MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, true), MetricsFeedbackGenerator.generateDefaultSuggestions(metric, true, false));
-        assertEquals("The " + metric + "'s value is too high: " + MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, false), MetricsFeedbackGenerator.generateDefaultSuggestions(metric, false, true));
-        assertThrows(IllegalArgumentException.class, () -> MetricsFeedbackGenerator.generateDefaultSuggestions(metric, true, true));
+        assertEquals("You are within the " + metric.toString() + "'s threshold.", MetricsFeedbackGenerator.generateDefaultSuggestion(metric, false, false));
+        assertEquals("The " + metric + "'s value is too low: " + MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, true), MetricsFeedbackGenerator.generateDefaultSuggestion(metric, true, false));
+        assertEquals("The " + metric + "'s value is too high: " + MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, false), MetricsFeedbackGenerator.generateDefaultSuggestion(metric, false, true));
+        assertThrows(IllegalArgumentException.class, () -> MetricsFeedbackGenerator.generateDefaultSuggestion(metric, true, true));
     }
 
     @ParameterizedTest

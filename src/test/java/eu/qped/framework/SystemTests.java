@@ -10,6 +10,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -162,12 +162,7 @@ public class MassExecutor {
 
     public static void main(String[] args) {
         long start = System.nanoTime();
-        String code = "//\n" +
-                "// Source code recreated from a .class file by IntelliJ IDEA\n" +
-                "// (powered by FernFlower decompiler)\n" +
-                "//\n" +
-                "\n" +
-                "import java.util.ArrayList;\n" +
+        String code = "import java.util.ArrayList;\n" +
                 "import java.util.List;\n" +
                 "\n" +
                 "class GrayCode {\n" +
@@ -201,14 +196,14 @@ public class MassExecutor {
                 "        if (a) {\n" +
                 "            if (b) {\n" +
                 "                return (int)c;\n" +
-                "            } else if (c >= 43) {\n" +
+                "            }\n" +
+                "\n" +
+                "            if (c >= 43.0D) {\n" +
                 "                return 0;\n" +
-                "            } else {\n" +
-                "                if (a && !b && c < 231){\n" +
-                "                    if (doSomething()) {\n" +
-                "                        return Integer.MAX_VALUE;\n" +
-                "                    }\n" +
-                "                }\n" +
+                "            }\n" +
+                "\n" +
+                "            if (a && !b && c < 231.0D && this.doSomething()) {\n" +
+                "                return 2147483647;\n" +
                 "            }\n" +
                 "\n" +
                 "            if ((int)c == 5) {\n" +
@@ -222,7 +217,7 @@ public class MassExecutor {
                 "    private boolean doSomething() {\n" +
                 "        return false;\n" +
                 "    }\n" +
-                "}\n";
+                "}";
 
         QFMainSettings qfMainSettings = new QFMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
@@ -301,7 +296,7 @@ public class MassExecutor {
         qfMetricsSettings.setRfcNoMax("false");
         qfMetricsSettings.setWmc("0.5", "1.0");
         qfMetricsSettings.setWmcNoMax("false");
-        qfMetricsSettings.setAmcCustomSuggestionUpper("WHAT ARE YOU DOING?!?!");
+        qfMetricsSettings.setAmcSuggestionMax("WHAT ARE YOU DOING?!?!");
         qfMetricsSettings.includeOnlyPublicClasses("false");
 
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(qfMetricsSettings).build();

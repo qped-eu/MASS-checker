@@ -32,7 +32,7 @@ class MetricSettingsTest {
         metricSettings.setAmcConfig(new MetricConfig(new MetricThreshold(Metric.AMC, Double.parseDouble(qfMetricsSettings.getAmcMin()), Double.parseDouble(qfMetricsSettings.getAmcMax()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getAmcConfig().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));
         assertThat(metricSettings.getAmcConfig().getMetricThreshold().getUpperBound(), allOf(greaterThan(0.5), lessThan(1.)));
-        assertEquals(qfMetricsSettings.getAmcCustomSuggestionUpper(), "AMC CUSTOM SUGGESTION UPPER BOUND");
+        assertEquals(qfMetricsSettings.getAmcSuggestionMax(), "AMC CUSTOM SUGGESTION UPPER BOUND");
 
         metricSettings.setCaConfig(new MetricConfig(new MetricThreshold(Metric.CA, Double.parseDouble(qfMetricsSettings.getCaMin()), Double.parseDouble(qfMetricsSettings.getCaMax()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getCaConfig().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));
@@ -54,7 +54,7 @@ class MetricSettingsTest {
         metricSettings.setCcConfig(new MetricConfig(new MetricThreshold(Metric.CC, Double.parseDouble(qfMetricsSettings.getCcMin()), Double.parseDouble(qfMetricsSettings.getCcMax()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getCcConfig().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));
         assertThat(metricSettings.getCcConfig().getMetricThreshold().getUpperBound(), allOf(greaterThan(0.5), lessThan(1.)));
-        assertEquals(qfMetricsSettings.getCcCustomSuggestionUpper(), "CC CUSTOM SUGGESTION UPPER BOUND");
+        assertEquals(qfMetricsSettings.getCcSuggestionMax(), "CC CUSTOM SUGGESTION UPPER BOUND");
 
         metricSettings.setCeConfig(new MetricConfig(new MetricThreshold(Metric.CE, Double.parseDouble(qfMetricsSettings.getCeMin()), Double.parseDouble(qfMetricsSettings.getCeMax()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getCeConfig().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));
@@ -79,7 +79,7 @@ class MetricSettingsTest {
         metricSettings.setLcom3Config(new MetricConfig(new MetricThreshold(Metric.LCOM3, Double.parseDouble(qfMetricsSettings.getLcom3Min()), Double.parseDouble(qfMetricsSettings.getLcom3Max()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getLcom3Config().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));
         assertThat(metricSettings.getLcom3Config().getMetricThreshold().getUpperBound(), allOf(greaterThan(0.5), lessThan(1.)));
-        assertEquals(qfMetricsSettings.getLcom3CustomSuggestionLower(), "LCOM3 CUSTOM SUGGESTION LOWER BOUND");
+        assertEquals(qfMetricsSettings.getLcom3SuggestionMin(), "LCOM3 CUSTOM SUGGESTION LOWER BOUND");
 
         metricSettings.setLocConfig(new MetricConfig(new MetricThreshold(Metric.LOC, Double.parseDouble(qfMetricsSettings.getLocMin()), Double.parseDouble(qfMetricsSettings.getLocMax()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getLocConfig().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));
@@ -108,6 +108,6 @@ class MetricSettingsTest {
         metricSettings.setWmcConfig(new MetricConfig(new MetricThreshold(Metric.WMC, Double.parseDouble(qfMetricsSettings.getWmcMin()), Double.parseDouble(qfMetricsSettings.getWmcMax()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getWmcConfig().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));
         assertThat(metricSettings.getWmcConfig().getMetricThreshold().getUpperBound(), allOf(greaterThan(0.5), lessThan(1.)));
-        assertEquals(qfMetricsSettings.getWmcCustomSuggestionLower(), "WMC CUSTOM SUGGESTION LOWER BOUND");
+        assertEquals(qfMetricsSettings.getWmcSuggestionMin(), "WMC CUSTOM SUGGESTION LOWER BOUND");
     }
 }
