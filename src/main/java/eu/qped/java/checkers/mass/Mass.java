@@ -7,6 +7,7 @@ import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.coverage.*;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
@@ -28,12 +29,6 @@ public class Mass implements Checker {
 
     @QfProperty
     private QfMass mass;
-
-    @QfProperty
-    private QFClassSettings classSettings;
-
-
-
 
     private final static String NEW_LINE = "\n" + "\n";
 
@@ -69,7 +64,7 @@ public class Mass implements Checker {
         DesignChecker designChecker = DesignChecker.builder().qfDesignSettings(mass.getMetrics()).build();
 
         //Class Checker
-        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(this.classSettings);
+        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClasses());
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
         //CoverageChecker
@@ -103,9 +98,8 @@ public class Mass implements Checker {
         semanticFeedbacks = massExecutor.getSemanticFeedbacks();
 
         List<DesignFeedback> designFeedbacks = massExecutor.getDesignFeedbacks();
-//
-//        List<ClassFeedback> classFeedbacks;
-//        classFeedbacks = massExecutor.getClassFeedbacks();
+
+        List<ClassFeedback> classFeedbacks = massExecutor.getClassFeedbacks();
 
 //        Warum 100? Im Fall das viel Feedback generiert wird, wird das Array nicht ausreichend Kapazität besitzen, oder?
 //        Warum braucht das syntaxFeedbacks immer zwei Stellten des Arrays?
@@ -169,12 +163,12 @@ public class Mass implements Checker {
         }
 
 
-//        for (ClassFeedback classFeedback : classFeedbacks) {
-//            result[resultIndex] = "class Feedback";
-//            result[resultIndex + 1] = classFeedback.getBody() + NEW_LINE
-//                    + "--------------------------------------------------";
-//            resultIndex = resultIndex + 2;
-//        }
+        for (ClassFeedback classFeedback : classFeedbacks) {
+            result[resultIndex] = "class Feedback";
+            result[resultIndex + 1] = classFeedback.getBody() + NEW_LINE
+                    + "--------------------------------------------------";
+            resultIndex = resultIndex + 2;
+        }
 
         for (SyntaxFeedback syntax : syntaxFeedbacks) {
             result[resultIndex + 1] = ""
