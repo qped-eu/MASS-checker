@@ -10,6 +10,8 @@ import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.coverage.CoverageBlockChecker;
+import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.design.DesignChecker;
 import eu.qped.java.checkers.design.DesignFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -49,6 +51,8 @@ public class MassExecutor {
     private List<SyntaxFeedback> syntaxFeedbacks;
     private List<ClassFeedback> classFeedbacks;
     private List<DesignFeedback> designFeedbacks;
+    private String[] coverageFeedbacks;
+
 
     private List<SyntaxError> syntaxErrors;
 
@@ -57,6 +61,7 @@ public class MassExecutor {
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
     private DesignChecker designChecker;
+    private final CoverageChecker coverageChecker;
 
     /**
      * To create an Object use the factory Class @MassExecutorFactory
@@ -70,7 +75,9 @@ public class MassExecutor {
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
                         final SyntaxChecker syntaxChecker, final DesignChecker designChecker,
-                        final ClassChecker classChecker, final MainSettings mainSettingsConfigurator
+                        final ClassChecker classChecker,
+                        final CoverageChecker coverageChecker,
+                        final MainSettings mainSettingsConfigurator
                         ) {
 
         this.styleChecker = styleChecker;
@@ -78,7 +85,9 @@ public class MassExecutor {
         this.syntaxChecker = syntaxChecker;
         this.designChecker = designChecker;
         this.classChecker = classChecker;
+        this.coverageChecker = coverageChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
+        this.coverageFeedbacks = new String[]{};
     }
 
     /**
@@ -119,6 +128,14 @@ public class MassExecutor {
                     e.printStackTrace();
                 }
             }
+            if (mainSettingsConfigurator.isCoverageNeeded())
+                coverageFeedbacks = coverageChecker.check();
+
+        } else if (mainSettingsConfigurator.isCoverageNeeded()) {
+            // Found no other solution:
+            // The problem is if the student answer needs a klass from a teacher to compile
+            // the syntaxChecker always fails.
+            coverageFeedbacks = coverageChecker.check();
         } else {
             syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
@@ -284,7 +301,7 @@ public class MassExecutor {
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, null, mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 

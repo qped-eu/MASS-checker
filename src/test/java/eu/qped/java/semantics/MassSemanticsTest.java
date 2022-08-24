@@ -68,7 +68,7 @@ class MassSemanticsTest {
 
 
         MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker,
-                null, null, mainSettingsConfiguratorConf);
+                null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
