@@ -6,8 +6,9 @@ on:
     branches: [ "master" ]
       
 jobs:
-  build-test-deploy:
+  test:
     runs-on: ubuntu-latest
+
     steps:
      - uses: actions/checkout@v3
       - name: Set up JDK 11
