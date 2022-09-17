@@ -7,6 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * representation of a feedback for the student. <br/>
+ * This model must be generated in all checkers.
+ *
+ * @author Omar
+ * @since 15.09.2022
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
