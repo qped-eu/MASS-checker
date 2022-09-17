@@ -1,6 +1,9 @@
 package eu.qped.java.checkers.syntax.feedback.generator;
 
+import eu.qped.framework.feedback.ErrorLocation;
 import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.FeedbackFilePathProvider;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
 import eu.qped.java.checkers.syntax.feedback.mapper.FeedbackFromJsonMapper;
@@ -23,12 +26,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class FeedbackGenerator {
 
-    // field realize mocking
+    // field enable mocking
     private FeedbackFromJsonMapper jsonMapper;
     private FeedbackMapper feedbackMapper;
 
-    private final static String EN_FEEDBACKS_FILE_PATH = "src/main/resources/syntax/en.json";
-    private final static String DE_FEEDBACKS_FILE_PATH = "src/main/resources/syntax/de.json";
 
     public List<Feedback> generate(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
 
@@ -44,15 +45,14 @@ public class FeedbackGenerator {
 
         var filteredFeedbacks = filterFeedbacks(errors, keyToFeedbacks);
 
-        var nakedFeedbacks = feedbackMapper.mapFromJsonFeedback(filteredFeedbacks);
-
-        return Collections.emptyList();
+        return feedbackMapper.mapFromJsonFeedback(filteredFeedbacks);
     }
 
     private List<SyntaxFeedback> filterFeedbacks(List<SyntaxError> errors, Map<String, List<SyntaxFeedback>> keyToFeedbacks) {
         List<SyntaxFeedback> filteredSyntaxFeedbacksFromJson = new ArrayList<>();
         for (SyntaxError error : errors) {
-            var byErrorCode = keyToFeedbacks.get(error.getErrorCode());
+            var byErrorCode =
+                    keyToFeedbacks.get(error.getErrorCode());
             if (byErrorCode == null) {
                 var byErrorMessage = keyToFeedbacks.get(error.getErrorMessage());
                 if (byErrorMessage != null) {
@@ -63,24 +63,28 @@ public class FeedbackGenerator {
                                     .hints(Collections.emptyList())
                                     .errorCause(error.getErrorMessage())
                                     .errorKey(error.getErrorCode())
+                                    .errorLocation(ErrorLocation.builder().build())
                                     .build();
                     filteredSyntaxFeedbacksFromJson.add(syntaxFeedback);
                 }
             } else {
                 filteredSyntaxFeedbacksFromJson.addAll(byErrorCode);
             }
+            filteredSyntaxFeedbacksFromJson.forEach(
+                    sf -> sf.setErrorLocation(
+                            ErrorLocation.builder()
+                                    .startPosition(error.getStartPos())
+                                    .endPosition(error.getEndPos())
+                                    .className(error.getFileName())
+                                    .build()
+                    ));
         }
         return filteredSyntaxFeedbacksFromJson;
     }
 
     private List<SyntaxFeedback> getAllRawSyntaxFeedbacksFromJson(String language) {
-        List<SyntaxFeedback> syntaxFeedbacks = new ArrayList<>();
-        if ("en".equalsIgnoreCase(language)) {
-            syntaxFeedbacks = jsonMapper.map(EN_FEEDBACKS_FILE_PATH);
-        } else if ("de".equalsIgnoreCase(language)) {
-            syntaxFeedbacks = jsonMapper.map(DE_FEEDBACKS_FILE_PATH);
-        }
-        return syntaxFeedbacks;
+        var dirPath = FeedbackFilePathProvider.provide(SyntaxChecker.class);
+        return jsonMapper.map(dirPath + language + ".json");
     }
 
 }

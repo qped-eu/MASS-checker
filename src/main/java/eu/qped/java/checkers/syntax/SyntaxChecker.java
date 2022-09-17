@@ -2,11 +2,11 @@ package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.syntax.feedback.AbstractSyntaxFeedbackGenerator;
-import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
+import eu.qped.java.checkers.syntax.feedback.fromatter.MarkdownFeedbackFormatter;
+import eu.qped.java.checkers.syntax.feedback.generator.FeedbackGenerator;
 import eu.qped.java.checkers.syntax.feedback.mapper.FeedbackMapper;
 import lombok.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,7 +16,9 @@ import java.util.List;
 @Builder
 public class SyntaxChecker {
 
-    private AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator;
+    private AbstractSyntaxFeedbackGenerator abstractSyntaxFeedbackGenerator;
+    private FeedbackGenerator feedbackGenerator;
+    private MarkdownFeedbackFormatter markdownFeedbackFormatter;
     private SyntaxErrorAnalyser syntaxErrorAnalyser;
     private SyntaxSetting syntaxSetting;
     @NonNull
@@ -41,19 +43,9 @@ public class SyntaxChecker {
         }
         var analyseReport = syntaxErrorAnalyser.check();
 
-        if (syntaxFeedbackGenerator == null) {
-            syntaxFeedbackGenerator = SyntaxFeedbackGenerator
-                    .builder()
-                    .build();
-        }
+        var nakedFeedbacks = feedbackGenerator.generate(analyseReport.getSyntaxErrors(), syntaxSetting);
 
-
-        var syntaxFeedbacks = syntaxFeedbackGenerator
-                .generateFeedbacks(analyseReport.getSyntaxErrors());
-        // naked
-        var feedbacks = feedbackMapper.map(syntaxFeedbacks);
-
-        return Collections.emptyList();
+        return markdownFeedbackFormatter.format(nakedFeedbacks);
     }
 
 }

@@ -1,5 +1,8 @@
 package eu.qped.java.checkers.syntax.feedback.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import eu.qped.framework.feedback.ErrorLocation;
 import eu.qped.framework.feedback.hint.Hint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +15,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SyntaxFeedback {
     private String errorKey;
     private String errorCause;
     private List<Hint> hints;
+
+    @JsonIgnore
+    private ErrorLocation errorLocation;
 }
