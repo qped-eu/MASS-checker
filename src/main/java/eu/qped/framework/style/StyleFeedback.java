@@ -1,16 +1,16 @@
-package eu.qped.framework;
+package eu.qped.framework.style;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Deprecated(since = "release v.1.2", forRemoval = true)
-public abstract class Feedback {
+@Builder
+public class StyleFeedback {
 
-    String body;
+    private String blaBla;
 
 }
