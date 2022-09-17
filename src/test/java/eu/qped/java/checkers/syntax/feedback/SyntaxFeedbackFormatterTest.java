@@ -1,4 +1,4 @@
-package eu.qped.java.feedback.syntax;
+package eu.qped.java.checkers.syntax.feedback;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

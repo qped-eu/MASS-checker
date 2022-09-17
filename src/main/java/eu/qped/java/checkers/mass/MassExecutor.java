@@ -12,11 +12,11 @@ import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
-import eu.qped.java.feedback.syntax.AbstractSyntaxFeedbackGenerator;
-import eu.qped.java.feedback.syntax.SyntaxFeedback;
-import eu.qped.java.feedback.syntax.SyntaxFeedbackGenerator;
+import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.feedback.AbstractSyntaxFeedbackGenerator;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,7 +47,7 @@ public class MassExecutor {
 
     private final StyleChecker styleChecker;
     private final SemanticChecker semanticChecker;
-    private final SyntaxChecker syntaxChecker;
+    private final SyntaxErrorAnalyser syntaxErrorAnalyser;
     private final ClassChecker classChecker;
     private MetricsChecker metricsChecker;
 
@@ -56,19 +56,19 @@ public class MassExecutor {
      *
      * @param styleChecker             style checker component
      * @param semanticChecker          semantic checker component
-     * @param syntaxChecker            syntax checker component
+     * @param syntaxErrorAnalyser      syntax checker component
      * @param metricsChecker           metrics checker component
      * @param mainSettingsConfigurator settings
      */
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
-                        final SyntaxChecker syntaxChecker, final MetricsChecker metricsChecker,
+                        final SyntaxErrorAnalyser syntaxErrorAnalyser, final MetricsChecker metricsChecker,
                         final ClassChecker classChecker, final MainSettings mainSettingsConfigurator
-                        ) {
+    ) {
 
         this.styleChecker = styleChecker;
         this.semanticChecker = semanticChecker;
-        this.syntaxChecker = syntaxChecker;
+        this.syntaxErrorAnalyser = syntaxErrorAnalyser;
         this.metricsChecker = metricsChecker;
         this.classChecker = classChecker;
         this.mainSettingsConfigurator = mainSettingsConfigurator;
@@ -86,7 +86,7 @@ public class MassExecutor {
         boolean classNeeded = mainSettingsConfigurator.isClassNeeded();
 
 
-        SyntaxCheckReport syntaxCheckReport = syntaxChecker.check();
+        SyntaxCheckReport syntaxCheckReport = syntaxErrorAnalyser.check();
 
         if (syntaxCheckReport.isCompilable()) {
             if (styleNeeded) {
@@ -100,7 +100,7 @@ public class MassExecutor {
                 semanticFeedbacks = semanticChecker.getFeedbacks();
             }
             if (metricsNeeded) {
-                syntaxChecker.setClassFilesDestination("");
+                syntaxErrorAnalyser.setClassFilesDestination("");
                 metricsChecker.check();
                 metricsFeedbacks = metricsChecker.getMetricsFeedbacks();
             }
@@ -113,7 +113,6 @@ public class MassExecutor {
                 }
             }
         } else {
-            syntaxChecker.setLevel(mainSettingsConfigurator.getSyntaxLevel());
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
             syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
@@ -219,7 +218,7 @@ public class MassExecutor {
                 "    }\n" +
                 "}";
 
-        QFMainSettings qfMainSettings = new QFMainSettings();
+        QfMainSettings qfMainSettings = new QfMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
         qfMainSettings.setSemanticNeeded("false");
         qfMainSettings.setStyleNeeded("false");
@@ -229,7 +228,7 @@ public class MassExecutor {
 
         MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
-        QFSemSettings qfSemSettings = new QFSemSettings();
+        QfSemSettings qfSemSettings = new QfSemSettings();
 //        qfSemSettings.setFilePath("src/main/resources/exam-results/src");
 //        qfSemSettings.setMethodName("grayCodeStrings");
 //        qfSemSettings.setRecursionAllowed("true");
@@ -243,7 +242,7 @@ public class MassExecutor {
 //        SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemSettings);
 
 
-        QFStyleSettings qfStyleSettings = new QFStyleSettings();
+        QfStyleSettings qfStyleSettings = new QfStyleSettings();
         qfStyleSettings.setNamesLevel("ADV");
         qfStyleSettings.setComplexityLevel("ADV");
         qfStyleSettings.setBasisLevel("ADVANCED");
@@ -255,7 +254,7 @@ public class MassExecutor {
 
         SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(qfSemSettings).build();
 
-        QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
+        QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();
         qfMetricsSettings.setAmc("0.5", "1.0");
         qfMetricsSettings.setAmcNoMax("false");
         qfMetricsSettings.setCa("0.5", "1.0");
@@ -302,11 +301,11 @@ public class MassExecutor {
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(qfMetricsSettings).build();
 
 
-        //SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject("src/main/resources/testProject").build();
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+        //SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().targetProject("src/main/resources/testProject").build();
+        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, null, mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 

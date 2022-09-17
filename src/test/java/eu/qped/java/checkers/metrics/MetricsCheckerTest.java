@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.metrics;
 
+import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
 import eu.qped.java.checkers.metrics.data.report.ClassMetricsEntry;
@@ -8,7 +9,6 @@ import eu.qped.java.checkers.metrics.data.report.MetricsCheckerReport;
 import eu.qped.java.checkers.metrics.settings.MetricSettings;
 import eu.qped.java.checkers.metrics.settings.MetricSettingsReader;
 import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
-import eu.qped.java.checkers.mass.QFMetricsSettings;
 import eu.qped.java.utils.ExtractJavaFilesFromDirectory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ class MetricsCheckerTest {
         metricsCheckerEmpty = MetricsChecker.builder().build();
         metricsCheckerFilled = MetricsChecker.builder()
                 .metricsFeedbacks(List.of())
-                .qfMetricsSettings(mock(QFMetricsSettings.class))
+                .qfMetricsSettings(mock(QfMetricsSettings.class))
                 .build();
         metricsCheckerNoArgs = new MetricsChecker();
     }

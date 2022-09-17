@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QFSemSettings extends QfObjectBase {
+public class QfSemSettings extends QfObjectBase {
 
     private List<SemanticSettingItem> semantics;
 

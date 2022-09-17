@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QFStyleSettings extends QfObjectBase {
+public class QfStyleSettings extends QfObjectBase {
 
 
     private String basisLevel;

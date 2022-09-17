@@ -4,12 +4,22 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import javax.tools.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
 
+/**
+ * Must be consolidated with {@link Compiler}.
+ * Author of the comments and @Deprecated is Basel. <br/>
+ * alaktaa@students.uni-marburg.de
+ */
+@Deprecated(forRemoval = true)
 public class Com {
     private static final List<String> DEFAULT_OPTIONS = List.of("-verbose", "-Xlint", "-g");
     private static final String DEFAULT_CLASS_NAME = "TestClass";
@@ -38,11 +48,14 @@ public class Com {
         return protocol;
     }
 
+    /**
+     * Must be consolidated with {@link Compiler#Compiler()}.
+     */
     public boolean compileSource(File source, List<String> options) {
         LinkedList<File> stack = new LinkedList<>();
         LinkedList<File> java = new LinkedList<>();
         stack.add(source);
-        while (! stack.isEmpty()) {
+        while (!stack.isEmpty()) {
             File first = stack.removeFirst();
             if (first.isDirectory()) {
                 stack.addAll(0, Arrays.asList(first.listFiles()));

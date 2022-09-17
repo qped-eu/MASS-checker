@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class QfMass extends QfObjectBase {
 
-    private QFSemSettings semantic;
+    private QfSemSettings semantic;
 
-    private QFStyleSettings style;
+    private QfStyleSettings style;
 
-    private QFMetricsSettings metrics;
+    private QfMetricsSettings metrics;
 
     private QfSyntaxSettings syntax;
 

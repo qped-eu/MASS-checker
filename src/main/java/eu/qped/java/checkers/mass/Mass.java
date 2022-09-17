@@ -13,8 +13,8 @@ import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.feedback.syntax.SyntaxFeedback;
+import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class Mass implements Checker {
     private QfMass mass;
 
     @QfProperty
-    private QFClassSettings classSettings;
+    private QfClassSettings classSettings;
 
     private final static String NEW_LINE = "\n" + "\n";
 
@@ -49,11 +49,11 @@ public class Mass implements Checker {
             mainSettings.setSyntaxLevel(CheckLevel.BEGINNER);
         }
         // Syntax Checker
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
+        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().build();
         if (file != null) {
-            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
+            syntaxErrorAnalyser.setTargetProject(file.getUnzipped().getPath());
         } else {
-            syntaxChecker.setStringAnswer(qfObject.getAnswer());
+            syntaxErrorAnalyser.setStringAnswer(qfObject.getAnswer());
         }
         // Style Checker
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
@@ -69,7 +69,7 @@ public class Mass implements Checker {
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, classChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, classChecker, mainSettings);
         massExecutor.execute();
 
         /*

@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.metrics.settings;
 
-import eu.qped.java.checkers.mass.QFMetricsSettings;
+import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackSuggestion;
 import lombok.Builder;
 
@@ -10,21 +10,21 @@ import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metri
 import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.*;
 
 /**
- * Class representing a reader for the {@link QFMetricsSettings}'s input from the user.
+ * Class representing a reader for the {@link QfMetricsSettings}'s input from the user.
  *
  * @author Jannik Seus
  */
 @Builder
 public class MetricSettingsReader {
 
-    private QFMetricsSettings qfMetricsSettings;
+    private QfMetricsSettings qfMetricsSettings;
 
     /**
      * Method reads the input Quarterfall design settings from {@link #qfMetricsSettings} and
      * checks (implicitly) for possible invalid values through the getter and parser.
      *
      * @param metricSettings the given Design Settings
-     * @return the created {@link MetricSettings} object from an initial {@link QFMetricsSettings} object.
+     * @return the created {@link MetricSettings} object from an initial {@link QfMetricsSettings} object.
      */
     public MetricSettings readMetricsCheckerSettings(MetricSettings metricSettings) {
 

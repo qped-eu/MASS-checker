@@ -1,17 +1,17 @@
 package eu.qped.java.checkers.metrics.settings;
 
+import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
-import eu.qped.java.checkers.mass.QFMetricsSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.*;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test class for {@link  MetricSettingsReader}.
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MetricSettingsReaderTest {
 
     private MetricSettingsReader metricSettingsReader;
-    private QFMetricsSettings qfMetricsSettings;
+    private QfMetricsSettings qfMetricsSettings;
 
     @BeforeEach
     void setUp() {
@@ -90,7 +90,7 @@ class MetricSettingsReaderTest {
 
     @Test
     void retrieveMetricUpperBoundGivenTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
+        QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();
         qfMetricsSettings.setAmc("", "4.0");
         this.metricSettingsReader = MetricSettingsReader.builder().qfMetricsSettings(qfMetricsSettings).build();
 
@@ -105,7 +105,7 @@ class MetricSettingsReaderTest {
 
     @Test
     void retrieveMetricLowerBoundGivenTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
+        QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();
         qfMetricsSettings.setAmc("2.0", "");
         this.metricSettingsReader = MetricSettingsReader.builder().qfMetricsSettings(qfMetricsSettings).build();
 
@@ -120,7 +120,7 @@ class MetricSettingsReaderTest {
 
     @Test
     void retrieveMetricNoBoundGivenTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
+        QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();
         qfMetricsSettings.setAmc("", "");
         this.metricSettingsReader = MetricSettingsReader.builder().qfMetricsSettings(qfMetricsSettings).build();
 

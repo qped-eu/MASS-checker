@@ -1,12 +1,12 @@
 package eu.qped.java.checkers.metrics.settings;
 
+import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackSuggestion;
 import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
-import eu.qped.java.checkers.mass.QFMetricsSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.*;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +27,7 @@ class MetricSettingsTest {
 
     @Test
     void setQfMetricsSettingsTest() {
-        QFMetricsSettings qfMetricsSettings = MetricsCheckerTestUtility.generateQMetricsSettings();
+        QfMetricsSettings qfMetricsSettings = MetricsCheckerTestUtility.generateQMetricsSettings();
 
         metricSettings.setAmcConfig(new MetricConfig(new MetricThreshold(Metric.AMC, Double.parseDouble(qfMetricsSettings.getAmcMin()), Double.parseDouble(qfMetricsSettings.getAmcMax()), false), new MetricsFeedbackSuggestion("lower", "upper")));
         assertThat(metricSettings.getAmcConfig().getMetricThreshold().getLowerBound(), allOf(greaterThan(0.), lessThan(0.5)));

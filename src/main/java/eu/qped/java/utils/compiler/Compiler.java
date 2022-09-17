@@ -86,7 +86,7 @@ public class Compiler implements CompilerInterface {
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);
 
         if (options == null) {
-            setDefaultOptions();
+            options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
         addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
         JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
@@ -100,17 +100,10 @@ public class Compiler implements CompilerInterface {
 
     public void addExternalJarsToClassPath(List<String> paths) {
         if (this.options == null) {
-            setDefaultOptions();
+            options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
         this.options.add("cp");
         this.options.addAll(paths);
-    }
-
-    private void setDefaultOptions() {
-        this.options = new ArrayList<>();
-        options.add("-verbose");
-        options.add("-Xlint");
-        options.add("-g");
     }
 
 
@@ -133,7 +126,7 @@ public class Compiler implements CompilerInterface {
 
     public void addClassFilesDestination(String path) {
         if (options == null) {
-            setDefaultOptions();
+            options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
         options.add("-d");
         options.add(path);

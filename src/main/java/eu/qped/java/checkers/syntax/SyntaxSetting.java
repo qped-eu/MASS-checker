@@ -1,5 +1,6 @@
-package eu.qped.framework.feedback.severity;
+package eu.qped.java.checkers.syntax;
 
+import eu.qped.framework.CheckLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Severity {
+public class SyntaxSetting {
 
-    private String severity;
-
-    private SeverityType severityType;
-
+    private CheckLevel checkLevel;
+    private String language;
 
 }

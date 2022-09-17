@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QFMainSettings extends QfObjectBase {
+public class QfMainSettings extends QfObjectBase {
 
     private String syntaxLevel;
     private String preferredLanguage;

@@ -3,7 +3,7 @@ package eu.qped.java.checkers.classdesign;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.mass.QFClassSettings;
+import eu.qped.java.checkers.mass.QfClassSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DesignClassTest {
 
-    private QFClassSettings qfClassSettings;
+    private QfClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
 
     @BeforeEach
     public void setup() {
-        qfClassSettings = new QFClassSettings();
+        qfClassSettings = new QfClassSettings();
         classInfos = new ArrayList<>();
     }
 

@@ -1,13 +1,12 @@
 package eu.qped.java.checkers.mass;
 
 
+import eu.qped.framework.CheckLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
-
-import eu.qped.framework.CheckLevel;
 
 /**
  * class to read the Setting from Quarterfall and
@@ -29,10 +28,10 @@ public class MainSettings {
     private boolean metricsNeeded;
     private boolean classNeeded;
 
-    private QFMainSettings qfMainSettings;
+    private QfMainSettings qfMainSettings;
 
 
-    public MainSettings(QFMainSettings qfMainSettings) {
+    public MainSettings(QfMainSettings qfMainSettings) {
         this.qfMainSettings = qfMainSettings;
         readSettings();
     }

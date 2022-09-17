@@ -1,4 +1,4 @@
-package eu.qped.java.feedback.syntax;
+package eu.qped.java.checkers.syntax.feedback;
 
 import eu.qped.java.checkers.syntax.SyntaxError;
 import lombok.Builder;

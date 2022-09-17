@@ -5,7 +5,7 @@ import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 
 import java.util.ArrayList;
 
-public class QFClassSettings extends QfObjectBase {
+public class QfClassSettings extends QfObjectBase {
 
     private ArrayList<ClassInfo> classInfos;
 

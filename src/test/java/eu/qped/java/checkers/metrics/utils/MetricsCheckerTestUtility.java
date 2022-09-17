@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.metrics.utils;
 
-import eu.qped.java.checkers.mass.QFMetricsSettings;
+import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.utils.compiler.Compiler;
 
 import java.lang.reflect.Field;
@@ -33,8 +33,8 @@ public class MetricsCheckerTestUtility {
         c.compileFromString(stringAnswer);
     }
 
-    public static QFMetricsSettings generateSampleQFMetricsSettings() {
-        QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
+    public static QfMetricsSettings generateSampleQFMetricsSettings() {
+        QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();
         qfMetricsSettings.setAmcSuggestionMax("AMC CUSTOM SUGGESTION UPPER BOUND");
         qfMetricsSettings.setCcSuggestionMax("CC CUSTOM SUGGESTION UPPER BOUND");
         qfMetricsSettings.setLcom3SuggestionMin("LCOM3 CUSTOM SUGGESTION LOWER BOUND");
@@ -63,11 +63,11 @@ public class MetricsCheckerTestUtility {
         return qfMetricsSettings;
     }
 
-    public static QFMetricsSettings generateQMetricsSettings() {
-        QFMetricsSettings qfMetricsSettings = new QFMetricsSettings();
+    public static QfMetricsSettings generateQMetricsSettings() {
+        QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();
         Random random = new Random();
-        double[] doublesMin = random.doubles(18, 0,0.5).toArray();
-        double[] doublesMax = random.doubles(18, 0.5,1).toArray();
+        double[] doublesMin = random.doubles(18, 0, 0.5).toArray();
+        double[] doublesMax = random.doubles(18, 0.5, 1).toArray();
         for (int i = 0; i < doublesMin.length; i++) {
 
 

@@ -17,7 +17,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public class QFMetricsSettings extends QfObjectBase {
+public class QfMetricsSettings extends QfObjectBase {
 
     private String includeCallsToJdk = "false";
     private String includeOnlyPublicClasses = "false";

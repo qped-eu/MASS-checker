@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.semantics;
 
-import eu.qped.java.checkers.mass.QFSemSettings;
+import eu.qped.java.checkers.mass.QfSemSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
 import eu.qped.java.checkers.semantics.configs.FileSettingEntry;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class SemanticSettingReader {
     private final static boolean REC_ALLOWED_DEFAULT = false;
     private final static int MAX_STMT_DEFAULT = -1;
 
-    private QFSemSettings qfSemSettings;
+    private QfSemSettings qfSemSettings;
 
     private void setDefault() {
         qfSemSettings.getSemantics().forEach(

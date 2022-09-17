@@ -7,7 +7,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
-import eu.qped.java.checkers.mass.QFSemSettings;
+import eu.qped.java.checkers.mass.QfSemSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -26,7 +26,7 @@ public class SemanticChecker {
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
-    private QFSemSettings qfSemSettings;
+    private QfSemSettings qfSemSettings;
 
     @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE)

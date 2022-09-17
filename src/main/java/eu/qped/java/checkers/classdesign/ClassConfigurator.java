@@ -1,7 +1,7 @@
 package eu.qped.java.checkers.classdesign;
 
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.mass.QFClassSettings;
+import eu.qped.java.checkers.mass.QfClassSettings;
 
 import java.util.ArrayList;
 
@@ -13,14 +13,14 @@ public class ClassConfigurator {
 
     private ArrayList<ClassInfo> classInfos;
 
-    public ClassConfigurator(QFClassSettings qfClassSettings) {
+    public ClassConfigurator(QfClassSettings qfClassSettings) {
         setDefaultValues();
-        if(qfClassSettings != null) {
+        if (qfClassSettings != null) {
             setClassInfos(qfClassSettings.getClassInfos());
         }
     }
 
-    public static ClassConfigurator createClassConfigurator(QFClassSettings qfClassSettings) {
+    public static ClassConfigurator createClassConfigurator(QfClassSettings qfClassSettings) {
         return new ClassConfigurator(qfClassSettings);
     }
 

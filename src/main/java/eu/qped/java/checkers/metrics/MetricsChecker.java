@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.metrics;
 
-import eu.qped.java.checkers.mass.QFMetricsSettings;
+import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler;
 import eu.qped.java.checkers.metrics.ckjm.QPEDMetricsFilter;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
@@ -32,7 +32,7 @@ public class MetricsChecker {
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private QFMetricsSettings qfMetricsSettings;
+    private QfMetricsSettings qfMetricsSettings;
 
     private final static String DEFAULT_CLASS_FILES_PATH = "src/main/java/eu/qped/java/utils/compiler/compiledFiles";
 

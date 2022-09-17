@@ -2,7 +2,7 @@ package eu.qped.java.syntaxChecker;
 
 
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.utils.compiler.Compiler;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
@@ -26,17 +26,17 @@ import java.util.Locale;
 
 
 @ExtendWith(MockitoExtension.class)
-public class SyntaxCheckerTest {
+public class SyntaxErrorAnalyserTest {
 
-    private SyntaxChecker syntaxChecker;
+    private SyntaxErrorAnalyser syntaxErrorAnalyser;
 
     @Mock
     private Compiler compiler;
 
     @BeforeEach
     public void beforeEach() {
-        syntaxChecker = new SyntaxChecker();
-        syntaxChecker.setCompiler(compiler);
+        syntaxErrorAnalyser = new SyntaxErrorAnalyser();
+        syntaxErrorAnalyser.setCompiler(compiler);
     }
 
 
@@ -48,9 +48,9 @@ public class SyntaxCheckerTest {
         Mockito.when(compiler.compileFromString(code))
                 .thenReturn(true);
 
-        syntaxChecker.setStringAnswer(code);
+        syntaxErrorAnalyser.setStringAnswer(code);
 
-        SyntaxCheckReport report = syntaxChecker.check();
+        SyntaxCheckReport report = syntaxErrorAnalyser.check();
 
         Assertions.assertEquals(report.getSyntaxErrors().size(), 0);
         Assertions.assertTrue(report.isCompilable());
@@ -61,7 +61,7 @@ public class SyntaxCheckerTest {
     public void checkFailTest() {
 
         String failCode = "failCode";
-        syntaxChecker.setStringAnswer(failCode);
+        syntaxErrorAnalyser.setStringAnswer(failCode);
 
         Mockito.when(compiler.compileFromString(failCode))
                 .thenReturn(false);
@@ -183,7 +183,7 @@ public class SyntaxCheckerTest {
                         }
                 ));
 
-        SyntaxCheckReport report = syntaxChecker.check();
+        SyntaxCheckReport report = syntaxErrorAnalyser.check();
         Assertions.assertEquals(report.getSyntaxErrors().size(), 1);
         Assertions.assertEquals(report.getSyntaxErrors().get(0).getErrorMessage(), "; expected");
         Assertions.assertFalse(report.isCompilable());
@@ -205,8 +205,8 @@ public class SyntaxCheckerTest {
         Mockito.when(compiler.getTargetProjectOrClassPath())
                 .thenReturn(tempDir.toUri().getPath());
 
-        syntaxChecker.setTargetProject(tempDir.toUri().getPath());
-        SyntaxCheckReport report = syntaxChecker.check();
+        syntaxErrorAnalyser.setTargetProject(tempDir.toUri().getPath());
+        SyntaxCheckReport report = syntaxErrorAnalyser.check();
 
         Assertions.assertEquals(report.getPath(), tempDir.toUri().getPath());
 

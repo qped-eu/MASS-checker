@@ -3,10 +3,10 @@ package eu.qped.java.style;
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
-import eu.qped.java.checkers.mass.QFMainSettings;
-import eu.qped.java.checkers.mass.QFStyleSettings;
+import eu.qped.java.checkers.mass.QfMainSettings;
+import eu.qped.java.checkers.mass.QfStyleSettings;
 import eu.qped.java.checkers.style.StyleChecker;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ class MassStyleTest {
     @BeforeEach
     public void setup() {
 
-        QFMainSettings qfMainSettings = new QFMainSettings();
+        QfMainSettings qfMainSettings = new QfMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
         qfMainSettings.setSemanticNeeded("false");
         qfMainSettings.setStyleNeeded("true");
@@ -29,7 +29,7 @@ class MassStyleTest {
 
         mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
-        QFStyleSettings qfStyleSettings = new QFStyleSettings();
+        QfStyleSettings qfStyleSettings = new QfStyleSettings();
         qfStyleSettings.setNamesLevel(CheckLevel.ADVANCED.name());
         qfStyleSettings.setMethodNamePattern("[a-z][a-zA-Z0-9_]*");
 
@@ -45,8 +45,8 @@ class MassStyleTest {
                 + "System.out.println(\"pretty\");\n"
                 + "}";
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
-        MassExecutor massE = new MassExecutor(styleChecker, null, syntaxChecker,
+        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
+        MassExecutor massE = new MassExecutor(styleChecker, null, syntaxErrorAnalyser,
                 null, null, mainSettingsConfiguratorConf);
 
         massE.execute();

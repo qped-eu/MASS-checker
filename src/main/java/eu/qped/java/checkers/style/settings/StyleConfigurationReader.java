@@ -1,7 +1,7 @@
 package eu.qped.java.checkers.style.settings;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.java.checkers.mass.QFStyleSettings;
+import eu.qped.java.checkers.mass.QfStyleSettings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +25,7 @@ import java.util.List;
 public class StyleConfigurationReader {
 
 
-    private QFStyleSettings qfStyleSettings;
+    private QfStyleSettings qfStyleSettings;
 
     public StyleSettings getStyleSettings() {
         StyleSettings styleSettings = new StyleSettings();

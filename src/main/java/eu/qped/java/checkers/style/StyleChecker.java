@@ -1,7 +1,7 @@
 package eu.qped.java.checkers.style;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.java.checkers.mass.QFStyleSettings;
+import eu.qped.java.checkers.mass.QfStyleSettings;
 import eu.qped.java.checkers.style.pmd.PmdConfigException;
 import eu.qped.java.checkers.style.pmd.XmlFileManager;
 import eu.qped.java.checkers.style.reportModel.StyleCheckReport;
@@ -43,7 +43,7 @@ public class StyleChecker {
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private QFStyleSettings qfStyleSettings;
+    private QfStyleSettings qfStyleSettings;
 
     @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE)

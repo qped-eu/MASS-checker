@@ -25,7 +25,7 @@ class MassSyntaxTest {
 //		semanticConf.put("doWhileLoop", "-1");
 //		semanticConf.put("returnType", "int");
 //
-//		QFSemSettings qfSemSettings = new QFSemSettings();
+//		QfSemSettings qfSemSettings = new QfSemSettings();
 //		qfSemSettings.setMethodName("recR");
 //		qfSemSettings.setRecursionAllowed("true");
 //		qfSemSettings.setWhileLoop("-1");
@@ -39,7 +39,7 @@ class MassSyntaxTest {
 //
 //		String code = " void rec (){\n" + "        System.out.println(\"pretty\");\n" + "    }";
 //
-//		QFStyleSettings qfStyleSettings = new QFStyleSettings();
+//		QfStyleSettings qfStyleSettings = new QfStyleSettings();
 //		qfStyleSettings.setNamesLevel("adv");
 //		qfStyleSettings.setMethodName("[AA]");
 //

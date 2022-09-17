@@ -3,11 +3,11 @@ package eu.qped.java.semantics;
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
-import eu.qped.java.checkers.mass.QFMainSettings;
-import eu.qped.java.checkers.mass.QFSemSettings;
+import eu.qped.java.checkers.mass.QfMainSettings;
+import eu.qped.java.checkers.mass.QfSemSettings;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +23,7 @@ class MassSemanticsTest {
 
     @BeforeEach
     public void setup() {
-        QFMainSettings qfMainSettings = new QFMainSettings();
+        QfMainSettings qfMainSettings = new QfMainSettings();
         qfMainSettings.setSyntaxLevel(CheckLevel.ADVANCED.name());
         qfMainSettings.setSemanticNeeded("true");
         qfMainSettings.setStyleNeeded("false");
@@ -42,7 +42,7 @@ class MassSemanticsTest {
         semanticConf.put("doWhileLoop", "-1");
         semanticConf.put("returnType", "int");
 
-        QFSemSettings qfSemSettings = new QFSemSettings();
+        QfSemSettings qfSemSettings = new QfSemSettings();
 //        qfSemSettings.setMethodName("rec");
 //        qfSemSettings.setRecursionAllowed("true");
 //        qfSemSettings.setWhileLoop("-1");
@@ -64,10 +64,10 @@ class MassSemanticsTest {
                 + "System.out.println(\"pretty\");\n"
                 + "}";
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxChecker,
+        MassExecutor massE = new MassExecutor(null, semanticChecker, syntaxErrorAnalyser,
                 null, null, mainSettingsConfiguratorConf);
 
         massE.execute();

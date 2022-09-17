@@ -1,6 +1,6 @@
 //package eu.qped.java.checkers.semantics;
 //
-//import eu.qped.java.checkers.mass.QFSemSettings;
+//import eu.qped.java.checkers.mass.QfSemSettings;
 //import org.junit.jupiter.params.ParameterizedTest;
 //import org.junit.jupiter.params.provider.Arguments;
 //import org.junit.jupiter.params.provider.MethodSource;
@@ -13,7 +13,7 @@
 //
 //    @ParameterizedTest
 //    @MethodSource("provideForParameters")
-//    void checkForLoop(String code, QFSemSettings qfSemSettings) {
+//    void checkForLoop(String code, QfSemSettings qfSemSettings) {
 //        SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemSettings);
 //        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticSettingReader);
 //        semanticChecker.setReturnType("void");
@@ -26,7 +26,7 @@
 //
 //    @ParameterizedTest
 //    @MethodSource("provideRecursionParameters")
-//    void checkRecursionLoop(String code, QFSemSettings qfSemSettings) {
+//    void checkRecursionLoop(String code, QfSemSettings qfSemSettings) {
 //        SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemSettings);
 //        SemanticChecker semanticChecker = SemanticChecker.createSemanticMassChecker(semanticSettingReader);
 //        semanticChecker.setReturnType("void");
@@ -44,7 +44,7 @@
 //                                "            rec();\n" +
 //                                "        }\n" +
 //                                "    }"
-//                        , QFSemSettings.builder()
+//                        , QfSemSettings.builder()
 //                                .methodName("rec")
 //                                .recursionAllowed("true")
 //                                .whileLoop("-1")
@@ -68,7 +68,7 @@
 //                        "            }\n" +
 //                        "        }\n" +
 //                        "    }"
-//                        , QFSemSettings.builder()
+//                        , QfSemSettings.builder()
 //                                .methodName("rec")
 //                                .recursionAllowed("true")
 //                                .whileLoop("-1")
