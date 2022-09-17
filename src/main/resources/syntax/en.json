@@ -1,6 +1,6 @@
 [
   {
-    "errorKey": "; expected",
+    "errorKey": "';' expected",
     "errorCause": "You forgot to add a semicolon.",
     "hints": [
       {

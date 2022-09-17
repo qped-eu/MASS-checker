@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.syntax;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.syntax.feedback.AbstractSyntaxFeedbackGenerator;
 import eu.qped.java.checkers.syntax.feedback.fromatter.MarkdownFeedbackFormatter;
@@ -21,7 +22,6 @@ public class SyntaxChecker {
     private MarkdownFeedbackFormatter markdownFeedbackFormatter;
     private SyntaxErrorAnalyser syntaxErrorAnalyser;
     private SyntaxSetting syntaxSetting;
-    @NonNull
     private String targetProject;
 
     private String stringAnswer;
@@ -43,9 +43,35 @@ public class SyntaxChecker {
         }
         var analyseReport = syntaxErrorAnalyser.check();
 
+        if (feedbackGenerator == null) {
+            feedbackGenerator = new FeedbackGenerator();
+        }
         var nakedFeedbacks = feedbackGenerator.generate(analyseReport.getSyntaxErrors(), syntaxSetting);
 
+        if (markdownFeedbackFormatter == null) markdownFeedbackFormatter = new MarkdownFeedbackFormatter();
         return markdownFeedbackFormatter.format(nakedFeedbacks);
+    }
+
+    public int add(int num1, int num2) {
+        int r = num1 + num2;
+        return r;
+    }
+
+    public static void main(String[] args) {
+
+        String codeToCompile = "   public int add(int num1, int num2){\n" +
+                "        int r = num1 + num2;\n" +
+                "        return r\n" +
+                "    }";
+
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
+        syntaxChecker.setStringAnswer(codeToCompile);
+        var setting = SyntaxSetting.builder().checkLevel(CheckLevel.BEGINNER).language("en").build();
+        syntaxChecker.setSyntaxSetting(setting);
+        var feedbacks = syntaxChecker.check();
+
+        feedbacks.forEach(System.out::println);
+
     }
 
 }

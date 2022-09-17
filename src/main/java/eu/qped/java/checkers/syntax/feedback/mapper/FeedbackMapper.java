@@ -28,6 +28,7 @@ public class FeedbackMapper {
                                         sf.getHints()
                                 )
                                 .errorCause(sf.getErrorCause())
+                                .errorLocation(sf.getErrorLocation())
                                 .build()
                 ).collect(Collectors.toList());
     }

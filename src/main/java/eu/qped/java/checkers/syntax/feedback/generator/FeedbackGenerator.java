@@ -45,6 +45,7 @@ public class FeedbackGenerator {
 
         var filteredFeedbacks = filterFeedbacks(errors, keyToFeedbacks);
 
+        if (feedbackMapper == null) feedbackMapper = new FeedbackMapper();
         return feedbackMapper.mapFromJsonFeedback(filteredFeedbacks);
     }
 
