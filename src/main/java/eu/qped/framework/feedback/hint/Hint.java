@@ -8,16 +8,22 @@ import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+/**
+ * representation of a feedback content to give student a hint to fix his Solution. <br/>
+ * This model must be generated in all checkers.
+ *
+ * @author Omar
+ * @since 15.09.2022
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Hint {
 
-    private Set<HintType> hintTypes;
-    private String hintContent;
+    private HintType type;
+    private String content;
 
     public String translate(String s) {
         return s;

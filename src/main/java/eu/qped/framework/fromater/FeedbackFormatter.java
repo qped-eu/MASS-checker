@@ -51,7 +51,7 @@ public class FeedbackFormatter {
             return new StringBuilder()
                     .append(feedback.getTitle())
                     .append(feedback.getSeverity())
-                    .append(feedback.getHint())
+                    .append(feedback.getHints())
                     .append(feedback.getErrorLocation()).toString();
         }).collect(Collectors.toList());
     }

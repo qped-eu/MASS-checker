@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * representation of a feedback for the student. <br/>
  * This model must be generated in all checkers.
@@ -21,8 +23,9 @@ import lombok.NoArgsConstructor;
 public class Feedback {
 
     private String title;
+    private String errorCause;
     private Severity severity;
-    private Hint hint;
+    private List<Hint> hints;
     private ErrorLocation errorLocation;
 
 }

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-
+@Deprecated(forRemoval = true)
 public class SyntaxFeedback extends Feedback {
     private String header;
     private String feedbackMessage;

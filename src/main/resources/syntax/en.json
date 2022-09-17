@@ -1,0 +1,16 @@
+[
+  {
+    "errorKey": "; expected",
+    "errorCause": "You forgot to add a semicolon.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "please add a semicolon at the end of each java statement."
+      },
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "int variable = 5;"
+      }
+    ]
+  }
+]
