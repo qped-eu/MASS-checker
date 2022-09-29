@@ -2,10 +2,8 @@ package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.java.checkers.syntax.feedback.AbstractSyntaxFeedbackGenerator;
 import eu.qped.java.checkers.syntax.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.java.checkers.syntax.feedback.generator.FeedbackGenerator;
-import eu.qped.java.checkers.syntax.feedback.mapper.FeedbackMapper;
 import lombok.*;
 
 import java.util.List;
@@ -17,20 +15,17 @@ import java.util.List;
 @Builder
 public class SyntaxChecker {
 
-    private AbstractSyntaxFeedbackGenerator abstractSyntaxFeedbackGenerator;
-    private FeedbackGenerator feedbackGenerator;
-    private MarkdownFeedbackFormatter markdownFeedbackFormatter;
-    private SyntaxErrorAnalyser syntaxErrorAnalyser;
     private SyntaxSetting syntaxSetting;
+    private SyntaxErrorAnalyser syntaxErrorAnalyser;
+    private FeedbackGenerator feedbackGenerator;
+
+
+
+    private String classFilesDestination;
+    private String stringAnswer;
     private String targetProject;
 
-    private String stringAnswer;
-    private String classFilesDestination;
-
-    private FeedbackMapper feedbackMapper;
-
-
-    public List<Feedback> check() {
+    public List<String> check() {
 
         if (syntaxErrorAnalyser == null) {
             syntaxErrorAnalyser = SyntaxErrorAnalyser
@@ -46,10 +41,7 @@ public class SyntaxChecker {
         if (feedbackGenerator == null) {
             feedbackGenerator = new FeedbackGenerator();
         }
-        var nakedFeedbacks = feedbackGenerator.generate(analyseReport.getSyntaxErrors(), syntaxSetting);
-
-        if (markdownFeedbackFormatter == null) markdownFeedbackFormatter = new MarkdownFeedbackFormatter();
-        return markdownFeedbackFormatter.format(nakedFeedbacks);
+        return feedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
     }
 
 

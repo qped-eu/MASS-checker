@@ -73,7 +73,7 @@ public abstract class AbstractSyntaxFeedbackGenerator {
         return
                 Feedback
                         .builder()
-                        .title(tempTitle)
+//                        .title(tempTitle)
                         .build();
 
     }

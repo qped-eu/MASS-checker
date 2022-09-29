@@ -10,6 +10,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -104,7 +105,10 @@ public class SyntaxErrorAnalyser {
                             .errorMessage(diagnostic.getMessage(Locale.GERMAN))
                             .startPos(diagnostic.getStartPosition())
                             .endPos(diagnostic.getEndPosition())
-                            .line(diagnostic.getLineNumber())
+                            .line( (stringAnswer != null && !stringAnswer.equals("") && Arrays.stream(new String[]{"class" , "interface"}).anyMatch(stringAnswer::contains))?
+                                    diagnostic.getLineNumber() - 3
+                                    : diagnostic.getLineNumber()
+                            )
                             .errorTrigger(errorTrigger)
                             .columnNumber(diagnostic.getColumnNumber())
                             .build()

@@ -1,63 +1,92 @@
 package eu.qped.java.checkers.syntax.feedback.generator;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.ErrorLocation;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.FeedbackFilePathProvider;
+import eu.qped.framework.feedback.FeedbackFileDirectoryProvider;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.checkers.syntax.feedback.mapper.FeedbackFromJsonMapper;
-import eu.qped.java.checkers.syntax.feedback.mapper.FeedbackMapper;
+import eu.qped.java.checkers.syntax.feedback.fromatter.MarkdownFeedbackFormatter;
+import eu.qped.java.checkers.syntax.feedback.mapper.DefaultSyntaxFeedbackProvider;
+import eu.qped.java.checkers.syntax.feedback.mapper.SyntaxFeedbackMapper;
 import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class FeedbackGenerator {
 
-    // field enable mocking
-    private FeedbackFromJsonMapper jsonMapper;
-    private FeedbackMapper feedbackMapper;
+    private SyntaxFeedbackMapper syntaxFeedbackMapper;
 
+    private MarkdownFeedbackFormatter markdownFeedbackFormatter;
 
-    public List<Feedback> generate(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
+    public List<String> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
+        List<SyntaxFeedback> allDefaultSyntaxFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage());
 
-        var language = syntaxSetting.getLanguage();
-        var level = syntaxSetting.getCheckLevel();
-        if (jsonMapper == null) jsonMapper = new FeedbackFromJsonMapper();
-
-        List<SyntaxFeedback> rawSyntaxFeedbacks = getAllRawSyntaxFeedbacksFromJson(language);
-
-        var keyToFeedbacks =
-                rawSyntaxFeedbacks.stream()
+        var FeedbacksByErrorKeys =
+                allDefaultSyntaxFeedbacks.stream()
                         .collect(Collectors.groupingBy(SyntaxFeedback::getErrorKey));
 
-        var filteredFeedbacks = filterFeedbacks(errors, keyToFeedbacks);
+        var filteredFeedbacks = filterFeedbacks(errors, FeedbacksByErrorKeys);
 
-        if (feedbackMapper == null) feedbackMapper = new FeedbackMapper();
-        return feedbackMapper.mapFromJsonFeedback(filteredFeedbacks);
+        if (syntaxFeedbackMapper == null) syntaxFeedbackMapper = new SyntaxFeedbackMapper();
+        // naked feedbacks
+        var feedbacks = syntaxFeedbackMapper.mapSyntaxFeedbackToFeedback(filteredFeedbacks);
+        // adapted by check level naked feedbacks
+        feedbacks = adaptFeedbackByCheckLevel(syntaxSetting, feedbacks);
+        // formatted feedbacks
+        feedbacks = formatFeedbacks(feedbacks);
+        // build feedback in templates
+
+
+        return Collections.emptyList();
+    }
+
+    private List<String> buildFeedbackInTemplate(List<Feedback> feedbacks) {
+        AtomicInteger counter = new AtomicInteger(0);
+        return feedbacks.stream().map(feedback -> {
+           return new StringBuilder()
+                   .append(String.format("%s %02d:","...",counter.get())).toString();
+        }).collect(Collectors.toList());
+    }
+
+    private List<Feedback> formatFeedbacks(List<Feedback> feedbacks) {
+        if (markdownFeedbackFormatter == null) markdownFeedbackFormatter = new MarkdownFeedbackFormatter();
+        return markdownFeedbackFormatter.format(feedbacks);
+    }
+
+    private List<Feedback> adaptFeedbackByCheckLevel(SyntaxSetting syntaxSetting, List<Feedback> feedbacks) {
+        if(syntaxSetting.getCheckLevel().equals(CheckLevel.BEGINNER)) {
+            return  feedbacks;
+        } else {
+            return feedbacks.stream().peek(feedback -> feedback.setHints(Collections.emptyList())).collect(Collectors.toList());
+        }
+    }
+
+    private List<SyntaxFeedback> getAllDefaultSyntaxFeedbacks(String language) {
+        var dirPath = FeedbackFileDirectoryProvider.provide(SyntaxChecker.class);
+        DefaultSyntaxFeedbackProvider defaultSyntaxFeedbackProvider = new DefaultSyntaxFeedbackProvider();
+        return defaultSyntaxFeedbackProvider.provide(dirPath, language + ".json");
     }
 
     private List<SyntaxFeedback> filterFeedbacks(List<SyntaxError> errors, Map<String, List<SyntaxFeedback>> keyToFeedbacks) {
-        List<SyntaxFeedback> filteredSyntaxFeedbacksFromJson = new ArrayList<>();
+        List<SyntaxFeedback> filteredSyntaxFeedbacks = new ArrayList<>();
         for (SyntaxError error : errors) {
             var byErrorCode =
                     keyToFeedbacks.get(error.getErrorCode());
             if (byErrorCode == null) {
                 var byErrorMessage = keyToFeedbacks.get(error.getErrorMessage());
                 if (byErrorMessage != null) {
-                    filteredSyntaxFeedbacksFromJson.addAll(byErrorMessage);
+                    filteredSyntaxFeedbacks.addAll(byErrorMessage);
                 } else {
                     var syntaxFeedback =
                             SyntaxFeedback.builder()
@@ -66,26 +95,22 @@ public class FeedbackGenerator {
                                     .errorKey(error.getErrorCode())
                                     .errorLocation(ErrorLocation.builder().build())
                                     .build();
-                    filteredSyntaxFeedbacksFromJson.add(syntaxFeedback);
+                    filteredSyntaxFeedbacks.add(syntaxFeedback);
                 }
             } else {
-                filteredSyntaxFeedbacksFromJson.addAll(byErrorCode);
+                filteredSyntaxFeedbacks.addAll(byErrorCode);
             }
-            filteredSyntaxFeedbacksFromJson.forEach(
+            filteredSyntaxFeedbacks.forEach(
                     sf -> sf.setErrorLocation(
                             ErrorLocation.builder()
-                                    .startPosition(error.getStartPos())
-                                    .endPosition(error.getEndPos())
-                                    .className(error.getFileName())
+                                    .startPosition(error.getLine())
+                                    .methodName("")
+                                    .className(error.getFileName().equals("TestClass.java") ? "" : error.getFileName())
                                     .build()
                     ));
         }
-        return filteredSyntaxFeedbacksFromJson;
+        return filteredSyntaxFeedbacks;
     }
 
-    private List<SyntaxFeedback> getAllRawSyntaxFeedbacksFromJson(String language) {
-        var dirPath = FeedbackFilePathProvider.provide(SyntaxChecker.class);
-        return jsonMapper.map(dirPath + language + ".json");
-    }
 
 }

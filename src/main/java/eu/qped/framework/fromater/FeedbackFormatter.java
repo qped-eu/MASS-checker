@@ -30,7 +30,7 @@ public class FeedbackFormatter {
     public List<String> getFormattedFeedbacks(List<Feedback> feedbacks) {
 
 
-        var feedbackTitle = feedbacks.get(0).getTitle();
+//        var feedbackTitle = feedbacks.get(0).getTitle();
 
 
 //        String exampleTemplate = "%s example";
@@ -40,16 +40,16 @@ public class FeedbackFormatter {
 
         String template = "";
 
-        if (feedbackTitle == null || "".equals(feedbackTitle)) {
+//        if (feedbackTitle == null || "".equals(feedbackTitle)) {
             // code
-        }
+//        }
 
-        String.format(template, feedbacks.get(0).getTitle());
+//        String.format(template, feedbacks.get(0).getTitle());
 
 
         return feedbacks.stream().map(feedback -> {
             return new StringBuilder()
-                    .append(feedback.getTitle())
+//                    .append(feedback.getTitle())
                     .append(feedback.getSeverity())
                     .append(feedback.getHints())
                     .append(feedback.getErrorLocation()).toString();

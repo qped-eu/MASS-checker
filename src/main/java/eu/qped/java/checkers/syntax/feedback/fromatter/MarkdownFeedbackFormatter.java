@@ -5,7 +5,6 @@ import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
 import net.steppschuh.markdowngenerator.text.Text;
 import net.steppschuh.markdowngenerator.text.code.CodeBlock;
-import net.steppschuh.markdowngenerator.text.heading.Heading;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +19,12 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
     }
 
     private Feedback formatInMarkdown(Feedback feedback) {
-
         Feedback formatted = Feedback.builder().build();
-        var formattedTitle = String.valueOf(new Heading(feedback.getTitle().trim(), 4));
-        formatted.setTitle(formattedTitle);
         List<Hint> formattedHints = formatHints(feedback.getHints());
         formatted.setHints(formattedHints);
-        formatted.setErrorCause(feedback.getErrorCause());
+        formatted.setCause(feedback.getCause());
         formatted.setSeverity(feedback.getSeverity());
         formatted.setErrorLocation(feedback.getErrorLocation());
-
         return formatted;
     }
 
@@ -45,6 +40,7 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
                                 String.valueOf(new CodeBlock(h.getContent(), "java"))
                         );
                     }
+                    tempHint.setType(h.getType());
                     formattedHints.add(tempHint);
                 }
         );

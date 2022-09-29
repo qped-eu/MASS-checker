@@ -12,20 +12,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-public class FeedbackFromJsonMapper {
+public class DefaultSyntaxFeedbackProvider {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public List<SyntaxFeedback> map(@NonNull String jsonFilePath) {
-        // src/main/resources/syntax/en.json
+    public List<SyntaxFeedback> provide(@NonNull String dir,  @NonNull String fileName) {
         var result = new ArrayList<SyntaxFeedback>();
         try {
-            File jsonFile = new File(jsonFilePath).getAbsoluteFile();
-            result =
-                    objectMapper.readValue(jsonFile, new TypeReference<>() {
-                    });
+            String filePath = dir + fileName;
+            String defaultFilePath = dir + "en.json" ;
+            File jsonFile;
+            if(new File(filePath).getAbsoluteFile().exists()) {
+                jsonFile = new File(filePath).getAbsoluteFile();
+            } else {
+                jsonFile = new File(defaultFilePath).getAbsoluteFile();
+            }
+            result = objectMapper.readValue(jsonFile, new TypeReference<>() {});
         } catch (IllegalArgumentException | NullPointerException | IOException e) {
-            // todo sauberes Exception handling
             System.out.println(e.getMessage());
         }
         return result;
