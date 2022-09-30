@@ -1,7 +1,7 @@
 package eu.qped.java.checkers.syntax.feedback.mapper;
 
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.severity.Severity;
+import eu.qped.framework.feedback.Type;
 import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
 import lombok.NoArgsConstructor;
 
@@ -15,11 +15,11 @@ public class SyntaxFeedbackMapper {
         return feedbacks.stream()
                 .map(
                         sf -> Feedback.builder()
-                                .severity(Severity.CORRECTION)
+                                .type(Type.CORRECTION)
                                 .hints(
                                         sf.getHints()
                                 )
-                                .cause(sf.getErrorCause())
+                                .technicalCause(sf.getErrorCause())
                                 .errorLocation(sf.getErrorLocation())
                                 .build()
                 ).collect(Collectors.toList());

@@ -103,9 +103,9 @@ public class FeedbackGenerator {
             filteredSyntaxFeedbacks.forEach(
                     sf -> sf.setErrorLocation(
                             ErrorLocation.builder()
-                                    .startPosition(error.getLine())
+                                    .startLine(error.getLine())
                                     .methodName("")
-                                    .className(error.getFileName().equals("TestClass.java") ? "" : error.getFileName())
+                                    .fileName(error.getFileName().equals("TestClass.java") ? "" : error.getFileName())
                                     .build()
                     ));
         }

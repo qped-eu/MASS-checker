@@ -50,7 +50,7 @@ public class FeedbackFormatter {
         return feedbacks.stream().map(feedback -> {
             return new StringBuilder()
 //                    .append(feedback.getTitle())
-                    .append(feedback.getSeverity())
+                    .append(feedback.getType())
                     .append(feedback.getHints())
                     .append(feedback.getErrorLocation()).toString();
         }).collect(Collectors.toList());

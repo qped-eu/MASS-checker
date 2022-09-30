@@ -14,7 +14,7 @@ public class FeedbackFileDirectoryProvider {
     private final static String SEMANTIC_DIR_PATH = "src/main/resources/semantic/";
 
 
-    public static String provide(@NotNull Class aClass) {
+    public static String provide(@NotNull Class<?> aClass) {
         if (aClass.equals(StyleChecker.class)) {
             return STYLE_DIR_PATH;
         }

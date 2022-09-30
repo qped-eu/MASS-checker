@@ -22,8 +22,8 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
         Feedback formatted = Feedback.builder().build();
         List<Hint> formattedHints = formatHints(feedback.getHints());
         formatted.setHints(formattedHints);
-        formatted.setCause(feedback.getCause());
-        formatted.setSeverity(feedback.getSeverity());
+        formatted.setTechnicalCause(feedback.getTechnicalCause());
+        formatted.setType(feedback.getType());
         formatted.setErrorLocation(feedback.getErrorLocation());
         return formatted;
     }
