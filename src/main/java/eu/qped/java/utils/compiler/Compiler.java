@@ -12,7 +12,6 @@ import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -83,7 +82,6 @@ public class Compiler implements CompilerInterface {
             }
             files.forEach(System.out::println);
         }
-        StringWriter stringWriter = new StringWriter();
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);
 
         if (options == null) {
