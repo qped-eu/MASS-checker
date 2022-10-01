@@ -18,7 +18,11 @@ public class FeedbackFileDirectoryProvider {
     private final static String FEEDBACK_TEMPLATE_DIR_PATH = "src/main/java/eu/qped/java/checkers/syntax/feedback/template/";
 
 
-    public static String provide(@NotNull Class<?> aClass) {
+    /**
+     * @param aClass is the checker therefore feedbacks needed.
+     * @return the path of a file basically json that contains all the data of the feedbacks pro checker.
+     */
+    public static String provideFeedbackDataFile(@NotNull Class<?> aClass) {
         if (aClass.equals(StyleChecker.class)) {
             return STYLE_DIR_PATH;
         }
@@ -27,7 +31,8 @@ public class FeedbackFileDirectoryProvider {
         }
         if (aClass.equals(SyntaxChecker.class)) {
             return SYNTAX_DIR_PATH;
-        } if (aClass.equals(TemplateBuilder.class)) {
+        }
+        if (aClass.equals(TemplateBuilder.class)) {
             return FEEDBACK_TEMPLATE_DIR_PATH;
         } else return "";
     }

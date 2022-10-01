@@ -13,7 +13,6 @@ class SyntaxFeedbackGeneratorNewTest {
         syntaxError = SyntaxError.builder()
                 .errorCode("compiler.err.expected")
                 .errorMessage("';' expected")
-                .errorSourceCode("int i = 0")
                 .line(2)
                 .build();
     }

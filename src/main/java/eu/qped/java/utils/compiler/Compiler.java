@@ -1,6 +1,6 @@
 package eu.qped.java.utils.compiler;
 
-import eu.qped.java.utils.ExtractJavaFilesFromDirectory;
+import eu.qped.java.utils.MassFilesUtility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -69,14 +69,14 @@ public class Compiler implements CompilerInterface {
             files.add(new File(targetProjectOrClassPath));
 
         } else {
-            ExtractJavaFilesFromDirectory.ExtractJavaFilesFromDirectoryBuilder extractJavaFilesFromDirectoryBuilder = ExtractJavaFilesFromDirectory.builder();
-            ExtractJavaFilesFromDirectory extractJavaFilesFromDirectory;
+            var filesUtilityBuilder = MassFilesUtility.builder();
+            MassFilesUtility massFilesUtility;
             if (targetProjectOrClassPath == null || targetProjectOrClassPath.equals("")) {
                 targetProjectOrClassPath = DEFAULT_DIR_PATH;
             }
-            extractJavaFilesFromDirectoryBuilder.dirPath(targetProjectOrClassPath);
-            extractJavaFilesFromDirectory = extractJavaFilesFromDirectoryBuilder.build();
-            files = extractJavaFilesFromDirectory.filesWithExtension("java");
+            filesUtilityBuilder.dirPath(targetProjectOrClassPath);
+            massFilesUtility = filesUtilityBuilder.build();
+            files = massFilesUtility.filesWithExtension("java");
             if (files.size() == 0) {
                 return false;
             }
@@ -97,13 +97,22 @@ public class Compiler implements CompilerInterface {
     }
 
 
-
     public void addExternalJarsToClassPath(List<String> paths) {
         if (this.options == null) {
             options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
         this.options.add("cp");
         this.options.addAll(paths);
+    }
+
+    public void addClassFilesDestination(String path) {
+        if (options == null) {
+            options = CompilerSettingsFactory.createDefaultCompilerSettings();
+        }
+        options.add("-d");
+        options.add(path);
+        options.add("-s");
+        options.add(path);
     }
 
 
@@ -124,15 +133,6 @@ public class Compiler implements CompilerInterface {
         }
     }
 
-    public void addClassFilesDestination(String path) {
-        if (options == null) {
-            options = CompilerSettingsFactory.createDefaultCompilerSettings();
-        }
-        options.add("-d");
-        options.add(path);
-        options.add("-s");
-        options.add(path);
-    }
 
     /**
      * @param answer the code
@@ -140,6 +140,8 @@ public class Compiler implements CompilerInterface {
      */
     private String writeCodeAsClass(String answer) {
         StringBuilder javaFileContent = new StringBuilder();
+
+        //FIXME
         boolean isClassOrInterface = answer.contains("class") || answer.contains("interface");
 
         if (isClassOrInterface) {

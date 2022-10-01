@@ -13,7 +13,7 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @Builder
-public class ExtractJavaFilesFromDirectory {
+public class MassFilesUtility {
 
     private static final String DEFAULT_DIR = "exam-results";
 

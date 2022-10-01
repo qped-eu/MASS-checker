@@ -8,7 +8,7 @@ import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
 import eu.qped.java.checkers.metrics.data.report.MetricsCheckerReport;
 import eu.qped.java.checkers.metrics.settings.MetricSettings;
 import eu.qped.java.checkers.metrics.settings.MetricSettingsReader;
-import eu.qped.java.utils.ExtractJavaFilesFromDirectory;
+import eu.qped.java.utils.MassFilesUtility;
 import gr.spinellis.ckjm.utils.CmdLineParser;
 import lombok.*;
 
@@ -48,7 +48,7 @@ public class MetricsChecker {
         MetricSettingsReader metricSettingsReader = MetricSettingsReader.builder().qfMetricsSettings(this.qfMetricsSettings).build();
         MetricSettings metricSettings = metricSettingsReader.readMetricsCheckerSettings(MetricSettings.builder().build());
         List<File> classFiles
-                = ExtractJavaFilesFromDirectory.builder().dirPath(DEFAULT_CLASS_FILES_PATH).build().filesWithExtension("class");
+                = MassFilesUtility.builder().dirPath(DEFAULT_CLASS_FILES_PATH).build().filesWithExtension("class");
 
         String[] pathsToClassFiles = classFiles.stream().map(File::getPath).toArray(String[]::new);
 

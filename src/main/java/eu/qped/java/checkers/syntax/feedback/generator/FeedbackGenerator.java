@@ -65,7 +65,7 @@ public class FeedbackGenerator {
     }
 
     private List<SyntaxFeedback> getAllDefaultSyntaxFeedbacks(String language) {
-        var dirPath = FeedbackFileDirectoryProvider.provide(SyntaxChecker.class);
+        var dirPath = FeedbackFileDirectoryProvider.provideFeedbackDataFile(SyntaxChecker.class);
         if (defaultSyntaxFeedbackProvider == null) {
             defaultSyntaxFeedbackProvider = new DefaultSyntaxFeedbackProvider();
         }
