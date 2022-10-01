@@ -1,5 +1,6 @@
 package eu.qped.java.utils.compiler;
 
+import eu.qped.java.utils.FileExtensions;
 import eu.qped.java.utils.MassFilesUtility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -89,7 +90,17 @@ public class Compiler implements CompilerInterface {
             options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
         addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
-        JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
+
+
+        JavaCompiler.CompilationTask task = compiler.getTask(
+                null,
+                fileManager,
+                diagnosticsCollector,
+                options,
+                null,
+                compilationUnits
+        );
+
         boolean result = task.call();
 
         this.setCollectedDiagnostics(diagnosticsCollector.getDiagnostics());
@@ -157,12 +168,12 @@ public class Compiler implements CompilerInterface {
                 if (compiledStringResourcePath != null && !compiledStringResourcePath.equals("")) {
                     targetProjectOrClassPath = compiledStringResourcePath;
                     if (compiledStringResourcePath.charAt(compiledStringResourcePath.length() - 1) == '/') {
-                        targetProjectOrClassPath += fileName + ".java";
+                        targetProjectOrClassPath += fileName + FileExtensions.JAVA;
                     } else {
-                        targetProjectOrClassPath += "/" + fileName + ".java";
+                        targetProjectOrClassPath += "/" + fileName + FileExtensions.JAVA;
                     }
                 } else {
-                    targetProjectOrClassPath = fileName + ".java";
+                    targetProjectOrClassPath = fileName + FileExtensions.JAVA;
                 }
 
 
