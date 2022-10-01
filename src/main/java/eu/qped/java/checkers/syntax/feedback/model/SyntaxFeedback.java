@@ -17,8 +17,8 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SyntaxFeedback {
-    private String errorKey;
-    private String errorCause;
+    private String technicalCause;
+    private String readableCause;
     private List<Hint> hints;
 
     @JsonIgnore

@@ -11,13 +11,15 @@ import eu.qped.java.checkers.syntax.feedback.fromatter.MarkdownFeedbackFormatter
 import eu.qped.java.checkers.syntax.feedback.mapper.DefaultSyntaxFeedbackProvider;
 import eu.qped.java.checkers.syntax.feedback.mapper.SyntaxFeedbackMapper;
 import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
-import lombok.*;
+import eu.qped.java.utils.FileExtensions;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Data
@@ -28,13 +30,15 @@ public class FeedbackGenerator {
     private SyntaxFeedbackMapper syntaxFeedbackMapper;
 
     private MarkdownFeedbackFormatter markdownFeedbackFormatter;
+    private DefaultSyntaxFeedbackProvider defaultSyntaxFeedbackProvider;
 
-    public List<String> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
+    public List<Feedback> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
+        //TODO abstract
         List<SyntaxFeedback> allDefaultSyntaxFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage());
 
         var FeedbacksByErrorKeys =
                 allDefaultSyntaxFeedbacks.stream()
-                        .collect(Collectors.groupingBy(SyntaxFeedback::getErrorKey));
+                        .collect(Collectors.groupingBy(SyntaxFeedback::getTechnicalCause));
 
         var filteredFeedbacks = filterFeedbacks(errors, FeedbacksByErrorKeys);
 
@@ -44,19 +48,7 @@ public class FeedbackGenerator {
         // adapted by check level naked feedbacks
         feedbacks = adaptFeedbackByCheckLevel(syntaxSetting, feedbacks);
         // formatted feedbacks
-        feedbacks = formatFeedbacks(feedbacks);
-        // build feedback in templates
-
-
-        return Collections.emptyList();
-    }
-
-    private List<String> buildFeedbackInTemplate(List<Feedback> feedbacks) {
-        AtomicInteger counter = new AtomicInteger(0);
-        return feedbacks.stream().map(feedback -> {
-           return new StringBuilder()
-                   .append(String.format("%s %02d:","...",counter.get())).toString();
-        }).collect(Collectors.toList());
+        return formatFeedbacks(feedbacks);
     }
 
     private List<Feedback> formatFeedbacks(List<Feedback> feedbacks) {
@@ -65,8 +57,8 @@ public class FeedbackGenerator {
     }
 
     private List<Feedback> adaptFeedbackByCheckLevel(SyntaxSetting syntaxSetting, List<Feedback> feedbacks) {
-        if(syntaxSetting.getCheckLevel().equals(CheckLevel.BEGINNER)) {
-            return  feedbacks;
+        if (syntaxSetting.getCheckLevel().equals(CheckLevel.BEGINNER)) {
+            return feedbacks;
         } else {
             return feedbacks.stream().peek(feedback -> feedback.setHints(Collections.emptyList())).collect(Collectors.toList());
         }
@@ -74,8 +66,10 @@ public class FeedbackGenerator {
 
     private List<SyntaxFeedback> getAllDefaultSyntaxFeedbacks(String language) {
         var dirPath = FeedbackFileDirectoryProvider.provide(SyntaxChecker.class);
-        DefaultSyntaxFeedbackProvider defaultSyntaxFeedbackProvider = new DefaultSyntaxFeedbackProvider();
-        return defaultSyntaxFeedbackProvider.provide(dirPath, language + ".json");
+        if (defaultSyntaxFeedbackProvider == null) {
+            defaultSyntaxFeedbackProvider = new DefaultSyntaxFeedbackProvider();
+        }
+        return defaultSyntaxFeedbackProvider.provide(dirPath, language + FileExtensions.JSON);
     }
 
     private List<SyntaxFeedback> filterFeedbacks(List<SyntaxError> errors, Map<String, List<SyntaxFeedback>> keyToFeedbacks) {
@@ -91,8 +85,8 @@ public class FeedbackGenerator {
                     var syntaxFeedback =
                             SyntaxFeedback.builder()
                                     .hints(Collections.emptyList())
-                                    .errorCause(error.getErrorMessage())
-                                    .errorKey(error.getErrorCode())
+                                    .readableCause(error.getErrorMessage())
+                                    .technicalCause(error.getErrorCode())
                                     .errorLocation(ErrorLocation.builder().build())
                                     .build();
                     filteredSyntaxFeedbacks.add(syntaxFeedback);

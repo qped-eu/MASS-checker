@@ -2,7 +2,6 @@ package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.java.checkers.syntax.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.java.checkers.syntax.feedback.generator.FeedbackGenerator;
 import lombok.*;
 
@@ -25,7 +24,7 @@ public class SyntaxChecker {
     private String stringAnswer;
     private String targetProject;
 
-    public List<String> check() {
+    public List<Feedback> check() {
 
         if (syntaxErrorAnalyser == null) {
             syntaxErrorAnalyser = SyntaxErrorAnalyser

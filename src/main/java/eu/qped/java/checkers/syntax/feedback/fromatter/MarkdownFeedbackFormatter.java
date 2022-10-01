@@ -7,6 +7,7 @@ import net.steppschuh.markdowngenerator.text.Text;
 import net.steppschuh.markdowngenerator.text.code.CodeBlock;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +21,14 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
 
     private Feedback formatInMarkdown(Feedback feedback) {
         Feedback formatted = Feedback.builder().build();
-        List<Hint> formattedHints = formatHints(feedback.getHints());
-        formatted.setHints(formattedHints);
         formatted.setTechnicalCause(feedback.getTechnicalCause());
+        formatted.setReadableCause(feedback.getReadableCause());
         formatted.setType(feedback.getType());
         formatted.setErrorLocation(feedback.getErrorLocation());
+        if (feedback.getHints() == null) feedback.setHints(Collections.emptyList());
+        List<Hint> formattedHints = formatHints(feedback.getHints());
+        formatted.setHints(formattedHints);
+        formatted.setReference(feedback.getReference());
         return formatted;
     }
 

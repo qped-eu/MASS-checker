@@ -1,7 +1,7 @@
 [
   {
-    "errorKey": "';' expected",
-    "errorCause": "You forgot to add a semicolon.",
+    "technicalCause": "';' expected",
+    "readableCause": "You forgot to add a semicolon.",
     "hints": [
       {
         "type": "TEXT",

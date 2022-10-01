@@ -2,6 +2,7 @@ package eu.qped.java.checkers.syntax.feedback.mapper;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.Type;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
 import lombok.NoArgsConstructor;
 
@@ -19,8 +20,10 @@ public class SyntaxFeedbackMapper {
                                 .hints(
                                         sf.getHints()
                                 )
-                                .technicalCause(sf.getErrorCause())
+                                .technicalCause(sf.getTechnicalCause())
+                                .readableCause(sf.getReadableCause())
                                 .errorLocation(sf.getErrorLocation())
+                                .checkerName(SyntaxChecker.class.getSimpleName())
                                 .build()
                 ).collect(Collectors.toList());
     }
