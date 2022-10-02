@@ -15,12 +15,15 @@ import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
+import lombok.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Mass implements Checker {
 
+    public static final String SEPARATOR = "--------------------------------------------------";
     @QfProperty
     private FileInfo file;
 
@@ -61,73 +64,144 @@ public class Mass implements Checker {
         /*
          feedbacks
          */
-        var styleFeedbacks = massExecutor.getStyleFeedbacks();
         var syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
+        var styleFeedbacks = massExecutor.getStyleFeedbacks();
         var semanticFeedbacks = massExecutor.getSemanticFeedbacks();
         var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
 
-        int resultLength = 100
-                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
-                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
-                + ((metricsFeedbacks != null) ? metricsFeedbacks.size() : 0)
-                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
-        String[] result = new String[resultLength];
-        int resultIndex = 0;
+//        var result = mergeFeedbacks(styleFeedbacks, semanticFeedbacks, semanticFeedbacks, metricsFeedbacks);
 
-        for (StyleFeedback styleFeedback : styleFeedbacks) {
-            result[resultIndex] = "style Feedback";
-            result[resultIndex + 1] =
-                    styleFeedback.getFile()
-                            + NEW_LINE
-                            + styleFeedback.getDesc()
-                            + NEW_LINE
-                            + styleFeedback.getContent()
-                            + NEW_LINE
-                            + styleFeedback.getLine()
-                            + NEW_LINE
-                            + styleFeedback.getExample()
-                            + NEW_LINE;
-            resultIndex = resultIndex + 2;
-        }
-
-        for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
-            result[resultIndex] = "semantic Feedback";
-            result[resultIndex + 1] = semanticFeedback.getBody() + NEW_LINE
-                    + "--------------------------------------------------";
-            resultIndex = resultIndex + 2;
-        }
-
-
-        result[resultIndex] = MarkdownFormatterUtility.asHeading2("Metrics Feedback");
-        for (MetricsFeedback metricsFeedback : metricsFeedbacks) {
-            result[resultIndex + 1] =
-                    MarkdownFormatterUtility.asHeading3("In class " + MarkdownFormatterUtility.asMonospace(metricsFeedback.getClassName() + ".java", false, null))
-                            + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
-                            + " measured with value: " + MarkdownFormatterUtility.asMonospace(Double.toString(metricsFeedback.getValue()), false, null)
-                            + NEW_LINE
-                            + metricsFeedback.getSuggestion()
-                            + NEW_LINE
-                            + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
-            resultIndex = resultIndex + 2;
-        }
-
-
-//        for (ClassFeedback classFeedback : classFeedbacks) {
-//            result[resultIndex] = "class Feedback";
-//            result[resultIndex + 1] = classFeedback.getBody() + NEW_LINE
-//                    + "--------------------------------------------------";
+//        int resultLength = 100
+//                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
+//                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
+//                + ((metricsFeedbacks != null) ? metricsFeedbacks.size() : 0)
+//                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
+//        String[] result = new String[resultLength];
+//        int resultIndex = 0;
+//
+//        for (StyleFeedback styleFeedback : styleFeedbacks) {
+//            result[resultIndex] = "style Feedback";
+//            result[resultIndex + 1] =
+//                    styleFeedback.getFile()
+//                            + NEW_LINE
+//                            + styleFeedback.getDesc()
+//                            + NEW_LINE
+//                            + styleFeedback.getContent()
+//                            + NEW_LINE
+//                            + styleFeedback.getLine()
+//                            + NEW_LINE
+//                            + styleFeedback.getExample()
+//                            + NEW_LINE;
+//            resultIndex = resultIndex + 2;
+//        }
+//
+//        for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
+//            result[resultIndex] = "semantic Feedback";
+//            result[resultIndex + 1] = semanticFeedback.getBody() + NEW_LINE
+//                    + SEPARATOR;
+//            resultIndex = resultIndex + 2;
+//        }
+//
+//
+//        result[resultIndex] = MarkdownFormatterUtility.asHeading2("Metrics Feedback");
+//        for (MetricsFeedback metricsFeedback : metricsFeedbacks) {
+//            result[resultIndex + 1] =
+//                    MarkdownFormatterUtility.asHeading3("In class " + MarkdownFormatterUtility.asMonospace(metricsFeedback.getClassName() + ".java", false, null))
+//                            + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
+//                            + " measured with value: " + MarkdownFormatterUtility.asMonospace(Double.toString(metricsFeedback.getValue()), false, null)
+//                            + NEW_LINE
+//                            + metricsFeedback.getSuggestion()
+//                            + NEW_LINE
+//                            + SEPARATOR;
+//            resultIndex = resultIndex + 2;
+//        }
+//
+//        for (SyntaxFeedback syntax : syntaxFeedbacks) {
+//            result[resultIndex + 1] = ""
+//                    + syntax.toString()
+//                    + NEW_LINE
+//                    + SEPARATOR;
 //            resultIndex = resultIndex + 2;
 //        }
 
-        for (SyntaxFeedback syntax : syntaxFeedbacks) {
-            result[resultIndex + 1] = ""
-                    + syntax.toString()
-                    + NEW_LINE
-                    + "--------------------------------------------------";
-            resultIndex = resultIndex + 2;
-        }
+        var resultArray = mergeFeedbacks(
+                syntaxFeedbacks,
+                styleFeedbacks,
+                semanticFeedbacks,
+                metricsFeedbacks
+        );
 
-        qfObject.setFeedback(result);
+        qfObject.setFeedback(resultArray);
+    }
+
+    private String[] mergeFeedbacks(
+            @NonNull List<SyntaxFeedback> syntaxFeedbacks,
+            @NonNull List<StyleFeedback> styleFeedbacks,
+            @NonNull List<SemanticFeedback> semanticFeedbacks,
+            @NonNull List<MetricsFeedback> metricsFeedbacks
+    ) {
+        var resultSize =
+                !syntaxFeedbacks.isEmpty() ? syntaxFeedbacks.size() + 1 :
+                        styleFeedbacks.size() + semanticFeedbacks.size() + metricsFeedbacks.size() + 3;
+
+        String[] resultArray = new String[resultSize];
+        List<String> resultArrayAsList = new ArrayList<>();
+        if (!syntaxFeedbacks.isEmpty()) {
+            resultArrayAsList.add("Syntax feedbacks:");
+            syntaxFeedbacks.forEach(
+                    syntaxFeedback -> {
+                        String tempFeedbackAsString =
+                                syntaxFeedback.toString() +
+                                        NEW_LINE +
+                                        SEPARATOR;
+                        resultArrayAsList.add(tempFeedbackAsString);
+                    }
+            );
+        } else {
+            resultArrayAsList.add("Style feedbacks");
+            styleFeedbacks.forEach(
+                    styleFeedback -> {
+                        String tempFeedbackAsString =
+                                styleFeedback.getFile()
+                                        + NEW_LINE
+                                        + styleFeedback.getDesc()
+                                        + NEW_LINE
+                                        + styleFeedback.getContent()
+                                        + NEW_LINE
+                                        + styleFeedback.getLine()
+                                        + NEW_LINE
+                                        + styleFeedback.getExample()
+                                        + SEPARATOR;
+                        resultArrayAsList.add(tempFeedbackAsString);
+                    }
+            );
+            resultArrayAsList.add("Semantic feedbacks");
+            semanticFeedbacks.forEach(
+                    semanticFeedback -> {
+                        String tempFeedbackAsString =
+                                semanticFeedback.getBody() +
+                                        NEW_LINE +
+                                        SEPARATOR;
+                        resultArrayAsList.add(tempFeedbackAsString);
+                    }
+            );
+            resultArrayAsList.add("Metric feedbacks");
+            metricsFeedbacks.forEach(
+                    metricsFeedback -> {
+                        String tempFeedbackAsString =
+                                MarkdownFormatterUtility.asHeading3("In class " + MarkdownFormatterUtility.asMonospace(metricsFeedback.getClassName() + ".java", false, null))
+                                        + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
+                                        + " measured with value: " + MarkdownFormatterUtility.asMonospace(Double.toString(metricsFeedback.getValue()), false, null)
+                                        + NEW_LINE
+                                        + metricsFeedback.getSuggestion()
+                                        + NEW_LINE
+                                        + SEPARATOR;
+                        resultArrayAsList.add(tempFeedbackAsString);
+                    }
+            );
+        }
+        resultArray = resultArrayAsList.toArray(resultArray);
+        return resultArray;
     }
 
 
