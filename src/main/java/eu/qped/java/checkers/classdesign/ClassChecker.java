@@ -11,13 +11,18 @@ import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Main Checker that delegates work to each class element checker.
  *
  * @author Paul Engelmann
  */
+// FIXME only mass can inherit from Checker, because MASS per default is the checker for CheckerRunner. @Basel
+// TODO here is to integrate ClassChecker with mass like Metric, Style, Syntax.
 public class ClassChecker implements Checker {
 
     private final List<CompilationUnit> compilationUnits;

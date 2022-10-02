@@ -14,6 +14,7 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
+import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
 
@@ -43,6 +44,13 @@ public class Mass implements Checker {
         // Syntax Checker
         SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().build();
         if (file != null) {
+            MassFilesUtility filesUtility = MassFilesUtility.builder()
+                    .dirPath(file.getUnzipped().getPath()).build();
+            var allJavaFiles = filesUtility.filesWithExtension("java");
+            if (allJavaFiles.isEmpty()) {
+                qfObject.setFeedback(new String[]{"No java files are detected in your solution"});
+                return;
+            }
             syntaxErrorAnalyser.setTargetProject(file.getUnzipped().getPath());
         } else {
             syntaxErrorAnalyser.setStringAnswer(qfObject.getAnswer());
@@ -68,6 +76,15 @@ public class Mass implements Checker {
         var styleFeedbacks = massExecutor.getStyleFeedbacks();
         var semanticFeedbacks = massExecutor.getSemanticFeedbacks();
         var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
+
+        var resultArray = mergeFeedbacks(
+                syntaxFeedbacks,
+                styleFeedbacks,
+                semanticFeedbacks,
+                metricsFeedbacks
+        );
+
+        qfObject.setFeedback(resultArray);
 
 //        var result = mergeFeedbacks(styleFeedbacks, semanticFeedbacks, semanticFeedbacks, metricsFeedbacks);
 
@@ -124,14 +141,7 @@ public class Mass implements Checker {
 //            resultIndex = resultIndex + 2;
 //        }
 
-        var resultArray = mergeFeedbacks(
-                syntaxFeedbacks,
-                styleFeedbacks,
-                semanticFeedbacks,
-                metricsFeedbacks
-        );
 
-        qfObject.setFeedback(resultArray);
     }
 
     private String[] mergeFeedbacks(

@@ -1,8 +1,6 @@
 package eu.qped.java.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -10,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class MassFilesUtility {

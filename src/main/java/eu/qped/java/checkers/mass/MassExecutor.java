@@ -35,7 +35,7 @@ import java.util.List;
 @Setter
 public class MassExecutor {
 
-    private final MainSettings mainSettingsConfigurator;
+    private final MainSettings mainSettings;
 
 
     private List<StyleFeedback> styleFeedbacks;
@@ -55,16 +55,16 @@ public class MassExecutor {
     /**
      * To create an Object use the factory Class @MassExecutorFactory
      *
-     * @param styleChecker             style checker component
-     * @param semanticChecker          semantic checker component
-     * @param syntaxErrorAnalyser      syntax checker component
-     * @param metricsChecker           metrics checker component
-     * @param mainSettingsConfigurator settings
+     * @param styleChecker        style checker component
+     * @param semanticChecker     semantic checker component
+     * @param syntaxErrorAnalyser syntax checker component
+     * @param metricsChecker      metrics checker component
+     * @param mainSettings        settings
      */
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
                         final SyntaxErrorAnalyser syntaxErrorAnalyser, final MetricsChecker metricsChecker,
-                        final ClassChecker classChecker, final MainSettings mainSettingsConfigurator
+                        final ClassChecker classChecker, final MainSettings mainSettings
     ) {
 
         this.styleChecker = styleChecker;
@@ -72,7 +72,7 @@ public class MassExecutor {
         this.syntaxErrorAnalyser = syntaxErrorAnalyser;
         this.metricsChecker = metricsChecker;
         this.classChecker = classChecker;
-        this.mainSettingsConfigurator = mainSettingsConfigurator;
+        this.mainSettings = mainSettings;
     }
 
     /**
@@ -81,10 +81,10 @@ public class MassExecutor {
     public void execute() {
         init();
 
-        boolean styleNeeded = mainSettingsConfigurator.isStyleNeeded();
-        boolean semanticNeeded = mainSettingsConfigurator.isSemanticNeeded();
-        boolean metricsNeeded = mainSettingsConfigurator.isMetricsNeeded();
-        boolean classNeeded = mainSettingsConfigurator.isClassNeeded();
+        boolean styleNeeded = mainSettings.isStyleNeeded();
+        boolean semanticNeeded = mainSettings.isSemanticNeeded();
+        boolean metricsNeeded = mainSettings.isMetricsNeeded();
+        boolean classNeeded = mainSettings.isClassNeeded();
 
 
         SyntaxCheckReport syntaxCheckReport = syntaxErrorAnalyser.check();
@@ -120,7 +120,7 @@ public class MassExecutor {
         }
 
         // translate Feedback body if needed
-        if (!mainSettingsConfigurator.getPreferredLanguage().equals(SupportedLanguages.ENGLISH)) {
+        if (!mainSettings.getPreferredLanguage().equals(SupportedLanguages.ENGLISH)) {
             translate(styleNeeded, semanticNeeded, metricsNeeded);
         }
     }
@@ -135,7 +135,7 @@ public class MassExecutor {
 
 
     private void translate(boolean styleNeeded, boolean semanticNeeded, boolean metricsNeeded) {
-        String prefLanguage = mainSettingsConfigurator.getPreferredLanguage();
+        String prefLanguage = mainSettings.getPreferredLanguage();
         Translator translator = new Translator();
 
         //List is Empty when the syntax is correct
