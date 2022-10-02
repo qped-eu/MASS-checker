@@ -15,8 +15,6 @@ public class FeedbackFileDirectoryProvider {
     private final static String SEMANTIC_DIR_PATH = "src/main/resources/semantic/";
 
 
-    private final static String FEEDBACK_TEMPLATE_DIR_PATH = "src/main/java/eu/qped/java/checkers/syntax/feedback/template/";
-
 
     public static String provide(@NotNull Class<?> aClass) {
         if (aClass.equals(StyleChecker.class)) {
@@ -27,8 +25,6 @@ public class FeedbackFileDirectoryProvider {
         }
         if (aClass.equals(SyntaxChecker.class)) {
             return SYNTAX_DIR_PATH;
-        } if (aClass.equals(TemplateBuilder.class)) {
-            return FEEDBACK_TEMPLATE_DIR_PATH;
         } else return "";
     }
 

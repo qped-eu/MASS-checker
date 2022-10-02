@@ -218,7 +218,7 @@ public class MetricsFeedbackGenerator {
                     } else {
                         metricValues = ((ClassMetricsMessageMulti) metricForClass).getMetricValues();
                         for (Map.Entry<String, Integer> entry : metricValues.entrySet()) {
-                            suggestionString = "For method " + MarkdownFormatterUtility.asMonospace(entry.getKey(), false, null) + ":\n";
+                            suggestionString = "For method " + MarkdownFormatterUtility.asCodeLine(entry.getKey()) + ":\n";
                             lowerThresholdReached = isThresholdReached(metric, metricSettings, entry.getValue(), true);
                             upperThresholdReached = isThresholdReached(metric, metricSettings, entry.getValue(), false);
 

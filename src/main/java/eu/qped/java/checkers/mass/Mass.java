@@ -122,12 +122,12 @@ public class Mass implements Checker {
         }
 
 
-        result[resultIndex] = MarkdownFormatterUtility.asHeading2("Metrics Feedback");
+        result[resultIndex] = MarkdownFormatterUtility.asHeading4("Metrics Feedback");
         for (MetricsFeedback metricsFeedback : metricsFeedbacks) {
             result[resultIndex + 1] =
-                    MarkdownFormatterUtility.asHeading3("In class " + MarkdownFormatterUtility.asMonospace(metricsFeedback.getClassName() + ".java", false, null))
+                    MarkdownFormatterUtility.asHeading4("In class " + MarkdownFormatterUtility.asCodeLine(metricsFeedback.getClassName() + ".java"))
                             + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
-                            + " measured with value: " + MarkdownFormatterUtility.asMonospace(Double.toString(metricsFeedback.getValue()), false, null)
+                            + " measured with value: " + MarkdownFormatterUtility.asCodeLine(Double.toString(metricsFeedback.getValue()))
                             + NEW_LINE
                             + metricsFeedback.getSuggestion()
                             + NEW_LINE

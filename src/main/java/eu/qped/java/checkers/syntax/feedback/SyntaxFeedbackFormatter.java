@@ -23,7 +23,7 @@ public class SyntaxFeedbackFormatter {
 
     private String formatHeader(String feedbackHeader) {
         return (feedbackHeader != null && !feedbackHeader.equals("") ? ""
-                + MarkdownFormatterUtility.asHeading2(feedbackHeader)
+                + MarkdownFormatterUtility.asHeading4(feedbackHeader)
                 : ""
         );
     }
@@ -49,7 +49,7 @@ public class SyntaxFeedbackFormatter {
     private String formatErrorSource(String errorSource) {
         return (errorSource != null && !errorSource.equals("") ? ""
                 + MarkdownFormatterUtility.asBold("Where this error happens:")
-                + MarkdownFormatterUtility.asJavaCodeBlock(errorSource)
+                + MarkdownFormatterUtility.asCodeBlock(errorSource , MarkdownFormatterUtility.CODE_JAVA)
                 : ""
         );
     }
@@ -58,7 +58,7 @@ public class SyntaxFeedbackFormatter {
     private String buildFeedbackSolutionExample(String solutionExample) {
         return (solutionExample != null && !solutionExample.equals("") ? ""
                 + MarkdownFormatterUtility.asBold("Example to fix this error:")
-                + MarkdownFormatterUtility.asJavaCodeBlock(solutionExample)
+                + MarkdownFormatterUtility.asCodeBlock(solutionExample, MarkdownFormatterUtility.CODE_JAVA)
                 : ""
         );
     }

@@ -1,9 +1,6 @@
 package eu.qped.framework.feedback;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -14,6 +11,7 @@ import java.util.List;
 @Builder
 public class ConceptReference {
 
+    @NonNull
     private String referenceName;
     @Nullable
     private String referenceLink;
