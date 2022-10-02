@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.style.pmd;
 
+import eu.qped.java.utils.FileExtensions;
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -116,7 +117,7 @@ public class XmlFileManager {
                 Transformer transformer = transformerFactory.newTransformer();
                 DOMSource domSource = new DOMSource(document);
 
-                mainRulesetFile = File.createTempFile("mainRuleset", ".xml");
+                mainRulesetFile = File.createTempFile("mainRuleset", FileExtensions.XML);
 
                 StreamResult streamResult = new StreamResult(mainRulesetFile.toURI().getPath());
                 transformer.transform(domSource, streamResult);

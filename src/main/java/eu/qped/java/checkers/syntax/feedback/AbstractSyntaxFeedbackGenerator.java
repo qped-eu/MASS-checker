@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@Deprecated(forRemoval = true)
 public abstract class AbstractSyntaxFeedbackGenerator {
 
     private final AtomicInteger counter = new AtomicInteger(0);
@@ -24,7 +25,9 @@ public abstract class AbstractSyntaxFeedbackGenerator {
     private CheckLevel checkLevel;
 
 
+    @Deprecated(forRemoval = true)
     public List<SyntaxFeedback> generateFeedbacks(List<SyntaxError> syntaxErrors) {
+        if (syntaxErrors == null || syntaxErrors.isEmpty()) return Collections.emptyList();
         return syntaxErrors.stream()
                 .map(this::generateFeedback)
                 .map(syntaxFeedback -> SyntaxFeedbackFormatter.builder().build().formatFeedback(syntaxFeedback))

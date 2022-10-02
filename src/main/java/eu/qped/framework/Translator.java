@@ -12,8 +12,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+@Deprecated(forRemoval = true)
 public class Translator {
-
 
     public String translate(String langFrom, String langTo, String text) throws TranslationException {
         String result = "";

@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
@@ -18,7 +17,6 @@ import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Mass implements Checker {
@@ -37,17 +35,8 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        MainSettings mainSettings = new MainSettings();
-        mainSettings.setMetricsNeeded(mass.isMetricsSelected());
-        mainSettings.setStyleNeeded(mass.isStyleSelected());
-        mainSettings.setSemanticNeeded(mass.isSemanticSelected());
-        mainSettings.setClassNeeded(mass.isClassSelected());
-        mainSettings.setPreferredLanguage("en");
-        try {
-            mainSettings.setSyntaxLevel(CheckLevel.valueOf(mass.getSyntax().getLevel()));
-        } catch (Exception e) {
-            mainSettings.setSyntaxLevel(CheckLevel.BEGINNER);
-        }
+        MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
+
         // Syntax Checker
         SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().build();
         if (file != null) {
@@ -55,16 +44,12 @@ public class Mass implements Checker {
         } else {
             syntaxErrorAnalyser.setStringAnswer(qfObject.getAnswer());
         }
-        // Style Checker
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
-        // Semantic Checker
         SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
 
-        // Metrics Checker
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
-        //Class Checker
         ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(this.classSettings);
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
@@ -72,28 +57,19 @@ public class Mass implements Checker {
         MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, classChecker, mainSettings);
         massExecutor.execute();
 
+
         /*
          feedbacks
          */
-        List<StyleFeedback> styleFeedbacks = massExecutor.getStyleFeedbacks();
-
-        List<SyntaxFeedback> syntaxFeedbacks;
-        syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
-
-        List<SemanticFeedback> semanticFeedbacks;
-        semanticFeedbacks = massExecutor.getSemanticFeedbacks();
-
-        List<MetricsFeedback> metricsFeedbacks = massExecutor.getMetricsFeedbacks();
-
-        //List<ClassFeedback> classFeedbacks;
-        //classFeedbacks = massExecutor.getClassFeedbacks();
-
+        var styleFeedbacks = massExecutor.getStyleFeedbacks();
+        var syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
+        var semanticFeedbacks = massExecutor.getSemanticFeedbacks();
+        var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
 
         int resultLength = 100
                 + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
                 + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
                 + ((metricsFeedbacks != null) ? metricsFeedbacks.size() : 0)
-//                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
                 + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
         String[] result = new String[resultLength];
         int resultIndex = 0;
@@ -153,5 +129,6 @@ public class Mass implements Checker {
 
         qfObject.setFeedback(result);
     }
+
 
 }

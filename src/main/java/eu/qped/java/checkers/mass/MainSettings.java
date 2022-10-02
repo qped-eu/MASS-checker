@@ -2,6 +2,7 @@ package eu.qped.java.checkers.mass;
 
 
 import eu.qped.framework.CheckLevel;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 @AllArgsConstructor
 @Builder
 public class MainSettings {
+
     private CheckLevel syntaxLevel;
     private String preferredLanguage;
     private boolean styleNeeded;
@@ -29,15 +31,41 @@ public class MainSettings {
     private boolean classNeeded;
 
     private QfMainSettings qfMainSettings;
+    private QfMass mass;
 
 
     public MainSettings(QfMainSettings qfMainSettings) {
         this.qfMainSettings = qfMainSettings;
-        readSettings();
+        readSettingsFromQfMainSettings();
     }
 
+    public MainSettings(QfMass mass, String preferredLanguage) {
+        this.mass = mass;
+        this.preferredLanguage = preferredLanguage;
+        readSettingsFromMass();
+    }
 
-    public void readSettings() {
+    private void readSettingsFromMass() {
+        this.setMetricsNeeded(mass.isMetricsSelected());
+        this.setStyleNeeded(mass.isStyleSelected());
+        this.setSemanticNeeded(mass.isSemanticSelected());
+        this.setClassNeeded(mass.isClassSelected());
+        boolean isLanguageApplicable = this.preferredLanguage != null && !"".equals(this.preferredLanguage);
+        this.setPreferredLanguage(isLanguageApplicable ? preferredLanguage : SupportedLanguages.ENGLISH);
+        var syntaxLevel = extractSyntaxLevel(this.mass.getSyntax().getLevel());
+        this.setSyntaxLevel(syntaxLevel);
+
+    }
+
+    private CheckLevel extractSyntaxLevel(String level) {
+        try {
+            return CheckLevel.valueOf(level);
+        } catch (IllegalArgumentException e) {
+            return CheckLevel.BEGINNER;
+        }
+    }
+
+    private void readSettingsFromQfMainSettings() {
         classNeeded = qfMainSettings.getClassNeeded() != null && Boolean.parseBoolean(qfMainSettings.getClassNeeded());
         styleNeeded = qfMainSettings.getStyleNeeded() != null && Boolean.parseBoolean(qfMainSettings.getStyleNeeded());
         semanticNeeded = qfMainSettings.getSemanticNeeded() != null && Boolean.parseBoolean(qfMainSettings.getSemanticNeeded());

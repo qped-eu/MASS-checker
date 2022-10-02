@@ -17,6 +17,7 @@ import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.AbstractSyntaxFeedbackGenerator;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -119,7 +120,7 @@ public class MassExecutor {
         }
 
         // translate Feedback body if needed
-        if (!mainSettingsConfigurator.getPreferredLanguage().equals("en")) {
+        if (!mainSettingsConfigurator.getPreferredLanguage().equals(SupportedLanguages.ENGLISH)) {
             translate(styleNeeded, semanticNeeded, metricsNeeded);
         }
     }

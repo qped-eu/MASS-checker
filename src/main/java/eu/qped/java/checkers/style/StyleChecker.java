@@ -2,7 +2,9 @@ package eu.qped.java.checkers.style;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.QfStyleSettings;
+import eu.qped.java.checkers.style.pmd.MassSupportedEditablePmdRules;
 import eu.qped.java.checkers.style.pmd.PmdConfigException;
+import eu.qped.java.checkers.style.pmd.PmdRulesSets;
 import eu.qped.java.checkers.style.pmd.XmlFileManager;
 import eu.qped.java.checkers.style.reportModel.StyleCheckReport;
 import eu.qped.java.checkers.style.settings.StyleConfigurationReader;
@@ -76,7 +78,7 @@ public class StyleChecker {
         //todo use this to generate a proper feedback.
         var resultFeedbacks = adapter.generateFeedbacks();
 
-        //FIXME return the map isntead
+        //FIXME return the map instead
         styleFeedbacks = new ArrayList<>();
         for (Map.Entry<String, List<StyleFeedback>> entry : resultFeedbacks.entrySet()) {
             styleFeedbacks.addAll(entry.getValue());
@@ -90,57 +92,59 @@ public class StyleChecker {
      */
     private void addNameRules(final CheckLevel level) {
         if (level.equals(CheckLevel.INTERMEDIATE)) {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/namesAdvRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.ADVANCED_NAMING_RULES_SET);
         } else if (level.equals(CheckLevel.ADVANCED)) {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/namesProRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.PROFESSIONAL_NAMING_RULES_SET);
         } else {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/namesBegRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.BEGINNER_NAMING_RULES_SET);
         }
     }
 
     private void addComplexityRules(final CheckLevel level) {
         if (level.equals(CheckLevel.INTERMEDIATE)) {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/compAdvRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.ADVANCED_COMPLEXITY_RULES_SET);
         } else if (level.equals(CheckLevel.ADVANCED)) {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/compProRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.PROFESSIONAL_COMPLEXITY_RULES_SET);
         } else {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/compBegRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.BEGINNER_COMPLEXITY_RULES_SET);
         }
     }
 
     private void addBasicRules(final CheckLevel level) {
         if (level.equals(CheckLevel.INTERMEDIATE)) {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/basicAdvRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.ADVANCED_BASIC_RULES_SET);
         } else if (level.equals(CheckLevel.ADVANCED)) {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/basicProRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.PROFESSIONAL_BASIC_RULES_SET);
         } else {
-            xmlFileManager.addToMainRuleset("pmd-rulesets/basicBegRules.xml");
+            xmlFileManager.addToMainRuleset(PmdRulesSets.BEGINNER_BASIC_RULES_SET);
         }
     }
 
     private void applySettingsOnMainRuleset() {
         try {
             if (styleSettings.getMaxClassLength() != -1) {
-                xmlFileManager.editProperty("ExcessiveClassLength", String.valueOf(styleSettings.getMaxClassLength()), "minimum");
+                xmlFileManager.editProperty(
+                        MassSupportedEditablePmdRules.EXCESSIVE_CLASS_LENGTH, String.valueOf(styleSettings.getMaxClassLength()
+                        ), "minimum");
             }
             if (styleSettings.getMaxMethodLength() != -1) {
-                xmlFileManager.editProperty("ExcessiveMethodLength", String.valueOf(styleSettings.getMaxMethodLength()), "minimum");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.EXCESSIVE_METHOD_LENGTH, String.valueOf(styleSettings.getMaxMethodLength()), "minimum");
             }
             if (styleSettings.getMaxFieldsCount() != -1) {
-                xmlFileManager.editProperty("TooManyFields", String.valueOf(styleSettings.getMaxFieldsCount()), "maxfields");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.TOO_MANY_FIELDS, String.valueOf(styleSettings.getMaxFieldsCount()), "maxfields");
             }
             if (styleSettings.getMaxCycloComplexity() != -1) {
-                xmlFileManager.editProperty("CyclomaticComplexity", String.valueOf(styleSettings.getMaxCycloComplexity()), "methodReportLevel");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CYCLOMATIC_COMPLEXITY, String.valueOf(styleSettings.getMaxCycloComplexity()), "methodReportLevel");
             }
             if (!styleSettings.getVarNamesRegEx().equals("undefined") && !styleSettings.getVarNamesRegEx().equals("-1")) {
-                xmlFileManager.editProperty("LocalVariableNamingConventions", String.valueOf(styleSettings.getVarNamesRegEx()), "localVarPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.LOCAL_VARIABLE_NAMING_CONVENTIONS, String.valueOf(styleSettings.getVarNamesRegEx()), "localVarPattern");
             }
             if (!styleSettings.getMethodNamesRegEx().equals("undefined") && !styleSettings.getMethodNamesRegEx().equals("-1")) {
-                xmlFileManager.editProperty("MethodNamingConventions", String.valueOf(styleSettings.getMethodNamesRegEx()), "methodPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodNamesRegEx()), "methodPattern");
             }
             if (!styleSettings.getClassNameRegEx().equals("undefined") && !styleSettings.getClassNameRegEx().equals("-1")) {
-                xmlFileManager.editProperty("ClassNamingConventions", String.valueOf(styleSettings.getClassNameRegEx()), "classPattern");
-                xmlFileManager.editProperty("ClassNamingConventions", String.valueOf(styleSettings.getClassNameRegEx()), "abstractClassPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CLASS_NAMING_CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "classPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CLASS_NAMING_CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "abstractClassPattern");
             }
         } catch (PmdConfigException e) {
             LogManager.getLogger(getClass()).throwing(e);
