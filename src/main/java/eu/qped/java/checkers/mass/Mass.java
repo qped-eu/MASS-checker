@@ -147,6 +147,7 @@ public class Mass implements Checker {
         String[] resultArray = new String[resultSize];
         List<String> resultArrayAsList = new ArrayList<>();
         if (!syntaxFeedbacks.isEmpty()) {
+            System.out.println("------- Herre -------");
             resultArrayAsList.add("Syntax feedbacks:");
             syntaxFeedbacks.forEach(
                     syntaxFeedback -> {
@@ -202,6 +203,11 @@ public class Mass implements Checker {
         }
         resultArray = resultArrayAsList.toArray(resultArray);
         return resultArray;
+    }
+
+    public int sum() {
+        int a = 3;
+        return a;
     }
 
 
