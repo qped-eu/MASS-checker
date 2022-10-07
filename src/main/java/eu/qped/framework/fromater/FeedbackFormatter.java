@@ -52,7 +52,7 @@ public class FeedbackFormatter {
 //                    .append(feedback.getTitle())
                     .append(feedback.getType())
                     .append(feedback.getHints())
-                    .append(feedback.getErrorLocation()).toString();
+                    .append(feedback.getRelatedLocation()).toString();
         }).collect(Collectors.toList());
     }
 }

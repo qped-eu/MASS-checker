@@ -22,7 +22,7 @@ public class SyntaxFeedbackMapper {
                                 )
                                 .technicalCause(sf.getTechnicalCause())
                                 .readableCause(sf.getReadableCause())
-                                .errorLocation(sf.getErrorLocation())
+                                .relatedLocation(sf.getRelatedLocation())
                                 .checkerName(SyntaxChecker.class.getSimpleName())
                                 .build()
                 ).collect(Collectors.toList());

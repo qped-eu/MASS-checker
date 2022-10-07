@@ -1,7 +1,7 @@
 package eu.qped.java.checkers.syntax.feedback.generator;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.feedback.ErrorLocation;
+import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackFileDirectoryProvider;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -87,7 +87,7 @@ public class FeedbackGenerator {
                                     .hints(Collections.emptyList())
                                     .readableCause(error.getErrorMessage())
                                     .technicalCause(error.getErrorCode())
-                                    .errorLocation(ErrorLocation.builder().build())
+                                    .relatedLocation(RelatedLocation.builder().build())
                                     .build();
                     filteredSyntaxFeedbacks.add(syntaxFeedback);
                 }
@@ -95,9 +95,9 @@ public class FeedbackGenerator {
                 filteredSyntaxFeedbacks.addAll(byErrorCode);
             }
             filteredSyntaxFeedbacks.forEach(
-                    sf -> sf.setErrorLocation(
-                            ErrorLocation.builder()
-                                    .startLine(error.getLine())
+                    sf -> sf.setRelatedLocation(
+                            RelatedLocation.builder()
+                                    .startLine((int) error.getLine())
                                     .methodName("")
                                     .fileName(error.getFileName().equals("TestClass.java") ? "" : error.getFileName())
                                     .build()

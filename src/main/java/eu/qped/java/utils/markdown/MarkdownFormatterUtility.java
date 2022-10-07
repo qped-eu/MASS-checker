@@ -19,6 +19,7 @@ public final class MarkdownFormatterUtility {
     public final static String NEW_Double_LINE = "\n\n";
     public final static String NEW_LINE = "\n";
     public final static String SPACE = " ";
+    public final static String DOT = ".";
     public final static String CODE_JAVA = "Java";
     public final static String HORIZONTAL_RULE = new HorizontalRule().toString();
 

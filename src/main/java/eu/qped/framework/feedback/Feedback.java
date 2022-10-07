@@ -28,7 +28,7 @@ public class Feedback {
     @Nullable
     private ConceptReference reference;
     @Nullable
-    private ErrorLocation errorLocation;
+    private RelatedLocation relatedLocation;
 
 
 }
