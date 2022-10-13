@@ -13,7 +13,11 @@ import java.util.Map;
 @Builder
 public class SyntaxFeedbackSolutionExamples {
 
-
+    public static void main(String[] args) {
+        SyntaxFeedbackSolutionExamples syntaxFeedbackSolutionExamples = SyntaxFeedbackSolutionExamples.builder().build();
+        System.out.println(syntaxFeedbackSolutionExamples.getSolutionExamplesByErrorMessage()
+                .get("class, interface, or enum expected"));;
+    }
     public Map<String, String> getSolutionExamplesByErrorCode() {
         return new HashMap<>() {{
             put("compiler.err.already.defined"
