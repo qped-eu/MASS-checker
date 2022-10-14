@@ -26,6 +26,20 @@ class SemanticCheckerTest {
         semanticChecker.check();
         var fs = semanticChecker.getFeedbacks();
         assertThat(fs).isNotEmpty();
+
+        assertThat(fs).anyMatch(
+                f ->
+                        f.getBody().contains("you have used a Loop without a recursive Call, you have to solve it just recursive in tmp/code-example-for-sematnic-testing-fail/CalcSum.java")
+
+        );
+    }
+
+    @Test
+    void testMethodNoErrorPass() {
+        semanticChecker.setQfSemanticSettings(qfSemanticSettingsPass());
+        semanticChecker.check();
+        var fs = semanticChecker.getFeedbacks();
+        assertThat(fs).isEmpty();
     }
 
 
@@ -45,7 +59,7 @@ class SemanticCheckerTest {
                                         .ifElseStmt(-1)
                                         .returnType("int")
                                         .methodName("calcSum")
-                                        .filePath("tmp/code-example-for-sematnic-testing-fail")
+                                        .filePath("tmp/code-example-for-sematnic-testing-fail/CalcSum.java")
                                         .build()
                         )
                 )
@@ -68,7 +82,7 @@ class SemanticCheckerTest {
                                         .ifElseStmt(-1)
                                         .returnType("int")
                                         .methodName("calcSum")
-                                        .filePath("tmp/code-example-for-sematnic-testing-pass")
+                                        .filePath("tmp/code-example-for-sematnic-testing-pass/CalcSum.java")
                                         .build()
                         )
                 )

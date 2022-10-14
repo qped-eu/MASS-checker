@@ -43,7 +43,6 @@ class StyleCheckerTest {
                 );
         assertThat(feedbacks).has(correctFeedbacks);
     }
-
     @Test
     void testMethodPass() {
         styleChecker.setTargetPath("tmp/code-example-for-style-testing-pass");
