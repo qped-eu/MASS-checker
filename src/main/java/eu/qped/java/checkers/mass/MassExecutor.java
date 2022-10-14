@@ -229,18 +229,18 @@ public class MassExecutor {
 
         MainSettings mainSettingsConfiguratorConf = new MainSettings(qfMainSettings);
 
-        QfSemSettings qfSemSettings = new QfSemSettings();
-//        qfSemSettings.setFilePath("src/main/resources/exam-results/src");
-//        qfSemSettings.setMethodName("grayCodeStrings");
-//        qfSemSettings.setRecursionAllowed("true");
-//        qfSemSettings.setWhileLoop("-1");
-//        qfSemSettings.setForLoop("2");
-//        qfSemSettings.setForEachLoop("-1");
-//        qfSemSettings.setIfElseStmt("0");
-//        qfSemSettings.setDoWhileLoop("-1");
-//        qfSemSettings.setReturnType("int");
+        QfSemanticSettings qfSemanticSettings = new QfSemanticSettings();
+//        qfSemanticSettings.setFilePath("src/main/resources/exam-results/src");
+//        qfSemanticSettings.setMethodName("grayCodeStrings");
+//        qfSemanticSettings.setRecursionAllowed("true");
+//        qfSemanticSettings.setWhileLoop("-1");
+//        qfSemanticSettings.setForLoop("2");
+//        qfSemanticSettings.setForEachLoop("-1");
+//        qfSemanticSettings.setIfElseStmt("0");
+//        qfSemanticSettings.setDoWhileLoop("-1");
+//        qfSemanticSettings.setReturnType("int");
 
-//        SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemSettings);
+//        SemanticSettingReader semanticSettingReader = SemanticSettingReader.createSemanticConfigurator(qfSemanticSettings);
 
 
         QfStyleSettings qfStyleSettings = new QfStyleSettings();
@@ -253,7 +253,7 @@ public class MassExecutor {
 
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(qfStyleSettings).build();
 
-        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemSettings(qfSemSettings).build();
+        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemanticSettings(qfSemanticSettings).build();
 
         QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();
         qfMetricsSettings.setAmc("0.5", "1.0");

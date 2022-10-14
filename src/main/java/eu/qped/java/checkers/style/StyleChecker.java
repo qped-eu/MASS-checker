@@ -43,8 +43,8 @@ public class StyleChecker {
     @Setter(AccessLevel.NONE)
     private StyleSettings styleSettings;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.PUBLIC)
+    @Setter(AccessLevel.PUBLIC)
     private QfStyleSettings qfStyleSettings;
 
     @Getter(AccessLevel.PACKAGE)

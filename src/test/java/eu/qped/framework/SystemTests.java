@@ -1,28 +1,26 @@
 package eu.qped.framework;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Stream;
-
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import ro.skyah.comparator.JSONCompare;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
 public class SystemTests {
 	
@@ -79,7 +77,7 @@ public class SystemTests {
 		List<Arguments> arguments = new ArrayList<>();
 		scanForSystemTests(systemTestsFolder.getPath(), systemTestsFolder, arguments);
 
-		return arguments.stream().sorted((o1, o2) -> ((String) o1.get()[0]).compareTo(((String) o2.get()[0])));
+		return arguments.stream().sorted(Comparator.comparing(o -> ((String) o.get()[0])));
 	}
 
 	private static void scanForSystemTests(String systemTestsFolderPath, File currentFolder,

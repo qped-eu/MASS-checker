@@ -57,7 +57,7 @@ public class Mass implements Checker {
         }
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
-        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
+        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemanticSettings(mass.getSemantic()).build();
 
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
