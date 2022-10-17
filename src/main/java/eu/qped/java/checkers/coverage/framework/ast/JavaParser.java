@@ -25,7 +25,9 @@ class JavaParser implements AstFramework {
     private Set<ModifierType> excludeByType;
     private Set<String> excludeByName;
 
+
     private LinkedList<AstResult> stack = new LinkedList<>();
+    private ArrayList<String> content = new ArrayList<>();
 
     JavaParser() {}
 
@@ -43,6 +45,7 @@ class JavaParser implements AstFramework {
                 continue;
 
             CompilationUnit unit = StaticJavaParser.parse(clazz.content());
+            Arrays.stream(clazz.content().split("\n")).forEach(content::add);
             Set<String> getSetMethods = classFields(unit);
             boolean isNotExcluded = false;
             String className = clazz.simpleClassName();
@@ -54,7 +57,9 @@ class JavaParser implements AstFramework {
                     .filter(n -> typeByClass.containsKey(n.getClass()))
                     .collect(Collectors.toList())) {
 
+
                 if (isNotExcluded && (node instanceof Statement)) {
+
                     convertStatement((Statement) node, className, methodName);
 
                 } else if (node instanceof MethodDeclaration) {
@@ -82,13 +87,14 @@ class JavaParser implements AstFramework {
     }
 
     private String convertMethod(MethodDeclaration method, String className) {
+
         collection.add(new AstMethod(
                 StatementType.METHOD,
                 className,
                 method.getName().asString(),
                 method.getBegin().get().line,
                 method.getEnd().get().line,
-                method.toString()));
+                content.subList(method.getBegin().get().line - 1, method.getEnd().get().line+1)));
 
         return method.getName().asString();
     }
@@ -100,7 +106,7 @@ class JavaParser implements AstFramework {
                 constructor.getName().asString(),
                 constructor.getBegin().get().line,
                 constructor.getEnd().get().line,
-                constructor.toString()));
+                content.subList(constructor.getBegin().get().line - 1, constructor.getEnd().get().line)));
 
         return constructor.getName().asString();
     }
@@ -119,6 +125,7 @@ class JavaParser implements AstFramework {
 
     private boolean isExcluded(MethodDeclaration m, Set<String> gs) {
         String methodName = m.getName().asString();
+
         return (
                 m.isStatic() ||
                 hasNoRange(m) ||
@@ -174,6 +181,7 @@ class JavaParser implements AstFramework {
 
     private void convertIfStmt(IfStmt ifStmt, AstResult current) {
         Statement elseStmt = ifStmt.getElseStmt().get();
+
         if (elseStmt.getBegin().isPresent()) {
             popIfBehind(current);
             current.end = elseStmt.getBegin().get().line - 1;

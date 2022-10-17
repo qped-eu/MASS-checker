@@ -23,7 +23,7 @@ public class ParserCustomWF {
      * Example:
      * CLASSNAME:TEST:METHODNAME:MY MSG
      */
-    private final Pattern pattern = Pattern.compile("^([a-zA-Z0-9]*):(" + FeedbackType.TEST + "|" + FeedbackType.COVERAGE + "|" + FeedbackType.CUSTOM + "):([a-zA-Z0-9]*):(.*)$");
+    private final Pattern pattern = Pattern.compile("^([a-zA-Z0-9]+):(" + FeedbackType.TEST + "|" + FeedbackType.COVERAGE + "|" + FeedbackType.CUSTOM + "):([a-zA-Z0-9]+):(.*)$");
     private Matcher matcher;
     private boolean notLocked = false;
 

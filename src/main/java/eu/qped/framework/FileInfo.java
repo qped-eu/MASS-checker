@@ -1,6 +1,10 @@
 package eu.qped.framework;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.commons.io.FilenameUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -12,6 +16,22 @@ public class FileInfo {
 	private String path;
 	private String mimetype;
 	private String url;
+	
+	public static FileInfo createForUri(String url, String mimetype) throws MalformedURLException {		
+		URL parsedUrl = new URL(url);
+		
+		String path = parsedUrl.getPath();
+
+		
+		FileInfo result = new FileInfo();
+		result.url = url;
+		result.mimetype = mimetype;
+		result.id = FilenameUtils.getBaseName(path);
+		result.label = FilenameUtils.getBaseName(path);
+		result.extension = "." + FilenameUtils.getExtension(path);
+		result.path = "";
+		return result;
+	}
 	
 	@JsonIgnore
 	private File submittedFile;

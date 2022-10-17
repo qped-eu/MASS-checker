@@ -6,6 +6,8 @@ import eu.qped.framework.QfProperty;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.coverage.*;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -61,11 +63,26 @@ public class Mass implements Checker {
 
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
-        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(this.classSettings);
+        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClasses());
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
+        //CoverageChecker
+        CoverageChecker coverageChecker = null;
+        if (mainSettings.isCoverageNeeded()) {
+            QfCovSetting covSetting = mass.getCoverage();
+            covSetting.setAnswer(qfObject.getAnswer());
+            covSetting.setLanguage(mainSettings.getPreferredLanguage());
+            covSetting.setFile(file);
+
+            if (covSetting.isUseBlock()) {
+                coverageChecker = new CoverageBlockChecker(covSetting);
+            } else  {
+                coverageChecker = new CoverageMapChecker(covSetting);
+            }
+        }
+
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, classChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, classChecker, coverageChecker, mainSettings);
         massExecutor.execute();
 
 

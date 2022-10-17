@@ -5,40 +5,43 @@ import java.util.Objects;
 
 public class ExpectedElement {
 
-    private String accessModifier;
-    private List<String> nonAccessModifiers;
-    private String type;
+    private final boolean isExactMatch;
+    private final List<String> possibleAccessModifiers;
+    private final List<String> possibleNonAccessModifiers;
+    private final List<String> types;
     private String name;
 
-    public ExpectedElement(String accessMod, List<String> nonAccessMods, String type, String name) {
-        this.accessModifier = accessMod;
-        this.nonAccessModifiers = nonAccessMods;
-        this.type = type;
+    private final boolean containsYes;
+
+    public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, List<String> types, String name,
+                           boolean isExactMatch,
+                           boolean containsYes) {
+        this.isExactMatch = isExactMatch;
+        this.possibleAccessModifiers = accessMod;
+        this.possibleNonAccessModifiers = nonAccessMods;
+        this.types = types;
         this.name = name;
+        this.containsYes = containsYes;
     }
 
-    public String getAccessModifier() {
-        return accessModifier;
+    public boolean isContainsYes() {
+        return containsYes;
     }
 
-    public void setAccessModifier(String accessModifier) {
-        this.accessModifier = accessModifier;
+    public boolean isExactMatch() {
+        return isExactMatch;
     }
 
-    public List<String> getNonAccessModifiers() {
-        return nonAccessModifiers;
+    public List<String> getPossibleAccessModifiers() {
+        return possibleAccessModifiers;
     }
 
-    public void setNonAccessModifiers(List<String> nonAccessModifiers) {
-        this.nonAccessModifiers = nonAccessModifiers;
+    public List<String> getPossibleNonAccessModifiers() {
+        return possibleNonAccessModifiers;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public List<String> getTypes() {
+        return types;
     }
 
     public String getName() {
@@ -54,13 +57,13 @@ public class ExpectedElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExpectedElement that = (ExpectedElement) o;
-        return Objects.equals(accessModifier, that.accessModifier) &&
-                Objects.equals(nonAccessModifiers, that.nonAccessModifiers) &&
-                Objects.equals(type, that.type) && Objects.equals(name, that.name);
+        return Objects.equals(possibleAccessModifiers, that.possibleAccessModifiers) &&
+                Objects.equals(possibleNonAccessModifiers, that.possibleNonAccessModifiers) &&
+                Objects.equals(types, that.types) && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accessModifier, nonAccessModifiers, type, name);
+        return Objects.hash(possibleAccessModifiers, possibleNonAccessModifiers, types, name);
     }
 }

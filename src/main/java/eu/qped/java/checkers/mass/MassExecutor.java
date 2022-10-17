@@ -4,7 +4,14 @@ import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
+import eu.qped.java.checkers.classdesign.ClassConfigurator;
+import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
+import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
+import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.coverage.CoverageBlockChecker;
+import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -22,6 +29,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,6 +52,7 @@ public class MassExecutor {
     private List<SyntaxFeedback> syntaxFeedbacks;
     private List<ClassFeedback> classFeedbacks;
     private List<MetricsFeedback> metricsFeedbacks;
+    private String[] coverageFeedbacks;
 
     private List<SyntaxError> syntaxErrors;
 
@@ -51,6 +61,7 @@ public class MassExecutor {
     private final SyntaxErrorAnalyser syntaxErrorAnalyser;
     private final ClassChecker classChecker;
     private MetricsChecker metricsChecker;
+    private final CoverageChecker coverageChecker;
 
     /**
      * To create an Object use the factory Class @MassExecutorFactory
@@ -64,7 +75,9 @@ public class MassExecutor {
 
     public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
                         final SyntaxErrorAnalyser syntaxErrorAnalyser, final MetricsChecker metricsChecker,
-                        final ClassChecker classChecker, final MainSettings mainSettings
+                        final ClassChecker classChecker,
+                        final CoverageChecker coverageChecker,
+                        final MainSettings mainSettings
     ) {
 
         this.styleChecker = styleChecker;
@@ -72,7 +85,9 @@ public class MassExecutor {
         this.syntaxErrorAnalyser = syntaxErrorAnalyser;
         this.metricsChecker = metricsChecker;
         this.classChecker = classChecker;
+        this.coverageChecker = coverageChecker;
         this.mainSettings = mainSettings;
+        this.coverageFeedbacks = new String[]{};
     }
 
     /**
@@ -107,12 +122,21 @@ public class MassExecutor {
             }
             if (classNeeded) {
                 try {
+                    classChecker.setTargetPath(syntaxCheckReport.getPath());
                     classChecker.check(null);
                     classFeedbacks = classChecker.getClassFeedbacks();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+            if (mainSettingsConfigurator.isCoverageNeeded())
+                coverageFeedbacks = coverageChecker.check();
+
+        } else if (mainSettingsConfigurator.isCoverageNeeded()) {
+            // Found no other solution:
+            // The problem is if the student answer needs a klass from a teacher to compile
+            // the syntaxChecker always fails.
+            coverageFeedbacks = coverageChecker.check();
         } else {
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
             AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
@@ -130,7 +154,9 @@ public class MassExecutor {
         styleFeedbacks = new ArrayList<>();
         semanticFeedbacks = new ArrayList<>();
         metricsFeedbacks = new ArrayList<>();
+        classFeedbacks = new ArrayList<>();
         syntaxErrors = new ArrayList<>();
+
     }
 
 
@@ -155,6 +181,11 @@ public class MassExecutor {
         if (metricsNeeded) {
             for (MetricsFeedback feedback : metricsFeedbacks) {
                 translator.translateMetricsBody(prefLanguage, feedback);
+            }
+        }
+        if (classNeeded) {
+            for (Feedback feedback : classFeedbacks) {
+                translator.translateBody(prefLanguage, feedback);
             }
         }
     }
@@ -306,7 +337,7 @@ public class MassExecutor {
         SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
 
 
-        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, null, mainSettingsConfiguratorConf);
+        MassExecutor massE = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -319,6 +350,11 @@ public class MassExecutor {
         for (Feedback s : massE.semanticFeedbacks) {
             System.out.println(s.getBody());
         }
+
+//        for (Feedback s : massE.classFeedbacks) {
+//            System.out.println(s.getBody());
+//            System.out.println("-----------------------------------------------------------------");
+//        }
 
         /*
         for Style Errors

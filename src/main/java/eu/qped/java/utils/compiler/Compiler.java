@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,14 +81,14 @@ public class Compiler implements CompilerInterface {
             if (files.size() == 0) {
                 return false;
             }
-            files.forEach(System.out::println);
+
         }
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);
 
         if (options == null) {
             options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
-        addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles");
+        addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles"); // TODO:: delete compiled class files
 
 
         JavaCompiler.CompilationTask task = compiler.getTask(
@@ -98,7 +99,6 @@ public class Compiler implements CompilerInterface {
                 null,
                 compilationUnits
         );
-
         boolean result = task.call();
 
         this.setCollectedDiagnostics(diagnosticsCollector.getDiagnostics());
@@ -122,6 +122,14 @@ public class Compiler implements CompilerInterface {
         options.add(path);
         options.add("-s");
         options.add(path);
+
+        if (System.getProperty("maven.compile.classpath") != null) {
+            // requires that the corresponding system property is set in the Maven pom
+        	options.addAll(Arrays.asList("-classpath",System.getProperty("maven.compile.classpath")));
+        } else {
+        	// if the checker is not run from Maven (e.g., during testing), inherit classpath from current JVM
+            options.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));
+        }
     }
 
 
@@ -142,6 +150,19 @@ public class Compiler implements CompilerInterface {
         }
     }
 
+    public void addClassFilesDestination(String path) {
+        if (options == null) {
+            setDefaultOptions();
+        }
+        if (! options.contains("-d")) {
+            options.add("-d");
+            options.add(path);
+        }
+        if (! options.contains("-s")) {
+            options.add("-s");
+            options.add(path);
+        }
+    }
 
     /**
      * @param answer the code
