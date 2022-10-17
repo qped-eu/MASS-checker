@@ -21,7 +21,9 @@ public class QfMass extends QfObjectBase {
 
     private QfSyntaxSettings syntax;
 
-    private QFClassSettings classes;
+    private QfClassSettings classes;
+
+    private QfCovSetting coverage;
 
     private boolean styleSelected;
     private boolean semanticSelected;

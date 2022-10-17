@@ -4,13 +4,7 @@ import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
-import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
-import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
-import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.coverage.CoverageBlockChecker;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
@@ -29,8 +23,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,6 +92,7 @@ public class MassExecutor {
         boolean semanticNeeded = mainSettings.isSemanticNeeded();
         boolean metricsNeeded = mainSettings.isMetricsNeeded();
         boolean classNeeded = mainSettings.isClassNeeded();
+        boolean coverageNeeded = mainSettings.isCoverageNeeded();
 
 
         SyntaxCheckReport syntaxCheckReport = syntaxErrorAnalyser.check();
@@ -129,10 +122,10 @@ public class MassExecutor {
                     e.printStackTrace();
                 }
             }
-            if (mainSettingsConfigurator.isCoverageNeeded())
+            if (coverageNeeded)
                 coverageFeedbacks = coverageChecker.check();
 
-        } else if (mainSettingsConfigurator.isCoverageNeeded()) {
+        } else if (coverageNeeded) {
             // Found no other solution:
             // The problem is if the student answer needs a klass from a teacher to compile
             // the syntaxChecker always fails.
@@ -183,11 +176,11 @@ public class MassExecutor {
                 translator.translateMetricsBody(prefLanguage, feedback);
             }
         }
-        if (classNeeded) {
-            for (Feedback feedback : classFeedbacks) {
-                translator.translateBody(prefLanguage, feedback);
-            }
-        }
+//        if (classNeeded) {
+//            for (Feedback feedback : classFeedbacks) {
+//                translator.translateBody(prefLanguage, feedback);
+//            }
+//        }
     }
 
 

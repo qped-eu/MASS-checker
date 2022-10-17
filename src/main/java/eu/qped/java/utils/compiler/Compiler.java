@@ -150,19 +150,6 @@ public class Compiler implements CompilerInterface {
         }
     }
 
-    public void addClassFilesDestination(String path) {
-        if (options == null) {
-            setDefaultOptions();
-        }
-        if (! options.contains("-d")) {
-            options.add("-d");
-            options.add(path);
-        }
-        if (! options.contains("-s")) {
-            options.add("-s");
-            options.add(path);
-        }
-    }
 
     /**
      * @param answer the code

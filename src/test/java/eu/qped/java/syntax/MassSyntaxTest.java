@@ -38,7 +38,7 @@ class MassSyntaxTest {
         SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxErrorAnalyser,
-                null, null, mainSettingsConfiguratorConf);
+                null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -54,7 +54,7 @@ class MassSyntaxTest {
 
         SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
         MassExecutor massE = new MassExecutor(null, null, syntaxErrorAnalyser,
-                null, null, mainSettingsConfiguratorConf);
+                null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
@@ -70,7 +70,7 @@ class MassSyntaxTest {
 
         SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
         MassExecutor massE = new MassExecutor(null, null, syntaxErrorAnalyser,
-                null, null, mainSettingsConfiguratorConf);
+                null, null, null, mainSettingsConfiguratorConf);
 
 
         massE.execute();
