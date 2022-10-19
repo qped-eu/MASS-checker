@@ -1,6 +1,9 @@
 package eu.qped.framework.feedback;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * representation of Error location in the Student solution. <br/>
@@ -14,8 +17,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class RelatedLocation {
-
-    @NonNull
     private String fileName;
     private String methodName;
     private int startLine = -1;

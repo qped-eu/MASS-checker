@@ -64,7 +64,7 @@ class MassSyntaxTest {
 
         assertEquals(1, massE.getSyntaxFeedbacks().size());
         Feedback feedback = massE.getSyntaxFeedbacks().get(0);
-        assertEquals("compiler.err.expected", feedback.getTechnicalCause());
+        assertEquals("';' expected", feedback.getTechnicalCause());
     }
 
     @Test

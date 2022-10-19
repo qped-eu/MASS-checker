@@ -29,6 +29,7 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
         List<Hint> formattedHints = formatHints(feedback.getHints());
         formatted.setHints(formattedHints);
         formatted.setReference(feedback.getReference());
+        formatted.setCheckerName(feedback.getCheckerName());
         return formatted;
     }
 

@@ -48,7 +48,7 @@ public class TemplateBuilder {
 
     private String getTemplateFormattedCause(String cause) {
         return cause +
-                NEW_Double_LINE;
+                NEW_LINE;
     }
 
     private String getTemplateFormattedHeader(Feedback feedback, Map<String, String> templateTextByLanguage) {
@@ -57,14 +57,14 @@ public class TemplateBuilder {
                 , counter.incrementAndGet()
                 , templateTextByLanguage.get(String.valueOf(feedback.getType()))
         )) +
-                NEW_Double_LINE;
+                NEW_LINE;
     }
 
     private String getTemplateFormattedHints(List<Hint> hints) {
         StringBuilder feedbackHints = new StringBuilder();
         if (hints == null) hints = Collections.emptyList();
         for (var hint : hints) {
-            feedbackHints.append(hint.getContent()).append(NEW_Double_LINE);
+            feedbackHints.append(hint.getContent()).append(NEW_LINE);
         }
         return feedbackHints.toString();
     }
@@ -82,18 +82,18 @@ public class TemplateBuilder {
                     + SPACE + location.getMethodName()
                     + DOT + SPACE;
         }
-        if (location.getStartLine() != -1 && location.getEndLine() != -1) {
+        if (location.getStartLine() != 0 && location.getEndLine() != 0) {
             result += templateTextByLanguage.get(KEY_BETWEEN_LINES)
                     + SPACE + location.getStartLine()
                     + SPACE + templateTextByLanguage.get(KEY_AND)
                     + SPACE + location.getEndLine()
                     + DOT + SPACE;
-        } else if (location.getStartLine() != -1) {
+        } else if (location.getStartLine() != 0) {
             result += templateTextByLanguage.get(KEY_LINE)
                     + SPACE + location.getStartLine()
                     + DOT + SPACE;
         }
-        result += NEW_Double_LINE;
+        result += NEW_LINE;
         return result;
     }
 
@@ -118,7 +118,7 @@ public class TemplateBuilder {
                             + StringUtils.join(conceptReference.getPageNumbers(), ",")
                             + SPACE
                     : "")
-                    + NEW_Double_LINE;
+                    + NEW_LINE;
         }
         return result;
     }
