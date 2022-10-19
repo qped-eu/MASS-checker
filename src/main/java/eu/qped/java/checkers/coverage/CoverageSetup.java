@@ -7,7 +7,6 @@ import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.AbstractSyntaxFeedbackGenerator;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
-import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.compiler.Com;
 import eu.qped.java.utils.compiler.Compiler;
 
@@ -103,13 +102,13 @@ public class CoverageSetup {
         SyntaxCheckReport report = compile(extracted.root());
 
         if (!report.isCompilable()) {
-            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-            Translator translator = new Translator();
-            List<SyntaxFeedback> feedback = syntaxFeedbackGenerator.generateFeedbacks(report.getSyntaxErrors());
-            for (SyntaxFeedback syntaxFeedback : feedback) {
-                translator.translateBody(setting.getLanguage(), syntaxFeedback);
-            }
-            return new Data(null, null, feedback.stream().map(Feedback::getBody).collect(Collectors.toList()), false, zipService);
+//            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+//            Translator translator = new Translator();
+//            List<SyntaxFeedback> feedback = syntaxFeedbackGenerator.generateFeedbacks(report.getSyntaxErrors());
+//            for (SyntaxFeedback syntaxFeedback : feedback) {
+//                translator.translateBody(setting.getLanguage(), syntaxFeedback);
+//            }
+//            return new Data(null, null, feedback.stream().map(Feedback::getBody).collect(Collectors.toList()), false, zipService);
         }
 
         return new Data(

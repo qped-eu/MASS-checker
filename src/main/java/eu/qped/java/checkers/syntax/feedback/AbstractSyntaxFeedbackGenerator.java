@@ -30,7 +30,7 @@ public abstract class AbstractSyntaxFeedbackGenerator {
         if (syntaxErrors == null || syntaxErrors.isEmpty()) return Collections.emptyList();
         return syntaxErrors.stream()
                 .map(this::generateFeedback)
-                .map(syntaxFeedback -> SyntaxFeedbackFormatter.builder().build().formatFeedback(syntaxFeedback))
+//                .map(syntaxFeedback -> SyntaxFeedbackFormatter.builder().build().formatFeedback(syntaxFeedback))
                 .collect(Collectors.toUnmodifiableList());
     }
 

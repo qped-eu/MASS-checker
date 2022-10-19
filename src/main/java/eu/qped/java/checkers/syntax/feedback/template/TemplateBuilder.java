@@ -124,7 +124,7 @@ public class TemplateBuilder {
     }
 
     private Map<String, String> getTemplateKeyWords(String language) {
-        var dirPath = FeedbackFileDirectoryProvider.provide(TemplateBuilder.class);
+        var dirPath = FeedbackFileDirectoryProvider.provideFeedbackDataFile(TemplateBuilder.class);
         if (templateTextProvider == null) {
             templateTextProvider = new TemplateTextProvider();
         }

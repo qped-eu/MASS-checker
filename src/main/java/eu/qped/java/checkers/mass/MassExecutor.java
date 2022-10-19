@@ -16,7 +16,6 @@ import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
-import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
 import lombok.Getter;
 import lombok.Setter;
@@ -131,8 +130,8 @@ public class MassExecutor {
             coverageFeedbacks = coverageChecker.check();
         } else {
             syntaxErrors = syntaxCheckReport.getSyntaxErrors();
-            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
+//            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+//            syntaxFeedbacks = syntaxFeedbackGenerator.generateFeedbacks(syntaxErrors);
         }
 
         // translate Feedback body if needed
