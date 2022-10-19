@@ -20,9 +20,6 @@ public class SyntaxError {
     private String errorCode;
     private String errorMessage;
 
-    @Deprecated(forRemoval = true)
-    private String errorSourceCode;
-
     private String errorTrigger;
     private String fileName;
 

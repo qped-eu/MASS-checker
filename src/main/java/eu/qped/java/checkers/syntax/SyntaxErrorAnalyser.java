@@ -36,7 +36,6 @@ public class SyntaxErrorAnalyser {
 
     private Compiler compiler;
 
-    private SyntaxSetting syntaxSetting;
 
     public SyntaxCheckReport check() {
         SyntaxCheckReport.SyntaxCheckReportBuilder resultBuilder = SyntaxCheckReport.builder();

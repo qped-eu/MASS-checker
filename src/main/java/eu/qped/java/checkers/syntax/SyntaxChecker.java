@@ -3,6 +3,7 @@ package eu.qped.java.checkers.syntax;
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.syntax.feedback.generator.FeedbackGenerator;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 
 import java.util.List;
@@ -19,28 +20,40 @@ public class SyntaxChecker {
     private FeedbackGenerator feedbackGenerator;
 
 
-
     private String classFilesDestination;
     private String stringAnswer;
     private String targetProject;
 
-    public List<Feedback> check() {
+    private SyntaxCheckReport analyseReport;
 
+    public List<Feedback> check() {
+        buildSyntaxSettings();
         if (syntaxErrorAnalyser == null) {
             syntaxErrorAnalyser = SyntaxErrorAnalyser
                     .builder()
-                    .syntaxSetting(syntaxSetting)
                     .classFilesDestination(classFilesDestination)
                     .targetProject(targetProject)
                     .stringAnswer(stringAnswer)
                     .build();
         }
-        var analyseReport = syntaxErrorAnalyser.check();
+        analyseReport = syntaxErrorAnalyser.check();
 
         if (feedbackGenerator == null) {
             feedbackGenerator = new FeedbackGenerator();
         }
         return feedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
+    }
+
+    private void buildSyntaxSettings() {
+        if (syntaxSetting == null ) {
+            syntaxSetting = SyntaxSetting.builder().build();
+        }
+        if(syntaxSetting.getLanguage() == null) {
+            syntaxSetting.setLanguage(SupportedLanguages.ENGLISH);
+        }
+        if(syntaxSetting.getCheckLevel() == null) {
+            syntaxSetting.setCheckLevel(CheckLevel.BEGINNER);
+        }
     }
 
 

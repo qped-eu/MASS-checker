@@ -1,9 +1,6 @@
 package eu.qped.framework.feedback.hint;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * representation of a feedback content to give student a hint to fix his Solution. <br/>
@@ -12,13 +9,16 @@ import lombok.NoArgsConstructor;
  * @author Omar
  * @since 15.09.2022
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class Hint {
 
+    @NonNull
     private HintType type;
+    @NonNull
     private String content;
 
 }

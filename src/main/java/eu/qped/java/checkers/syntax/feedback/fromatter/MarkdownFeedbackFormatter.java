@@ -36,16 +36,17 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
         List<Hint> formattedHints = new ArrayList<>();
         hints.forEach(
                 h -> {
-                    var tempHint = Hint.builder().build();
                     if (h.getType() == HintType.TEXT) {
-                        tempHint.setContent(String.valueOf(new Text(h.getContent())));
+                        formattedHints.add(Hint.builder()
+                                .content(String.valueOf(new Text(h.getContent())))
+                                .type(HintType.TEXT)
+                                .build());
                     } else if (h.getType() == HintType.CODE_EXAMPLE) {
-                        tempHint.setContent(
-                                String.valueOf(new CodeBlock(h.getContent(), "java"))
-                        );
+                        formattedHints.add(Hint.builder()
+                                .content(String.valueOf(new CodeBlock(h.getContent(), "java")))
+                                .type(HintType.CODE_EXAMPLE)
+                                .build());
                     }
-                    tempHint.setType(h.getType());
-                    formattedHints.add(tempHint);
                 }
         );
         return formattedHints;

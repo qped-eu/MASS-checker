@@ -12,6 +12,7 @@ import eu.qped.java.checkers.syntax.feedback.mapper.DefaultSyntaxFeedbackProvide
 import eu.qped.java.checkers.syntax.feedback.mapper.SyntaxFeedbackMapper;
 import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
 import eu.qped.java.utils.FileExtensions;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
