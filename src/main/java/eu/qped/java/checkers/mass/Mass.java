@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
@@ -8,8 +7,10 @@ import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.coverage.*;
+import eu.qped.java.checkers.coverage.CoverageBlockChecker;
+import eu.qped.java.checkers.coverage.CoverageChecker;
+import eu.qped.java.checkers.coverage.CoverageMapChecker;
+import eu.qped.java.checkers.coverage.QfCovSetting;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
@@ -17,8 +18,7 @@ import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
-import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
+import eu.qped.java.checkers.syntax.feedback.template.TemplateBuilder;
 import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
@@ -79,7 +79,7 @@ public class Mass implements Checker {
 
             if (covSetting.isUseBlock()) {
                 coverageChecker = new CoverageBlockChecker(covSetting);
-            } else  {
+            } else {
                 coverageChecker = new CoverageMapChecker(covSetting);
             }
         }
@@ -100,7 +100,8 @@ public class Mass implements Checker {
                 syntaxFeedbacks,
                 styleFeedbacks,
                 semanticFeedbacks,
-                metricsFeedbacks
+                metricsFeedbacks,
+                qfObject
         );
 
         qfObject.setFeedback(resultArray);
@@ -167,25 +168,19 @@ public class Mass implements Checker {
             @NonNull List<Feedback> syntaxFeedbacks,
             @NonNull List<StyleFeedback> styleFeedbacks,
             @NonNull List<SemanticFeedback> semanticFeedbacks,
-            @NonNull List<MetricsFeedback> metricsFeedbacks
+            @NonNull List<MetricsFeedback> metricsFeedbacks,
+            @NonNull QfObject qfObject
     ) {
+
         var resultSize =
                 !syntaxFeedbacks.isEmpty() ? syntaxFeedbacks.size() + 1 :
                         styleFeedbacks.size() + semanticFeedbacks.size() + metricsFeedbacks.size() + 3;
 
         String[] resultArray = new String[resultSize];
         List<String> resultArrayAsList = new ArrayList<>();
+        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
         if (!syntaxFeedbacks.isEmpty()) {
-            resultArrayAsList.add("Syntax feedbacks:");
-            syntaxFeedbacks.forEach(
-                    syntaxFeedback -> {
-                        String tempFeedbackAsString =
-                                syntaxFeedback.toString() +
-                                        NEW_LINE +
-                                        SEPARATOR;
-                        resultArrayAsList.add(tempFeedbackAsString);
-                    }
-            );
+            resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
         } else {
             resultArrayAsList.add("Style feedbacks");
             styleFeedbacks.forEach(
