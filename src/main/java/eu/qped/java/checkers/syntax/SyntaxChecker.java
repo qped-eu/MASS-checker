@@ -2,7 +2,7 @@ package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.java.checkers.syntax.feedback.generator.FeedbackGenerator;
+import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 
@@ -39,7 +39,7 @@ public class SyntaxChecker {
         analyseReport = syntaxErrorAnalyser.check();
 
         if (feedbackGenerator == null) {
-            feedbackGenerator = new FeedbackGenerator();
+            feedbackGenerator = FeedbackGenerator.builder().build();
         }
         return feedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
     }

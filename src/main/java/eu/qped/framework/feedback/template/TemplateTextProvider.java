@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax.feedback.template;
+package eu.qped.framework.feedback.template;
 
 import eu.qped.framework.feedback.Type;
 import eu.qped.java.checkers.semantics.SemanticChecker;

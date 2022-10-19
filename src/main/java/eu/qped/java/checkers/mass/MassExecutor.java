@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
@@ -13,8 +12,6 @@ import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
-import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
 import eu.qped.java.utils.SupportedLanguages;
 import lombok.Getter;
 import lombok.Setter;

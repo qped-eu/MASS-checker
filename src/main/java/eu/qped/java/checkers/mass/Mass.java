@@ -18,7 +18,7 @@ import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.feedback.template.TemplateBuilder;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;

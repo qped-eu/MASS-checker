@@ -3,7 +3,6 @@ package eu.qped.framework.feedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.feedback.template.TemplateBuilder;
 import org.jetbrains.annotations.NotNull;
 
 public class FeedbackFileDirectoryProvider {

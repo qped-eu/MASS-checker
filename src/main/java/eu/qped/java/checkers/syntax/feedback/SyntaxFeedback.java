@@ -1,25 +1,26 @@
 package eu.qped.java.checkers.syntax.feedback;
 
-import eu.qped.framework.Feedback;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import eu.qped.framework.feedback.RelatedLocation;
+import eu.qped.framework.feedback.hint.Hint;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = true)
-@Getter
-@Setter
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-@Deprecated(forRemoval = true)
-public class SyntaxFeedback extends Feedback {
-    private String header;
-    private String feedbackMessage;
-    private String errorSource;
-    private String solutionExample;
-    private String errorLine;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SyntaxFeedback {
+    private String technicalCause;
+    private String readableCause;
+    private List<Hint> hints;
 
-    @Override
-    public String toString() {
-        return header + feedbackMessage + errorLine + errorSource + solutionExample;
-    }
+    @JsonIgnore
+    private RelatedLocation relatedLocation;
 }

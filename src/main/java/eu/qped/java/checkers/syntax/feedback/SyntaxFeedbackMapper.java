@@ -1,9 +1,8 @@
-package eu.qped.java.checkers.syntax.feedback.mapper;
+package eu.qped.java.checkers.syntax.feedback;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.Type;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
 import lombok.NoArgsConstructor;
 
 import java.util.List;

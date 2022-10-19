@@ -1,8 +1,7 @@
-package eu.qped.java.checkers.syntax.feedback.mapper;
+package eu.qped.java.checkers.syntax.feedback;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
 import eu.qped.java.utils.FileExtensions;
 import eu.qped.java.utils.SupportedLanguages;
 import lombok.NoArgsConstructor;

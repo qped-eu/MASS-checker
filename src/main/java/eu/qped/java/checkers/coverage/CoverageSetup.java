@@ -1,12 +1,12 @@
 package eu.qped.java.checkers.coverage;
 
 
-import eu.qped.framework.Feedback;
-import eu.qped.framework.Translator;
+import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
-import eu.qped.java.checkers.syntax.feedback.AbstractSyntaxFeedbackGenerator;
-import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
+import eu.qped.java.checkers.syntax.SyntaxSetting;
+import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
 import eu.qped.java.utils.compiler.Com;
 import eu.qped.java.utils.compiler.Compiler;
 
@@ -102,13 +102,15 @@ public class CoverageSetup {
         SyntaxCheckReport report = compile(extracted.root());
 
         if (!report.isCompilable()) {
-//            AbstractSyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-//            Translator translator = new Translator();
-//            List<SyntaxFeedback> feedback = syntaxFeedbackGenerator.generateFeedbacks(report.getSyntaxErrors());
-//            for (SyntaxFeedback syntaxFeedback : feedback) {
-//                translator.translateBody(setting.getLanguage(), syntaxFeedback);
-//            }
-//            return new Data(null, null, feedback.stream().map(Feedback::getBody).collect(Collectors.toList()), false, zipService);
+            List<Feedback> feedbacks = FeedbackGenerator.builder().build().generateFeedbacks(
+                    report.getSyntaxErrors(),
+                    SyntaxSetting.builder().language(setting.getLanguage()).build()
+            );
+            List<String> templatedFeedbacks = TemplateBuilder.builder().build().buildFeedbacksInTemplate(
+                    feedbacks,
+                    setting.getLanguage()
+            );
+            return new Data(null, null,templatedFeedbacks , false, zipService);
         }
 
         return new Data(

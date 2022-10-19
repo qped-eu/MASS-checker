@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax.feedback.generator;
+package eu.qped.java.checkers.syntax.feedback;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.RelatedLocation;
@@ -7,13 +7,10 @@ import eu.qped.framework.feedback.FeedbackFileDirectoryProvider;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.checkers.syntax.feedback.fromatter.MarkdownFeedbackFormatter;
-import eu.qped.java.checkers.syntax.feedback.mapper.DefaultSyntaxFeedbackProvider;
-import eu.qped.java.checkers.syntax.feedback.mapper.SyntaxFeedbackMapper;
-import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
+import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.java.utils.FileExtensions;
-import eu.qped.java.utils.SupportedLanguages;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +23,7 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class FeedbackGenerator {
 
     private SyntaxFeedbackMapper syntaxFeedbackMapper;

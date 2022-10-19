@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax.feedback.fromatter;
+package eu.qped.framework.feedback.fromatter;
 
 import eu.qped.framework.feedback.Feedback;
 

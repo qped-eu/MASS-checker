@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax.feedback.template;
+package eu.qped.framework.feedback.template;
 
 import eu.qped.framework.feedback.*;
 import eu.qped.framework.feedback.hint.Hint;
@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static eu.qped.java.checkers.syntax.feedback.template.TemplateTextProvider.*;
 import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
 
 @NoArgsConstructor
@@ -73,23 +72,23 @@ public class TemplateBuilder {
         String result = "";
         if (location == null) return result;
         if (!location.getFileName().equals("")) {
-            result += templateTextByLanguage.get(KEY_IN)
+            result += templateTextByLanguage.get(TemplateTextProvider.KEY_IN)
                     + SPACE + location.getFileName()
                     + DOT + SPACE;
         }
         if (location.getMethodName() != null && !location.getMethodName().equals("")) {
-            result += templateTextByLanguage.get(KEY_METHOD)
+            result += templateTextByLanguage.get(TemplateTextProvider.KEY_METHOD)
                     + SPACE + location.getMethodName()
                     + DOT + SPACE;
         }
         if (location.getStartLine() != 0 && location.getEndLine() != 0) {
-            result += templateTextByLanguage.get(KEY_BETWEEN_LINES)
+            result += templateTextByLanguage.get(TemplateTextProvider.KEY_BETWEEN_LINES)
                     + SPACE + location.getStartLine()
-                    + SPACE + templateTextByLanguage.get(KEY_AND)
+                    + SPACE + templateTextByLanguage.get(TemplateTextProvider.KEY_AND)
                     + SPACE + location.getEndLine()
                     + DOT + SPACE;
         } else if (location.getStartLine() != 0) {
-            result += templateTextByLanguage.get(KEY_LINE)
+            result += templateTextByLanguage.get(TemplateTextProvider.KEY_LINE)
                     + SPACE + location.getStartLine()
                     + DOT + SPACE;
         }
@@ -102,18 +101,18 @@ public class TemplateBuilder {
         if (conceptReference != null && !conceptReference.equals("")) {
             boolean hasSection = conceptReference.getSection() != null && !conceptReference.getSection().equals("");
             boolean hasPages = conceptReference.getPageNumbers() != null && conceptReference.getPageNumbers().size() != 0;
-            result += templateTextByLanguage.get(KEY_MORE_INFORMATION)
+            result += templateTextByLanguage.get(TemplateTextProvider.KEY_MORE_INFORMATION)
                     + SPACE
                     + asBold(asLink(conceptReference.getReferenceName(), conceptReference.getReferenceLink()))
                     + SPACE
                     + (hasSection ?
-                    templateTextByLanguage.get(KEY_AT)
+                    templateTextByLanguage.get(TemplateTextProvider.KEY_AT)
                             + SPACE
                             + asBold(conceptReference.getSection())
                             + SPACE
                     : "")
                     + (hasPages ?
-                    templateTextByLanguage.get(KEY_PAGE)
+                    templateTextByLanguage.get(TemplateTextProvider.KEY_PAGE)
                             + SPACE
                             + StringUtils.join(conceptReference.getPageNumbers(), ",")
                             + SPACE
