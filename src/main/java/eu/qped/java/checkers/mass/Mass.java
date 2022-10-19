@@ -4,6 +4,7 @@ import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
+import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
@@ -15,6 +16,7 @@ import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedback;
 import eu.qped.java.utils.MassFilesUtility;
@@ -45,7 +47,7 @@ public class Mass implements Checker {
         MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
 
         // Syntax Checker
-        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
             MassFilesUtility filesUtility = MassFilesUtility.builder()
                     .dirPath(file.getUnzipped().getPath()).build();
@@ -54,9 +56,9 @@ public class Mass implements Checker {
                 qfObject.setFeedback(new String[]{"No java files are detected in your solution"});
                 return;
             }
-            syntaxErrorAnalyser.setTargetProject(file.getUnzipped().getPath());
+            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
         } else {
-            syntaxErrorAnalyser.setStringAnswer(qfObject.getAnswer());
+            syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
@@ -83,7 +85,7 @@ public class Mass implements Checker {
         }
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxErrorAnalyser, metricsChecker, classChecker, coverageChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
         massExecutor.execute();
 
         /*
@@ -162,7 +164,7 @@ public class Mass implements Checker {
     }
 
     private String[] mergeFeedbacks(
-            @NonNull List<SyntaxFeedback> syntaxFeedbacks,
+            @NonNull List<Feedback> syntaxFeedbacks,
             @NonNull List<StyleFeedback> styleFeedbacks,
             @NonNull List<SemanticFeedback> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks

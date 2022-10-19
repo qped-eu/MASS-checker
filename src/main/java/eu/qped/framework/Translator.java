@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Deprecated(forRemoval = true)
 public class Translator {
 
     public String translate(String langFrom, String langTo, String text) throws TranslationException {
@@ -70,7 +69,7 @@ public class Translator {
         }
     }
 
-    public void translateBody(String pref, eu.qped.framework.feedback.Feedback feedback) {
+    public void translateFeedback(String pref, eu.qped.framework.feedback.Feedback feedback) {
         try {
             feedback.setReadableCause(translate(SupportedLanguages.ENGLISH, pref, feedback.getReadableCause()));
             List<Hint> feedbackHints = new ArrayList<>();

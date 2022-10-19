@@ -1,11 +1,14 @@
 package eu.qped.java.syntax;
 
 import eu.qped.framework.CheckLevel;
+import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.mass.QfMainSettings;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.feedback.model.SyntaxFeedback;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,14 +38,14 @@ class MassSyntaxTest {
                 + "System.out.println(\"pretty\");\n"
                 + "}";
 
-        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
 
-        MassExecutor massE = new MassExecutor(null, null, syntaxErrorAnalyser,
+        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
                 null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
-        assertEquals(0, massE.getSyntaxErrors().size());
+        assertEquals(0, massE.getSyntaxFeedbacks().size());
     }
 
     @Test
@@ -52,15 +55,16 @@ class MassSyntaxTest {
                 + "System.out.println(\"pretty\")\n"
                 + "}";
 
-        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
-        MassExecutor massE = new MassExecutor(null, null, syntaxErrorAnalyser,
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+
+        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
                 null, null, null, mainSettingsConfiguratorConf);
 
         massE.execute();
 
-        assertEquals(1, massE.getSyntaxErrors().size());
-        SyntaxError error = massE.getSyntaxErrors().get(0);
-        assertEquals("compiler.err.expected", error.getErrorCode());
+        assertEquals(1, massE.getSyntaxFeedbacks().size());
+        Feedback feedback = massE.getSyntaxFeedbacks().get(0);
+        assertEquals("compiler.err.expected", feedback.getTechnicalCause());
     }
 
     @Test
@@ -68,13 +72,13 @@ class MassSyntaxTest {
 
         String code = "class Simple {}";
 
-        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser.builder().stringAnswer(code).build();
-        MassExecutor massE = new MassExecutor(null, null, syntaxErrorAnalyser,
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
                 null, null, null, mainSettingsConfiguratorConf);
 
 
         massE.execute();
 
-        assertEquals(0, massE.getSyntaxErrors().size());
+        assertEquals(0, massE.getSyntaxFeedbacks().size());
     }
 }
