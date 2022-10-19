@@ -57,8 +57,10 @@ public class WantedFeedback {
     }
 
     public void setFeedbackBody(TestFB test) {
-        if (this.type.equals(FeedbackType.TEST)) {
+        if (this.type.equals(FeedbackType.TEST) && ! test.hasFailedWithoutAssertion()) {
             feedback = defaultFeedback.testFB();
+        } else if (this.type.equals(FeedbackType.TEST)) {
+            feedback = defaultFeedback.testFailedFB();
         }
         replaceTest(test);
     }
@@ -72,11 +74,13 @@ public class WantedFeedback {
     }
 
     private void replaceTest(TestFB fb) {
-        fb.setBody(
-                feedback.replace(REPLACE_CLASS, fb.className())
-                        .replace(REPLACE_METHOD, fb.methodName())
-                        .replace(REPLACE_WANT, fb.want())
-                        .replace(REPLACE_GOT, fb.got()));
+        String temp = feedback.replace(REPLACE_CLASS, fb.className())
+                .replace(REPLACE_METHOD, fb.methodName());
+        if (Objects.nonNull(fb.want()) && Objects.nonNull(fb.got()))
+            temp = temp.replace(REPLACE_WANT, fb.want())
+                .replace(REPLACE_GOT, fb.got());
+
+        fb.setBody(temp);
     }
 
 

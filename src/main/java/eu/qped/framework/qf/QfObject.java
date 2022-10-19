@@ -1,7 +1,6 @@
 package eu.qped.framework.qf;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import eu.qped.framework.Checker;
 
 
@@ -21,8 +20,6 @@ public class QfObject extends QfObjectBase {
 	private QFQuestion question;
 
 	private String checkerClass;
-
-
 
 	private String[] settings;
 	

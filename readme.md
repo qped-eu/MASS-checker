@@ -47,6 +47,12 @@ We interface with Quarterfall by using a JSON configuration that is done in Quar
 The output is also generated as a JSON-object.
 However, the feedback itself is formatted in markdown.
 
+Development
+-----------
+The implementation makes use of the Lombok project, which is properly configured in the Maven POM.
+If you want to build the project in your IDE, you need to have Lombok installed as an IDE extension.
+You can follow the instructions in this [tutorial](https://www.baeldung.com/lombok-ide).  
+
 Licence
 ----------
 MIT-licence

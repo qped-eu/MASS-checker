@@ -7,7 +7,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
-import eu.qped.java.checkers.mass.QfSemSettings;
+import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -24,9 +24,9 @@ import java.util.Objects;
 @NoArgsConstructor
 public class SemanticChecker {
 
-    @Getter(AccessLevel.PRIVATE)
-    @Setter(AccessLevel.PRIVATE)
-    private QfSemSettings qfSemSettings;
+    @Getter(AccessLevel.PUBLIC)
+    @Setter(AccessLevel.PUBLIC)
+    private QfSemanticSettings qfSemanticSettings;
 
     @Getter(AccessLevel.PACKAGE)
     @Setter(AccessLevel.PACKAGE)
@@ -44,25 +44,16 @@ public class SemanticChecker {
 
     private String targetProjectPath;
 
-    @Deprecated(forRemoval = true)
-    public SemanticChecker(SemanticSettingReader semanticSettingReader) {
-
-    }
-
-    @Deprecated(forRemoval = true)
-    public static SemanticChecker createSemanticMassChecker(SemanticSettingReader semanticSettingReader) {
-        return new SemanticChecker(semanticSettingReader);
-    }
-
     public void check() {
 
-        SemanticSettingReader reader = SemanticSettingReader.builder().qfSemSettings(qfSemSettings).build();
+        feedbacks = new ArrayList<>();
+
+        SemanticSettingReader reader = SemanticSettingReader.builder().qfSemanticSettings(qfSemanticSettings).build();
         var settings = reader.groupByFileName();
 
         // per File
         settings.forEach(
                 fileSettingEntry -> {
-                    System.out.println("in for each");
                     if (targetProjectPath == null) {
                         targetProjectPath = "";
                     }
@@ -110,8 +101,6 @@ public class SemanticChecker {
         ParserConfiguration configuration = new ParserConfiguration();
         JavaParser javaParser = new JavaParser(configuration);
         try {
-            System.out.println(path);
-            System.out.println(Path.of(path));
             var unit = javaParser.parse(Path.of(path));
             if (unit.getResult().isPresent()) {
                 return unit.getResult().get();
@@ -119,7 +108,7 @@ public class SemanticChecker {
                 throw new IllegalArgumentException();
             }
         } catch (IOException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("Couldn't parse the given filepath %s", path));
         }
     }
 

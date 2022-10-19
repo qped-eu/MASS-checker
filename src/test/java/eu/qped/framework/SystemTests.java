@@ -1,34 +1,39 @@
 package eu.qped.framework;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Stream;
-
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import ro.skyah.comparator.JSONCompare;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Stream;
 
 public class SystemTests {
 	
+	public static final boolean IS_DEBUG;
+
+	static {
+		IS_DEBUG = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString()
+				.indexOf("-agentlib:jdwp") > 0;
+	}
+	
 	// By setting this to true, the Checker runner is executed in the same process
 	// as the system test runner. This can be used for debugging processes.
-	public static final boolean IN_PROCESS = false;
+	public static final boolean IN_PROCESS = true;
 
 	private static final String SYSTEM_TEST_CONF_YAML = "system-test-conf.yaml";
 	private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
@@ -37,7 +42,7 @@ public class SystemTests {
 	private static final String QF_EXPECTED_FILE_NAME = "qf-expected.json";
 	private static final String DESCRIPTION_FILE_NAME = "description.yaml";
 	private static final String SYSTEM_TESTS_FOLDER_NAME = "system-tests";
-	private static final File QF_OBJECT_FILE = new File("qf-copy.json");
+	private static final File QF_OBJECT_FILE = new File("qf.json");
 	private static SystemTestConf systemTestConf;
 	private static ObjectMapper yamlMapper;
 	
@@ -55,14 +60,22 @@ public class SystemTests {
 			throw new AssertionError(exception);
 		} else {
 			FileUtils.writeStringToFile(QF_OBJECT_FILE, input, Charset.defaultCharset());
-
 			if (IN_PROCESS) {
 				CheckerRunner.main(new String[0]);
 			}
 			else {
 				ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
 				pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
+				if (IS_DEBUG) {
+					pb.environment().put("DEBUG_MVN", "TRUE");
+				}
 				Process process = pb.start();
+				if (IS_DEBUG) {
+					int exitCode = process.waitFor();
+					if (exitCode != 0) {
+						throw new AssertionError("Cloud Check finished with exit code: " + exitCode);
+					}
+				}
 				if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
 					throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
 				}
@@ -79,7 +92,7 @@ public class SystemTests {
 		List<Arguments> arguments = new ArrayList<>();
 		scanForSystemTests(systemTestsFolder.getPath(), systemTestsFolder, arguments);
 
-		return arguments.stream().sorted((o1, o2) -> ((String) o1.get()[0]).compareTo(((String) o2.get()[0])));
+		return arguments.stream().sorted(Comparator.comparing(o -> ((String) o.get()[0])));
 	}
 
 	private static void scanForSystemTests(String systemTestsFolderPath, File currentFolder,

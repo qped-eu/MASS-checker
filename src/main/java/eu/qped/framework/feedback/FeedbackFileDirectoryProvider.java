@@ -16,7 +16,11 @@ public class FeedbackFileDirectoryProvider {
 
 
 
-    public static String provide(@NotNull Class<?> aClass) {
+    /**
+     * @param aClass is the checker therefore feedbacks needed.
+     * @return the path of a file basically json that contains all the data of the feedbacks pro checker.
+     */
+    public static String provideFeedbackDataFile(@NotNull Class<?> aClass) {
         if (aClass.equals(StyleChecker.class)) {
             return STYLE_DIR_PATH;
         }

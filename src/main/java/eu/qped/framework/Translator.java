@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated(forRemoval = true)
 public class Translator {
-
 
     public String translate(String langFrom, String langTo, String text) throws TranslationException {
         String result = "";

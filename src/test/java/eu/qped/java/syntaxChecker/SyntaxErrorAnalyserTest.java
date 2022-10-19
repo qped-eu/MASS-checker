@@ -43,12 +43,12 @@ public class SyntaxErrorAnalyserTest {
     @Test
     public void checkPassTest() {
 
-        String code = "correct code";
+        String correctCode = "correct code";
 
-        Mockito.when(compiler.compileFromString(code))
+        Mockito.when(compiler.compileFromString(correctCode))
                 .thenReturn(true);
 
-        syntaxErrorAnalyser.setStringAnswer(code);
+        syntaxErrorAnalyser.setStringAnswer(correctCode);
 
         SyntaxCheckReport report = syntaxErrorAnalyser.check();
 

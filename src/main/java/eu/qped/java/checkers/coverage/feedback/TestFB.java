@@ -41,6 +41,10 @@ public class TestFB extends Feedback {
         }
     }
 
+    public boolean hasFailedWithoutAssertion() {
+        return result.hasFailedWithoutAssertion();
+    }
+
     @Override
     public String toString() {
         return "TestFB{" +

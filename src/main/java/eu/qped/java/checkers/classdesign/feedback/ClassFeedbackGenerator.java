@@ -4,124 +4,71 @@ import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 
 import java.util.*;
 
+import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
+
 public final class ClassFeedbackGenerator {
-
-    //Element Feedback
-    public final static String WRONG_ELEMENT_NAME = "WrongElementName";
-    public final static String WRONG_ELEMENT_TYPE = "WrongElementType";
-
-    //Modifier Feedback
-    public final static String WRONG_ACCESS_MODIFIER = "WrongAccessModifier";
-    public final static String WRONG_NON_ACCESS_MODIFIER = "WrongNonAccessModifier";
-    public final static String WRONG_CLASS_ACCESS_MODIFIER = "WrongClassAccessModifier";
-    public final static String WRONG_CLASS_NON_ACCESS_MODIFIER = "WrongClassNonAccessModifier";
-
-    //Field Feedback
-    public final static String MISSING_FIELDS = "MissingFields";
-    public final static String HIDDEN_FIELD = "HiddenField";
-
-    //Method Feedback
-    public final static String MISSING_METHODS = "MissingMethods";
-    public final static String OVERWRITTEN_METHOD = "OverwrittenMethod";
-    public final static String HIDDEN_METHOD = "HiddenMethod";
-
-    //Class Feedback
-    public final static String MISSING_INTERFACE_IMPLEMENTATION = "MissingInterfaceImplementation";
-    public final static String MISSING_ABSTRACT_CLASS_IMPLEMENTATION = "MissingAbstractClassImplementation";
-    public final static String MISSING_STATIC_CLASS_IMPLEMENTATION = "MissingStaticClassImplementation";
-    public final static String MISSING_FINAL_CLASS_IMPLEMENTATION = "MissingFinalClassImplementation";
-    public final static String MISSING_CLASS_IMPLEMENTATION = "MissingClassImplementation";
-    public final static String WRONG_CLASS_TYPE = "WrongClassType";
-    public final static String WRONG_CLASS_NAME = "WrongClassName";
-    public final static String WRONG_INHERITED_CLASS_TYPE = "WrongInheritedClassType";
-    public final static String WRONG_INHERITED_CLASS_NAME = "WrongInheritedClassName";
-    public final static String DIFFERENT_INTERFACE_NAMES_EXPECTED = "DifferentInterfaceNamesExpected";
-    public final static String DIFFERENT_CLASS_NAMES_EXPECTED = "DifferentClassNamesExpected";
 
     private static final String elementPlaceholder = "%NAME%";
     private static final String classPlaceholder = "%CLASSNAME%";
 
-    private static final Map<String, String> FEEDBACK_MAP = createFeedbackMap();
-    public static final Map<List<Boolean>, String> VIOLATION_CHECKS = createViolationMap();
+    private static final Map<ClassFeedbackType, String> FEEDBACK_MAP = createFeedbackMap();
+    public static final Map<List<Boolean>, ClassFeedbackType> VIOLATION_CHECKS = createViolationMap();
 
     private ClassFeedbackGenerator() {}
 
-    private static Map<String, String> createFeedbackMap() {
-        Map<String, String> feedbackMap = new HashMap<>();
+    private static Map<ClassFeedbackType, String> createFeedbackMap() {
+        Map<ClassFeedbackType, String> feedbackMap = new HashMap<>();
 
         feedbackMap.put(WRONG_ELEMENT_TYPE,
-                "Element "+ elementPlaceholder +" in "+classPlaceholder+"  does not possess the expected type.\n" +
-                "Is the type of \""+elementPlaceholder+"\" set according to the task description?");
+                "Element "+ elementPlaceholder +" in "+classPlaceholder+"  does not possess the expected type.");
         feedbackMap.put(WRONG_ELEMENT_NAME,
-                "Element "+elementPlaceholder+" in "+classPlaceholder+"  does not possess the expected name.\n" +
-                "Is the name of "+elementPlaceholder+"  set according to the task description?");
+                "Element "+elementPlaceholder+" in "+classPlaceholder+"  does not possess the expected name.");
         feedbackMap.put(WRONG_ACCESS_MODIFIER,
-                "Different access modifier for "+elementPlaceholder+" in "+classPlaceholder+" expected.\n" +
-                "Is the access modifier (e.g. public, private, protected, ...) of "+elementPlaceholder+" set according to the task description?");
+                "Different access modifier for "+elementPlaceholder+" in "+classPlaceholder+" expected.");
         feedbackMap.put(WRONG_NON_ACCESS_MODIFIER,
-                "Different non access modifiers for "+elementPlaceholder+" in "+classPlaceholder+"  expected.\n" +
-                "Are the non access modifiers (e.g. static, final, abstract, ...) of \""+elementPlaceholder+"\" set according to the task description?");
+                "Different non access modifiers for "+elementPlaceholder+" in "+classPlaceholder+"  expected.");
         feedbackMap.put(WRONG_CLASS_ACCESS_MODIFIER,
-                "Different access modifier for "+classPlaceholder+" expected.\n" +
-                "Is the access modifier (e.g. public, ...) of "+classPlaceholder+" set according to the task description?");
+                "Different access modifier for "+classPlaceholder+" expected.");
         feedbackMap.put(WRONG_CLASS_NON_ACCESS_MODIFIER,
-                "Different non access modifiers for "+classPlaceholder+"  expected.\n" +
-                "Are the non access modifiers (e.g. abstract, final, ...) of "+classPlaceholder+" set according to the task description?");
+                "Different non access modifiers for "+classPlaceholder+"  expected.");
         feedbackMap.put(MISSING_FIELDS,
-                "Expected fields in "+classPlaceholder+" missing.\n" +
-                "Do all fields, mentioned in the task description, exist in "+classPlaceholder+"?");
-        feedbackMap.put(HIDDEN_FIELD,
-                "The field "+elementPlaceholder+" in "+classPlaceholder+" is hiding a superclass' field.\n" +
-                "Have you tried renaming "+elementPlaceholder+" so that you can access the superclass field as well?");
+                "Expected fields in "+classPlaceholder+" missing.");
+        feedbackMap.put(TOO_MANY_FIELDS,
+                "The "+classPlaceholder+" has more fields than expected.");
+//        feedbackMap.put(HIDDEN_FIELD,
+//                "The field "+elementPlaceholder+" in "+classPlaceholder+" is hiding a superclass' field.");
         feedbackMap.put(MISSING_METHODS,
-                "Expected methods in "+classPlaceholder+" missing.\n" +
-                "Do all methods, mentioned in the task description, exist in \""+classPlaceholder+"\"?");
-        feedbackMap.put(OVERWRITTEN_METHOD,
-                "The method "+elementPlaceholder+" in "+classPlaceholder+" is overwriting a method in a parent class.\n" +
-                "Have you tried using the implemented method in the parent class of "+classPlaceholder+" instead?");
-        feedbackMap.put(HIDDEN_METHOD,
-                "The static method "+elementPlaceholder+" in "+classPlaceholder+" is hiding a method in a parent class.\n" +
-                "Have you tried renaming "+elementPlaceholder+", so that the method in the parent class of "+classPlaceholder+" is not hidden?");
+                "Expected methods in "+classPlaceholder+" missing." );
+        feedbackMap.put(TOO_MANY_METHODS,
+                "The "+classPlaceholder+" has more methods than expected.");
+//        feedbackMap.put(OVERWRITTEN_METHOD,
+//                "The method "+elementPlaceholder+" in "+classPlaceholder+" is overwriting a method in a parent class.");
+//        feedbackMap.put(HIDDEN_METHOD,
+//                "The static method "+elementPlaceholder+" in "+classPlaceholder+" is hiding a method in a parent class." );
         feedbackMap.put(MISSING_INTERFACE_IMPLEMENTATION,
-                "Expected interface implementation missing in "+classPlaceholder+".\n" +
-                "Has the interface, mentioned in the task, been implemented in "+classPlaceholder+"?");
-        feedbackMap.put(MISSING_ABSTRACT_CLASS_IMPLEMENTATION,
-                "Expected abstract class extension missing in "+classPlaceholder+".\n" +
-                "Has the abstract class, mentioned in the task, been extended in "+classPlaceholder+"?");
-        feedbackMap.put(MISSING_STATIC_CLASS_IMPLEMENTATION,
-                "Expected class extension missing in "+classPlaceholder+".\n" +
-                "Has the static class, mentioned in the task, been extended in "+classPlaceholder+"?");
-        feedbackMap.put(MISSING_FINAL_CLASS_IMPLEMENTATION,
-                "Expected class extension missing in "+classPlaceholder+".\n" +
-                "Has the final class, mentioned in the task, been extended in "+classPlaceholder+"?");
-        feedbackMap.put(MISSING_CLASS_IMPLEMENTATION,
-                "Expected class extension missing in "+classPlaceholder+".\n" +
-                "Have the required classes, mentioned in the task, been extended in "+classPlaceholder+"?");
+                "Expected interface implementation missing in "+classPlaceholder+".");
+        feedbackMap.put(MISSING_CLASS_EXTENSION,
+                "Expected class extension missing in "+classPlaceholder+".");
+        feedbackMap.put(MISSING_SUPER_CLASS,
+                "Expected super class missing in "+classPlaceholder+".");
+        feedbackMap.put(MISSING_CLASSES,
+                "Expected classes missing.");
         feedbackMap.put(WRONG_CLASS_TYPE,
-                "Different type for "+classPlaceholder+" expected.\n" +
-                "Is the type of "+classPlaceholder+" set according to the task description?");
+                "Different type for "+classPlaceholder+" expected.");
         feedbackMap.put(WRONG_CLASS_NAME,
-                "Different name for "+classPlaceholder+" expected.\n" +
-                "Is the name of "+classPlaceholder+" set according to the task description?");
-        feedbackMap.put(WRONG_INHERITED_CLASS_TYPE,
-                "Different inherited type for "+elementPlaceholder+" in "+classPlaceholder+" expected.\n" +
-                "Does the inherited class "+elementPlaceholder+" in "+classPlaceholder+" have the class type set according to the task description?");
-        feedbackMap.put(WRONG_INHERITED_CLASS_NAME,
-                "Different inherited name for "+elementPlaceholder+" in "+classPlaceholder+" expected.\n" +
-                "Does the inherited class "+elementPlaceholder+" in "+classPlaceholder+" have the name set according to the task description?");
+                "Different name for "+classPlaceholder+" expected.");
+        feedbackMap.put(WRONG_SUPER_CLASS_TYPE,
+                "Different inherited type for "+elementPlaceholder+" in "+classPlaceholder+" expected.");
         feedbackMap.put(DIFFERENT_INTERFACE_NAMES_EXPECTED,
-                "Different inherited interface names in "+classPlaceholder+" expected.\n" +
-                "Do the implemented interfaces in "+classPlaceholder+" have the name set according to the task description?");
+                "Different inherited interface names in "+classPlaceholder+" expected.");
         feedbackMap.put(DIFFERENT_CLASS_NAMES_EXPECTED,
-                "Different inherited class names in "+classPlaceholder+" expected.\n" +
-                "Do the extended classes in "+classPlaceholder+" have the name set according to the task description?");
-
+                "Different inherited class names in "+classPlaceholder+" expected.");
         return Collections.unmodifiableMap(feedbackMap);
     }
 
-    private static Map<List<Boolean>, String> createViolationMap() {
+    private static Map<List<Boolean>, ClassFeedbackType> createViolationMap() {
         //Format: (access, non access, type, name) for correctness
-        Map<List<Boolean>, String> violationMap = new HashMap<>();
+        Map<List<Boolean>, ClassFeedbackType> violationMap = new HashMap<>();
         violationMap.put(Arrays.asList(false, true, true, true), WRONG_ACCESS_MODIFIER);
         violationMap.put(Arrays.asList(false, true, true, false), WRONG_ACCESS_MODIFIER);
         violationMap.put(Arrays.asList(false, true, false, true), WRONG_ACCESS_MODIFIER);
@@ -143,16 +90,18 @@ public final class ClassFeedbackGenerator {
         return Collections.unmodifiableMap(violationMap);
     }
 
-    private static String getFeedbackBody(String violationType) {
-        return FEEDBACK_MAP.get(violationType);
+    private static String getFeedbackBody(ClassFeedbackType violationType) {
+        return FEEDBACK_MAP.getOrDefault(violationType, "");
     }
 
-    public static ClassFeedback generateFeedback(String className, String elementName, String violationType) {
+    public static ClassFeedback generateFeedback(String className, String elementName, ClassFeedbackType violationType, String customFeedback) {
         String feedbackBody = violationType+": "+getFeedbackBody(violationType);
         feedbackBody = feedbackBody.replaceAll(classPlaceholder, MarkdownFormatterUtility.asBold(className));
         feedbackBody = feedbackBody.replaceAll(elementPlaceholder, MarkdownFormatterUtility.asBold(elementName));
 
-        return new ClassFeedback(feedbackBody);
+        String feedbackMsg = feedbackBody + "\n\n" +customFeedback;
+
+        return new ClassFeedback(feedbackMsg);
     }
 
 }

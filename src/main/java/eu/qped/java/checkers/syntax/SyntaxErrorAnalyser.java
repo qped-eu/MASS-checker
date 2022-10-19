@@ -10,7 +10,6 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,6 +36,10 @@ public class SyntaxErrorAnalyser {
     private Compiler compiler;
 
 
+    /**
+     * @return {@link SyntaxCheckReport} after checking an answer in form of code or class or project. <br/>
+     * A {@link SyntaxCheckReport} contains beside the errors if occurs relevant information like path of the answer.
+     */
     public SyntaxCheckReport check() {
         SyntaxCheckReport.SyntaxCheckReportBuilder resultBuilder = SyntaxCheckReport.builder();
 
@@ -94,6 +97,12 @@ public class SyntaxErrorAnalyser {
     }
 
     private List<SyntaxError> analyseDiagnostics(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
+
+        //FIXME
+        /*
+           (stringAnswer != null && !stringAnswer.equals("") && Arrays.stream(new String[]{"class" , "interface"}).anyMatch(stringAnswer::contains))?
+                                    diagnostic.getLineNumber() - 3
+         */
         List<SyntaxError> syntaxErrors = new ArrayList<>();
         for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
             String errorTrigger = getErrorTrigger(diagnostic);
@@ -104,9 +113,8 @@ public class SyntaxErrorAnalyser {
                             .errorMessage(diagnostic.getMessage(Locale.GERMAN))
                             .startPos(diagnostic.getStartPosition())
                             .endPos(diagnostic.getEndPosition())
-                            .line( (stringAnswer != null && !stringAnswer.equals("") && Arrays.stream(new String[]{"class" , "interface"}).anyMatch(stringAnswer::contains))?
-                                    diagnostic.getLineNumber() - 3
-                                    : diagnostic.getLineNumber()
+                            .line(
+                                    diagnostic.getLineNumber()
                             )
                             .errorTrigger(errorTrigger)
                             .columnNumber(diagnostic.getColumnNumber())
