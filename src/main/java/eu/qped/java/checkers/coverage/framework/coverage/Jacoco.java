@@ -87,7 +87,10 @@ public class Jacoco {
 		
 		// Consider all source files and determine which lines were covered, partially covered or not covered
 		for (ISourceFileCoverage sfCoverage : coverageBuilder.getSourceFiles()) {
-			ModuleCoverageResult result = new ModuleCoverageResult(sfCoverage.getName());
+			String packagePath = "";
+			if (!sfCoverage.getPackageName().isEmpty())
+				packagePath = sfCoverage.getPackageName().replace('.', '/') + "/"; 
+			ModuleCoverageResult result = new ModuleCoverageResult(packagePath + sfCoverage.getName());
 			moduleCoverageResults.add(result);
 			for (int i = sfCoverage.getFirstLine(); i <= sfCoverage.getLastLine(); i++) {
 				ILine line = sfCoverage.getLine(i);

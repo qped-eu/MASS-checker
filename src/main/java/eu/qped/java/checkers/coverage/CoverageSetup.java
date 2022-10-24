@@ -2,8 +2,10 @@ package eu.qped.java.checkers.coverage;
 
 
 import eu.qped.framework.Feedback;
+import eu.qped.framework.FileInfo;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.coverage.framework.coverage.CoverageFacade;
+import eu.qped.java.checkers.mass.Convention;
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.feedback.syntax.AbstractSyntaxFeedbackGenerator;
@@ -21,44 +23,27 @@ import java.util.stream.Collectors;
 
 
 public class CoverageSetup {
-    private static final String MAVEN = "MAVEN", JAVA = "JAVA";
+	
+    public final List<CoverageFacade> testclasses;
+    public final List<CoverageFacade> classes;
+    public final List<String> syntaxFeedback;
+    public final boolean isCompiled;
+    private final ZipService zipService;
 
-    public class Data {
-        public final List<CoverageFacade> testclasses;
-        public final List<CoverageFacade> classes;
-        public final List<String> syntaxFeedback;
-        public final boolean isCompiled;
-        private final ZipService zipService;
-
-        public Data(List<CoverageFacade> testclasses, List<CoverageFacade> classes, List<String> syntaxFeedback, boolean isCompiled, ZipService zipService) {
-            this.testclasses = testclasses;
-            this.classes = classes;
-            this.syntaxFeedback = syntaxFeedback;
-            this.isCompiled = isCompiled;
-            this.zipService = zipService;
-        }
-
-        public void cleanUp() {
-            zipService.cleanUp();
-        }
+    public void cleanUp() {
+    	zipService.cleanUp();
     }
 
-
-
-
-
-    private final QfCovSetting setting;
-
-    public CoverageSetup(QfCovSetting setting) {
-        this.setting = setting;
-    }
-
-
-    /**
-     *
-     */
-    public Data setUp() {
-        ZipService zipService = new Zip();
+	private FileInfo answerFile;
+	public CoverageSetup(FileInfo answerFile, String privateImplementation, String answerText, String preferredLanguage) {
+		super();
+		this.answerFile = answerFile;
+		this.privateImplementation = privateImplementation;
+		this.answerText = answerText;
+		this.preferredLanguage = preferredLanguage;
+		this.convention = Convention.JAVA;
+		
+        zipService = new Zip();
         ZipService.Extracted extracted = extract(zipService);
 
         // Validates if at least on testclass and on class are present
@@ -75,18 +60,27 @@ public class CoverageSetup {
             Translator translator = new Translator();
             List<SyntaxFeedback> feedback = syntaxFeedbackGenerator.generateFeedbacks(report.getSyntaxErrors());
             for (SyntaxFeedback syntaxFeedback : feedback) {
-                translator.translateBody(setting.getLanguage(), syntaxFeedback);
+                translator.translateBody(preferredLanguage, syntaxFeedback);
             }
-            return new Data(null, null, feedback.stream().map(Feedback::getBody).collect(Collectors.toList()), false, zipService);
+            
+            testclasses = null;
+            classes = null;
+            syntaxFeedback = feedback.stream().map(Feedback::getBody).collect(Collectors.toList());
+            isCompiled = false;
+        } else {
+            testclasses = preprocessing(extracted.javafileByClassname(), extracted.testClasses(), report.getPath());
+            classes = preprocessing(extracted.javafileByClassname(), extracted.classes(), report.getPath());
+            syntaxFeedback = Collections.emptyList();
+            isCompiled = true;
         }
+	}
 
-        return new Data(
-                preprocessing(extracted.javafileByClassname(), extracted.testClasses(), report.getPath()),
-                preprocessing(extracted.javafileByClassname(), extracted.classes(), report.getPath()),
-                new LinkedList<>(),
-                true,
-                zipService);
-    }
+	private String privateImplementation;
+	private String answerText;
+	private String preferredLanguage;
+	private Convention convention;
+
+
 
 
     /**
@@ -104,39 +98,41 @@ public class CoverageSetup {
         try {
             ZipService.Classname classname;
             ZipService.TestClass testClass;
-            if (setting.getConvention().equals(JAVA)) {
+            
+            switch (convention) {
+            case JAVA:
                 classname = ZipService.JAVA_CLASS_NAME;
                 testClass = ZipService.JAVA_TEST_CLASS;
-
-            } else if (setting.getConvention().equals(MAVEN)) {
+                break;
+            case MAVEN:
                 classname = ZipService.MAVEN_CLASS_NAME;
                 testClass = ZipService.MAVEN_TEST_CLASS;
-
-            } else {
+                break;
+            default:
                 throw new IllegalStateException(ErrorMSG.UPS);
             }
 
-            if (Objects.nonNull(setting.getFile()) && (Objects.nonNull(setting.getPrivateImplementation()) && !setting.getPrivateImplementation().isBlank())) {
+            if (Objects.nonNull(answerFile) && (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank())) {
                 // Teacher and Student provide data
                 return zipService.extractBoth(
-                        setting.getFile().getSubmittedFile(),
-                        zipService.download(setting.getPrivateImplementation()),
+                        answerFile.getSubmittedFile(),
+                        zipService.download(privateImplementation),
                         testClass,
                         classname);
 
-            } else if (Objects.nonNull(setting.getFile())) {
+            } else if (Objects.nonNull(answerFile)) {
                 // only Student provide data muss contain a  test class and class
-                return zipService.extract(setting.getFile().getSubmittedFile(),testClass, classname);
+                return zipService.extract(answerFile.getSubmittedFile(),testClass, classname);
 
-            } else if (Objects.nonNull(setting.getPrivateImplementation()) && !setting.getPrivateImplementation().isBlank()) {
+            } else if (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank()) {
                 // Teacher and Student provide data. Students answer is a string.
                 ZipService.Extracted extracted = zipService.extract(
-                        zipService.download(setting.getPrivateImplementation()),
+                        zipService.download(privateImplementation),
                         ZipService.JAVA_TEST_CLASS,
                         ZipService.JAVA_CLASS_NAME);
 
-                if (Objects.nonNull(setting.getAnswer()) && !setting.getAnswer().isBlank()) {
-                    Com.Created answerAsClass = new Com().createClassFromString(extracted.root(), setting.getAnswer());
+                if (Objects.nonNull(answerText) && !answerText.isBlank()) {
+                    Com.Created answerAsClass = new Com().createClassFromString(extracted.root(), answerText);
                     if (answerAsClass.isTrue) {
                         extracted.add(answerAsClass.className, answerAsClass.file, ZipService.JAVA_TEST_CLASS.isTrue(answerAsClass.file));
                     }
@@ -203,6 +199,7 @@ public class CoverageSetup {
         try {
             return Files.readAllBytes(Paths.get(file));
         } catch (Exception e) {
+        	//FIXME change InternalError to some usefult exception
             throw new InternalError(String.format(ErrorMSG.CANT_READ_FILE, file));
         }
     }

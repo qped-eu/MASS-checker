@@ -1,7 +1,6 @@
 package eu.qped.java.checkers.mass;
 
 import eu.qped.framework.qf.QfObjectBase;
-import eu.qped.java.checkers.coverage.QfCovSetting;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class QfMass extends QfObjectBase {
 
-    private QfCovSetting coverage;
+    private QfCoverageSettings coverage;
 
     private QFSemSettings semantic;
 
