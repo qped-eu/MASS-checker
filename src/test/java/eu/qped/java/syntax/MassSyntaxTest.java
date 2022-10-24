@@ -2,12 +2,16 @@ package eu.qped.java.syntax;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.mass.QfMainSettings;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.utils.SupportedLanguages;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -61,6 +65,8 @@ class MassSyntaxTest {
 
         assertEquals(1, massE.getSyntaxFeedbacks().size());
         Feedback feedback = massE.getSyntaxFeedbacks().get(0);
+        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
+        templateBuilder.buildFeedbacksInTemplate(List.of(feedback), SupportedLanguages.ENGLISH).forEach(System.out::println);
         assertEquals("';' expected", feedback.getTechnicalCause());
     }
 
