@@ -114,7 +114,8 @@ public class SyntaxErrorAnalyser {
                             .startPos(diagnostic.getStartPosition())
                             .endPos(diagnostic.getEndPosition())
                             .line(
-                                    diagnostic.getLineNumber()
+                                    (stringAnswer != null && !(stringAnswer.contains("class") || stringAnswer.contains("interface")) )?
+                                    diagnostic.getLineNumber() - 3 : diagnostic.getLineNumber()
                             )
                             .errorTrigger(errorTrigger)
                             .columnNumber(diagnostic.getColumnNumber())

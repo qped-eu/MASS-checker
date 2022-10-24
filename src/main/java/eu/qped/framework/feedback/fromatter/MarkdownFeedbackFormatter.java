@@ -7,9 +7,12 @@ import net.steppschuh.markdowngenerator.text.Text;
 import net.steppschuh.markdowngenerator.text.code.CodeBlock;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.NEW_LINE;
 
 public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
 
@@ -22,7 +25,7 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
     private Feedback formatInMarkdown(Feedback feedback) {
         Feedback formatted = Feedback.builder().build();
         formatted.setTechnicalCause(feedback.getTechnicalCause());
-        formatted.setReadableCause(feedback.getReadableCause());
+        formatted.setReadableCause(formatReadableCause(feedback.getReadableCause()));
         formatted.setType(feedback.getType());
         formatted.setRelatedLocation(feedback.getRelatedLocation());
         if (feedback.getHints() == null) feedback.setHints(Collections.emptyList());
@@ -31,6 +34,10 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
         formatted.setReference(feedback.getReference());
         formatted.setCheckerName(feedback.getCheckerName());
         return formatted;
+    }
+
+    private String formatReadableCause(String readableCause) {
+        return Arrays.stream(readableCause.split(NEW_LINE)).map(String::trim).collect(Collectors.joining(NEW_LINE));
     }
 
     private List<Hint> formatHints(List<Hint> hints) {
