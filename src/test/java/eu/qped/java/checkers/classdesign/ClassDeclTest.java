@@ -6,13 +6,12 @@ import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.exceptions.ClassNameException;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.mass.QFClassSettings;
+import eu.qped.java.checkers.mass.QfClassSettings;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import java.util.*;
@@ -24,13 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RunWith(Theories.class)
 public class ClassDeclTest {
 
-    private QFClassSettings qfClassSettings;
+    private QfClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
     private ClassInfo classInfo;
     private ClassKeywordConfig classConfig;
 
     private void init() {
-        qfClassSettings = new QFClassSettings();
+        qfClassSettings = new QfClassSettings();
         classInfos = new ArrayList<>();
         classInfo = new ClassInfo();
         classConfig = new ClassKeywordConfig();

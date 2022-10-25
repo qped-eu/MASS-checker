@@ -2,10 +2,10 @@ package eu.qped.java.checkers.classdesign;
 
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.mass.QFClassSettings;
+import eu.qped.java.checkers.mass.QfClassSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ClassMethodTest {
 
-    private QFClassSettings qfClassSettings;
+    private QfClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
     private ClassInfo classInfo;
     private List<MethodKeywordConfig> methodKeywordConfigs;
@@ -26,7 +26,7 @@ public class ClassMethodTest {
 
     @BeforeEach
     private void init() {
-        qfClassSettings = new QFClassSettings();
+        qfClassSettings = new QfClassSettings();
         classInfos = new ArrayList<>();
         classInfo = new ClassInfo();
         methodKeywordConfigs = new ArrayList<>();

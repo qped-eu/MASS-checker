@@ -1,22 +1,27 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
+import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.coverage.*;
-import eu.qped.java.checkers.design.DesignChecker;
-import eu.qped.java.checkers.design.DesignFeedback;
+import eu.qped.java.checkers.coverage.CoverageBlockChecker;
+import eu.qped.java.checkers.coverage.CoverageChecker;
+import eu.qped.java.checkers.coverage.CoverageMapChecker;
+import eu.qped.java.checkers.coverage.QfCovSetting;
+import eu.qped.java.checkers.metrics.MetricsChecker;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.semantics.SemanticChecker;
 import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.feedback.syntax.SyntaxFeedback;
+import eu.qped.framework.feedback.template.TemplateBuilder;
+import eu.qped.java.utils.MassFilesUtility;
+import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,46 +29,43 @@ import java.util.List;
 
 public class Mass implements Checker {
 
+    public static final String SEPARATOR = "--------------------------------------------------";
     @QfProperty
     private FileInfo file;
 
     @QfProperty
     private QfMass mass;
 
+    @QfProperty
+    private QfClassSettings classSettings;
+
     private final static String NEW_LINE = "\n" + "\n";
 
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        MainSettings mainSettings = new MainSettings();
-        mainSettings.setDesignNeeded(mass.isMetricsSelected());
-        mainSettings.setStyleNeeded(mass.isStyleSelected());
-        mainSettings.setSemanticNeeded(mass.isSemanticSelected());
-        mainSettings.setClassNeeded(mass.isClassSelected());
-        mainSettings.setCoverageNeeded(mass.isCoverageSelected());
-        mainSettings.setPreferredLanguage("en");
-        try {
-            mainSettings.setSyntaxLevel(CheckLevel.valueOf(mass.getSyntax().getLevel()));
-        } catch (Exception e) {
-            mainSettings.setSyntaxLevel(CheckLevel.BEGINNER);
-        }
+        MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
+
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
+            MassFilesUtility filesUtility = MassFilesUtility.builder()
+                    .dirPath(file.getUnzipped().getPath()).build();
+            var allJavaFiles = filesUtility.filesWithExtension("java");
+            if (allJavaFiles.isEmpty()) {
+                qfObject.setFeedback(new String[]{"No java files are detected in your solution"});
+                return;
+            }
             syntaxChecker.setTargetProject(file.getUnzipped().getPath());
         } else {
             syntaxChecker.setStringAnswer(qfObject.getAnswer());
         }
-        // Style Checker
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
-        // Semantic Checker
-        SemanticChecker semanticChecker = SemanticChecker.builder().feedbacks(new ArrayList<>()).qfSemSettings(mass.getSemantic()).build();
+        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemanticSettings(mass.getSemantic()).build();
 
-        // Design Checker
-        DesignChecker designChecker = DesignChecker.builder().qfDesignSettings(mass.getMetrics()).build();
+        MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
-        //Class Checker
         ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClasses());
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
@@ -77,116 +79,159 @@ public class Mass implements Checker {
 
             if (covSetting.isUseBlock()) {
                 coverageChecker = new CoverageBlockChecker(covSetting);
-            } else  {
+            } else {
                 coverageChecker = new CoverageMapChecker(covSetting);
             }
         }
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, designChecker, classChecker, coverageChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
         massExecutor.execute();
 
         /*
          feedbacks
          */
-        List<StyleFeedback> styleFeedbacks = massExecutor.getStyleFeedbacks();
+        var syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
+        var styleFeedbacks = massExecutor.getStyleFeedbacks();
+        var semanticFeedbacks = massExecutor.getSemanticFeedbacks();
+        var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
 
-        List<SyntaxFeedback> syntaxFeedbacks;
-        syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
+        var resultArray = mergeFeedbacks(
+                syntaxFeedbacks,
+                styleFeedbacks,
+                semanticFeedbacks,
+                metricsFeedbacks,
+                qfObject
+        );
 
-        List<SemanticFeedback> semanticFeedbacks;
-        semanticFeedbacks = massExecutor.getSemanticFeedbacks();
+        qfObject.setFeedback(resultArray);
 
-        List<DesignFeedback> designFeedbacks = massExecutor.getDesignFeedbacks();
+//        var result = mergeFeedbacks(styleFeedbacks, semanticFeedbacks, semanticFeedbacks, metricsFeedbacks);
 
-        List<ClassFeedback> classFeedbacks = massExecutor.getClassFeedbacks();
-
-//        Warum 100? Im Fall das viel Feedback generiert wird, wird das Array nicht ausreichend Kapazität besitzen, oder?
-//        Warum braucht das syntaxFeedbacks immer zwei Stellten des Arrays?
 //        int resultLength = 100
 //                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
 //                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
-////                + ((designFeedbacks != null) ? designFeedbacks.size() : 0)
-////                + ((classFeedbacks != null) ? classFeedbacks.size() : 0)
+//                + ((metricsFeedbacks != null) ? metricsFeedbacks.size() : 0)
 //                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
+//        String[] result = new String[resultLength];
+//        int resultIndex = 0;
+//
+//        for (StyleFeedback styleFeedback : styleFeedbacks) {
+//            result[resultIndex] = "style Feedback";
+//            result[resultIndex + 1] =
+//                    styleFeedback.getFile()
+//                            + NEW_LINE
+//                            + styleFeedback.getDesc()
+//                            + NEW_LINE
+//                            + styleFeedback.getContent()
+//                            + NEW_LINE
+//                            + styleFeedback.getLine()
+//                            + NEW_LINE
+//                            + styleFeedback.getExample()
+//                            + NEW_LINE;
+//            resultIndex = resultIndex + 2;
+//        }
+//
+//        for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
+//            result[resultIndex] = "semantic Feedback";
+//            result[resultIndex + 1] = semanticFeedback.getBody() + NEW_LINE
+//                    + SEPARATOR;
+//            resultIndex = resultIndex + 2;
+//        }
+//
+//
+//        result[resultIndex] = MarkdownFormatterUtility.asHeading2("Metrics Feedback");
+//        for (MetricsFeedback metricsFeedback : metricsFeedbacks) {
+//            result[resultIndex + 1] =
+//                    MarkdownFormatterUtility.asHeading3("In class " + MarkdownFormatterUtility.asMonospace(metricsFeedback.getClassName() + ".java", false, null))
+//                            + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
+//                            + " measured with value: " + MarkdownFormatterUtility.asMonospace(Double.toString(metricsFeedback.getValue()), false, null)
+//                            + NEW_LINE
+//                            + metricsFeedback.getSuggestion()
+//                            + NEW_LINE
+//                            + SEPARATOR;
+//            resultIndex = resultIndex + 2;
+//        }
+//
+//        for (SyntaxFeedback syntax : syntaxFeedbacks) {
+//            result[resultIndex + 1] = ""
+//                    + syntax.toString()
+//                    + NEW_LINE
+//                    + SEPARATOR;
+//            resultIndex = resultIndex + 2;
+//        }
 
 
-        int resultLength = 2 * (
-                ((styleFeedbacks != null) ? styleFeedbacks.size() : 0) +
-                ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0) +
-//                ((designFeedbacks != null) ? designFeedbacks.size() : 0)
-//                ((classFeedbacks != null) ? classFeedbacks.size() : 0)
-                ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0)) +
-                massExecutor.getCoverageFeedbacks().length;
-
-        String[] result = new String[resultLength];
-        int resultIndex = 0;
-
-        for (StyleFeedback styleFeedback : styleFeedbacks) {
-            result[resultIndex] = "style Feedback";
-            result[resultIndex + 1] =
-                    styleFeedback.getFile()
-                            + NEW_LINE
-                            + styleFeedback.getDesc()
-                            + NEW_LINE
-                            + styleFeedback.getContent()
-                            + NEW_LINE
-                            + styleFeedback.getLine()
-                            + NEW_LINE
-                            + styleFeedback.getExample()
-                            + NEW_LINE;
-            resultIndex = resultIndex + 2;
-        }
-
-        for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
-            result[resultIndex] = "semantic Feedback";
-            result[resultIndex + 1] = semanticFeedback.getBody() + NEW_LINE
-                    + "--------------------------------------------------";
-            resultIndex = resultIndex + 2;
-        }
-
-
-        for (DesignFeedback df : designFeedbacks) {
-            result[resultIndex] = "design Feedback";
-            result[resultIndex + 1] =
-                    "In class '" + df.getClassName() + ".java'"
-                            + NEW_LINE
-                            + df.getMetric() + " (" + df.getBody() + ")"
-                            + NEW_LINE
-                            + df.getMetric() + " (" + df.getBody() + ")"
-                            + NEW_LINE
-                            + "Measured with value: " + df.getValue()
-                            + NEW_LINE
-                            + df.getSuggestion()
-                            + "------------------------------------------------------------------------------";
-            resultIndex = resultIndex + 2;
-        }
-
-
-        for (ClassFeedback classFeedback : classFeedbacks) {
-            result[resultIndex] = "class Feedback";
-            result[resultIndex + 1] = classFeedback.getBody() + NEW_LINE
-                    + "--------------------------------------------------";
-            resultIndex = resultIndex + 2;
-        }
-
-        for (SyntaxFeedback syntax : syntaxFeedbacks) {
-            result[resultIndex + 1] = ""
-                    + syntax.toString()
-                    + NEW_LINE
-                    + "--------------------------------------------------";
-            resultIndex = resultIndex + 2;
-
-        }
-
-
-        for (String feedback : massExecutor.getCoverageFeedbacks()) {
-            result[resultIndex++] = feedback;
-        }
-
-
-
-        qfObject.setFeedback(result);
     }
+
+    private String[] mergeFeedbacks(
+            @NonNull List<Feedback> syntaxFeedbacks,
+            @NonNull List<StyleFeedback> styleFeedbacks,
+            @NonNull List<SemanticFeedback> semanticFeedbacks,
+            @NonNull List<MetricsFeedback> metricsFeedbacks,
+            @NonNull QfObject qfObject
+    ) {
+
+        var resultSize =
+                !syntaxFeedbacks.isEmpty() ? syntaxFeedbacks.size() + 1 :
+                        styleFeedbacks.size() + semanticFeedbacks.size() + metricsFeedbacks.size() + 3;
+
+        String[] resultArray = new String[resultSize];
+        List<String> resultArrayAsList = new ArrayList<>();
+        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
+        if (!syntaxFeedbacks.isEmpty()) {
+            resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
+        } else {
+            resultArrayAsList.add("Style feedbacks");
+            styleFeedbacks.forEach(
+                    styleFeedback -> {
+                        String tempFeedbackAsString =
+                                styleFeedback.getFile()
+                                        + NEW_LINE
+                                        + styleFeedback.getDesc()
+                                        + NEW_LINE
+                                        + styleFeedback.getContent()
+                                        + NEW_LINE
+                                        + styleFeedback.getLine()
+                                        + NEW_LINE
+                                        + styleFeedback.getExample()
+                                        + SEPARATOR;
+                        resultArrayAsList.add(tempFeedbackAsString);
+                    }
+            );
+            resultArrayAsList.add("Semantic feedbacks");
+            semanticFeedbacks.forEach(
+                    semanticFeedback -> {
+                        String tempFeedbackAsString =
+                                semanticFeedback.getBody() +
+                                        NEW_LINE +
+                                        SEPARATOR;
+                        resultArrayAsList.add(tempFeedbackAsString);
+                    }
+            );
+            resultArrayAsList.add("Metric feedbacks");
+            metricsFeedbacks.forEach(
+                    metricsFeedback -> {
+                        String tempFeedbackAsString =
+                                MarkdownFormatterUtility.asHeading4("In class " + MarkdownFormatterUtility.asCodeLine(metricsFeedback.getClassName() + ".java"))
+                                        + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
+                                        + " measured with value: " + MarkdownFormatterUtility.asCodeLine(Double.toString(metricsFeedback.getValue()))
+                                        + NEW_LINE
+                                        + metricsFeedback.getSuggestion()
+                                        + NEW_LINE
+                                        + SEPARATOR;
+                        resultArrayAsList.add(tempFeedbackAsString);
+                    }
+            );
+        }
+        resultArray = resultArrayAsList.toArray(resultArray);
+        return resultArray;
+    }
+
+    public int sum() {
+        int a = 3;
+        return a;
+    }
+
 
 }

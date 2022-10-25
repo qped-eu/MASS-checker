@@ -204,6 +204,7 @@ public class CheckerRunner {
 	}
 
 	public QfObject getQfObject() {
+		Arrays.stream(qfObject.getFeedback()).forEach(System.out::println);
 		return qfObject;
 	}
 }

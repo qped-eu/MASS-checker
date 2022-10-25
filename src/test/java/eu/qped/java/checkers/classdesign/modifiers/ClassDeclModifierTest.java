@@ -5,13 +5,16 @@ import eu.qped.java.checkers.classdesign.ClassConfigurator;
 import eu.qped.java.checkers.classdesign.TestUtils;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.KeywordConfig;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.infos.ClassInfo;
-import eu.qped.java.checkers.mass.QFClassSettings;
+import eu.qped.java.checkers.mass.QfClassSettings;
 import org.junit.Assume;
-import org.junit.experimental.theories.*;
+import org.junit.experimental.theories.DataPoints;
+import org.junit.experimental.theories.FromDataPoints;
+import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
 import java.util.*;
@@ -22,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RunWith(Theories.class)
 public class ClassDeclModifierTest {
 
-    private QFClassSettings qfClassSettings;
+    private QfClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
     private ClassInfo classInfo;
     private ClassKeywordConfig classConfig;
@@ -94,7 +97,7 @@ public class ClassDeclModifierTest {
     }
 
     private void init() {
-        qfClassSettings = new QFClassSettings();
+        qfClassSettings = new QfClassSettings();
         classInfos = new ArrayList<>();
         classInfo = new ClassInfo();
         classConfig = new ClassKeywordConfig();

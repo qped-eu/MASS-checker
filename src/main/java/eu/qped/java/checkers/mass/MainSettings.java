@@ -1,13 +1,13 @@
 package eu.qped.java.checkers.mass;
 
 
+import eu.qped.framework.CheckLevel;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
-
-import eu.qped.framework.CheckLevel;
 
 /**
  * class to read the Setting from Quarterfall and
@@ -22,30 +22,56 @@ import eu.qped.framework.CheckLevel;
 @AllArgsConstructor
 @Builder
 public class MainSettings {
+
     private CheckLevel syntaxLevel;
     private String preferredLanguage;
     private boolean styleNeeded;
     private boolean semanticNeeded;
+    private boolean metricsNeeded;
     private boolean classNeeded;
-    private boolean designNeeded;
     private boolean coverageNeeded;
 
+    private QfMainSettings qfMainSettings;
+    private QfMass mass;
 
-    private QFMainSettings qfMainSettings;
 
-
-    public MainSettings(QFMainSettings qfMainSettings) {
+    public MainSettings(QfMainSettings qfMainSettings) {
         this.qfMainSettings = qfMainSettings;
-        readSettings();
+        readSettingsFromQfMainSettings();
     }
 
+    public MainSettings(QfMass mass, String preferredLanguage) {
+        this.mass = mass;
+        this.preferredLanguage = preferredLanguage;
+        readSettingsFromMass();
+    }
 
-    public void readSettings() {
-        coverageNeeded = qfMainSettings.getCoverageNeeded() != null && Boolean.parseBoolean(qfMainSettings.getCoverageNeeded());
+    private void readSettingsFromMass() {
+        this.setMetricsNeeded(mass.isMetricsSelected());
+        this.setStyleNeeded(mass.isStyleSelected());
+        this.setSemanticNeeded(mass.isSemanticSelected());
+        this.setCoverageNeeded(mass.isCoverageSelected());
+        this.setClassNeeded(mass.isClassSelected());
+        boolean isLanguageApplicable = this.preferredLanguage != null && !"".equals(this.preferredLanguage);
+        this.setPreferredLanguage(isLanguageApplicable ? preferredLanguage : SupportedLanguages.ENGLISH);
+        var syntaxLevel = extractSyntaxLevel(this.mass.getSyntax().getLevel());
+        this.setSyntaxLevel(syntaxLevel);
+
+    }
+
+    private CheckLevel extractSyntaxLevel(String level) {
+        try {
+            return CheckLevel.valueOf(level);
+        } catch (IllegalArgumentException e) {
+            return CheckLevel.BEGINNER;
+        }
+    }
+
+    private void readSettingsFromQfMainSettings() {
         classNeeded = qfMainSettings.getClassNeeded() != null && Boolean.parseBoolean(qfMainSettings.getClassNeeded());
         styleNeeded = qfMainSettings.getStyleNeeded() != null && Boolean.parseBoolean(qfMainSettings.getStyleNeeded());
         semanticNeeded = qfMainSettings.getSemanticNeeded() != null && Boolean.parseBoolean(qfMainSettings.getSemanticNeeded());
-        designNeeded = qfMainSettings.getDesignNeeded() != null && Boolean.parseBoolean(qfMainSettings.getDesignNeeded());
+        metricsNeeded = qfMainSettings.getMetricsNeeded() != null && Boolean.parseBoolean(qfMainSettings.getMetricsNeeded());
         syntaxLevel = qfMainSettings.getSyntaxLevel() != null ? getSyntaxConfLevel(qfMainSettings.getSyntaxLevel()) : CheckLevel.BEGINNER;
         preferredLanguage = qfMainSettings.getPreferredLanguage() != null ? qfMainSettings.getPreferredLanguage() : "en";
     }

@@ -25,6 +25,7 @@ public class StyleFeedbackGenerator {
 
     private StyleCheckReport report;
 
+    // TODO: migrate to json @Omar
     private void setUpData() {
         feedbacks = new HashMap<>();
         feedbacks.put("UnnecessaryLocalBeforeReturn", new String[]{"", ""});
@@ -98,28 +99,34 @@ public class StyleFeedbackGenerator {
         feedbacks.put("OnlyOneReturn", new String[]{"it's easy to write [if( condition ) return true; else return false] as [return condition]", ""});
     }
 
+    /**
+     * @return map of filenames as keys and a collection of feedbacks for key file.
+     */
     public Map<String, List<StyleFeedback>> generateFeedbacks() {
 
         setUpData();
         List<StyleFeedback> resultList = new ArrayList<>();
 
-        report.getFileEntries().forEach(
-                reportFileEntry -> reportFileEntry.getViolations().forEach(
-                        violation -> {
-                            File temp = new File(reportFileEntry.getFileName());
-                            resultList.add(
-                                    StyleFeedback.builder()
-                                            .file(temp.getParentFile().getName() + "." + temp.getName())
-                                            .line(String.valueOf(violation.getBeginLine()))
-                                            .content(getFeedbackBody(violation.getRule()))
-                                            .desc(violation.getDescription())
-                                            .rule(violation.getRule())
-                                            .example(getFeedbackExample(violation.getRule()))
-                                            .build()
-                            );
-                        }
-                )
-        );
+        report.getFileEntries()
+                .forEach(
+                        reportFileEntry -> reportFileEntry
+                                .getViolations()
+                                .forEach(
+                                        violation -> {
+                                            File temp = new File(reportFileEntry.getFileName());
+                                            resultList.add(
+                                                    StyleFeedback.builder()
+                                                            .file(temp.getParentFile().getName() + "." + temp.getName())
+                                                            .line(String.valueOf(violation.getBeginLine()))
+                                                            .content(getFeedbackBody(violation.getRule()))
+                                                            .desc(violation.getDescription())
+                                                            .rule(violation.getRule())
+                                                            .example(getFeedbackExample(violation.getRule()))
+                                                            .build()
+                                            );
+                                        }
+                                )
+                );
 
         return resultList.stream().collect(Collectors.groupingBy(
                 StyleFeedback::getFile

@@ -1,6 +1,7 @@
 package eu.qped.java.utils.compiler;
 
-import eu.qped.java.utils.ExtractJavaFilesFromDirectory;
+import eu.qped.java.utils.FileExtensions;
+import eu.qped.java.utils.MassFilesUtility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,6 @@ import javax.tools.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -70,27 +70,35 @@ public class Compiler implements CompilerInterface {
             files.add(new File(targetProjectOrClassPath));
 
         } else {
-            ExtractJavaFilesFromDirectory.ExtractJavaFilesFromDirectoryBuilder extractJavaFilesFromDirectoryBuilder = ExtractJavaFilesFromDirectory.builder();
-            ExtractJavaFilesFromDirectory extractJavaFilesFromDirectory;
+            var filesUtilityBuilder = MassFilesUtility.builder();
+            MassFilesUtility massFilesUtility;
             if (targetProjectOrClassPath == null || targetProjectOrClassPath.equals("")) {
                 targetProjectOrClassPath = DEFAULT_DIR_PATH;
             }
-            extractJavaFilesFromDirectoryBuilder.dirPath(targetProjectOrClassPath);
-            extractJavaFilesFromDirectory = extractJavaFilesFromDirectoryBuilder.build();
-            files = extractJavaFilesFromDirectory.filesWithExtension("java");
+            filesUtilityBuilder.dirPath(targetProjectOrClassPath);
+            massFilesUtility = filesUtilityBuilder.build();
+            files = massFilesUtility.filesWithExtension("java");
             if (files.size() == 0) {
                 return false;
             }
 
         }
-        StringWriter stringWriter = new StringWriter();
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(files);
 
         if (options == null) {
-            setDefaultOptions();
+            options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
         addClassFilesDestination("src/main/java/eu/qped/java/utils/compiler/compiledFiles"); // TODO:: delete compiled class files
-        JavaCompiler.CompilationTask task = compiler.getTask(stringWriter, fileManager, diagnosticsCollector, options, null, compilationUnits);
+
+
+        JavaCompiler.CompilationTask task = compiler.getTask(
+                null,
+                fileManager,
+                diagnosticsCollector,
+                options,
+                null,
+                compilationUnits
+        );
         boolean result = task.call();
 
         this.setCollectedDiagnostics(diagnosticsCollector.getDiagnostics());
@@ -98,29 +106,30 @@ public class Compiler implements CompilerInterface {
     }
 
 
-
     public void addExternalJarsToClassPath(List<String> paths) {
         if (this.options == null) {
-            setDefaultOptions();
+            options = CompilerSettingsFactory.createDefaultCompilerSettings();
         }
         this.options.add("cp");
         this.options.addAll(paths);
     }
 
-    private void setDefaultOptions() {
-        this.options = new ArrayList<>();
-        options.add("-verbose");
-        options.add("-Xlint");
-        options.add("-g");
+    public void addClassFilesDestination(String path) {
+        if (options == null) {
+            options = CompilerSettingsFactory.createDefaultCompilerSettings();
+        }
+        options.add("-d");
+        options.add(path);
+        options.add("-s");
+        options.add(path);
 
         if (System.getProperty("maven.compile.classpath") != null) {
             // requires that the corresponding system property is set in the Maven pom
         	options.addAll(Arrays.asList("-classpath",System.getProperty("maven.compile.classpath")));
         } else {
         	// if the checker is not run from Maven (e.g., during testing), inherit classpath from current JVM
-            options.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));        	
+            options.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));
         }
-
     }
 
 
@@ -141,19 +150,6 @@ public class Compiler implements CompilerInterface {
         }
     }
 
-    public void addClassFilesDestination(String path) {
-        if (options == null) {
-            setDefaultOptions();
-        }
-        if (! options.contains("-d")) {
-            options.add("-d");
-            options.add(path);
-        }
-        if (! options.contains("-s")) {
-            options.add("-s");
-            options.add(path);
-        }
-    }
 
     /**
      * @param answer the code
@@ -161,6 +157,8 @@ public class Compiler implements CompilerInterface {
      */
     private String writeCodeAsClass(String answer) {
         StringBuilder javaFileContent = new StringBuilder();
+
+        //FIXME
         boolean isClassOrInterface = answer.contains("class") || answer.contains("interface");
 
         if (isClassOrInterface) {
@@ -176,12 +174,12 @@ public class Compiler implements CompilerInterface {
                 if (compiledStringResourcePath != null && !compiledStringResourcePath.equals("")) {
                     targetProjectOrClassPath = compiledStringResourcePath;
                     if (compiledStringResourcePath.charAt(compiledStringResourcePath.length() - 1) == '/') {
-                        targetProjectOrClassPath += fileName + ".java";
+                        targetProjectOrClassPath += fileName + FileExtensions.JAVA;
                     } else {
-                        targetProjectOrClassPath += "/" + fileName + ".java";
+                        targetProjectOrClassPath += "/" + fileName + FileExtensions.JAVA;
                     }
                 } else {
-                    targetProjectOrClassPath = fileName + ".java";
+                    targetProjectOrClassPath = fileName + FileExtensions.JAVA;
                 }
 
 

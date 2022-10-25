@@ -3,13 +3,13 @@ package eu.qped.java.checkers.classdesign.modifiers;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
 import eu.qped.java.checkers.classdesign.TestUtils;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
-import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.infos.ClassInfo;
 import eu.qped.java.checkers.classdesign.config.ClassKeywordConfig;
 import eu.qped.java.checkers.classdesign.config.MethodKeywordConfig;
-import eu.qped.java.checkers.mass.QFClassSettings;
+import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
+import eu.qped.java.checkers.classdesign.infos.ClassInfo;
+import eu.qped.java.checkers.mass.QfClassSettings;
 import org.junit.Assume;
 import org.junit.experimental.theories.*;
 import org.junit.runner.RunWith;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RunWith(Theories.class)
 public class ClassMethodModifierTest {
 
-    private QFClassSettings qfClassSettings;
+    private QfClassSettings qfClassSettings;
     private ArrayList<ClassInfo> classInfos;
     private ClassInfo classInfo;
     private List<MethodKeywordConfig> methodKeywordConfigs;
@@ -109,7 +109,7 @@ public class ClassMethodModifierTest {
     }
 
     private void init() {
-        qfClassSettings = new QFClassSettings();
+        qfClassSettings = new QfClassSettings();
         classInfos = new ArrayList<>();
         classInfo = new ClassInfo();
         methodKeywordConfigs = new ArrayList<>();

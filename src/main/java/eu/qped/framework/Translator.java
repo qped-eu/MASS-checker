@@ -1,7 +1,10 @@
 package eu.qped.framework;
 
-import eu.qped.java.checkers.design.DesignFeedback;
+import eu.qped.framework.feedback.hint.Hint;
+import eu.qped.framework.feedback.hint.HintType;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.style.StyleFeedback;
+import eu.qped.java.utils.SupportedLanguages;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.BufferedReader;
@@ -11,9 +14,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Translator {
-
 
     public String translate(String langFrom, String langTo, String text) throws TranslationException {
         String result = "";
@@ -64,6 +69,30 @@ public class Translator {
         }
     }
 
+    public void translateFeedback(String pref, eu.qped.framework.feedback.Feedback feedback) {
+        try {
+            feedback.setReadableCause(translate(SupportedLanguages.ENGLISH, pref, feedback.getReadableCause()));
+            List<Hint> feedbackHints = new ArrayList<>();
+            for (Hint hint : Optional.ofNullable(feedback.getHints()).orElse(new ArrayList<>())) {
+                if (hint.getType().equals(HintType.TEXT)) {
+                    feedbackHints.add(Hint.builder()
+                            .type(hint.getType())
+                            .content(translate(SupportedLanguages.ENGLISH, pref, hint.getContent()))
+                            .build());
+
+                } else {
+                    feedbackHints.add(Hint.builder()
+                            .type(hint.getType())
+                            .content(hint.getContent())
+                            .build());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void translateStyleBody(String pref, StyleFeedback feedback) {
 
         try {
@@ -82,7 +111,7 @@ public class Translator {
         }
     }
 
-    public void translateDesignBody(String pref, DesignFeedback feedback) {
+    public void translateMetricsBody(String pref, MetricsFeedback feedback) {
 
         try {
             feedback.setBody(translate("en", pref, feedback.getBody()));

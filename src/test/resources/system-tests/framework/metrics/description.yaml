@@ -1,0 +1,7 @@
+title: "Metrics Message Cloudcheck - message as only feedback"
+description: |
+    Message cloud checks echoes the provided message as sole feedback.
+    
+    This description uses _[markdown](https://markdown-it.github.io)_ syntax.
+author: "Christoph Bockisch"
+disabled: false
