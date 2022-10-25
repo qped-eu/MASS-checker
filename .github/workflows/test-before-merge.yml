@@ -16,5 +16,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Prepare Maven
+        run: mvn compile
       - name: Run System Tests
         run: mvn test
