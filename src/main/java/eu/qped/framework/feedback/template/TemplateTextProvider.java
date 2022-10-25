@@ -1,7 +1,7 @@
 package eu.qped.framework.feedback.template;
 
 import eu.qped.framework.feedback.Type;
-import eu.qped.java.checkers.semantics.SemanticChecker;
+import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.SupportedLanguages;
@@ -17,7 +17,7 @@ public class TemplateTextProvider {
     // Keys
     public final static String KEY_TITLE_SYNTAX = SyntaxChecker.class.getSimpleName();
     public final static String KEY_TITLE_STYLE = StyleChecker.class.getSimpleName();
-    public final static String KEY_TITLE_SEMANTIC = SemanticChecker.class.getSimpleName();
+    public final static String KEY_TITLE_SEMANTIC = SolutionApproachAnalyser.class.getSimpleName();
     // Key Reference
     public final static String KEY_MORE_INFORMATION = "moreInformation";
     public final static String KEY_AT = "at";

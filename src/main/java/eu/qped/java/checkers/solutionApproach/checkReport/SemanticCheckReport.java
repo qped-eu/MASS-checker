@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.semantics.checkReport;
+package eu.qped.java.checkers.solutionApproach.checkReport;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -13,8 +13,8 @@ import eu.qped.java.checkers.coverage.CoverageMapChecker;
 import eu.qped.java.checkers.coverage.QfCovSetting;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticFeedback;
+import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionApproach.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -62,7 +62,7 @@ public class Mass implements Checker {
         }
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
-        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemanticSettings(mass.getSemantic()).build();
+        SolutionApproachAnalyser solutionApproachAnalyser = SolutionApproachAnalyser.builder().qfSemanticSettings(mass.getSemantic()).build();
 
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
@@ -85,7 +85,7 @@ public class Mass implements Checker {
         }
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, solutionApproachAnalyser, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
         massExecutor.execute();
 
         /*

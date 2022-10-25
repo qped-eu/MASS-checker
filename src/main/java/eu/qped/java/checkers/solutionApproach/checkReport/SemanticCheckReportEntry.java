@@ -1,6 +1,6 @@
-package eu.qped.java.checkers.semantics.checkReport;
+package eu.qped.java.checkers.solutionApproach.checkReport;
 
-import eu.qped.java.checkers.semantics.SemanticFeedback;
+import eu.qped.java.checkers.solutionApproach.SemanticFeedback;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

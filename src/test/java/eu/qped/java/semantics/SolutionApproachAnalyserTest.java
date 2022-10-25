@@ -2,7 +2,7 @@ package eu.qped.java.semantics;
 
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
-import eu.qped.java.checkers.semantics.SemanticChecker;
+import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,21 +10,21 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SemanticCheckerTest {
+class SolutionApproachAnalyserTest {
 
 
-    private SemanticChecker semanticChecker;
+    private SolutionApproachAnalyser solutionApproachAnalyser;
 
     @BeforeEach
     public void setup() {
-        semanticChecker = SemanticChecker.builder().build();
+        solutionApproachAnalyser = SolutionApproachAnalyser.builder().build();
     }
 
     @Test
     void testMethodNoErrorFail() {
-        semanticChecker.setQfSemanticSettings(qfSemanticSettingsFail());
-        semanticChecker.check();
-        var fs = semanticChecker.getFeedbacks();
+        solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSettingsFail());
+        solutionApproachAnalyser.check();
+        var fs = solutionApproachAnalyser.getFeedbacks();
         assertThat(fs).isNotEmpty();
 
         assertThat(fs).anyMatch(
@@ -36,9 +36,9 @@ class SemanticCheckerTest {
 
     @Test
     void testMethodNoErrorPass() {
-        semanticChecker.setQfSemanticSettings(qfSemanticSettingsPass());
-        semanticChecker.check();
-        var fs = semanticChecker.getFeedbacks();
+        solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSettingsPass());
+        solutionApproachAnalyser.check();
+        var fs = solutionApproachAnalyser.getFeedbacks();
         assertThat(fs).isEmpty();
     }
 

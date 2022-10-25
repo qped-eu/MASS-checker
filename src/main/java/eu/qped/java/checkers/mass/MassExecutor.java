@@ -7,8 +7,8 @@ import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticFeedback;
+import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionApproach.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -42,7 +42,7 @@ public class MassExecutor {
 
 
     private final StyleChecker styleChecker;
-    private final SemanticChecker semanticChecker;
+    private final SolutionApproachAnalyser solutionApproachAnalyser;
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
     private MetricsChecker metricsChecker;
@@ -52,13 +52,13 @@ public class MassExecutor {
      * To create an Object use the factory Class @MassExecutorFactory
      *
      * @param styleChecker    style checker component
-     * @param semanticChecker semantic checker component
+     * @param solutionApproachAnalyser semantic checker component
      * @param syntaxChecker   syntax checker component
      * @param metricsChecker  metrics checker component
      * @param mainSettings    settings
      */
 
-    public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
+    public MassExecutor(final StyleChecker styleChecker, final SolutionApproachAnalyser solutionApproachAnalyser,
                         final SyntaxChecker syntaxChecker, final MetricsChecker metricsChecker,
                         final ClassChecker classChecker,
                         final CoverageChecker coverageChecker,
@@ -66,7 +66,7 @@ public class MassExecutor {
     ) {
 
         this.styleChecker = styleChecker;
-        this.semanticChecker = semanticChecker;
+        this.solutionApproachAnalyser = solutionApproachAnalyser;
         this.syntaxChecker = syntaxChecker;
         this.metricsChecker = metricsChecker;
         this.classChecker = classChecker;
@@ -97,9 +97,9 @@ public class MassExecutor {
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
             }
             if (semanticNeeded) {
-                semanticChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
-                semanticChecker.check();
-                semanticFeedbacks = semanticChecker.getFeedbacks();
+                solutionApproachAnalyser.setTargetProjectPath(syntaxAnalyseReport.getPath());
+                solutionApproachAnalyser.check();
+                semanticFeedbacks = solutionApproachAnalyser.getFeedbacks();
             }
             if (metricsNeeded) {
                 syntaxChecker.setClassFilesDestination("");

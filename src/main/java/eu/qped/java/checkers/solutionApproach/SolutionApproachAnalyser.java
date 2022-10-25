@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.semantics;
+package eu.qped.java.checkers.solutionApproach;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParserConfiguration;
@@ -22,7 +22,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class SemanticChecker {
+public class SolutionApproachAnalyser {
 
     @Getter(AccessLevel.PUBLIC)
     @Setter(AccessLevel.PUBLIC)
@@ -222,9 +222,9 @@ public class SemanticChecker {
         settingItems.add(bagCalcPriceSettingItem);
         settingItems.add(bagCalcRecSettingItem);
 
-        SemanticChecker semanticChecker = SemanticChecker.builder().build();
+        SolutionApproachAnalyser solutionApproachAnalyser = SolutionApproachAnalyser.builder().build();
 
-        semanticChecker.parse("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
+        solutionApproachAnalyser.parse("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
 
     }
 }

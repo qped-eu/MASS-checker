@@ -1,6 +1,6 @@
 package eu.qped.framework.feedback;
 
-import eu.qped.java.checkers.semantics.SemanticChecker;
+import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +23,7 @@ public class FeedbackFileDirectoryProvider {
         if (aClass.equals(StyleChecker.class)) {
             return STYLE_DIR_PATH;
         }
-        if (aClass.equals(SemanticChecker.class)) {
+        if (aClass.equals(SolutionApproachAnalyser.class)) {
             return SEMANTIC_DIR_PATH;
         }
         if (aClass.equals(SyntaxChecker.class)) {

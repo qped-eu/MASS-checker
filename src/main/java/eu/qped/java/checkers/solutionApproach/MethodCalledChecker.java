@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.semantics;
+package eu.qped.java.checkers.solutionApproach;
 
 import java.util.ArrayList;
 
