@@ -9,12 +9,14 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
+import eu.qped.java.checkers.solutionApproach.checkReport.SolutionApproachReportEntry;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,21 +34,25 @@ public class SolutionApproachAnalyser {
     @Setter(AccessLevel.PACKAGE)
     private SemanticSettingReader semanticSettingReader;
 
+    private String targetProjectPath;
+
+    // delete
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private boolean usedALoop;
 
+    // delete
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private String returnType;
 
+    // delete
     private ArrayList<SemanticFeedback> feedbacks;
 
-    private String targetProjectPath;
 
-    public void check() {
+    public List<SolutionApproachReportEntry> check() {
 
-        feedbacks = new ArrayList<>();
+        List<SolutionApproachReportEntry> solutionApproachEntries = new ArrayList<>();
 
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemanticSettings(qfSemanticSettings).build();
         var settings = reader.groupByFileName();
@@ -71,16 +77,20 @@ public class SolutionApproachAnalyser {
                     } else path = targetProjectPath;  // answer is string
 
                     var compilationUnit = parse(path); // AST per File
-
                     // AST per Method in File
                     fileSettingEntry.getSettingItems().forEach(
                             semanticSettingItem -> {
                                 try {
-                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, semanticSettingItem.getMethodName());
+                                    // analytics phase
+                                    SolutionApproachReportEntry basicReportEntry = SolutionApproachReportEntry.builder().relatedSemanticSettingItem(semanticSettingItem).build();
+                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, basicReportEntry); // get target method and the return type of the target method
                                     StatementsVisitorHelper statementsVisitorHelper = StatementsVisitorHelper.createStatementsVisitorHelper(targetedMethod);
-                                    calculateUsedLoop(statementsVisitorHelper);
-                                    generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
                                     MethodCalledChecker recursiveCheckHelper = MethodCalledChecker.createRecursiveCheckHelper(targetedMethod);
+                                    updateReportEntryFields(basicReportEntry, statementsVisitorHelper, recursiveCheckHelper); // update basic Report Entry
+                                    // create report Entries from basic report Entry
+                                    solutionApproachEntries.addAll(generateLoopReportEntries(basicReportEntry));
+
+//                                    generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
                                     generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
                                     checkReturnTyp(semanticSettingItem.getReturnType());
                                 } catch (NoSuchMethodException e) {
@@ -90,8 +100,69 @@ public class SolutionApproachAnalyser {
                     );
                 }
         );
+        return solutionApproachEntries;
     }
 
+    private List<SolutionApproachReportEntry> generateLoopReportEntries(SolutionApproachReportEntry basicReportEntry) {
+        List<SolutionApproachReportEntry> result = new ArrayList<>();
+        var semanticSettingItem = basicReportEntry.getRelatedSemanticSettingItem();
+        if (semanticSettingItem.getWhileLoop() != -1 && basicReportEntry.getSolutionWhileCounter() > semanticSettingItem.getWhileLoop() ) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("MoreThenExpectedWhileLoops");
+            result.add(reportEntry);
+        }
+        if (semanticSettingItem.getForLoop() != -1 && basicReportEntry.getSolutionForCounter() > semanticSettingItem.getForLoop() ) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("MoreThenExpectedForLoops");
+            result.add(reportEntry);
+        }
+        if (semanticSettingItem.getForEachLoop() != -1 && basicReportEntry.getSolutionForEachCounter() > semanticSettingItem.getForEachLoop()   ) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("MoreThenExpectedForEachLoops");
+            result.add(reportEntry);
+        }
+        if (semanticSettingItem.getIfElseStmt() != -1 && basicReportEntry.getSolutionIfElseCounter() > semanticSettingItem.getIfElseStmt() ) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("MoreThenExpectedIfElseStatement");
+            result.add(reportEntry);
+        }
+        if (semanticSettingItem.getDoWhileLoop() != -1 && basicReportEntry.getSolutionDoWhileCounter() > semanticSettingItem.getDoWhileLoop()  ) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("MoreThenExpectedDoWhileLoops");
+            result.add(reportEntry);
+        }
+        return result;
+    }
+
+    private SolutionApproachReportEntry cloneBasicReportEntry(SolutionApproachReportEntry basicReportEntry) {
+        return SolutionApproachReportEntry.builder()
+                .relatedSemanticSettingItem(basicReportEntry.getRelatedSemanticSettingItem())
+                .solutionForCounter(basicReportEntry.getSolutionForCounter())
+                .solutionForEachCounter(basicReportEntry.getSolutionForEachCounter())
+                .solutionDoWhileCounter(basicReportEntry.getSolutionDoWhileCounter())
+                .solutionWhileCounter(basicReportEntry.getSolutionWhileCounter())
+                .solutionIfElseCounter(basicReportEntry.getSolutionIfElseCounter())
+                .solutionHasLoop(basicReportEntry.isSolutionHasLoop())
+                .solutionHasRecursiveMethodCall(basicReportEntry.isSolutionHasRecursiveMethodCall())
+                .solutionReturnType(basicReportEntry.getSolutionReturnType())
+                .build();
+    }
+
+    private void updateReportEntryFields(SolutionApproachReportEntry solutionApproachReportEntry, StatementsVisitorHelper statementsVisitorHelper, MethodCalledChecker recursiveCheckHelper) {
+        solutionApproachReportEntry.setSolutionHasRecursiveMethodCall(recursiveCheckHelper.check(solutionApproachReportEntry.getRelatedSemanticSettingItem().getMethodName()));
+        solutionApproachReportEntry.setSolutionForCounter(statementsVisitorHelper.getForCounter());
+        solutionApproachReportEntry.setSolutionForEachCounter(statementsVisitorHelper.getForEachCounter());
+        solutionApproachReportEntry.setSolutionDoWhileCounter(statementsVisitorHelper.getDoCounter());
+        solutionApproachReportEntry.setSolutionWhileCounter(statementsVisitorHelper.getWhileCounter());
+        solutionApproachReportEntry.setSolutionIfElseCounter(statementsVisitorHelper.getIfElseCounter());
+        solutionApproachReportEntry.setSolutionHasLoop(
+                solutionApproachReportEntry.getSolutionWhileCounter() > 0
+                        || solutionApproachReportEntry.getSolutionDoWhileCounter() > 0
+                        || statementsVisitorHelper.getForCounter() > 0
+                        || statementsVisitorHelper.getForEachCounter() > 0
+        );
+
+    }
 
     private CompilationUnit parse(final String path) {
         return parseFromResourceType(path);
@@ -112,16 +183,7 @@ public class SolutionApproachAnalyser {
         }
     }
 
-    private void checkReturnTyp(String targetReturnType) {
-        boolean result = false;
-        result = targetReturnType.equalsIgnoreCase(returnType);
-
-        if (!result && !targetReturnType.equals("undefined") && targetReturnType != null) {
-            feedbacks.add(new SemanticFeedback("you've used the return type " + returnType + "\n" + " you should use the return type " + targetReturnType));
-        }
-    }
-
-    private BlockStmt getTargetedMethod(CompilationUnit compilationUnit, String targetedMethodName) throws NoSuchMethodException {
+    private BlockStmt getTargetedMethod(CompilationUnit compilationUnit, SolutionApproachReportEntry basicReportEntry) throws NoSuchMethodException {
         final BlockStmt[] result = {new BlockStmt()};
         MutableBoolean methodFound = new MutableBoolean(false);
 
@@ -141,8 +203,8 @@ public class SolutionApproachAnalyser {
                     currentNode.accept(new VoidVisitorWithDefaults<Void>() {
                         @Override
                         public void visit(MethodDeclaration n, Void arg) {
-                            if (n.getName().toString().equals(targetedMethodName)) {
-                                returnType = n.getType().toString();
+                            if (n.getName().toString().equals(basicReportEntry.getRelatedSemanticSettingItem().getMethodName())) {
+                                basicReportEntry.setSolutionReturnType(n.getType().toString());
                                 methodFound.setTrue();
                                 if (n.getBody().isPresent()) {
                                     result[0] = n.getBody().get().asBlockStmt();
@@ -155,13 +217,22 @@ public class SolutionApproachAnalyser {
             }
         }
         if (!methodFound.getValue()) {
-            throw new NoSuchMethodException(NoSuchMethodException.class.getName() + " the Method: " + targetedMethodName + " not found!");
+            throw new NoSuchMethodException(NoSuchMethodException.class.getName() + " the Method: " + basicReportEntry.getRelatedSemanticSettingItem().getMethodName() + " not found!");
         }
         return result[0];
     }
 
-    //     private BlockStmt getTargetedMethod(compilationUnit ,String targetedMethodName) throws NoSuchMethodException {
+    private void checkReturnTyp(String targetReturnType) {
+        boolean result = false;
+        result = targetReturnType.equalsIgnoreCase(returnType);
+
+        if (!result && !targetReturnType.equals("undefined") && targetReturnType != null) {
+            feedbacks.add(new SemanticFeedback("you've used the return type " + returnType + "\n" + " you should use the return type " + targetReturnType));
+        }
+    }
+
     private void generateSemanticStatementsFeedback(SemanticSettingItem settingItem, StatementsVisitorHelper statementsVisitorHelper) {
+
         if (statementsVisitorHelper.getWhileCounter() > settingItem.getWhileLoop() && settingItem.getWhileLoop() != -1) {
             feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getWhileLoop() + " while loop in your code, but you've used " + statementsVisitorHelper.getWhileCounter() + " while loop in " + settingItem.getFilePath()));
         }
@@ -177,13 +248,6 @@ public class SolutionApproachAnalyser {
         if (statementsVisitorHelper.getDoCounter() > settingItem.getDoWhileLoop() && settingItem.getDoWhileLoop() != -1) {
             feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getDoWhileLoop() + " doWhile loop in your code, but you've used " + statementsVisitorHelper.getForCounter() + "  doWhile loop in " + settingItem.getFilePath()));
         }
-    }
-
-    private void calculateUsedLoop(StatementsVisitorHelper statementsVisitorHelper) {
-        usedALoop = statementsVisitorHelper.getWhileCounter() > 0
-                || statementsVisitorHelper.getDoCounter() > 0
-                || statementsVisitorHelper.getForEachCounter() > 0
-                || statementsVisitorHelper.getForCounter() > 0;
     }
 
     private void generateSemanticRecursionFeedback(SemanticSettingItem settingItem, MethodCalledChecker recursiveCheckHelper) {

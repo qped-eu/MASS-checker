@@ -1,6 +1,6 @@
 #foreach($feedback in $feedbacks)
 $MarkdownUtility.asHeading4(
-    "$templateText.get($feedback.getCheckerName())""$foreach.count templateText.get(feedback.getType())"
+    "$templateText.get($feedback.getCheckerName())$foreach.count templateText.get(feedback.getType())"
 )
 $feedback.getReadableCause()
 ---

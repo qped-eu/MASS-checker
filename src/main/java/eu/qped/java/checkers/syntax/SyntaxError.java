@@ -14,9 +14,6 @@ import java.util.Map;
 @Builder
 public class SyntaxError {
 
-    @Deprecated(forRemoval = true)
-    private Map<String, String> additionalProperties;
-
     private String errorCode;
     private String errorMessage;
 
@@ -37,7 +34,6 @@ public class SyntaxError {
                 this.getErrorCode().equalsIgnoreCase(that.getErrorCode()) &&
                         this.getErrorMessage().equals(that.getErrorMessage()) &&
                         this.getStartPos() == that.getStartPos() &&
-                        this.getErrorTrigger().equals(that.getErrorTrigger()) &&
-                        this.getAdditionalProperties().equals(that.getAdditionalProperties());
+                        this.getErrorTrigger().equals(that.getErrorTrigger()) ;
     }
 }
