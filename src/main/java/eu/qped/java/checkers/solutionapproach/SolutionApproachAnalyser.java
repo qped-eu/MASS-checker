@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.solutionApproach;
+package eu.qped.java.checkers.solutionapproach;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParserConfiguration;
@@ -7,12 +7,8 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
-import eu.qped.java.checkers.solutionApproach.checkReport.SolutionApproachReportEntry;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 

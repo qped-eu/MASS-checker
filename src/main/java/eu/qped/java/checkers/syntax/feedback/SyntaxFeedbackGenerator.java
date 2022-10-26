@@ -3,7 +3,10 @@ package eu.qped.java.checkers.syntax.feedback;
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.FeedbackFileDirectoryProvider;
+import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackFileDirectoryProvider;
+import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedback;
+import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackMapper;
+import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackProvider;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
@@ -26,24 +29,24 @@ import java.util.stream.Collectors;
 @Builder
 public class SyntaxFeedbackGenerator {
 
-    private SyntaxFeedbackMapper syntaxFeedbackMapper;
+    private DefaultJsonFeedbackMapper defaultJsonFeedbackMapper;
 
     private MarkdownFeedbackFormatter markdownFeedbackFormatter;
-    private DefaultSyntaxFeedbackProvider defaultSyntaxFeedbackProvider;
+    private DefaultJsonFeedbackProvider defaultJsonFeedbackProvider;
 
     public List<Feedback> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
         //TODO abstract
-        List<SyntaxFeedback> allDefaultSyntaxFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage());
+        List<DefaultJsonFeedback> allDefaultDefaultJsonFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage());
 
-        var FeedbacksByErrorKeys =
-                allDefaultSyntaxFeedbacks.stream()
-                        .collect(Collectors.groupingBy(SyntaxFeedback::getTechnicalCause));
+        var defaultFeedbacksByTechnicalCause =
+                allDefaultDefaultJsonFeedbacks.stream()
+                        .collect(Collectors.groupingBy(DefaultJsonFeedback::getTechnicalCause));
 
-        var filteredFeedbacks = filterFeedbacks(errors, FeedbacksByErrorKeys);
+        var filteredFeedbacks = filterFeedbacks(errors, defaultFeedbacksByTechnicalCause);
 
-        if (syntaxFeedbackMapper == null) syntaxFeedbackMapper = new SyntaxFeedbackMapper();
+        if (defaultJsonFeedbackMapper == null) defaultJsonFeedbackMapper = new DefaultJsonFeedbackMapper();
         // naked feedbacks
-        var feedbacks = syntaxFeedbackMapper.mapSyntaxFeedbackToFeedback(filteredFeedbacks);
+        var feedbacks = defaultJsonFeedbackMapper.mapSyntaxFeedbackToFeedback(filteredFeedbacks);
         // adapted by check level naked feedbacks
         feedbacks = adaptFeedbackByCheckLevel(syntaxSetting, feedbacks);
         // formatted feedbacks
@@ -63,37 +66,37 @@ public class SyntaxFeedbackGenerator {
         }
     }
 
-    private List<SyntaxFeedback> getAllDefaultSyntaxFeedbacks(String language) {
-        var dirPath = FeedbackFileDirectoryProvider.provideFeedbackDataFile(SyntaxChecker.class);
-        if (defaultSyntaxFeedbackProvider == null) {
-            defaultSyntaxFeedbackProvider = new DefaultSyntaxFeedbackProvider();
+    private List<DefaultJsonFeedback> getAllDefaultSyntaxFeedbacks(String language) {
+        var dirPath = DefaultJsonFeedbackFileDirectoryProvider.provideFeedbackDataFile(SyntaxChecker.class);
+        if (defaultJsonFeedbackProvider == null) {
+            defaultJsonFeedbackProvider = new DefaultJsonFeedbackProvider();
         }
-        return defaultSyntaxFeedbackProvider.provide(dirPath, language + FileExtensions.JSON);
+        return defaultJsonFeedbackProvider.provide(dirPath, language + FileExtensions.JSON);
     }
 
-    private List<SyntaxFeedback> filterFeedbacks(List<SyntaxError> errors, Map<String, List<SyntaxFeedback>> keyToFeedbacks) {
-        List<SyntaxFeedback> filteredSyntaxFeedbacks = new ArrayList<>();
+    private List<DefaultJsonFeedback> filterFeedbacks(List<SyntaxError> errors, Map<String, List<DefaultJsonFeedback>> keyToFeedbacks) {
+        List<DefaultJsonFeedback> filteredDefaultJsonFeedbacks = new ArrayList<>();
         for (SyntaxError error : errors) {
             var byErrorCode =
                     keyToFeedbacks.get(error.getErrorCode());
             if (byErrorCode == null) {
                 var byErrorMessage = keyToFeedbacks.get(error.getErrorMessage());
                 if (byErrorMessage != null) {
-                    filteredSyntaxFeedbacks.addAll(byErrorMessage);
+                    filteredDefaultJsonFeedbacks.addAll(byErrorMessage);
                 } else {
                     var syntaxFeedback =
-                            SyntaxFeedback.builder()
+                            DefaultJsonFeedback.builder()
                                     .hints(Collections.emptyList())
                                     .readableCause(error.getErrorMessage())
                                     .technicalCause(error.getErrorCode())
                                     .relatedLocation(RelatedLocation.builder().build())
                                     .build();
-                    filteredSyntaxFeedbacks.add(syntaxFeedback);
+                    filteredDefaultJsonFeedbacks.add(syntaxFeedback);
                 }
             } else {
-                filteredSyntaxFeedbacks.addAll(byErrorCode);
+                filteredDefaultJsonFeedbacks.addAll(byErrorCode);
             }
-            filteredSyntaxFeedbacks.forEach(
+            filteredDefaultJsonFeedbacks.forEach(
                     sf -> sf.setRelatedLocation(
                             RelatedLocation.builder()
                                     .startLine((int) error.getLine())
@@ -102,8 +105,9 @@ public class SyntaxFeedbackGenerator {
                                     .build()
                     ));
         }
-        return filteredSyntaxFeedbacks;
+        return filteredDefaultJsonFeedbacks;
     }
+
 
 
 }

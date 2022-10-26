@@ -1,7 +1,7 @@
 package eu.qped.framework.feedback.template;
 
 import eu.qped.framework.feedback.Type;
-import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachAnalyser;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.SupportedLanguages;

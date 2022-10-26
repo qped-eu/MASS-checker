@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax.feedback;
+package eu.qped.framework.feedback.defaultjsonfeedback;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SyntaxFeedback {
+public class DefaultJsonFeedback {
     private String technicalCause;
     private String readableCause;
     private List<Hint> hints;

@@ -1,8 +1,8 @@
-package eu.qped.java.checkers.solutionApproach;
+package eu.qped.java.checkers.solutionapproach;
 
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
-import eu.qped.java.checkers.solutionApproach.configs.FileSettingEntry;
+import eu.qped.java.checkers.solutionapproach.configs.FileSettingEntry;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -2,7 +2,7 @@ package eu.qped.java.semantics;
 
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
-import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachAnalyser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.solutionApproach;
+package eu.qped.java.checkers.solutionapproach;
 
 
 import com.github.javaparser.ast.Node;

@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax.feedback;
+package eu.qped.framework.feedback.defaultjsonfeedback;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.Type;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor
-public class SyntaxFeedbackMapper {
+public class DefaultJsonFeedbackMapper {
 
-    public List<Feedback> mapSyntaxFeedbackToFeedback(List<SyntaxFeedback> feedbacks) {
+    public List<Feedback> mapSyntaxFeedbackToFeedback(List<DefaultJsonFeedback> feedbacks) {
         return feedbacks.stream()
                 .map(
                         sf -> Feedback.builder()

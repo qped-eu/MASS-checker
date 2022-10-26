@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.solutionApproach.configs;
+package eu.qped.java.checkers.solutionapproach.configs;
 
 import eu.qped.java.checkers.mass.SemanticSettingItem;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,7 @@
 package eu.qped.framework.feedback.template;
 
 import eu.qped.framework.feedback.*;
+import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackFileDirectoryProvider;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -123,7 +124,7 @@ public class TemplateBuilder {
     }
 
     private Map<String, String> getTemplateKeyWords(String language) {
-        var dirPath = FeedbackFileDirectoryProvider.provideFeedbackDataFile(TemplateBuilder.class);
+        var dirPath = DefaultJsonFeedbackFileDirectoryProvider.provideFeedbackDataFile(TemplateBuilder.class);
         if (templateTextProvider == null) {
             templateTextProvider = new TemplateTextProvider();
         }

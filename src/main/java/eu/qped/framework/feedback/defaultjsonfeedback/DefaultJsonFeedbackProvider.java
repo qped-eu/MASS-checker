@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax.feedback;
+package eu.qped.framework.feedback.defaultjsonfeedback;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-public class DefaultSyntaxFeedbackProvider {
+public class DefaultJsonFeedbackProvider {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     // TODO abstract to get all data for all checkers.
-    public List<SyntaxFeedback> provide(@NonNull String dir,  @NonNull String fileName) {
-        var result = new ArrayList<SyntaxFeedback>();
+    public List<DefaultJsonFeedback> provide(@NonNull String dir, @NonNull String fileName) {
+        var result = new ArrayList<DefaultJsonFeedback>();
         try {
             String filePath = dir + fileName;
             String defaultFilePath = dir + SupportedLanguages.ENGLISH + FileExtensions.JSON;

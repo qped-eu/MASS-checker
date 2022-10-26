@@ -1,11 +1,11 @@
-package eu.qped.framework.feedback;
+package eu.qped.framework.feedback.defaultjsonfeedback;
 
-import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachAnalyser;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.jetbrains.annotations.NotNull;
 
-public class FeedbackFileDirectoryProvider {
+public final class DefaultJsonFeedbackFileDirectoryProvider {
 
     private final static String STYLE_DIR_PATH = "src/main/resources/style/";
 

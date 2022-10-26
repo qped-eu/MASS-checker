@@ -13,8 +13,8 @@ import eu.qped.java.checkers.coverage.CoverageMapChecker;
 import eu.qped.java.checkers.coverage.QfCovSetting;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.solutionApproach.SolutionApproachAnalyser;
-import eu.qped.java.checkers.solutionApproach.SemanticFeedback;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -153,7 +153,7 @@ public class Mass implements Checker {
 //            resultIndex = resultIndex + 2;
 //        }
 //
-//        for (SyntaxFeedback syntax : syntaxFeedbacks) {
+//        for (DefaultJsonFeedback syntax : syntaxFeedbacks) {
 //            result[resultIndex + 1] = ""
 //                    + syntax.toString()
 //                    + NEW_LINE
