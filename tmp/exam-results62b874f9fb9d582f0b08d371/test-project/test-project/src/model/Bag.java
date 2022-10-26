@@ -1,4 +1,4 @@
-package ..
+
 
 public class Bag {
 
@@ -22,7 +22,7 @@ public class Bag {
             }
             else if (loop > 3){
                 System.out.println(loop);
-                loop--
+                loop--;
             }
             else {
                 loop--;

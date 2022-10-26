@@ -7,16 +7,18 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
 import eu.qped.java.checkers.solutionApproach.checkReport.SolutionApproachReportEntry;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,10 +91,8 @@ public class SolutionApproachAnalyser {
                                     updateReportEntryFields(basicReportEntry, statementsVisitorHelper, recursiveCheckHelper); // update basic Report Entry
                                     // create report Entries from basic report Entry
                                     solutionApproachEntries.addAll(generateLoopReportEntries(basicReportEntry));
-
-//                                    generateSemanticStatementsFeedback(semanticSettingItem, statementsVisitorHelper);
-                                    generateSemanticRecursionFeedback(semanticSettingItem, recursiveCheckHelper);
-                                    checkReturnTyp(semanticSettingItem.getReturnType());
+                                    solutionApproachEntries.addAll(generateRecursionReportEntries(basicReportEntry));
+                                    solutionApproachEntries.addAll(generateReturnTypeReportEntry(basicReportEntry));
                                 } catch (NoSuchMethodException e) {
                                     System.out.println(e.getMessage() + " " + e.getCause());
                                 }
@@ -103,30 +103,60 @@ public class SolutionApproachAnalyser {
         return solutionApproachEntries;
     }
 
+    private List<SolutionApproachReportEntry> generateReturnTypeReportEntry(SolutionApproachReportEntry basicReportEntry) {
+        List<SolutionApproachReportEntry> result = new ArrayList<>();
+        var semanticSettingItem = basicReportEntry.getRelatedSemanticSettingItem();
+        if (!semanticSettingItem.getReturnType().equalsIgnoreCase(basicReportEntry.getSolutionReturnType()) && !semanticSettingItem.getReturnType().equals("undefined")) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("differentReturnTypeThanExpected");
+            result.add(reportEntry);
+        }
+        return result;
+    }
+
+    private List<SolutionApproachReportEntry> generateRecursionReportEntries(SolutionApproachReportEntry basicReportEntry) {
+        List<SolutionApproachReportEntry> result = new ArrayList<>();
+        var semanticSettingItem = basicReportEntry.getRelatedSemanticSettingItem();
+        if (semanticSettingItem.getRecursive() && !basicReportEntry.isSolutionHasRecursiveMethodCall() && !basicReportEntry.isSolutionHasLoop()) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("solutionMustHaveRecursion");
+            result.add(reportEntry);
+        } else if (semanticSettingItem.getRecursive() && !basicReportEntry.isSolutionHasRecursiveMethodCall() && basicReportEntry.isSolutionHasLoop()) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("solutionMustHaveRecursionInsteadLoop");
+            result.add(reportEntry);
+        } else if (!semanticSettingItem.getRecursive() && basicReportEntry.isSolutionHasRecursiveMethodCall()) {
+            var reportEntry = cloneBasicReportEntry(basicReportEntry);
+            reportEntry.setErrorCode("SolutionMustNotHaveRecursion");
+            result.add(reportEntry);
+        }
+        return result;
+    }
+
     private List<SolutionApproachReportEntry> generateLoopReportEntries(SolutionApproachReportEntry basicReportEntry) {
         List<SolutionApproachReportEntry> result = new ArrayList<>();
         var semanticSettingItem = basicReportEntry.getRelatedSemanticSettingItem();
-        if (semanticSettingItem.getWhileLoop() != -1 && basicReportEntry.getSolutionWhileCounter() > semanticSettingItem.getWhileLoop() ) {
+        if (semanticSettingItem.getWhileLoop() != -1 && basicReportEntry.getSolutionWhileCounter() > semanticSettingItem.getWhileLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
             reportEntry.setErrorCode("MoreThenExpectedWhileLoops");
             result.add(reportEntry);
         }
-        if (semanticSettingItem.getForLoop() != -1 && basicReportEntry.getSolutionForCounter() > semanticSettingItem.getForLoop() ) {
+        if (semanticSettingItem.getForLoop() != -1 && basicReportEntry.getSolutionForCounter() > semanticSettingItem.getForLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
             reportEntry.setErrorCode("MoreThenExpectedForLoops");
             result.add(reportEntry);
         }
-        if (semanticSettingItem.getForEachLoop() != -1 && basicReportEntry.getSolutionForEachCounter() > semanticSettingItem.getForEachLoop()   ) {
+        if (semanticSettingItem.getForEachLoop() != -1 && basicReportEntry.getSolutionForEachCounter() > semanticSettingItem.getForEachLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
             reportEntry.setErrorCode("MoreThenExpectedForEachLoops");
             result.add(reportEntry);
         }
-        if (semanticSettingItem.getIfElseStmt() != -1 && basicReportEntry.getSolutionIfElseCounter() > semanticSettingItem.getIfElseStmt() ) {
+        if (semanticSettingItem.getIfElseStmt() != -1 && basicReportEntry.getSolutionIfElseCounter() > semanticSettingItem.getIfElseStmt()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
             reportEntry.setErrorCode("MoreThenExpectedIfElseStatement");
             result.add(reportEntry);
         }
-        if (semanticSettingItem.getDoWhileLoop() != -1 && basicReportEntry.getSolutionDoWhileCounter() > semanticSettingItem.getDoWhileLoop()  ) {
+        if (semanticSettingItem.getDoWhileLoop() != -1 && basicReportEntry.getSolutionDoWhileCounter() > semanticSettingItem.getDoWhileLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
             reportEntry.setErrorCode("MoreThenExpectedDoWhileLoops");
             result.add(reportEntry);
@@ -265,30 +295,30 @@ public class SolutionApproachAnalyser {
 
 
     public static void main(String[] args) throws IOException {
+            SolutionApproachAnalyser solutionApproachAnalyser = SolutionApproachAnalyser.builder()
+                    .build();
 
-        List<SemanticSettingItem> settingItems = new ArrayList<>();
-
-        System.out.println(Path.of("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java"));
-
-        var bagCalcPriceSettingItem = SemanticSettingItem.builder()
-                .filePath("/tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcPrice")
-                .returnType("void")
-                .whileLoop(0)
+            var qfSemanticSetting = QfSemanticSettings
+                .builder()
+                .semantics(
+                        List.of(
+                                SemanticSettingItem
+                                        .builder()
+                                        .recursive(true)
+                                        .whileLoop(0)
+                                        .forLoop(0)
+                                        .forEachLoop(0)
+                                        .doWhileLoop(0)
+                                        .ifElseStmt(-1)
+                                        .returnType("int")
+                                        .methodName("calcSum")
+                                        .filePath("tmp/code-example-for-sematnic-testing-fail/CalcSum.java")
+                                        .build()
+                        )
+                )
                 .build();
-        var bagCalcRecSettingItem = SemanticSettingItem.builder()
-                .filePath("/tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java")
-                .methodName("calcRec")
-                .returnType("int")
-                .recursive(false)
-                .build();
-
-        settingItems.add(bagCalcPriceSettingItem);
-        settingItems.add(bagCalcRecSettingItem);
-
-        SolutionApproachAnalyser solutionApproachAnalyser = SolutionApproachAnalyser.builder().build();
-
-        solutionApproachAnalyser.parse("tmp/exam-results62b874f9fb9d582f0b08d371/test-project/test-project/src/model/Bag.java");
-
+            solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSetting);
+            solutionApproachAnalyser.check().forEach(e -> System.out.println(e.getErrorCode()));
     }
+
 }

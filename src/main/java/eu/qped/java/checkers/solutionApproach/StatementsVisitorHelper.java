@@ -99,7 +99,6 @@ public class StatementsVisitorHelper {
                 @Override
                 public void visit(ForStmt n, Void arg) {
                     currentState.nextStates.add(nextState);
-                    System.out.println("for found");
                     forCounter++;
                     if (n.getBody().isBlockStmt()){
                         findStates(n.getBody(), currentState, nextState);
