@@ -6,7 +6,7 @@ import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.syntax.SyntaxCheckReport;
 import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.compiler.Com;
 import eu.qped.java.utils.compiler.Compiler;
 
@@ -102,7 +102,7 @@ public class CoverageSetup {
         SyntaxCheckReport report = compile(extracted.root());
 
         if (!report.isCompilable()) {
-            List<Feedback> feedbacks = FeedbackGenerator.builder().build().generateFeedbacks(
+            List<Feedback> feedbacks = SyntaxFeedbackGenerator.builder().build().generateFeedbacks(
                     report.getSyntaxErrors(),
                     SyntaxSetting.builder().language(setting.getLanguage()).build()
             );

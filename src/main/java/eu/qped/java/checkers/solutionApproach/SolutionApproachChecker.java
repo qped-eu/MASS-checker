@@ -3,8 +3,6 @@ package eu.qped.java.checkers.solutionApproach;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
-import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
-import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,10 +40,10 @@ public class SolutionApproachChecker {
         solutionApproachAnalyser.check();
 
 
-//        if (feedbackGenerator == null) {
-//            feedbackGenerator = FeedbackGenerator.builder().build();
+//        if (syntaxFeedbackGenerator == null) {
+//            syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
 //        }
-//        return feedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
+//        return syntaxFeedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
         return Collections.emptyList();
     }
 

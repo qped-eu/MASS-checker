@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FeedbackGenerator {
+public class SyntaxFeedbackGenerator {
 
     private SyntaxFeedbackMapper syntaxFeedbackMapper;
 

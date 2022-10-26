@@ -127,7 +127,7 @@ public class SolutionApproachAnalyser {
             result.add(reportEntry);
         } else if (!semanticSettingItem.getRecursive() && basicReportEntry.isSolutionHasRecursiveMethodCall()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
-            reportEntry.setErrorCode("SolutionMustNotHaveRecursion");
+            reportEntry.setErrorCode("solutionMustNotHaveRecursion");
             result.add(reportEntry);
         }
         return result;
@@ -138,27 +138,27 @@ public class SolutionApproachAnalyser {
         var semanticSettingItem = basicReportEntry.getRelatedSemanticSettingItem();
         if (semanticSettingItem.getWhileLoop() != -1 && basicReportEntry.getSolutionWhileCounter() > semanticSettingItem.getWhileLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
-            reportEntry.setErrorCode("MoreThenExpectedWhileLoops");
+            reportEntry.setErrorCode("moreThenExpectedWhileLoops");
             result.add(reportEntry);
         }
         if (semanticSettingItem.getForLoop() != -1 && basicReportEntry.getSolutionForCounter() > semanticSettingItem.getForLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
-            reportEntry.setErrorCode("MoreThenExpectedForLoops");
+            reportEntry.setErrorCode("moreThenExpectedForLoops");
             result.add(reportEntry);
         }
         if (semanticSettingItem.getForEachLoop() != -1 && basicReportEntry.getSolutionForEachCounter() > semanticSettingItem.getForEachLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
-            reportEntry.setErrorCode("MoreThenExpectedForEachLoops");
+            reportEntry.setErrorCode("moreThenExpectedForEachLoops");
             result.add(reportEntry);
         }
         if (semanticSettingItem.getIfElseStmt() != -1 && basicReportEntry.getSolutionIfElseCounter() > semanticSettingItem.getIfElseStmt()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
-            reportEntry.setErrorCode("MoreThenExpectedIfElseStatement");
+            reportEntry.setErrorCode("moreThenExpectedIfElseStatement");
             result.add(reportEntry);
         }
         if (semanticSettingItem.getDoWhileLoop() != -1 && basicReportEntry.getSolutionDoWhileCounter() > semanticSettingItem.getDoWhileLoop()) {
             var reportEntry = cloneBasicReportEntry(basicReportEntry);
-            reportEntry.setErrorCode("MoreThenExpectedDoWhileLoops");
+            reportEntry.setErrorCode("moreThenExpectedDoWhileLoops");
             result.add(reportEntry);
         }
         return result;
