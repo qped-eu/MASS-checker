@@ -1,6 +1,7 @@
 package eu.qped.framework.feedback.defaultjsonfeedback;
 
 import eu.qped.java.checkers.solutionapproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public final class DefaultJsonFeedbackFileDirectoryProvider {
         if (aClass.equals(StyleChecker.class)) {
             return STYLE_DIR_PATH;
         }
-        if (aClass.equals(SolutionApproachAnalyser.class)) {
+        if (aClass.equals(SolutionApproachChecker.class)) {
             return SEMANTIC_DIR_PATH;
         }
         if (aClass.equals(SyntaxChecker.class)) {
