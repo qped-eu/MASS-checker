@@ -1,18 +1,14 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.checkers.solutionapproach;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.checkerabstract.AbstractSetting;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class SyntaxSetting extends AbstractSetting {
-
+@Builder
+public class SolutionApproachGeneralSettings extends AbstractSetting {
     private CheckLevel checkLevel;
-
-
 }

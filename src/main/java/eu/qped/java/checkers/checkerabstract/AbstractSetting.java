@@ -1,4 +1,15 @@
 package eu.qped.java.checkers.checkerabstract;
 
-public class AbstractSetting {
+
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
+public abstract class AbstractSetting {
+    private String language;
+
 }

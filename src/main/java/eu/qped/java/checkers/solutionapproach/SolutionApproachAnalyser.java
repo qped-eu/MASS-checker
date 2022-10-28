@@ -7,7 +7,9 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
+import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
@@ -312,8 +314,19 @@ public class SolutionApproachAnalyser {
                         )
                 )
                 .build();
-            solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSetting);
-            solutionApproachAnalyser.check().forEach(e -> System.out.println(e.getErrorCode()));
+            var solutionGeneralSetting = SolutionApproachGeneralSettings.builder()
+                    .checkLevel(CheckLevel.BEGINNER)
+                    
+                    .build()
+                    ;
+            solutionGeneralSetting.setLanguage(SupportedLanguages.ENGLISH);
+            SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder()
+                    .qfSemanticSettings(qfSemanticSetting)
+                    .solutionApproachGeneralSettings(solutionGeneralSetting)
+                .build();
+            solutionApproachChecker.check().forEach(e -> System.out.println(e.getReadableCause()));
+//            solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSetting);
+//            solutionApproachAnalyser.check().forEach(e -> System.out.println(e.getErrorCode()));
     }
 
 }

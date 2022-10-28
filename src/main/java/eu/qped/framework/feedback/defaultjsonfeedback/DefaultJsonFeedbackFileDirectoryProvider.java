@@ -11,7 +11,7 @@ public final class DefaultJsonFeedbackFileDirectoryProvider {
 
     private final static String SYNTAX_DIR_PATH = "src/main/resources/syntax/";
 
-    private final static String SEMANTIC_DIR_PATH = "src/main/resources/semantic/";
+    private final static String SEMANTIC_DIR_PATH = "src/main/resources/solutionapproach/";
 
 
 

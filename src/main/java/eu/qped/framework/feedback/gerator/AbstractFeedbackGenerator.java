@@ -8,7 +8,6 @@ import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackProvide
 import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.java.checkers.checkerabstract.AbstractReportEntry;
 import eu.qped.java.checkers.checkerabstract.AbstractSetting;
-import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.FileExtensions;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,7 +67,6 @@ public abstract class AbstractFeedbackGenerator<REPORT extends AbstractReportEnt
     protected abstract List<DefaultJsonFeedback> filterFeedbacks(List<REPORT> reportEntries, Map<String, List<DefaultJsonFeedback>> allDefaultJsonFeedbacksByTechnicalCause);
 
     protected abstract List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, SETTING checkerSetting);
-
 
 
 }

@@ -4,10 +4,7 @@ package eu.qped.java.checkers.solutionapproach;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.solutionapproach.feedback.SolutionApproachFeedbackGenerator;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,9 +23,12 @@ import java.util.List;
 @Builder
 public class SolutionApproachChecker {
 
+    @NonNull
     private QfSemanticSettings qfSemanticSettings;
     private SolutionApproachAnalyser solutionApproachAnalyser;
     private SolutionApproachFeedbackGenerator solutionApproachFeedbackGenerator;
+    @NonNull
+    private SolutionApproachGeneralSettings solutionApproachGeneralSettings;
 
     private String targetProjectPath;
 
@@ -46,7 +46,7 @@ public class SolutionApproachChecker {
         if (solutionApproachFeedbackGenerator == null) {
             solutionApproachFeedbackGenerator = SolutionApproachFeedbackGenerator.builder().build();
         }
-        return solutionApproachFeedbackGenerator.generateFeedbacks(solutionApproachReportEntries, qfSemanticSettings);
+        return solutionApproachFeedbackGenerator.generateFeedbacks(solutionApproachReportEntries, solutionApproachGeneralSettings);
     }
 
 
