@@ -7,7 +7,6 @@ import lombok.*;
  * This model must be generated in all checkers.
  *
  * @author Omar
- * @since 15.09.2022
  */
 @Getter
 @Setter

@@ -1,7 +1,10 @@
 package eu.qped.framework.feedback;
 
 import eu.qped.framework.feedback.hint.Hint;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -11,7 +14,6 @@ import java.util.List;
  * This model must be generated in all checkers.
  *
  * @author Omar Aji
- * @since 15.09.2022
  */
 @Data
 @AllArgsConstructor
@@ -19,14 +21,41 @@ import java.util.List;
 @Builder
 public class Feedback {
 
-    private Type type;
+    /**
+     * Represents the Checker component that generated this feedback.
+     */
     private String checkerName;
-    private String readableCause;
+    /**
+     * Contains the system designation of the relevant error for which this feedback is generated
+     */
     private String technicalCause;
+    /**
+     * Provides information whether the error for which this feedback is generated needs to be corrected or improvement.
+     */
+    private Type type;
+    /**
+     * This feedback component focuses on the error in the submitted solution. <br/>
+     * Thus, this field contains information about the cause of the detected error, which must be understandable for the student. <br/>
+     * This feedback component named <b>knowledge about mistakes [KM]</b> in @see <a href="https://www.waxmann.com/waxmann-buecher/?no_cache=1&tx_p2waxmann_pi2%5Bbuchnr%5D=1641&tx_p2waxmann_pi2%5Baction%5D=show&tx_p2waxmann_pi2%5Bcontroller%5D=Buch&cHash=70094cfe0fbda759e008598052dbe275">Narciss, Susanne. Informatives tutorielles Feedback</a>
+     */
+    private String readableCause;
+    /**
+     * This feedback component also focuses on the errors in a submitted solution. <br/>
+     * Hints are given here in the form of feedback.
+     * The hints give the student the opportunity to make corrections and are not intended to explain the cause of the error. <br/>
+     * This feedback component named <b>Knowledge on how to proceed [KH]</b> in @see <a href="https://www.waxmann.com/waxmann-buecher/?no_cache=1&tx_p2waxmann_pi2%5Bbuchnr%5D=1641&tx_p2waxmann_pi2%5Baction%5D=show&tx_p2waxmann_pi2%5Bcontroller%5D=Buch&cHash=70094cfe0fbda759e008598052dbe275">Narciss, Susanne. Informatives tutorielles Feedback</a>
+     */
     @Nullable
     private List<Hint> hints;
+    /**
+     * This feedback component focuses on the concept that a task should test. In return, a reference to the concept is given to the student to read through. <br/>
+     * This feedback component named <b>Knowledge about concepts [KC]</b> in @see <a href="https://www.waxmann.com/waxmann-buecher/?no_cache=1&tx_p2waxmann_pi2%5Bbuchnr%5D=1641&tx_p2waxmann_pi2%5Baction%5D=show&tx_p2waxmann_pi2%5Bcontroller%5D=Buch&cHash=70094cfe0fbda759e008598052dbe275">Narciss, Susanne. Informatives tutorielles Feedback</a>
+     */
     @Nullable
     private ConceptReference reference;
+    /**
+     * A part of Feedback contains for which location this feedback related to
+     */
     @Nullable
     private RelatedLocation relatedLocation;
 
