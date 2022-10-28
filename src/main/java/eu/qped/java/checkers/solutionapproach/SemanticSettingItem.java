@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.mass;
+package eu.qped.java.checkers.solutionapproach;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

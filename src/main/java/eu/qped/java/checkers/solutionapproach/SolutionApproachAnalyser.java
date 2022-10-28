@@ -8,7 +8,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
-import eu.qped.java.checkers.mass.SemanticSettingItem;
 import lombok.*;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
