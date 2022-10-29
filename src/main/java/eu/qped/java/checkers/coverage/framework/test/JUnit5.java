@@ -1,17 +1,22 @@
 package eu.qped.java.checkers.coverage.framework.test;
 
-import org.junit.jupiter.engine.JupiterTestEngine;
-import org.junit.platform.engine.*;
-import org.junit.platform.launcher.*;
-import org.junit.platform.launcher.core.*;
-import org.junit.platform.launcher.listeners.*;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+import org.junit.jupiter.engine.JupiterTestEngine;
+import org.junit.platform.engine.support.descriptor.MethodSource;
+import org.junit.platform.launcher.Launcher;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
+import org.junit.platform.launcher.core.LauncherConfig;
+import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
+import org.junit.platform.launcher.core.LauncherFactory;
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
+import org.junit.platform.launcher.listeners.TestExecutionSummary.Failure;
 
 /**
  * JUnit 5 is used to run a set of test classes.
@@ -50,20 +55,50 @@ public class JUnit5 implements TestFramework {
 		
         TestExecutionSummary summary = sgl.getSummary();
 
-        if (summary.getTotalFailureCount() == 0)
-        	return Collections.emptyList();
+        List<String> testFailures = new ArrayList<>();
         
-        try (StringWriter sw = new StringWriter()) {
-        	try (PrintWriter pw = new PrintWriter(sw)) {
-            	summary.printFailuresTo(pw, 0);
-        		pw.flush();
-        		sw.flush();
-        		return Collections.singletonList(sw.toString());
-        	}
+        for (Failure failure : summary.getFailures()) {
+        	StringBuilder failureMessage = new StringBuilder();
+        	
+        	
+        	failureMessage.append("Test failed: ");
+        	failure.getTestIdentifier().getSource().ifPresentOrElse(
+        			s -> {
+        				if (s instanceof MethodSource) {
+        					MethodSource ms = (MethodSource) s;
+        					failureMessage.append(ms.getClassName()).append(".").
+        					append(ms.getMethodName()).
+        					append("(").append(ms.getMethodParameterTypes()).append(") - ").
+        					append(failure.getTestIdentifier().getDisplayName());
+        				}
+        			}, 
+        			() -> failureMessage.append(failure.getTestIdentifier().getDisplayName()));
+        	
+        	failureMessage.append("\n");
+        	
+//        	failure.getTestIdentifier().getParentId().ifPresent(p ->
+//        		failureMessage.append("in: ").append(p).append("\n"));
+        	failureMessage.append("```\n");
+        	addThrowable(failure.getException(), failureMessage);
+        	failureMessage.append("\n```");
+        	
+        	testFailures.add(failureMessage.toString());
         }
-        catch (Exception e) {
-        	throw new RuntimeException(e);
-        }
+        return testFailures;
     }
+
+	private void addThrowable(Throwable exception, StringBuilder failureMessage) {
+		failureMessage.append(exception.getClass().getName()).append(": ").append(exception.getMessage());
+		StackTraceElement[] stes = exception.getStackTrace();
+		for (int i = 0; i < Math.min(stes.length, 5); i++) {
+			failureMessage.append("\n  at " + stes[i].toString());
+		}
+		if (stes.length > 5)
+			failureMessage.append("\n  ...");
+		if (exception.getCause() != null) {
+			failureMessage.append("\nCaused by:\n");
+			addThrowable(exception.getCause(), failureMessage);
+		}
+	}
 
 }

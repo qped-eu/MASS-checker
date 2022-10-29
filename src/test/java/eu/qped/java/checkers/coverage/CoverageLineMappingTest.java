@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.coverage;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,25 +21,35 @@ class CoverageLineMappingTest {
 	
 	@Test
 	void testCase1() throws IOException {
-		genericTest("case1");
+		genericTest("case1", false);
 	}
 
 	@Test
 	void testCase2() throws IOException {
-		genericTest("case2");
+		genericTest("case2", false);
 	}
 
 	@Test
 	void testCase3() throws IOException {
-		genericTest("case3");
+		genericTest("case3", false);
 	}
 
 	@Test
 	void testCase4() throws IOException {
-		genericTest("case4");
+		genericTest("case4", false);
 	}
 
-	public void genericTest(String caseName) throws IOException, JsonProcessingException, JsonMappingException {
+	@Test
+	void testCase5() throws IOException {
+		genericTest("case5", false);
+	}
+
+	@Test
+	void testCase6() throws IOException {
+		genericTest("case6", true);
+	}
+
+	public void genericTest(String caseName, boolean startsWithInsteadOfEquals) throws IOException, JsonProcessingException, JsonMappingException {
 		String settingsJson = FileUtils.readFileToString(new File("src/test/resources/coverage/" + caseName + "/CoverageSettings.json"), Charset.defaultCharset());
 		ObjectMapper mapper = new ObjectMapper();
 		QfCoverageSettings covSetting = mapper.readValue(settingsJson, QfCoverageSettings.class);
@@ -54,7 +64,10 @@ class CoverageLineMappingTest {
 
 		String expected = FileUtils.readFileToString(new File("src/test/resources/coverage/" + caseName + "/expected.txt"), Charset.defaultCharset());
 
-		assertEquals(expected, actual);
+		if (startsWithInsteadOfEquals)
+			assertTrue(actual.startsWith(expected));
+		else
+			assertEquals(expected, actual);
 	}
 
 }

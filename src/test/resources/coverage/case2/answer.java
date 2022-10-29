@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import eu.qped.ClassA;
 import eu.qped.ClassB;
 
-class CoverageFullTest {
+class TestCoverageFull {
 
 	private ClassB b;
 	private ClassA a;

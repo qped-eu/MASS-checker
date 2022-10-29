@@ -23,7 +23,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "privateImplementation",
-    "showExtraMisses",
+    "showFullCoverageReport",
+    "showTestFailures",
     "feedback"
 })
 
@@ -39,15 +40,25 @@ public class QfCoverageSettings {
     @JsonPropertyDescription("Specify the URL of the ZIP-file containing the private implementation.")
     private String privateImplementation;
     /**
-     * Show Extra Misses
+     * Show Full Coverage Report
      * <p>
-     * Specify whether to show missed or partially missed lines for which no feedback message is configured.
+     * Specify whether to show a full report of the test coverage.
      * (Required)
      * 
      */
-    @JsonProperty("showExtraMisses")
-    @JsonPropertyDescription("Specify whether to show missed or partially missed lines for which no feedback message is configured.")
-    private Boolean showExtraMisses = false;
+    @JsonProperty("showFullCoverageReport")
+    @JsonPropertyDescription("Specify whether to show a full report of the test coverage.")
+    private Boolean showFullCoverageReport = false;
+    /**
+     * Show Test Failures
+     * <p>
+     * Specify whether to show a description of the failed tests.
+     * (Required)
+     * 
+     */
+    @JsonProperty("showTestFailures")
+    @JsonPropertyDescription("Specify whether to show a description of the failed tests.")
+    private Boolean showTestFailures = true;
     /**
      * Feedback Configuration
      * <p>
@@ -84,27 +95,51 @@ public class QfCoverageSettings {
     }
 
     /**
-     * Show Extra Misses
+     * Show Full Coverage Report
      * <p>
-     * Specify whether to show missed or partially missed lines for which no feedback message is configured.
+     * Specify whether to show a full report of the test coverage.
      * (Required)
      * 
      */
-    @JsonProperty("showExtraMisses")
-    public Boolean getShowExtraMisses() {
-        return showExtraMisses;
+    @JsonProperty("showFullCoverageReport")
+    public Boolean getShowFullCoverageReport() {
+        return showFullCoverageReport;
     }
 
     /**
-     * Show Extra Misses
+     * Show Full Coverage Report
      * <p>
-     * Specify whether to show missed or partially missed lines for which no feedback message is configured.
+     * Specify whether to show a full report of the test coverage.
      * (Required)
      * 
      */
-    @JsonProperty("showExtraMisses")
-    public void setShowExtraMisses(Boolean showExtraMisses) {
-        this.showExtraMisses = showExtraMisses;
+    @JsonProperty("showFullCoverageReport")
+    public void setShowFullCoverageReport(Boolean showFullCoverageReport) {
+        this.showFullCoverageReport = showFullCoverageReport;
+    }
+
+    /**
+     * Show Test Failures
+     * <p>
+     * Specify whether to show a description of the failed tests.
+     * (Required)
+     * 
+     */
+    @JsonProperty("showTestFailures")
+    public Boolean getShowTestFailures() {
+        return showTestFailures;
+    }
+
+    /**
+     * Show Test Failures
+     * <p>
+     * Specify whether to show a description of the failed tests.
+     * (Required)
+     * 
+     */
+    @JsonProperty("showTestFailures")
+    public void setShowTestFailures(Boolean showTestFailures) {
+        this.showTestFailures = showTestFailures;
     }
 
     /**
@@ -130,7 +165,7 @@ public class QfCoverageSettings {
     public void setFeedback(List<Feedback> feedback) {
         this.feedback = feedback;
     }
-
+    
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
         return this.additionalProperties;
@@ -149,9 +184,13 @@ public class QfCoverageSettings {
         sb.append('=');
         sb.append(((this.privateImplementation == null)?"<null>":this.privateImplementation));
         sb.append(',');
-        sb.append("showExtraMisses");
+        sb.append("showFullCoverageReport");
         sb.append('=');
-        sb.append(((this.showExtraMisses == null)?"<null>":this.showExtraMisses));
+        sb.append(((this.showFullCoverageReport == null)?"<null>":this.showFullCoverageReport));
+        sb.append(',');
+        sb.append("showTestFailures");
+        sb.append('=');
+        sb.append(((this.showTestFailures == null)?"<null>":this.showTestFailures));
         sb.append(',');
         sb.append("feedback");
         sb.append('=');
@@ -169,26 +208,54 @@ public class QfCoverageSettings {
         return sb.toString();
     }
 
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = ((result* 31)+((this.feedback == null)? 0 :this.feedback.hashCode()));
-        result = ((result* 31)+((this.showExtraMisses == null)? 0 :this.showExtraMisses.hashCode()));
-        result = ((result* 31)+((this.additionalProperties == null)? 0 :this.additionalProperties.hashCode()));
-        result = ((result* 31)+((this.privateImplementation == null)? 0 :this.privateImplementation.hashCode()));
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((additionalProperties == null) ? 0 : additionalProperties.hashCode());
+		result = prime * result + ((feedback == null) ? 0 : feedback.hashCode());
+		result = prime * result + ((privateImplementation == null) ? 0 : privateImplementation.hashCode());
+		result = prime * result + ((showFullCoverageReport == null) ? 0 : showFullCoverageReport.hashCode());
+		result = prime * result + ((showTestFailures == null) ? 0 : showTestFailures.hashCode());
+		return result;
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if ((other instanceof QfCoverageSettings) == false) {
-            return false;
-        }
-        QfCoverageSettings rhs = ((QfCoverageSettings) other);
-        return (((((this.feedback == rhs.feedback)||((this.feedback!= null)&&this.feedback.equals(rhs.feedback)))&&((this.showExtraMisses == rhs.showExtraMisses)||((this.showExtraMisses!= null)&&this.showExtraMisses.equals(rhs.showExtraMisses))))&&((this.additionalProperties == rhs.additionalProperties)||((this.additionalProperties!= null)&&this.additionalProperties.equals(rhs.additionalProperties))))&&((this.privateImplementation == rhs.privateImplementation)||((this.privateImplementation!= null)&&this.privateImplementation.equals(rhs.privateImplementation))));
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QfCoverageSettings other = (QfCoverageSettings) obj;
+		if (additionalProperties == null) {
+			if (other.additionalProperties != null)
+				return false;
+		} else if (!additionalProperties.equals(other.additionalProperties))
+			return false;
+		if (feedback == null) {
+			if (other.feedback != null)
+				return false;
+		} else if (!feedback.equals(other.feedback))
+			return false;
+		if (privateImplementation == null) {
+			if (other.privateImplementation != null)
+				return false;
+		} else if (!privateImplementation.equals(other.privateImplementation))
+			return false;
+		if (showFullCoverageReport == null) {
+			if (other.showFullCoverageReport != null)
+				return false;
+		} else if (!showFullCoverageReport.equals(other.showFullCoverageReport))
+			return false;
+		if (showTestFailures == null) {
+			if (other.showTestFailures != null)
+				return false;
+		} else if (!showTestFailures.equals(other.showTestFailures))
+			return false;
+		return true;
+	}
+
 
 }

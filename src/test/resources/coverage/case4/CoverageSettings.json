@@ -1,6 +1,8 @@
 {
     "privateImplementation": "file:src/test/resources/coverage/case2/PrivateImpl.zip",
     "showExtraMisses": false,
+    "showFullCoverageReport":false,
+    "showTestFailures":true,
     "feedback": [
       {
         "showFor": "PARTIALLY_MISSED",

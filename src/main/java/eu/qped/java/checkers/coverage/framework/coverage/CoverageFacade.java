@@ -19,4 +19,8 @@ public class CoverageFacade {
     public byte[] byteCode() {
         return byteCode;
     }
+    
+    public String getContent() {
+		return content;
+	}
 }

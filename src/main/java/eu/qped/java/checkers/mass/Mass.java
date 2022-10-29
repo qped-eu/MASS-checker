@@ -185,8 +185,6 @@ public class Mass implements Checker {
             result[resultIndex++] = feedback;
         }
 
-
-
         qfObject.setFeedback(result);
     }
 

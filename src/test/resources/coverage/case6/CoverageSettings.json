@@ -1,7 +1,7 @@
 {
     "privateImplementation": "file:src/test/resources/coverage/case2/PrivateImpl.zip",
-    "showExtraMisses": false,
-    "showFullCoverageReport":false,
+    "showExtraMisses": true,
+    "showFullCoverageReport":true,
     "showTestFailures":true,
     "feedback": [
       {
@@ -12,7 +12,7 @@
         "message": "Did you consider a null argument?"
       },
       {
-        "showFor": "FULLY_MISSED",
+        "showFor": "PARTIALLY_MISSED",
         "ID": "empty",
         "fileName": "eu/qped/ClassA.java",
         "lineRanges": "16-21",

@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import eu.qped.framework.Feedback;
 import eu.qped.java.checkers.coverage.framework.coverage.Jacoco;
 import eu.qped.java.checkers.coverage.framework.test.JUnit5;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
@@ -23,6 +22,7 @@ public class CoverageChecker {
 	private CoverageSetup coverageSetup;
 	
 	private final Map<String, FeedbackMessage> feedbackMessages = new HashMap<>();
+	private String fullCoverageReport;
 
 	public CoverageChecker(QfCoverageSettings covSettings, CoverageSetup coverageSetup) {
 		this.covSetting = covSettings;
@@ -94,9 +94,10 @@ public class CoverageChecker {
 
 		coverage.analyze(data.testclasses, data.classes);
 
-		List<Feedback> feedbacks = new ArrayList<>();
-		coverage.getTestResults().forEach(tr -> feedbacks.add(new CoverageFeedback(tr.toString())));
-
+		StringBuilder fullReport = new StringBuilder();
+		fullReport.append(coverage.getFullCoverageReport());
+		this.fullCoverageReport = fullReport.toString();
+		
 		List<FeedbackMessage> fullyMissedFeedbackMessages = new ArrayList<>();
 		List<FeedbackMessage> partiallyMissedFeedbackMessages = new ArrayList<>();
 		feedbackMessages.values().forEach(fm -> {
@@ -109,9 +110,8 @@ public class CoverageChecker {
 		
 //		if (!this.moduleName.equals(moduleName))
 //			return false;
-
+		
 		coverage.getModuleCoverageResults().forEach(mcr -> {
-
 			// fully missed feedback messages:
 			// if a line that is at least partly covered is in the range of a feedback message that should only be shown
 			// for fully missed ranges, that feedback message is not applicable.
@@ -177,7 +177,22 @@ public class CoverageChecker {
 		
 		applicableFeedbackMessages.removeAll(suppressed);
 		
-		return applicableFeedbackMessages.stream().map(FeedbackMessage::getMessage).toArray(String[]::new);
+		Stream<String> coverageResults = applicableFeedbackMessages.stream().map(FeedbackMessage::getMessage);
+		Stream<String> fullCoverageReport = Stream.of(this.fullCoverageReport);
+		Stream<String> testResults = coverage.getTestResults();
+		
+		List<Stream<String>> result = new ArrayList<>();
+
+		if (covSetting.getShowTestFailures())
+			result.add(testResults);
+		result.add(coverageResults);
+		if (covSetting.getShowFullCoverageReport())
+			result.add(fullCoverageReport);
+		return result.stream().flatMap(s -> s).toArray(String[]::new);
 	}
 
+	public String getFullCoverageAndTestReport() {
+		return fullCoverageReport;
+	}
+	
 }

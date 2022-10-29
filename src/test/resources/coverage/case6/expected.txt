@@ -1,0 +1,27 @@
+Test failed: test.TestMissEmpty.failure() - failure()
+```
+org.opentest4j.AssertionFailedError: Test failing.
+  at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:39)
+  at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
+  at test.TestMissEmpty.failure(TestMissEmpty.java:34)
+  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+  ...
+```
+Test failed: test.TestMissEmpty.error() - error()
+```
+java.lang.RuntimeException: Test error.
+  at test.TestMissEmpty.error(TestMissEmpty.java:39)
+  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+  at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+  at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+  ...
+```
+Did you consider the empty String?
+# Full Coverage Report
+
+## eu/qped/ClassB.java
+
+| Line | Coverage type | Code |
+| ---: | :------------ | ---- |

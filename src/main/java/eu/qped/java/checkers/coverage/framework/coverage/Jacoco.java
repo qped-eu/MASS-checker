@@ -1,7 +1,9 @@
 package eu.qped.java.checkers.coverage.framework.coverage;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +33,8 @@ public class Jacoco {
 	private Set<ModuleCoverageResult> moduleCoverageResults;
 	
 	private boolean analysisPerformed = false;
+
+	private String fullCoverageReport;
 
 	public Jacoco(TestFramework testFramework) {
 		this.testFramework = Objects.requireNonNull(testFramework,
@@ -85,34 +89,73 @@ public class Jacoco {
 		
 		moduleCoverageResults = new HashSet<>();
 		
+		StringBuilder fullCoverageReport = new StringBuilder("# Full Coverage Report\n\n");
+		
+		Map<String, String[]> codeByModulename = new HashMap<>();
+		for (CoverageFacade clazz : classes) {
+			codeByModulename.put(clazz.className().replace('.','/') + ".java", clazz.getContent().split("\\n"));
+		}
+
+		
 		// Consider all source files and determine which lines were covered, partially covered or not covered
 		for (ISourceFileCoverage sfCoverage : coverageBuilder.getSourceFiles()) {
 			String packagePath = "";
 			if (!sfCoverage.getPackageName().isEmpty())
-				packagePath = sfCoverage.getPackageName().replace('.', '/') + "/"; 
+				packagePath = sfCoverage.getPackageName().replace('.', '/') + "/";
+
+			String fullModuleName = packagePath + sfCoverage.getName();
+					
+			fullCoverageReport.append("## ").append(fullModuleName).append("\n\n");
+			fullCoverageReport.append("| Line | Coverage type | Code |\n");
+			fullCoverageReport.append("| ---: | :------------ | ---- |\n");
+						
 			ModuleCoverageResult result = new ModuleCoverageResult(packagePath + sfCoverage.getName());
 			moduleCoverageResults.add(result);
-			for (int i = sfCoverage.getFirstLine(); i <= sfCoverage.getLastLine(); i++) {
+			String[] code = codeByModulename.get(fullModuleName);
+			for (int i = 1; i <= code.length; i++) {
+				fullCoverageReport.append("| ").append(i).append(" | ");
+
 				ILine line = sfCoverage.getLine(i);
+				String backgroundColor;
 				switch (line.getStatus()) {
 				case ICounter.FULLY_COVERED:
+					fullCoverageReport.append("_FULLY covered_");
+					backgroundColor = "#A9DFBF"; // green
 					result.linesFullyCovered.add(i);
 					break;
 				case ICounter.PARTLY_COVERED:
+					fullCoverageReport.append("_**PARTIALLY covered**_");
+					backgroundColor = "#F9E79F"; // yellow
 					result.linesPartiallyCovered.add(i);
 					break;
 				case ICounter.NOT_COVERED:
+					fullCoverageReport.append("**NOT covered**");
+					backgroundColor = "#F5B7B1"; // red
 					result.linesNotCovered.add(i);
 					break;
 				case ICounter.EMPTY:
+					fullCoverageReport.append("_EMPTY_");
+					backgroundColor = "#A9DFBF"; // green
 					result.linesEmpty.add(i);
 					break;
 
 				default:
 					throw new RuntimeException("Unknown line status '" + line.getStatus() + "'. Perhaps it was introduced by a newer version of JaCoCo.");
 				}
+				if (code != null && i <= code.length) {
+					fullCoverageReport.append(" | <span style='background-color:").append(backgroundColor).append("'>");
+
+					if (!code[i - 1].isEmpty())
+						fullCoverageReport.append("`").append(code[i - 1].replace(' ', '\u00A0').replace("\t", "\u00A0\u00A0\u00A0\u00A0")).append("`");
+					
+					fullCoverageReport.append("</span> |\n");
+				} else {
+					fullCoverageReport.append(" | |\n");
+				}
 			}
 		}
+		
+		this.fullCoverageReport = fullCoverageReport.toString();
 	}
 
 	public Stream<ModuleCoverageResult> getModuleCoverageResults() {
@@ -121,6 +164,10 @@ public class Jacoco {
 	
 	public Stream<String> getTestResults() {
 		return testResults.stream();
+	}
+	
+	public String getFullCoverageReport() {
+		return fullCoverageReport;
 	}
 	
 }
