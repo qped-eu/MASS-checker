@@ -1,12 +1,11 @@
-package eu.qped.framework.feedback.defaultjsonfeedback;
+package eu.qped.framework.feedback.defaultfeedback;
 
-import eu.qped.java.checkers.solutionapproach.SolutionApproachAnalyser;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.jetbrains.annotations.NotNull;
 
-public final class DefaultJsonFeedbackFileDirectoryProvider {
+public final class DefaultFeedbackDirectoryProvider {
 
     private final static String STYLE_DIR_PATH = "src/main/resources/style/";
 
@@ -15,12 +14,11 @@ public final class DefaultJsonFeedbackFileDirectoryProvider {
     private final static String SEMANTIC_DIR_PATH = "src/main/resources/solutionapproach/";
 
 
-
     /**
      * @param aClass is the checker therefore feedbacks needed.
      * @return the path of a file basically json that contains all the data of the feedbacks pro checker.
      */
-    public static String provideFeedbackDataFile(@NotNull Class<?> aClass) {
+    public static String provideDefaultFeedbackDirectory(@NotNull Class<?> aClass) {
         if (aClass.equals(StyleChecker.class)) {
             return STYLE_DIR_PATH;
         }

@@ -153,7 +153,7 @@ public class Mass implements Checker {
 //            resultIndex = resultIndex + 2;
 //        }
 //
-//        for (DefaultJsonFeedback syntax : syntaxFeedbacks) {
+//        for (DefaultFeedback syntax : syntaxFeedbacks) {
 //            result[resultIndex + 1] = ""
 //                    + syntax.toString()
 //                    + NEW_LINE

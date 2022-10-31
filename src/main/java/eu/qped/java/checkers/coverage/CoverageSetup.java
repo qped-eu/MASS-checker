@@ -3,8 +3,8 @@ package eu.qped.java.checkers.coverage;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.template.TemplateBuilder;
-import eu.qped.java.checkers.syntax.SyntaxCheckReport;
-import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.analyser.SyntaxCheckReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.compiler.Com;

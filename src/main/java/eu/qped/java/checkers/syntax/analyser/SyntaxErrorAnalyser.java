@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.checkers.syntax.analyser;
 
 import eu.qped.java.utils.compiler.Compiler;
 import lombok.AllArgsConstructor;

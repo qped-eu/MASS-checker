@@ -2,6 +2,8 @@ package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
+import eu.qped.java.checkers.syntax.analyser.SyntaxCheckReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;

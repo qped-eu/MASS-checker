@@ -1,4 +1,4 @@
-package eu.qped.framework.feedback.defaultjsonfeedback;
+package eu.qped.framework.feedback.defaultfeedback;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,23 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-public class DefaultJsonFeedbackProvider {
+public class DefaultFeedbackParser {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // TODO abstract to get all data for all checkers.
-    public List<DefaultJsonFeedback> provide(@NonNull String dir, @NonNull String fileName) {
-        var result = new ArrayList<DefaultJsonFeedback>();
+    public List<DefaultFeedback> parse(@NonNull String dir, @NonNull String fileName) {
+        var result = new ArrayList<DefaultFeedback>();
         try {
             String filePath = dir + fileName;
             String defaultFilePath = dir + SupportedLanguages.ENGLISH + FileExtensions.JSON;
             File jsonFile;
-            if(new File(filePath).getAbsoluteFile().exists()) {
+            if (new File(filePath).getAbsoluteFile().exists()) {
                 jsonFile = new File(filePath).getAbsoluteFile();
             } else {
                 jsonFile = new File(defaultFilePath).getAbsoluteFile();
             }
-            result = objectMapper.readValue(jsonFile, new TypeReference<>() {});
+            result = objectMapper.readValue(jsonFile, new TypeReference<>() {
+            });
         } catch (IllegalArgumentException | NullPointerException | IOException e) {
             System.out.println(e.getMessage());
         }

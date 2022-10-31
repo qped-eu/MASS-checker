@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.checkers.syntax.analyser;
 
 import lombok.*;
 
