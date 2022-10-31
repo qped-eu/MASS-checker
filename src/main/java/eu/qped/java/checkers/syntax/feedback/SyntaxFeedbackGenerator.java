@@ -1,22 +1,20 @@
 package eu.qped.java.checkers.syntax.feedback;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackFileDirectoryProvider;
+import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedback;
+import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackFileDirectoryProvider;
 import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackMapper;
 import eu.qped.framework.feedback.defaultjsonfeedback.DefaultJsonFeedbackProvider;
-import eu.qped.framework.feedback.gerator.AbstractFeedbackGenerator;
+import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.java.utils.FileExtensions;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +25,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @Builder
-public class SyntaxFeedbackGenerator  {
+public class SyntaxFeedbackGenerator {
 
 
     private DefaultJsonFeedbackProvider defaultJsonFeedbackProvider;
@@ -36,7 +34,7 @@ public class SyntaxFeedbackGenerator  {
 
     public List<Feedback> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
         //TODO abstract
-        List<DefaultJsonFeedback> allDefaultJsonFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage(),SyntaxChecker.class);
+        List<DefaultJsonFeedback> allDefaultJsonFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage(), SyntaxChecker.class);
 
         var allDefaultJsonFeedbacksByTechnicalCause =
                 allDefaultJsonFeedbacks.stream()
@@ -58,7 +56,7 @@ public class SyntaxFeedbackGenerator  {
         return markdownFeedbackFormatter.format(feedbacks);
     }
 
-    private List<DefaultJsonFeedback> getAllDefaultSyntaxFeedbacks(String language,Class<?> checkerName) {
+    private List<DefaultJsonFeedback> getAllDefaultSyntaxFeedbacks(String language, Class<?> checkerName) {
         var dirPath = DefaultJsonFeedbackFileDirectoryProvider.provideFeedbackDataFile(checkerName);
         if (defaultJsonFeedbackProvider == null) {
             defaultJsonFeedbackProvider = new DefaultJsonFeedbackProvider();
@@ -66,14 +64,13 @@ public class SyntaxFeedbackGenerator  {
         return defaultJsonFeedbackProvider.provide(dirPath, language + FileExtensions.JSON);
     }
 
-    protected List<Feedback> adaptFeedbackByCheckLevel(SyntaxSetting syntaxSetting,List<Feedback> feedbacks) {
+    protected List<Feedback> adaptFeedbackByCheckLevel(SyntaxSetting syntaxSetting, List<Feedback> feedbacks) {
         if (syntaxSetting.getCheckLevel().equals(CheckLevel.BEGINNER)) {
             return feedbacks;
         } else {
             return feedbacks.stream().peek(feedback -> feedback.setHints(Collections.emptyList())).collect(Collectors.toList());
         }
     }
-
 
 
     protected List<DefaultJsonFeedback> filterFeedbacks(List<SyntaxError> errors, Map<String, List<DefaultJsonFeedback>> allDefaultJsonFeedbacksByTechnicalCause) {
@@ -109,9 +106,6 @@ public class SyntaxFeedbackGenerator  {
         }
         return filteredDefaultJsonFeedbacks;
     }
-
-
-
 
 
 }
