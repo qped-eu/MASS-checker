@@ -327,6 +327,9 @@ public class SolutionApproachAnalyser {
             solutionApproachChecker.check().forEach(e -> System.out.println(e.getReadableCause()));
 //            solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSetting);
 //            solutionApproachAnalyser.check().forEach(e -> System.out.println(e.getErrorCode()));
+
+
     }
+
 
 }

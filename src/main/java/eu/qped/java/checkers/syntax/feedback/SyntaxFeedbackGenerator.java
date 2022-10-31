@@ -27,11 +27,46 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @Builder
-public class SyntaxFeedbackGenerator extends AbstractFeedbackGenerator<SyntaxError,SyntaxSetting> {
+public class SyntaxFeedbackGenerator  {
 
 
-    @Override
-    protected List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks,SyntaxSetting syntaxSetting) {
+    private DefaultJsonFeedbackProvider defaultJsonFeedbackProvider;
+    private DefaultJsonFeedbackMapper defaultJsonFeedbackMapper;
+    private MarkdownFeedbackFormatter markdownFeedbackFormatter;
+
+    public List<Feedback> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
+        //TODO abstract
+        List<DefaultJsonFeedback> allDefaultJsonFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage(),SyntaxChecker.class);
+
+        var allDefaultJsonFeedbacksByTechnicalCause =
+                allDefaultJsonFeedbacks.stream()
+                        .collect(Collectors.groupingBy(DefaultJsonFeedback::getTechnicalCause));
+
+        var filteredFeedbacks = filterFeedbacks(errors, allDefaultJsonFeedbacksByTechnicalCause);
+
+        if (defaultJsonFeedbackMapper == null) defaultJsonFeedbackMapper = new DefaultJsonFeedbackMapper();
+        // naked feedbacks
+        var feedbacks = defaultJsonFeedbackMapper.mapSyntaxFeedbackToFeedback(filteredFeedbacks);
+        // adapted by check level naked feedbacks
+        feedbacks = adaptFeedbackByCheckLevel(syntaxSetting, feedbacks);
+        // formatted feedbacks
+        return formatFeedbacks(feedbacks);
+    }
+
+    private List<Feedback> formatFeedbacks(List<Feedback> feedbacks) {
+        if (markdownFeedbackFormatter == null) markdownFeedbackFormatter = new MarkdownFeedbackFormatter();
+        return markdownFeedbackFormatter.format(feedbacks);
+    }
+
+    private List<DefaultJsonFeedback> getAllDefaultSyntaxFeedbacks(String language,Class<?> checkerName) {
+        var dirPath = DefaultJsonFeedbackFileDirectoryProvider.provideFeedbackDataFile(checkerName);
+        if (defaultJsonFeedbackProvider == null) {
+            defaultJsonFeedbackProvider = new DefaultJsonFeedbackProvider();
+        }
+        return defaultJsonFeedbackProvider.provide(dirPath, language + FileExtensions.JSON);
+    }
+
+    protected List<Feedback> adaptFeedbackByCheckLevel(SyntaxSetting syntaxSetting,List<Feedback> feedbacks) {
         if (syntaxSetting.getCheckLevel().equals(CheckLevel.BEGINNER)) {
             return feedbacks;
         } else {
@@ -39,17 +74,8 @@ public class SyntaxFeedbackGenerator extends AbstractFeedbackGenerator<SyntaxErr
         }
     }
 
-    @Override
-    protected String getFeedbackLanguage(SyntaxSetting syntaxSetting) {
-        return syntaxSetting.getLanguage();
-    }
 
-    @Override
-    protected Class<?> getCheckerName() {
-        return SyntaxChecker.class;
-    }
 
-    @Override
     protected List<DefaultJsonFeedback> filterFeedbacks(List<SyntaxError> errors, Map<String, List<DefaultJsonFeedback>> allDefaultJsonFeedbacksByTechnicalCause) {
         List<DefaultJsonFeedback> filteredDefaultJsonFeedbacks = new ArrayList<>();
         for (SyntaxError error : errors) {
@@ -84,37 +110,7 @@ public class SyntaxFeedbackGenerator extends AbstractFeedbackGenerator<SyntaxErr
         return filteredDefaultJsonFeedbacks;
     }
 
-//    public List<Feedback> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
-//        //TODO abstract
-//        List<DefaultJsonFeedback> allDefaultJsonFeedbacks = getAllDefaultSyntaxFeedbacks(syntaxSetting.getLanguage(),SyntaxChecker.class);
-//
-//        var allDefaultJsonFeedbacksByTechnicalCause =
-//                allDefaultJsonFeedbacks.stream()
-//                        .collect(Collectors.groupingBy(DefaultJsonFeedback::getTechnicalCause));
-//
-//        var filteredFeedbacks = filterFeedbacks(errors, allDefaultJsonFeedbacksByTechnicalCause);
-//
-//        if (defaultJsonFeedbackMapper == null) defaultJsonFeedbackMapper = new DefaultJsonFeedbackMapper();
-//        // naked feedbacks
-//        var feedbacks = defaultJsonFeedbackMapper.mapSyntaxFeedbackToFeedback(filteredFeedbacks);
-//        // adapted by check level naked feedbacks
-//        feedbacks = adaptFeedbackByCheckLevel(syntaxSetting, feedbacks);
-//        // formatted feedbacks
-//        return formatFeedbacks(feedbacks);
-//    }
 
-//    private List<Feedback> formatFeedbacks(List<Feedback> feedbacks) {
-//        if (markdownFeedbackFormatter == null) markdownFeedbackFormatter = new MarkdownFeedbackFormatter();
-//        return markdownFeedbackFormatter.format(feedbacks);
-//    }
-
-//    private List<DefaultJsonFeedback> getAllDefaultSyntaxFeedbacks(String language) {
-//        var dirPath = DefaultJsonFeedbackFileDirectoryProvider.provideFeedbackDataFile(SyntaxChecker.class);
-//        if (defaultJsonFeedbackProvider == null) {
-//            defaultJsonFeedbackProvider = new DefaultJsonFeedbackProvider();
-//        }
-//        return defaultJsonFeedbackProvider.provide(dirPath, language + FileExtensions.JSON);
-//    }
 
 
 
