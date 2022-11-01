@@ -174,6 +174,9 @@ public class Mass implements Checker {
                     }
             );
         }
+        if(resultArrayAsList.size() <= 1){
+            resultArrayAsList.add("Our checks could not find any improvements for your code. This does not mean that it is semantically correct but it adheres to the standards of the lecture in regards to syntax and style.");
+        }
         resultArray = resultArrayAsList.toArray(resultArray);
         return resultArray;
     }
