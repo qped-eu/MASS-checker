@@ -1,7 +1,7 @@
 [
   {
     "technicalCause": "compiler.err.already.defined",
-    "readableCause": "The compiler expects that you don't define variables or methods twice, where they can be called (scope of that variable or method).",
+    "readableCause": "The compiler expects that you don't define variables or methods more than once. Please make sure that every variable and method is only defined once per scope.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -11,17 +11,17 @@
   },
   {
     "technicalCause": "compiler.err.not.stmt",
-    "readableCause": "The compiler expects that you write a statement, but instead you wrote something different.",
+    "readableCause": "The compiler expected a statement, but found something else (a value or an expression for example).",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
-        "content": "// old code. We write expression in the if statement instead a statement.\nif (i == 1) {\n     \"one\";\n}\n// new code. \"one\" is a expression and not a statement.\nif (i == 1) {\n     System.out.println(\"one\");\n}\n"
+        "content": "// old code. Found an expression instead of a statement.\nif (i == 1) {\n     \"one\";\n}\n// new code. \"one\" is an expression and not a statement.\nif (i == 1) {\n     System.out.println(\"one\");\n}\n"
       }
     ]
   },
   {
     "technicalCause": "compiler.err.unclosed.str.lit",
-    "readableCause": "The compiler expects that you close string literal always with \".",
+    "readableCause": "The compiler expects that you close string literals always with \".",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -31,17 +31,17 @@
   },
   {
     "technicalCause": "compiler.err.else.without.if",
-    "readableCause": "The compiler expects that else statement always come after if statement.",
+    "readableCause": "The compiler expects that else statements always directly follow their respective if statements.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
-        "content": "// new code.\nif(true) {\n}\nelse {\n}"
+        "content": "//old code.\nif(true){\n}\nint i = 1;\nelse{\n}// new code.\nif(true) {\n}\nelse {\n}"
       }
     ]
   },
   {
     "technicalCause": "compiler.err.missing.ret.stmt",
-    "readableCause": "Every method who has return type need a return statement at the end.",
+    "readableCause": "Every method with a return type that is not void needs a return statement at the end.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -51,7 +51,7 @@
   },
   {
     "technicalCause": "compiler.err.unreachable.stmt",
-    "readableCause": "The compiler expects that you not write any code after the return statement.",
+    "readableCause": "The compiler expects that you do not write statements after the return statement.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -61,7 +61,7 @@
   },
   {
     "technicalCause": "compiler.err.var.might.not.have.been.initialized",
-    "readableCause": "The compiler expects that you initialize a variable.\n This mean you must give this variable a Value.",
+    "readableCause": "The compiler expects that you initialize a variable.\n This means that you must give this variable a value.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -71,7 +71,7 @@
   },
   {
     "technicalCause": "compiler.err.abstract.cant.be.instantiated",
-    "readableCause": "The compiler expects that you not create an instance from an abstract class. \n But you can create an object of a subclass of this abstract class."
+    "readableCause": "The compiler expects that you do not create an instance of an abstract class. \n But you can create an object of a subclass of this abstract class."
   },
   {
     "technicalCause": "compiler.err.repeated.modifier",
@@ -85,21 +85,21 @@
   },
   {
     "technicalCause": "compiler.err.illegal.combination.of.modifiers",
-    "readableCause": "The compiler expects that combine modifiers correctly. \n You can only combine static and final with private, public and protected.",
+    "readableCause": "The compiler expects that you combine modifiers correctly. \n You can only combine static and final with private, public and protected.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
-        "content": "// old code.\npublic public int i;\n// new code.\npublic static int i;"
+        "content": "// old code.\npublic private int i;\n// new code.\npublic static int i;"
       }
     ]
   },
   {
     "technicalCause": "compiler.err.missing.meth.body.or.decl.abstract",
-    "readableCause": "The compiler expects that you declare method correctly. \n To fix this, you need to declare a method header like \"<return type> methodName()\" and method body like \"{ some code }\")."
+    "readableCause": "The compiler expects that you declare methods correctly. \n To fix this, you need to declare a method header like \"<type of result> name( <list of parameters>) \" and a method body like \"{ statements }\")."
   },
   {
     "technicalCause": "compiler.err.illegal.start.of.expr",
-    "readableCause": "The compiler expects that you write legal expression. \n This usually happens when you: \n 1. write method or class inside of another method \n 2. write method or class inside of another method \n 3. forget to write a curly braces \"{\" or \"}\" "
+    "readableCause": "The compiler expects that you write legal expression. \n This usually happens when you: \n 1. declare a class inside of another class \n 2. declare a method or a class inside of another method \n 3. forget to write a curly brace \"{\" or \"}\" "
   },
   {
     "technicalCause": "compiler.err.illegal.start.of.type",
@@ -107,7 +107,7 @@
   },
   {
     "technicalCause": "';' expected",
-    "readableCause": "The compiler expects that you end statements with a \";\" \n This usually happens when you forget to write semicolon or closing parenthesis.",
+    "readableCause": "The compiler expects that you end statements with a \";\" \n This usually happens when you forget to write a semicolon or a closing bracket.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -117,7 +117,7 @@
   },
   {
     "technicalCause": "'(' expected",
-    "readableCause": "The compiler expects that you write a \"(\". \n This usually happens when you forget to write a left parenthesis in your code.",
+    "readableCause": "The compiler expects that you write a \"(\". \n This usually happens when you forget to write an opening bracket in your code.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -127,7 +127,7 @@
   },
   {
     "technicalCause": "')' expected",
-    "readableCause": "The compiler expects that you write a \")\".\n This usually happens when you forget to write a right parenthesis in your code.",
+    "readableCause": "The compiler expects that you write a \")\".\n This usually happens when you forget to write a closing bracket in your code.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -137,7 +137,7 @@
   },
   {
     "technicalCause": "<identifier> expected",
-    "readableCause": "The compiler expects that you write a \"identifier\".\n This usually happens when you want to define a variable without a name or write code somewhere where Java does not expect.",
+    "readableCause": "The compiler expects that you write an \"identifier\".\n This usually happens when you want to define a variable without a name or write code somewhere where Java does not expect code.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
@@ -147,6 +147,6 @@
   },
   {
     "technicalCause": "class, interface, or enum expected",
-    "readableCause": "The compiler expects that you create a \"class\", \"interface\" or \"enum\".\n This usually happens when you want to write a method outside of the class or or write additional curly bracket \"}\"."
+    "readableCause": "The compiler expects that you create a \"class\", \"interface\" or \"enum\".\n This usually happens when you want to write a method outside of the class or write an additional curly bracket \"}\"."
   }
 ]
