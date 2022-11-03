@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.solutionapproach;
+package eu.qped.java.checkers.solutionapproach.configs;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.checkerabstract.AbstractSetting;

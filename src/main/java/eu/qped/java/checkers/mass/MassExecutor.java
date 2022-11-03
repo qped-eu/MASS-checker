@@ -7,7 +7,7 @@ import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.solutionapproach.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.analyser.SolutionApproachAnalyser;
 import eu.qped.java.checkers.solutionapproach.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;

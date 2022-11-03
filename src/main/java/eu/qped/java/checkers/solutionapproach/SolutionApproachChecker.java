@@ -3,10 +3,11 @@ package eu.qped.java.checkers.solutionapproach;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
+import eu.qped.java.checkers.solutionapproach.analyser.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.solutionapproach.feedback.SolutionApproachFeedbackGenerator;
 import lombok.*;
 
-import java.util.Collections;
 import java.util.List;
 
 /**

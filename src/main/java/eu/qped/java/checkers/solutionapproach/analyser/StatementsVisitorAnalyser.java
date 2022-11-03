@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.solutionapproach;
+package eu.qped.java.checkers.solutionapproach.analyser;
 
 
 import com.github.javaparser.ast.Node;
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StatementsVisitorHelper {
+public class StatementsVisitorAnalyser {
     private int whileCounter = 0;
     private int forEachCounter = 0;
     private int forCounter = 0;
@@ -27,18 +27,18 @@ public class StatementsVisitorHelper {
     private String source;
     private BlockStmt methodBody;
 
-    public StatementsVisitorHelper(String source) {
+    public StatementsVisitorAnalyser(String source) {
         this.source = source;
 
     }
 
-    private StatementsVisitorHelper(BlockStmt methodBody) {
+    private StatementsVisitorAnalyser(BlockStmt methodBody) {
         this.methodBody = methodBody;
         execute();
     }
 
-    public static StatementsVisitorHelper createStatementsVisitorHelper(BlockStmt methodBody) {
-        return new StatementsVisitorHelper(methodBody);
+    public static StatementsVisitorAnalyser createStatementsVisitorHelper(BlockStmt methodBody) {
+        return new StatementsVisitorAnalyser(methodBody);
     }
 
     static class State {
@@ -57,7 +57,7 @@ public class StatementsVisitorHelper {
         for (Statement statement : block.asBlockStmt().getStatements()) {
             states.add(new State(statement));
         }
-        if (states.size()>0){
+        if (states.size() > 0) {
             beforeState.nextStates.add(states.get(0));
         }
 
@@ -75,23 +75,22 @@ public class StatementsVisitorHelper {
 
             currentState.statement.accept(new VoidVisitorWithDefaults<Void>() {
                 @Override
-                public void visit (ForEachStmt n, Void arg) {
+                public void visit(ForEachStmt n, Void arg) {
 
                     currentState.nextStates.add(nextState);
                     forEachCounter++;
-                    if (n.getBody().isBlockStmt()){
+                    if (n.getBody().isBlockStmt()) {
                         findStates(n.getBody(), currentState, nextState);
-                    }
-                    else if (n.getBody().isForEachStmt()){
+                    } else if (n.getBody().isForEachStmt()) {
                         forEachCounter++;
-                        for (int j = 0; j <n.getChildNodes().size() ; j++) {
+                        for (int j = 0; j < n.getChildNodes().size(); j++) {
                             Node temp = n.getChildNodes().get(j);
                             temp.accept(new VoidVisitorWithDefaults<Void>() {
                                 @Override
                                 public void visit(ForEachStmt n, Void arg) {
                                     forEachCounter++;
                                 }
-                            },null);
+                            }, null);
                         }
                     }
                 }
@@ -100,12 +99,11 @@ public class StatementsVisitorHelper {
                 public void visit(ForStmt n, Void arg) {
                     currentState.nextStates.add(nextState);
                     forCounter++;
-                    if (n.getBody().isBlockStmt()){
+                    if (n.getBody().isBlockStmt()) {
                         findStates(n.getBody(), currentState, nextState);
-                    }
-                    else if (n.getBody().isForStmt()){
+                    } else if (n.getBody().isForStmt()) {
                         forCounter++;
-                        for (int j = 0; j <n.getChildNodes().size() ; j++) {
+                        for (int j = 0; j < n.getChildNodes().size(); j++) {
                             Node temp = n.getChildNodes().get(j);
                             temp.accept(new VoidVisitorWithDefaults<Void>() {
                                 @Override
@@ -113,7 +111,7 @@ public class StatementsVisitorHelper {
                                     System.out.println("for found");
                                     forCounter++;
                                 }
-                            },null);
+                            }, null);
                         }
                     }
                 }
@@ -123,13 +121,12 @@ public class StatementsVisitorHelper {
                     currentState.nextStates.add(nextState);
                     System.out.println("while found");
                     whileCounter++;
-                    if (n.getBody().isBlockStmt()){
+                    if (n.getBody().isBlockStmt()) {
                         findStates(n.getBody(), currentState, nextState);
-                    }
-                    else if (n.getBody().isWhileStmt()){
+                    } else if (n.getBody().isWhileStmt()) {
                         System.out.println("while for");
                         whileCounter++;
-                        for (int j = 0; j <n.getChildNodes().size() ; j++) {
+                        for (int j = 0; j < n.getChildNodes().size(); j++) {
                             Node temp = n.getChildNodes().get(j);
                             temp.accept(new VoidVisitorWithDefaults<Void>() {
                                 @Override
@@ -137,11 +134,10 @@ public class StatementsVisitorHelper {
                                     System.out.println("while found");
                                     whileCounter++;
                                 }
-                            },null);
+                            }, null);
                         }
                     }
                 }
-
 
 
                 @Override
@@ -149,13 +145,12 @@ public class StatementsVisitorHelper {
                     currentState.nextStates.add(nextState);
                     System.out.println("do found");
                     doCounter++;
-                    if (n.getBody().isBlockStmt()){
+                    if (n.getBody().isBlockStmt()) {
                         findStates(n.getBody(), currentState, nextState);
-                    }
-                    else if (n.getBody().isDoStmt()){
+                    } else if (n.getBody().isDoStmt()) {
                         System.out.println("found for");
                         doCounter++;
-                        for (int j = 0; j <n.getChildNodes().size() ; j++) {
+                        for (int j = 0; j < n.getChildNodes().size(); j++) {
                             Node temp = n.getChildNodes().get(j);
                             temp.accept(new VoidVisitorWithDefaults<Void>() {
                                 @Override
@@ -163,16 +158,17 @@ public class StatementsVisitorHelper {
                                     System.out.println("do found");
                                     doCounter++;
                                 }
-                            },null);
+                            }, null);
                         }
                     }
                 }
+
                 @Override
                 public void visit(IfStmt n, Void arg) {
                     ifElseCounter++;
                     System.out.println("if found");
-                    if (n.getThenStmt().isBlockStmt()){
-                        for (int k = 0; k < n.getThenStmt().getChildNodes().size() ; k++) {
+                    if (n.getThenStmt().isBlockStmt()) {
+                        for (int k = 0; k < n.getThenStmt().getChildNodes().size(); k++) {
                             Node temp = n.getThenStmt().getChildNodes().get(k);
                             temp.accept(new VoidVisitorWithDefaults<Void>() {
                                 @Override
@@ -180,11 +176,11 @@ public class StatementsVisitorHelper {
                                     ifElseCounter++;
                                     System.out.println("if found");
                                 }
-                            } , null);
+                            }, null);
                         }
                     }
-                    if (n.getElseStmt().isPresent() && n.getElseStmt().get().isBlockStmt()){
-                        for (int j = 0; j <n.getElseStmt().get().asBlockStmt().getChildNodes().size() ; j++) {
+                    if (n.getElseStmt().isPresent() && n.getElseStmt().get().isBlockStmt()) {
+                        for (int j = 0; j < n.getElseStmt().get().asBlockStmt().getChildNodes().size(); j++) {
                             Node temp = n.getElseStmt().get().asBlockStmt().getChildNodes().get(j);
                             temp.accept(new VoidVisitorWithDefaults<Void>() {
                                 @Override
@@ -192,7 +188,7 @@ public class StatementsVisitorHelper {
                                     ifElseCounter++;
                                     System.out.println("if found");
                                 }
-                            } , null);
+                            }, null);
                         }
                     }
                 }

@@ -3,7 +3,7 @@ package eu.qped.java.checkers.coverage;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.template.TemplateBuilder;
-import eu.qped.java.checkers.syntax.analyser.SyntaxCheckReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
 import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
@@ -99,7 +99,7 @@ public class CoverageSetup {
         if (extracted.testClasses().isEmpty())
             throw new IllegalStateException(ErrorMSG.MISSING_TESTCLASS);
 
-        SyntaxCheckReport report = compile(extracted.root());
+        SyntaxAnalysisReport report = compile(extracted.root());
 
         if (!report.isCompilable()) {
             List<Feedback> feedbacks = SyntaxFeedbackGenerator.builder().build().generateFeedbacks(
@@ -187,7 +187,7 @@ public class CoverageSetup {
     private static final String DIR_SOURCE = "-s";
     private static final String CLASSPATH = "-classpath";
 
-    private SyntaxCheckReport compile(File root) {
+    private SyntaxAnalysisReport compile(File root) {
 
         String path;
         if (System.getProperty("maven.compile.classpath") != null) {

@@ -1,6 +1,9 @@
 package eu.qped.java.checkers.syntax.analyser;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -12,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SyntaxCheckReport {
+public class SyntaxAnalysisReport {
 
     private List<SyntaxError> syntaxErrors;
     private String path;

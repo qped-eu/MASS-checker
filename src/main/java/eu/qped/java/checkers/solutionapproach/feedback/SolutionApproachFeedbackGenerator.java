@@ -2,20 +2,17 @@ package eu.qped.java.checkers.solutionapproach.feedback;
 
 
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.Type;
+import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.defaultfeedback.DefaultFeedback;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackMapper;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackParser;
+import eu.qped.framework.feedback.fromatter.KeyWordReplacer;
 import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
-import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
-import eu.qped.java.checkers.solutionapproach.SolutionApproachGeneralSettings;
-import eu.qped.java.checkers.solutionapproach.SolutionApproachReportEntry;
-import eu.qped.java.utils.FileExtensions;
+import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
+import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachReportItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,28 +27,40 @@ import java.util.stream.Collectors;
 @Builder
 public class SolutionApproachFeedbackGenerator {
 
-    private DefaultFeedbackParser defaultFeedbackParser;
-    private DefaultFeedbackMapper defaultFeedbackMapper;
+    private DefaultSolutionApproachFeedbackParser defaultSolutionApproachFeedbackParser;
+    private DefaultSolutionApproachFeedbackMapper defaultSolutionApproachFeedbackMapper;
     private MarkdownFeedbackFormatter markdownFeedbackFormatter;
 
-    public List<Feedback> generateFeedbacks(List<SolutionApproachReportEntry> reportEntries, SolutionApproachGeneralSettings checkerSetting) {
-        List<DefaultFeedback> allDefaultFeedbacks = getAllDefaultSyntaxFeedbacks(checkerSetting.getLanguage(), SolutionApproachChecker.class);
-        var allDefaultJsonFeedbacksByTechnicalCause =
-                allDefaultFeedbacks.stream()
-                        .collect(Collectors.groupingBy(DefaultFeedback::getTechnicalCause));
-        var filteredFeedbacks = filterFeedbacks(reportEntries, allDefaultJsonFeedbacksByTechnicalCause); // get related default json feedbacks
-        if (defaultFeedbackMapper == null) defaultFeedbackMapper = new DefaultFeedbackMapper();
-        var feedbacks = defaultFeedbackMapper.mapDefaultFeedbackToFeedback(filteredFeedbacks,SolutionApproachChecker.class, Type.CORRECTION); // map default json feedbacks to naked feedbacks
-        feedbacks = adaptFeedbackByCheckerSetting(feedbacks, checkerSetting); // adapted naked feedbacks by check setting like check level
-        return formatFeedbacks(feedbacks); // formatted feedbacks
+    public List<Feedback> generateFeedbacks(List<SolutionApproachReportItem> reportEntries, SolutionApproachGeneralSettings checkerSetting) {
+        List<DefaultSolutionApproachFeedback> filteredFeedbacks = getDefaultSyntaxFeedbacks(reportEntries, checkerSetting);
+        // naked feedbacks
+        List<Feedback> feedbacks = mapToFeedbacks(filteredFeedbacks);
+        // adapted by check level naked feedbacks
+        feedbacks = adaptFeedbackByCheckerSetting(feedbacks, checkerSetting);
+        // formatted feedbacks
+        return formatFeedbacks(feedbacks);
     }
 
-    protected List<DefaultFeedback> getAllDefaultSyntaxFeedbacks(@NotNull String language, @NotNull Class<?> aClass) {
-        var dirPath = DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory(aClass);
-        if (defaultFeedbackParser == null) {
-            defaultFeedbackParser = new DefaultFeedbackParser();
-        }
-        return defaultFeedbackParser.parse(dirPath, language + FileExtensions.JSON);
+    private List<DefaultSolutionApproachFeedback> getDefaultSyntaxFeedbacks(List<SolutionApproachReportItem> reportItems, SolutionApproachGeneralSettings generalSettings) {
+        if (defaultSolutionApproachFeedbackParser == null)
+            defaultSolutionApproachFeedbackParser = DefaultSolutionApproachFeedbackParser.builder().build();
+        List<DefaultSolutionApproachFeedback> allDefaultSolutionApproachFeedbacks = defaultSolutionApproachFeedbackParser.parse(generalSettings.getLanguage());
+        var allDefaultSyntaxFeedbacksByTechnicalCause =
+                allDefaultSolutionApproachFeedbacks.stream()
+                        .collect(Collectors.groupingBy(
+                                DefaultSolutionApproachFeedback -> DefaultSolutionApproachFeedback.getDefaultFeedback().getTechnicalCause()
+                        ));
+        return filterDefaultFeedbacks(reportItems, allDefaultSyntaxFeedbacksByTechnicalCause);
+    }
+
+    private List<Feedback> mapToFeedbacks(List<DefaultSolutionApproachFeedback> filteredFeedbacks) {
+        if (defaultSolutionApproachFeedbackMapper == null)
+            defaultSolutionApproachFeedbackMapper = DefaultSolutionApproachFeedbackMapper.builder().build();
+        return defaultSolutionApproachFeedbackMapper.map(filteredFeedbacks);
+    }
+
+    protected List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, SolutionApproachGeneralSettings checkerSetting) {
+        return feedbacks;
     }
 
     protected List<Feedback> formatFeedbacks(@NotNull List<Feedback> feedbacks) {
@@ -60,29 +69,54 @@ public class SolutionApproachFeedbackGenerator {
         return markdownFeedbackFormatter.format(feedbacks);
     }
 
-
-    protected List<DefaultFeedback> filterFeedbacks(List<SolutionApproachReportEntry> reportEntries, Map<String, List<DefaultFeedback>> allDefaultJsonFeedbacksByTechnicalCause) {
-        List<DefaultFeedback> result = new ArrayList<>();
-        for (SolutionApproachReportEntry solutionApproachReportEntry : reportEntries) {
-            if (allDefaultJsonFeedbacksByTechnicalCause.containsKey(solutionApproachReportEntry.getErrorCode())) {
-                result.add(DefaultFeedback.builder()
-                        .technicalCause(solutionApproachReportEntry.getErrorCode())
-                        .readableCause(allDefaultJsonFeedbacksByTechnicalCause.get(solutionApproachReportEntry.getErrorCode()).get(0).getReadableCause())
-//                        .relatedLocation(RelatedLocation.builder()
-//                                .fileName(solutionApproachReportEntry.getRelatedSemanticSettingItem().getFilePath())
-//                                .methodName(solutionApproachReportEntry.getRelatedSemanticSettingItem().getMethodName())
-//                                .build()
-//                        )
-                        .hints(Collections.emptyList())
-                        .build()
-                );
+    protected List<DefaultSolutionApproachFeedback> filterDefaultFeedbacks(List<SolutionApproachReportItem> reportItems, Map<String, List<DefaultSolutionApproachFeedback>> allDefaultFeedbacksByTechnicalCause) {
+        List<DefaultSolutionApproachFeedback> result = new ArrayList<>();
+        var keyWordReplacer = KeyWordReplacer.builder().build();
+        for (SolutionApproachReportItem reportItem : reportItems) {
+            if (allDefaultFeedbacksByTechnicalCause.containsKey(reportItem.getErrorCode())) {
+                allDefaultFeedbacksByTechnicalCause.get(reportItem.getErrorCode()).forEach(defaultSolutionApproachFeedback -> {
+                    result.add(DefaultSolutionApproachFeedback.builder()
+                            .defaultFeedback(DefaultFeedback.builder()
+                                    .technicalCause(reportItem.getErrorCode())
+                                    .readableCause(
+                                            keyWordReplacer.replace(
+                                                    defaultSolutionApproachFeedback.getDefaultFeedback().getReadableCause(),
+                                                    reportItem
+                                            )
+                                    )
+                                    .hints( (defaultSolutionApproachFeedback.getDefaultFeedback().getHints() != null)?
+                                            defaultSolutionApproachFeedback.getDefaultFeedback().getHints().stream().peek(hint ->
+                                                    hint.setContent(keyWordReplacer.replace(
+                                                            hint.getContent(),
+                                                            reportItem
+                                                    ))
+                                            ).collect(Collectors.toList())
+                                            : Collections.emptyList()
+                                    )
+                                    .build())
+                            .relatedLocation(RelatedLocation.builder()
+                                    .fileName(
+                                            reportItem.getRelatedSemanticSettingItem().getFilePath().substring(
+                                                    reportItem.getRelatedSemanticSettingItem().getFilePath().lastIndexOf("/") + 1
+                                            )
+                                    )
+                                    .methodName(reportItem.getRelatedSemanticSettingItem().getMethodName())
+                                    .build()
+                            )
+                            .build()
+                    );
+                });
             }
         }
         return result;
     }
 
+    public static void main(String[] args) {
 
-    protected List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, SolutionApproachGeneralSettings checkerSetting) {
-        return feedbacks;
+        String s = "fjsdaflökjsdaf /aksdfdsaf";
+        System.out.println(StringUtils.substringAfterLast(s,"/"));
+        System.out.println(s.substring(s.lastIndexOf("/") + 1));
+        System.out.println(StringUtils.removeStart(s,"/"));
     }
+
 }

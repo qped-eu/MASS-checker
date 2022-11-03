@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.solutionapproach;
+package eu.qped.java.checkers.solutionapproach.configs;
 
 import eu.qped.java.checkers.checkerabstract.AbstractReportEntry;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public class SolutionApproachReportEntry extends AbstractReportEntry {
+public class SolutionApproachReportItem extends AbstractReportEntry {
 
     private SemanticSettingItem relatedSemanticSettingItem;
     private String errorCode;

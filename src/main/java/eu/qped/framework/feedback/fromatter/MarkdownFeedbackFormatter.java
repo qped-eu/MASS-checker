@@ -3,6 +3,10 @@ package eu.qped.framework.feedback.fromatter;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import net.steppschuh.markdowngenerator.text.Text;
 import net.steppschuh.markdowngenerator.text.code.CodeBlock;
 
@@ -14,6 +18,10 @@ import java.util.stream.Collectors;
 
 import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.NEW_LINE;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@Builder
 public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
 
 

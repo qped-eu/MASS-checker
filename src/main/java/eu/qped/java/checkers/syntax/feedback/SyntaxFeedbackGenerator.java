@@ -4,13 +4,9 @@ import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.defaultfeedback.DefaultFeedback;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackParser;
 import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
 import eu.qped.java.checkers.syntax.analyser.SyntaxError;
-import eu.qped.java.utils.FileExtensions;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,7 +38,8 @@ public class SyntaxFeedbackGenerator {
     }
 
     private List<DefaultSyntaxFeedback> getDefaultSyntaxFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
-        if(defaultSyntaxFeedbackParser == null) defaultSyntaxFeedbackParser = DefaultSyntaxFeedbackParser.builder().build();
+        if (defaultSyntaxFeedbackParser == null)
+            defaultSyntaxFeedbackParser = DefaultSyntaxFeedbackParser.builder().build();
         List<DefaultSyntaxFeedback> allDefaultSyntaxFeedbacks = defaultSyntaxFeedbackParser.parse(syntaxSetting.getLanguage());
         var allDefaultSyntaxFeedbacksByTechnicalCause =
                 allDefaultSyntaxFeedbacks.stream()
@@ -67,7 +64,7 @@ public class SyntaxFeedbackGenerator {
     }
 
     private List<Feedback> formatFeedbacks(List<Feedback> feedbacks) {
-        if (markdownFeedbackFormatter == null) markdownFeedbackFormatter = new MarkdownFeedbackFormatter();
+        if (markdownFeedbackFormatter == null) markdownFeedbackFormatter = MarkdownFeedbackFormatter.builder().build();
         return markdownFeedbackFormatter.format(feedbacks);
     }
 

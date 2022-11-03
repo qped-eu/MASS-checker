@@ -3,7 +3,7 @@ package eu.qped.java.syntaxChecker;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.checkers.syntax.analyser.SyntaxCheckReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
 import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
@@ -54,7 +54,7 @@ public class SyntaxErrorAnalyserTest {
 
         syntaxErrorAnalyser.setStringAnswer(correctCode);
 
-        SyntaxCheckReport report = syntaxErrorAnalyser.check();
+        SyntaxAnalysisReport report = syntaxErrorAnalyser.check();
 
         Assertions.assertEquals(report.getSyntaxErrors().size(), 0);
         Assertions.assertTrue(report.isCompilable());
@@ -187,7 +187,7 @@ public class SyntaxErrorAnalyserTest {
                         }
                 ));
 
-        SyntaxCheckReport report = syntaxErrorAnalyser.check();
+        SyntaxAnalysisReport report = syntaxErrorAnalyser.check();
         SyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
         syntaxFeedbackGenerator.generateFeedbacks(
                 report.getSyntaxErrors(),
@@ -215,7 +215,7 @@ public class SyntaxErrorAnalyserTest {
                 .thenReturn(tempDir.toUri().getPath());
 
         syntaxErrorAnalyser.setTargetProject(tempDir.toUri().getPath());
-        SyntaxCheckReport report = syntaxErrorAnalyser.check();
+        SyntaxAnalysisReport report = syntaxErrorAnalyser.check();
 
         Assertions.assertEquals(report.getPath(), tempDir.toUri().getPath());
 
