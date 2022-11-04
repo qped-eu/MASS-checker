@@ -4,6 +4,7 @@ import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
@@ -14,11 +15,9 @@ import eu.qped.java.checkers.coverage.QfCovSetting;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
-import eu.qped.java.checkers.solutionapproach.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
@@ -93,24 +92,24 @@ public class Mass implements Checker {
          */
         var syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
         var styleFeedbacks = massExecutor.getStyleFeedbacks();
-        var semanticFeedbacks = massExecutor.getSolutionApproachFeedbacks();
+        var solutionApproachFeedbacks = massExecutor.getSolutionApproachFeedbacks();
         var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
 
         var resultArray = mergeFeedbacks(
                 syntaxFeedbacks,
                 styleFeedbacks,
-                semanticFeedbacks,
+                solutionApproachFeedbacks,
                 metricsFeedbacks,
                 qfObject
         );
 
         qfObject.setFeedback(resultArray);
 
-//        var result = mergeFeedbacks(styleFeedbacks, semanticFeedbacks, semanticFeedbacks, metricsFeedbacks);
+//        var result = mergeFeedbacks(styleFeedbacks, solutionApproachFeedbacks, solutionApproachFeedbacks, metricsFeedbacks);
 
 //        int resultLength = 100
 //                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
-//                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
+//                + ((solutionApproachFeedbacks != null) ? solutionApproachFeedbacks.size() : 0)
 //                + ((metricsFeedbacks != null) ? metricsFeedbacks.size() : 0)
 //                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
 //        String[] result = new String[resultLength];
@@ -132,7 +131,7 @@ public class Mass implements Checker {
 //            resultIndex = resultIndex + 2;
 //        }
 //
-//        for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
+//        for (String semanticFeedback : solutionApproachFeedbacks) {
 //            result[resultIndex] = "semantic Feedback";
 //            result[resultIndex + 1] = semanticFeedback.getBody() + NEW_LINE
 //                    + SEPARATOR;

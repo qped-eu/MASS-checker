@@ -10,7 +10,6 @@ import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
-import eu.qped.java.checkers.solutionapproach.SemanticFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingItem;
 import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingReader;
@@ -41,19 +40,6 @@ public class SolutionApproachAnalyser {
     private SemanticSettingReader semanticSettingReader;
 
     private String targetProjectPath;
-
-    // delete
-    @Getter(AccessLevel.PRIVATE)
-    @Setter(AccessLevel.PRIVATE)
-    private boolean usedALoop;
-
-    // delete
-    @Getter(AccessLevel.PRIVATE)
-    @Setter(AccessLevel.PRIVATE)
-    private String returnType;
-
-    // delete
-    private ArrayList<SemanticFeedback> feedbacks;
 
 
     public List<SolutionApproachReportItem> check() {
@@ -109,56 +95,6 @@ public class SolutionApproachAnalyser {
         return path;
     }
 
-//    public List<SolutionApproachReportItem> check() {
-//
-//        List<SolutionApproachReportItem> solutionApproachEntries = new ArrayList<>();
-//
-//        SemanticSettingReader reader = SemanticSettingReader.builder().qfSemanticSettings(qfSemanticSettings).build();
-//
-//        var settings = reader.groupByFileName();
-//        // per File
-//        settings.forEach(
-//                fileSettingEntry -> {
-//                    if (targetProjectPath == null) {
-//                        targetProjectPath = "";
-//                    }
-//                    var path = "";
-//                    if (fileSettingEntry.getFilePath() != null && !"".equals(fileSettingEntry.getFilePath())) {
-//                        if ('/' == fileSettingEntry.getFilePath().charAt(0)) {
-//                            path = targetProjectPath + fileSettingEntry.getFilePath();
-//                        } else {
-//                            if (!Objects.equals(targetProjectPath, "")) {
-//                                path = targetProjectPath + "/" + fileSettingEntry.getFilePath();
-//                            } else {
-//                                path = fileSettingEntry.getFilePath();
-//                            }
-//                        }
-//                    } else path = targetProjectPath;  // answer is string
-//
-//                    var compilationUnit = parse(path); // AST per File
-//                    // AST per Method in File
-//                    fileSettingEntry.getSettingItems().forEach(
-//                            semanticSettingItem -> {
-//                                try {
-//                                    // analytics phase
-//                                    SolutionApproachReportItem basicReportEntry = SolutionApproachReportItem.builder().relatedSemanticSettingItem(semanticSettingItem).build();
-//                                    BlockStmt targetedMethod = getTargetedMethod(compilationUnit, basicReportEntry); // get target method and the return type of the target method
-//                                    StatementsVisitorAnalyser statementsVisitorHelper = StatementsVisitorAnalyser.createStatementsVisitorHelper(targetedMethod);
-//                                    MethodCalledAnalyser recursiveCheckHelper = MethodCalledAnalyser.createRecursiveCheckHelper(targetedMethod);
-//                                    updateReportEntryFields(basicReportEntry, statementsVisitorHelper, recursiveCheckHelper); // update basic Report Entry
-//                                    // create report Entries from basic report Entry
-//                                    solutionApproachEntries.addAll(generateLoopReportEntries(basicReportEntry));
-//                                    solutionApproachEntries.addAll(generateRecursionReportEntries(basicReportEntry));
-//                                    solutionApproachEntries.addAll(generateReturnTypeReportEntry(basicReportEntry));
-//                                } catch (NoSuchMethodException e) {
-//                                    System.out.println(e.getMessage() + " " + e.getCause());
-//                                }
-//                            }
-//                    );
-//                }
-//        );
-//        return solutionApproachEntries;
-//    }
 
     private List<SolutionApproachReportItem> generateReturnTypeReportEntry(SolutionApproachReportItem basicReportEntry) {
         List<SolutionApproachReportItem> result = new ArrayList<>();
@@ -306,47 +242,6 @@ public class SolutionApproachAnalyser {
         return result[0];
     }
 
-    private void checkReturnTyp(String targetReturnType) {
-        boolean result = false;
-        result = targetReturnType.equalsIgnoreCase(returnType);
-
-        if (!result && !targetReturnType.equals("undefined") && targetReturnType != null) {
-            feedbacks.add(new SemanticFeedback("you've used the return type " + returnType + "\n" + " you should use the return type " + targetReturnType));
-        }
-    }
-
-    private void generateSemanticStatementsFeedback(SemanticSettingItem settingItem, StatementsVisitorAnalyser statementsVisitorAnalyser) {
-
-        if (statementsVisitorAnalyser.getWhileCounter() > settingItem.getWhileLoop() && settingItem.getWhileLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getWhileLoop() + " while loop in your code, but you've used " + statementsVisitorAnalyser.getWhileCounter() + " while loop in " + settingItem.getFilePath()));
-        }
-        if (statementsVisitorAnalyser.getForCounter() > settingItem.getForLoop() && settingItem.getForLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForLoop() + " for loop in your code, but you've used " + statementsVisitorAnalyser.getForCounter() + "  for loop in " + settingItem.getFilePath()));
-        }
-        if (statementsVisitorAnalyser.getForEachCounter() > settingItem.getForEachLoop() && settingItem.getForEachLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getForEachLoop() + " forEach loop in your code, but you've used " + statementsVisitorAnalyser.getForEachCounter() + "  forEach loop in " + settingItem.getFilePath()));
-        }
-        if (statementsVisitorAnalyser.getIfElseCounter() > settingItem.getIfElseStmt() && settingItem.getIfElseStmt() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getIfElseStmt() + " IfElse Statement in your code, but you've used " + statementsVisitorAnalyser.getIfElseCounter() + "  ifElse Statment in " + settingItem.getFilePath()));
-        }
-        if (statementsVisitorAnalyser.getDoCounter() > settingItem.getDoWhileLoop() && settingItem.getDoWhileLoop() != -1) {
-            feedbacks.add(new SemanticFeedback("You should not use no more than " + settingItem.getDoWhileLoop() + " doWhile loop in your code, but you've used " + statementsVisitorAnalyser.getForCounter() + "  doWhile loop in " + settingItem.getFilePath()));
-        }
-    }
-
-    private void generateSemanticRecursionFeedback(SemanticSettingItem settingItem, MethodCalledAnalyser recursiveCheckHelper) {
-        var hasUsedRecursive = recursiveCheckHelper.check(settingItem.getMethodName());
-        if ((!hasUsedRecursive && settingItem.getRecursive() && !usedALoop)) {
-            feedbacks.add(new SemanticFeedback("you have to solve the method recursive in " + settingItem.getFilePath()));
-        } else if (settingItem.getRecursive() && usedALoop && hasUsedRecursive) {
-            feedbacks.add(new SemanticFeedback("you have used a Loop with your recursive Call in " + settingItem.getFilePath()));
-        } else if (settingItem.getRecursive() && usedALoop && !hasUsedRecursive) {
-            feedbacks.add(new SemanticFeedback("you have used a Loop without a recursive Call, you have to solve it just recursive in " + settingItem.getFilePath()));
-        } else if (hasUsedRecursive && !settingItem.getRecursive()) {
-            feedbacks.add(new SemanticFeedback("yor are not allowed to use recursive in the method in " + settingItem.getFilePath() + " " + settingItem.getMethodName()));
-        }
-    }
-
 
     public static void main(String[] args) throws IOException {
         var qfSemanticSetting = QfSemanticSettings
@@ -379,7 +274,7 @@ public class SolutionApproachAnalyser {
                 .build();
 
         TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        var result = templateBuilder.buildFeedbacksInTemplate(solutionApproachChecker.check(),SupportedLanguages.ENGLISH);
+        var result = solutionApproachChecker.check();
         result.forEach(e -> System.out.println(e));
 //        solutionApproachChecker.check().forEach(e -> System.out.println(e.getReadableCause()));
 //            solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSetting);
