@@ -71,7 +71,7 @@
   },
   {
     "technicalCause": "compiler.err.abstract.cant.be.instantiated",
-    "readableCause": "The compiler expects that you do not create an instance of an abstract class. \n But you can create an object of a subclass of this abstract class."
+    "readableCause": "The compiler expects that you do not create an instance of an abstract class. \n It is possible though to create an object of a non-abstract subclass of this class."
   },
   {
     "technicalCause": "compiler.err.repeated.modifier",
