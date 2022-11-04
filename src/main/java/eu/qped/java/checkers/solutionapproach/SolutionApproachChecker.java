@@ -33,7 +33,7 @@ public class SolutionApproachChecker {
 
     private String targetProjectPath;
 
-    public List<Feedback> check() {
+    public List<String> check() {
         if (solutionApproachAnalyser == null) {
             solutionApproachAnalyser = SolutionApproachAnalyser
                     .builder()

@@ -1,6 +1,9 @@
 package eu.qped.framework.feedback.template;
 
-import eu.qped.framework.feedback.*;
+import eu.qped.framework.feedback.ConceptReference;
+import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.RelatedLocation;
+import eu.qped.framework.feedback.Type;
 import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
@@ -17,17 +20,17 @@ import java.util.stream.Collectors;
 
 import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
 
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 public class TemplateBuilder {
 
     private final static AtomicInteger counter = new AtomicInteger(0);
     private TemplateTextProvider templateTextProvider;
 
-    public List<String> buildFeedbacksInTemplate(List<Feedback> feedbacks, String language) {
+    public List<String> buildFeedbacksInTemplate(@NonNull List<Feedback> feedbacks,@NonNull String language) {
         return feedbacks.stream().map(feedback -> buildFeedbackInTemplate(feedback, language)).collect(Collectors.toList());
     }
 

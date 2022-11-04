@@ -6,6 +6,7 @@ import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.defaultfeedback.DefaultFeedback;
 import eu.qped.framework.feedback.fromatter.KeyWordReplacer;
 import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachReportItem;
 import lombok.AllArgsConstructor;
@@ -30,15 +31,23 @@ public class SolutionApproachFeedbackGenerator {
     private DefaultSolutionApproachFeedbackParser defaultSolutionApproachFeedbackParser;
     private DefaultSolutionApproachFeedbackMapper defaultSolutionApproachFeedbackMapper;
     private MarkdownFeedbackFormatter markdownFeedbackFormatter;
+    private TemplateBuilder templateBuilder;
 
-    public List<Feedback> generateFeedbacks(List<SolutionApproachReportItem> reportEntries, SolutionApproachGeneralSettings checkerSetting) {
+    public List<String> generateFeedbacks(List<SolutionApproachReportItem> reportEntries, SolutionApproachGeneralSettings checkerSetting) {
         List<DefaultSolutionApproachFeedback> filteredFeedbacks = getDefaultSyntaxFeedbacks(reportEntries, checkerSetting);
         // naked feedbacks
         List<Feedback> feedbacks = mapToFeedbacks(filteredFeedbacks);
         // adapted by check level naked feedbacks
         feedbacks = adaptFeedbackByCheckerSetting(feedbacks, checkerSetting);
         // formatted feedbacks
-        return formatFeedbacks(feedbacks);
+        var formattedFeedbacks = formatFeedbacks(feedbacks);
+        // build feedback in template and return result
+        return buildFeedbackInTemplate(feedbacks, checkerSetting);
+    }
+
+    private List<String> buildFeedbackInTemplate(List<Feedback> feedbacks, SolutionApproachGeneralSettings checkerSettings) {
+        if (templateBuilder == null) templateBuilder = TemplateBuilder.builder().build();
+        return templateBuilder.buildFeedbacksInTemplate(feedbacks, checkerSettings.getLanguage());
     }
 
     private List<DefaultSolutionApproachFeedback> getDefaultSyntaxFeedbacks(List<SolutionApproachReportItem> reportItems, SolutionApproachGeneralSettings generalSettings) {
@@ -84,7 +93,7 @@ public class SolutionApproachFeedbackGenerator {
                                                     reportItem
                                             )
                                     )
-                                    .hints( (defaultSolutionApproachFeedback.getDefaultFeedback().getHints() != null)?
+                                    .hints((defaultSolutionApproachFeedback.getDefaultFeedback().getHints() != null) ?
                                             defaultSolutionApproachFeedback.getDefaultFeedback().getHints().stream().peek(hint ->
                                                     hint.setContent(keyWordReplacer.replace(
                                                             hint.getContent(),
@@ -114,9 +123,9 @@ public class SolutionApproachFeedbackGenerator {
     public static void main(String[] args) {
 
         String s = "fjsdaflökjsdaf /aksdfdsaf";
-        System.out.println(StringUtils.substringAfterLast(s,"/"));
+        System.out.println(StringUtils.substringAfterLast(s, "/"));
         System.out.println(s.substring(s.lastIndexOf("/") + 1));
-        System.out.println(StringUtils.removeStart(s,"/"));
+        System.out.println(StringUtils.removeStart(s, "/"));
     }
 
 }

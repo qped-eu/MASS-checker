@@ -13,7 +13,7 @@ import eu.qped.java.checkers.coverage.CoverageMapChecker;
 import eu.qped.java.checkers.coverage.QfCovSetting;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.solutionapproach.analyser.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.solutionapproach.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
@@ -62,7 +62,7 @@ public class Mass implements Checker {
         }
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
-        SolutionApproachAnalyser solutionApproachAnalyser = SolutionApproachAnalyser.builder().qfSemanticSettings(mass.getSemantic()).build();
+        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder().qfSemanticSettings(mass.getSemantic()).build();
 
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
@@ -85,7 +85,7 @@ public class Mass implements Checker {
         }
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, solutionApproachAnalyser, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, solutionApproachChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
         massExecutor.execute();
 
         /*
@@ -93,7 +93,7 @@ public class Mass implements Checker {
          */
         var syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
         var styleFeedbacks = massExecutor.getStyleFeedbacks();
-        var semanticFeedbacks = massExecutor.getSemanticFeedbacks();
+        var semanticFeedbacks = massExecutor.getSolutionApproachFeedbacks();
         var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
 
         var resultArray = mergeFeedbacks(
@@ -167,7 +167,7 @@ public class Mass implements Checker {
     private String[] mergeFeedbacks(
             @NonNull List<Feedback> syntaxFeedbacks,
             @NonNull List<StyleFeedback> styleFeedbacks,
-            @NonNull List<SemanticFeedback> semanticFeedbacks,
+            @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
             @NonNull QfObject qfObject
     ) {
@@ -200,15 +200,7 @@ public class Mass implements Checker {
                     }
             );
             resultArrayAsList.add("Semantic feedbacks");
-            semanticFeedbacks.forEach(
-                    semanticFeedback -> {
-                        String tempFeedbackAsString =
-                                semanticFeedback.getBody() +
-                                        NEW_LINE +
-                                        SEPARATOR;
-                        resultArrayAsList.add(tempFeedbackAsString);
-                    }
-            );
+            resultArrayAsList.addAll(semanticFeedbacks);
             resultArrayAsList.add("Metric feedbacks");
             metricsFeedbacks.forEach(
                     metricsFeedback -> {
