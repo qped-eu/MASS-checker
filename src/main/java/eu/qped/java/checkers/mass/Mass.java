@@ -105,63 +105,6 @@ public class Mass implements Checker {
         );
 
         qfObject.setFeedback(resultArray);
-
-//        var result = mergeFeedbacks(styleFeedbacks, semanticFeedbacks, semanticFeedbacks, metricsFeedbacks);
-
-//        int resultLength = 100
-//                + ((styleFeedbacks != null) ? styleFeedbacks.size() : 0)
-//                + ((semanticFeedbacks != null) ? semanticFeedbacks.size() : 0)
-//                + ((metricsFeedbacks != null) ? metricsFeedbacks.size() : 0)
-//                + ((syntaxFeedbacks != null) ? syntaxFeedbacks.size() : 0);
-//        String[] result = new String[resultLength];
-//        int resultIndex = 0;
-//
-//        for (StyleFeedback styleFeedback : styleFeedbacks) {
-//            result[resultIndex] = "style Feedback";
-//            result[resultIndex + 1] =
-//                    styleFeedback.getFile()
-//                            + NEW_LINE
-//                            + styleFeedback.getDesc()
-//                            + NEW_LINE
-//                            + styleFeedback.getContent()
-//                            + NEW_LINE
-//                            + styleFeedback.getLine()
-//                            + NEW_LINE
-//                            + styleFeedback.getExample()
-//                            + NEW_LINE;
-//            resultIndex = resultIndex + 2;
-//        }
-//
-//        for (SemanticFeedback semanticFeedback : semanticFeedbacks) {
-//            result[resultIndex] = "semantic Feedback";
-//            result[resultIndex + 1] = semanticFeedback.getBody() + NEW_LINE
-//                    + SEPARATOR;
-//            resultIndex = resultIndex + 2;
-//        }
-//
-//
-//        result[resultIndex] = MarkdownFormatterUtility.asHeading2("Metrics Feedback");
-//        for (MetricsFeedback metricsFeedback : metricsFeedbacks) {
-//            result[resultIndex + 1] =
-//                    MarkdownFormatterUtility.asHeading3("In class " + MarkdownFormatterUtility.asMonospace(metricsFeedback.getClassName() + ".java", false, null))
-//                            + MarkdownFormatterUtility.asBold(metricsFeedback.getMetric() + " (" + metricsFeedback.getBody() + ")")
-//                            + " measured with value: " + MarkdownFormatterUtility.asMonospace(Double.toString(metricsFeedback.getValue()), false, null)
-//                            + NEW_LINE
-//                            + metricsFeedback.getSuggestion()
-//                            + NEW_LINE
-//                            + SEPARATOR;
-//            resultIndex = resultIndex + 2;
-//        }
-//
-//        for (SyntaxFeedback syntax : syntaxFeedbacks) {
-//            result[resultIndex + 1] = ""
-//                    + syntax.toString()
-//                    + NEW_LINE
-//                    + SEPARATOR;
-//            resultIndex = resultIndex + 2;
-//        }
-
-
     }
 
     private String[] mergeFeedbacks(
@@ -179,10 +122,13 @@ public class Mass implements Checker {
         String[] resultArray = new String[resultSize];
         List<String> resultArrayAsList = new ArrayList<>();
         TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
+        resultArrayAsList.add("# Your Feedback");
         if (!syntaxFeedbacks.isEmpty()) {
             resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
         } else {
-            resultArrayAsList.add("Style feedbacks");
+            if(!styleFeedbacks.isEmpty()) {
+                resultArrayAsList.add("## Style feedbacks");
+            }
             styleFeedbacks.forEach(
                     styleFeedback -> {
                         String tempFeedbackAsString =
@@ -199,7 +145,9 @@ public class Mass implements Checker {
                         resultArrayAsList.add(tempFeedbackAsString);
                     }
             );
-            resultArrayAsList.add("Semantic feedbacks");
+            if(!semanticFeedbacks.isEmpty()) {
+                resultArrayAsList.add("## Semantic feedbacks");
+            }
             semanticFeedbacks.forEach(
                     semanticFeedback -> {
                         String tempFeedbackAsString =
@@ -209,7 +157,9 @@ public class Mass implements Checker {
                         resultArrayAsList.add(tempFeedbackAsString);
                     }
             );
-            resultArrayAsList.add("Metric feedbacks");
+            if(!metricsFeedbacks.isEmpty()) {
+                resultArrayAsList.add("## Metric feedbacks");
+            }
             metricsFeedbacks.forEach(
                     metricsFeedback -> {
                         String tempFeedbackAsString =
@@ -224,13 +174,11 @@ public class Mass implements Checker {
                     }
             );
         }
+        if(resultArrayAsList.size() <= 1){
+            resultArrayAsList.add("Our checks could not find any improvements for your code. This does not mean that it is semantically correct but it adheres to the standards of the lecture in regards to syntax and style.");
+        }
         resultArray = resultArrayAsList.toArray(resultArray);
         return resultArray;
-    }
-
-    public int sum() {
-        int a = 3;
-        return a;
     }
 
 
