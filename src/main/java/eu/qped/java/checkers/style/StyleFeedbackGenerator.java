@@ -1,15 +1,20 @@
 package eu.qped.java.checkers.style;
 
 
+import eu.qped.framework.feedback.defaultfeedback.DefaultFeedback;
+import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
+import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackParser;
+import eu.qped.framework.feedback.hint.HintType;
 import eu.qped.java.checkers.style.reportModel.StyleCheckReport;
+import eu.qped.java.utils.FileExtensions;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
 
 @AllArgsConstructor
 @Builder
@@ -24,6 +29,10 @@ public class StyleFeedbackGenerator {
     private Map<String, String[]> feedbacks;
 
     private StyleCheckReport report;
+
+    private DefaultFeedbackParser defaultFeedbackParser;
+
+    private String language;
 
     // TODO: migrate to json @Omar
     private void setUpData() {
@@ -106,7 +115,7 @@ public class StyleFeedbackGenerator {
 
         setUpData();
         List<StyleFeedback> resultList = new ArrayList<>();
-
+        var defaultFeedbacksByTechnicalCause = getDefaultFeedbacksByTechnicalCause();
         report.getFileEntries()
                 .forEach(
                         reportFileEntry -> reportFileEntry
@@ -116,12 +125,34 @@ public class StyleFeedbackGenerator {
                                             File temp = new File(reportFileEntry.getFileName());
                                             resultList.add(
                                                     StyleFeedback.builder()
-                                                            .file(temp.getParentFile().getName() + "." + temp.getName())
+                                                            .file(
+//                                                                    temp.getParentFile().getName() + "." +
+                                                                    temp.getName()
+                                                            )
                                                             .line(String.valueOf(violation.getBeginLine()))
-                                                            .content(getFeedbackBody(violation.getRule()))
+                                                            .content(
+                                                                    (defaultFeedbacksByTechnicalCause.containsKey(violation.getRule())) ?
+                                                                            Arrays.stream(defaultFeedbacksByTechnicalCause.get(violation.getRule()).get(0).getReadableCause().split(NEW_LINE))
+                                                                                    .map(String::trim)
+                                                                                    .collect(Collectors.joining(NEW_LINE))
+                                                                            : violation.getDescription()
+                                                            )
                                                             .desc(violation.getDescription())
                                                             .rule(violation.getRule())
-                                                            .example(getFeedbackExample(violation.getRule()))
+                                                            .example(
+                                                                    (defaultFeedbacksByTechnicalCause.containsKey(violation.getRule())
+                                                                            && defaultFeedbacksByTechnicalCause.get(violation.getRule()).get(0).getHints() != null
+                                                                            && !defaultFeedbacksByTechnicalCause.get(violation.getRule()).get(0).getHints().isEmpty()
+                                                                    ) ?
+                                                                            (defaultFeedbacksByTechnicalCause.get(violation.getRule()).get(0).getHints().get(0).getType().equals(HintType.CODE_EXAMPLE) ?
+                                                                                    asCodeBlock(defaultFeedbacksByTechnicalCause.get(violation.getRule()).get(0).getHints().get(0).getContent(), CODE_JAVA)
+                                                                                    : Arrays.stream(defaultFeedbacksByTechnicalCause.get(violation.getRule()).get(0).getHints().get(0).getContent().split(NEW_LINE))
+                                                                                    .map(String::trim)
+                                                                                    .collect(Collectors.joining(NEW_LINE))
+                                                                            )
+                                                                            : ""
+//                                                                            getFeedbackExample(violation.getRule())
+                                                            )
                                                             .build()
                                             );
                                         }
@@ -131,6 +162,16 @@ public class StyleFeedbackGenerator {
         return resultList.stream().collect(Collectors.groupingBy(
                 StyleFeedback::getFile
         ));
+    }
+
+    private Map<String, List<DefaultFeedback>> getDefaultFeedbacksByTechnicalCause() {
+        var dirPath = DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory(StyleChecker.class);
+        if (defaultFeedbackParser == null) {
+            defaultFeedbackParser = new DefaultFeedbackParser();
+        }
+        if (language == null || language.equals("")) setLanguage(SupportedLanguages.ENGLISH);
+        var allDefaultFeedbacks = defaultFeedbackParser.parse(dirPath, language + FileExtensions.JSON);
+        return allDefaultFeedbacks.stream().collect(Collectors.groupingBy(DefaultFeedback::getTechnicalCause));
     }
 
 

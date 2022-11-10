@@ -25,4 +25,6 @@ public class QfStyleSettings extends QfObjectBase {
     private String variableNamePattern;
     private String methodNamePattern;
     private String classNamePattern;
+
+    private String language;
 }
