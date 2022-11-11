@@ -122,7 +122,7 @@ public class Mass implements Checker {
         String[] resultArray = new String[resultSize];
         List<String> resultArrayAsList = new ArrayList<>();
         TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        resultArrayAsList.add("# Your Feedback\n");
+        resultArrayAsList.add(" Your Feedback\n");
         if (!syntaxFeedbacks.isEmpty()) {
             resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
         } else {
