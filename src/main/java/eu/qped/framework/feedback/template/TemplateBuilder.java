@@ -58,7 +58,8 @@ public class TemplateBuilder {
                 , templateTextByLanguage.get(String.valueOf(feedback.getType()))
         )) +
 //                NEW_LINE;
-                NEW_Double_LINE;
+                DOT
+                + NEW_Double_LINE;
     }
 
     private String getTemplateFormattedHints(List<Hint> hints) {
@@ -95,7 +96,7 @@ public class TemplateBuilder {
                     + DOT + SPACE;
         }
 //        result += NEW_Double_LINE;
-        result += "<br />";
+        result += DOT + NEW_Double_LINE;
         return result;
     }
 
