@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.mass;
 
+import com.beust.jcommander.internal.Lists;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
@@ -24,6 +25,7 @@ import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -122,8 +124,9 @@ public class Mass implements Checker {
         String[] resultArray = new String[resultSize];
         List<String> resultArrayAsList = new ArrayList<>();
         TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        resultArrayAsList.add(" Your Feedback\n");
+        resultArrayAsList.add("# Your Feedback\n");
         if (!syntaxFeedbacks.isEmpty()) {
+            Collections.reverse(syntaxFeedbacks);
             resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
         } else {
             if (!styleFeedbacks.isEmpty()) {
