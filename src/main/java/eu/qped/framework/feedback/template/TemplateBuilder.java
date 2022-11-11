@@ -52,7 +52,7 @@ public class TemplateBuilder {
 //                NEW_LINE;
         return Arrays.stream(cause.split(NEW_LINE))
                 .map(String::trim)
-                .collect(Collectors.joining(DOT+NEW_LINE)) + NEW_LINE;
+                .collect(Collectors.joining(DOT+NEW_LINE)) + DOT + NEW_LINE;
     }
 
     private String getTemplateFormattedHeader(Feedback feedback, Map<String, String> templateTextByLanguage) {
@@ -100,7 +100,8 @@ public class TemplateBuilder {
                     + DOT + SPACE;
         }
 //        result += NEW_Double_LINE;
-        result += DOT + NEW_Double_LINE;
+        result += NEW_LINE;
+//        result += DOT + NEW_Double_LINE;
         return result;
     }
 
