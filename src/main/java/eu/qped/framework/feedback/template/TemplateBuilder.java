@@ -9,6 +9,7 @@ import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +48,11 @@ public class TemplateBuilder {
     }
 
     private String getTemplateFormattedCause(String cause) {
-        return cause +
-                NEW_LINE;
+//        return cause +
+//                NEW_LINE;
+        return Arrays.stream(cause.split(NEW_LINE))
+                .map(String::trim)
+                .collect(Collectors.joining(DOT+NEW_LINE)) + NEW_LINE;
     }
 
     private String getTemplateFormattedHeader(Feedback feedback, Map<String, String> templateTextByLanguage) {
