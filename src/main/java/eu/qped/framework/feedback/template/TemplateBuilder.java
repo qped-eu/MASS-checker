@@ -39,9 +39,10 @@ public class TemplateBuilder {
         String feedbackCause = getTemplateFormattedCause(feedback.getReadableCause());
         String feedbackHints = getTemplateFormattedHints(feedback.getHints());
         String feedbackReference = getTemplateFormattedReference(feedback.getReference(), templateTextByLanguage);
-        return feedbackHeader +
-//                feedbackRelatedLocation +
-//                feedbackCause +
+        return "" +
+//            feedbackHeader +
+                feedbackRelatedLocation +
+                feedbackCause +
                 feedbackHints +
                 feedbackReference +
                 HORIZONTAL_RULE;
