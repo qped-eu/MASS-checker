@@ -57,7 +57,8 @@ public class TemplateBuilder {
                 , counter.incrementAndGet()
                 , templateTextByLanguage.get(String.valueOf(feedback.getType()))
         )) +
-                NEW_LINE;
+//                NEW_LINE;
+                NEW_Double_LINE;
     }
 
     private String getTemplateFormattedHints(List<Hint> hints) {
