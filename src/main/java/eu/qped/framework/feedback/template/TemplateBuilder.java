@@ -93,7 +93,7 @@ public class TemplateBuilder {
                     + SPACE + location.getStartLine()
                     + DOT + SPACE;
         }
-        result += NEW_LINE;
+        result += NEW_Double_LINE;
         return result;
     }
 
