@@ -42,7 +42,7 @@ public class TemplateBuilder {
         return "" +
 //            feedbackHeader +
                 feedbackRelatedLocation +
-                feedbackCause +
+//                feedbackCause +
                 feedbackHints +
                 feedbackReference +
                 HORIZONTAL_RULE;
