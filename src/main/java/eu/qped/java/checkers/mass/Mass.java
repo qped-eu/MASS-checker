@@ -4,6 +4,7 @@ import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
@@ -18,7 +19,6 @@ import eu.qped.java.checkers.semantics.SemanticFeedback;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
@@ -126,26 +126,27 @@ public class Mass implements Checker {
         if (!syntaxFeedbacks.isEmpty()) {
             resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
         } else {
-            if(!styleFeedbacks.isEmpty()) {
+            if (!styleFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Style feedbacks");
             }
             styleFeedbacks.forEach(
                     styleFeedback -> {
                         String tempFeedbackAsString =
-                                styleFeedback.getFile()
+                                "in: " + styleFeedback.getFile() + "." + " Line: " + styleFeedback.getLine()
                                         + NEW_LINE
-                                        + styleFeedback.getDesc()
-                                        + NEW_LINE
+//                                        + styleFeedback.getDesc()
+//                                        + NEW_LINE
                                         + styleFeedback.getContent()
                                         + NEW_LINE
-                                        + styleFeedback.getLine()
-                                        + NEW_LINE
+//                                        + styleFeedback.getLine()
+//                                        + NEW_LINE
                                         + styleFeedback.getExample()
+                                        + NEW_LINE
                                         + SEPARATOR;
                         resultArrayAsList.add(tempFeedbackAsString);
                     }
             );
-            if(!semanticFeedbacks.isEmpty()) {
+            if (!semanticFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Semantic feedbacks");
             }
             semanticFeedbacks.forEach(
@@ -157,7 +158,7 @@ public class Mass implements Checker {
                         resultArrayAsList.add(tempFeedbackAsString);
                     }
             );
-            if(!metricsFeedbacks.isEmpty()) {
+            if (!metricsFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Metric feedbacks");
             }
             metricsFeedbacks.forEach(
@@ -174,7 +175,7 @@ public class Mass implements Checker {
                     }
             );
         }
-        if(resultArrayAsList.size() <= 1){
+        if (resultArrayAsList.size() <= 1) {
             resultArrayAsList.add("Our checks could not find any improvements for your code. This does not mean that it is semantically correct but it adheres to the standards of the lecture in regards to syntax and style.");
         }
         resultArray = resultArrayAsList.toArray(resultArray);

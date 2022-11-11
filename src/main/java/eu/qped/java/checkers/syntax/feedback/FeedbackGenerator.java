@@ -3,7 +3,7 @@ package eu.qped.java.checkers.syntax.feedback;
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.FeedbackFileDirectoryProvider;
+import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxError;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
@@ -64,7 +64,7 @@ public class FeedbackGenerator {
     }
 
     private List<SyntaxFeedback> getAllDefaultSyntaxFeedbacks(String language) {
-        var dirPath = FeedbackFileDirectoryProvider.provideFeedbackDataFile(SyntaxChecker.class);
+        var dirPath = DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory(SyntaxChecker.class);
         if (defaultSyntaxFeedbackProvider == null) {
             defaultSyntaxFeedbackProvider = new DefaultSyntaxFeedbackProvider();
         }

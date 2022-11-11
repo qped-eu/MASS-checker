@@ -26,4 +26,6 @@ public class StyleSettings {
     private CheckLevel namesLevel;
     private CheckLevel complexityLevel;
     private CheckLevel basisLevel;
+
+    private String language;
 }
