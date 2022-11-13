@@ -14,14 +14,14 @@
     ]
   },
   {
-      "technicalCause": "MethodNamingConventions",
-      "readableCause": "Your method name does not match the rules that are given.\nJava code conventions recommend: any Method should start with a small letter and the name should describe the function.",
-      "hints": [
-        {
-          "type": "TEXT",
-          "content": "example: run() , canRun() ,..."
-        }
-      ]
+    "technicalCause": "MethodParameterNamingConventions",
+    "readableCause": "Your method parameter name does not match the rules that are given.\nJava code conventions recommend: any Method should start with a small letter and the name should describe the function.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "void methodName(int parameterOne, int parameterTwo){...}"
+      }
+    ]
   },
   {
     "technicalCause": "VariableNamingConventions",
