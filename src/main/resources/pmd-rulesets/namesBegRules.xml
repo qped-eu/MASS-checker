@@ -56,13 +56,20 @@
 
     <rule name="ShortMethodName"  ref="category/java/codestyle.xml/ShortMethodName">
         <properties>
-            <property name="minimum" value="2" />
+            <property name="minimum" value="2"/>
         </properties>
     </rule>
 
     <rule name="ShortVariable" ref="category/java/codestyle.xml/ShortVariable">
         <properties>
-            <property name="minimum" value="1" />
+            <property name="minimum" value="1"/>
+        </properties>
+    </rule>
+
+    <rule name="MethodParameterNamingConventions" ref="category/java/codestyle.xml/FormalParameterNamingConventions">
+        <properties>
+            <property name="methodParameterPattern" value="[a-z][a-zA-Z0-9]*"/>
+            <property name="finalMethodParameterPattern" value="[a-z][a-zA-Z0-9]*"/>
         </properties>
     </rule>
 
@@ -72,9 +79,9 @@
         <properties>
             <property name="methodWithOverrideCommentRequirement" value="Ignored"
             />
-            <property name="accessorCommentRequirement" value="Ignored" />
-            <property name="classCommentRequirement" value="Ignored" />
-            <property name="fieldCommentRequirement" value="Ignored" />
+            <property name="accessorCommentRequirement" value="Ignored"/>
+            <property name="classCommentRequirement" value="Ignored"/>
+            <property name="fieldCommentRequirement" value="Ignored"/>
             <property name="publicMethodCommentRequirement" value="Required" />
             <property name="protectedMethodCommentRequirement" value="Required"
             />

@@ -139,6 +139,12 @@ public class StyleChecker {
             if (!styleSettings.getVarNamesRegEx().equals("undefined") && !styleSettings.getVarNamesRegEx().equals("-1")) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.LOCAL_VARIABLE_NAMING_CONVENTIONS, String.valueOf(styleSettings.getVarNamesRegEx()), "localVarPattern");
             }
+            if (!styleSettings.getMethodParameterNamesRegEx().equals("undefined")) {
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_PARAMETER_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "methodParameterPattern");
+            }
+            if (!styleSettings.getMethodParameterNamesRegEx().equals("undefined")) {
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_PARAMETER_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "finalMethodParameterPattern");
+            }
             if (!styleSettings.getMethodNamesRegEx().equals("undefined") && !styleSettings.getMethodNamesRegEx().equals("-1")) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodNamesRegEx()), "methodPattern");
             }

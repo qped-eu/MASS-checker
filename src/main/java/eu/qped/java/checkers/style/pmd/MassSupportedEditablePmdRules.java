@@ -9,5 +9,6 @@ public final class MassSupportedEditablePmdRules {
     public final static String TOO_MANY_FIELDS = "TooManyFields";
     public final static String LOCAL_VARIABLE_NAMING_CONVENTIONS = "LocalVariableNamingConventions";
     public final static String CYCLOMATIC_COMPLEXITY = "CyclomaticComplexity";
+    public final static String METHOD_PARAMETER_NAMING_CONVENTIONS = "MethodParameterNamingConventions";
 
 }
