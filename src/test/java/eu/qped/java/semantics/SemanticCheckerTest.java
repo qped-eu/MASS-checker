@@ -3,6 +3,7 @@ package eu.qped.java.semantics;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
 import eu.qped.java.checkers.semantics.SemanticChecker;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +41,45 @@ class SemanticCheckerTest {
         semanticChecker.check();
         var fs = semanticChecker.getFeedbacks();
         assertThat(fs).isEmpty();
+    }
+
+    @Test
+    void testMethodFail() {
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
+        syntaxChecker.setStringAnswer("String krt(double a, double k, double d){\n" +
+                "    return \"\";\n" +
+                "}\n" +
+                "\n" +
+                "double krtH(double a, double k, double d, double x_n){\n" +
+                "    return a;\n" +
+                "}");
+        var syntaxFeedbacks = syntaxChecker.check();
+        var syntaxAnalyseReport = syntaxChecker.getAnalyseReport();
+        var settings= QfSemanticSettings
+                .builder()
+                .semantics(
+                        List.of(
+                                SemanticSettingItem
+                                        .builder()
+                                        .recursive(false)
+                                        .whileLoop(0)
+                                        .forLoop(0)
+                                        .forEachLoop(0)
+                                        .doWhileLoop(0)
+                                        .ifElseStmt(-1)
+                                        .returnType("double")
+                                        .methodName("krt")
+                                        .filePath("")
+                                        .build()
+                        )
+                )
+                .build();
+        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemanticSettings(settings).build();
+        semanticChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
+        semanticChecker.check();
+        var semanticFeedbacks = semanticChecker.getFeedbacks();
+        System.out.println(semanticFeedbacks);
+
     }
 
 
