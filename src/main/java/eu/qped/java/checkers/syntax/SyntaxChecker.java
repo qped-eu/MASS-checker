@@ -46,13 +46,13 @@ public class SyntaxChecker {
     }
 
     private void buildSyntaxSettings() {
-        if (syntaxSetting == null ) {
+        if (syntaxSetting == null) {
             syntaxSetting = SyntaxSetting.builder().build();
         }
-        if(syntaxSetting.getLanguage() == null) {
+        if (syntaxSetting.getLanguage() == null) {
             syntaxSetting.setLanguage(SupportedLanguages.ENGLISH);
         }
-        if(syntaxSetting.getCheckLevel() == null) {
+        if (syntaxSetting.getCheckLevel() == null) {
             syntaxSetting.setCheckLevel(CheckLevel.BEGINNER);
         }
     }
@@ -60,12 +60,13 @@ public class SyntaxChecker {
 
     public static void main(String[] args) {
 
-        String codeToCompile = "double krt(double a, double k, double d){\n" +
-                "    retrun a;\n" +
+        String codeToCompile = "double krt(double A, double k, double d){\n" +
+                "    int K,L;\n" +
+                "    return  A\n" +
                 "}\n" +
                 "\n" +
                 "double krtH(double a, double k, double d, double x_n){\n" +
-                "    return  a;\n" +
+                "    return a;\n" +
                 "}";
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
@@ -73,8 +74,9 @@ public class SyntaxChecker {
         var setting = SyntaxSetting.builder().checkLevel(CheckLevel.BEGINNER).language("en").build();
         syntaxChecker.setSyntaxSetting(setting);
         var feedbacks = syntaxChecker.check();
+
         TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        var test = templateBuilder.buildFeedbacksInTemplate(feedbacks,SupportedLanguages.ENGLISH);
+        var test = templateBuilder.buildFeedbacksInTemplate(feedbacks, SupportedLanguages.ENGLISH);
         feedbacks.forEach(System.out::println);
 
     }
