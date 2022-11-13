@@ -40,18 +40,16 @@ public class TemplateBuilder {
         String feedbackHints = getTemplateFormattedHints(feedback.getHints());
         String feedbackReference = getTemplateFormattedReference(feedback.getReference(), templateTextByLanguage);
         return "" +
-//            feedbackHeader +
+            feedbackHeader +
                 feedbackRelatedLocation +
-//                feedbackCause +
-//                feedbackHints +
+                feedbackCause +
+                feedbackHints +
                 feedbackReference +
                 NEW_Double_LINE +
                 HORIZONTAL_RULE;
     }
 
     private String getTemplateFormattedCause(String cause) {
-//        return cause +
-//                NEW_LINE;
         return Arrays.stream(cause.split(NEW_LINE))
                 .map(String::trim)
                 .collect(Collectors.joining(DOT+NEW_LINE)) + DOT + NEW_LINE;
@@ -63,7 +61,6 @@ public class TemplateBuilder {
                 , counter.incrementAndGet()
                 , templateTextByLanguage.get(String.valueOf(feedback.getType()))
         )) +
-//                NEW_LINE;
                 DOT
                 + NEW_Double_LINE;
     }
@@ -101,9 +98,7 @@ public class TemplateBuilder {
                     + SPACE + location.getStartLine()
                     + DOT + SPACE;
         }
-//        result += NEW_Double_LINE;
         result += NEW_LINE;
-//        result += DOT + NEW_Double_LINE;
         return result;
     }
 
