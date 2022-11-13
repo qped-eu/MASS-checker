@@ -15,7 +15,7 @@
   },
   {
     "technicalCause": "MethodParameterNamingConventions",
-    "readableCause": "Your method parameter name does not match the rules that are given.\nJava code conventions recommend: any Method should start with a small letter and the name should describe the function.",
+    "readableCause": "Your method parameter name does not match the rules that are given.\nJava code conventions recommend: any parameter name should start with a small letter and the name should be clear and in english.",
     "hints": [
       {
         "type": "TEXT",
