@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
@@ -32,7 +31,7 @@ public class MassExecutor {
     private final MainSettings mainSettings;
 
 
-    private List<eu.qped.framework.feedback.Feedback> syntaxFeedbacks;
+    private List<String> syntaxFeedbacks;
     private List<StyleFeedback> styleFeedbacks;
     private List<String> solutionApproachFeedbacks;
     private List<ClassFeedback> classFeedbacks;
@@ -50,11 +49,11 @@ public class MassExecutor {
     /**
      * To create an Object use the factory Class @MassExecutorFactory
      *
-     * @param styleChecker    style checker component
+     * @param styleChecker            style checker component
      * @param solutionApproachChecker semantic checker component
-     * @param syntaxChecker   syntax checker component
-     * @param metricsChecker  metrics checker component
-     * @param mainSettings    settings
+     * @param syntaxChecker           syntax checker component
+     * @param metricsChecker          metrics checker component
+     * @param mainSettings            settings
      */
 
     public MassExecutor(final StyleChecker styleChecker, final SolutionApproachChecker solutionApproachChecker,
@@ -97,7 +96,6 @@ public class MassExecutor {
             }
             if (semanticNeeded) {
                 solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
-
                 solutionApproachFeedbacks = solutionApproachChecker.check();
             }
             if (metricsNeeded) {
@@ -144,9 +142,9 @@ public class MassExecutor {
         Translator translator = new Translator();
 
         //List is Empty when the syntax is correct
-        for (eu.qped.framework.feedback.Feedback feedback : syntaxFeedbacks) {
-            translator.translateFeedback(prefLanguage, feedback);
-        }
+//        for (eu.qped.framework.feedback.Feedback feedback : syntaxFeedbacks) {
+//            translator.translateFeedback(prefLanguage, feedback);
+//        }
         if (styleNeeded) {
             for (StyleFeedback feedback : styleFeedbacks) {
                 translator.translateStyleBody(prefLanguage, feedback);

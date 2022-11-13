@@ -12,6 +12,7 @@ import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class TemplateBuilder {
     private final static AtomicInteger counter = new AtomicInteger(0);
     private TemplateTextProvider templateTextProvider;
 
-    public List<String> buildFeedbacksInTemplate(@NonNull List<Feedback> feedbacks,@NonNull String language) {
+    public List<String> buildFeedbacksInTemplate(@NonNull List<Feedback> feedbacks, @NonNull String language) {
         return feedbacks.stream().map(feedback -> buildFeedbackInTemplate(feedback, language)).collect(Collectors.toList());
     }
 
@@ -41,17 +42,20 @@ public class TemplateBuilder {
         String feedbackCause = getTemplateFormattedCause(feedback.getReadableCause());
         String feedbackHints = getTemplateFormattedHints(feedback.getHints());
         String feedbackReference = getTemplateFormattedReference(feedback.getReference(), templateTextByLanguage);
-        return feedbackHeader +
+        return "" +
+                feedbackHeader +
                 feedbackRelatedLocation +
                 feedbackCause +
                 feedbackHints +
                 feedbackReference +
+                NEW_Double_LINE +
                 HORIZONTAL_RULE;
     }
 
     private String getTemplateFormattedCause(String cause) {
-        return cause +
-                NEW_LINE;
+        return Arrays.stream(cause.split(NEW_LINE))
+                .map(String::trim)
+                .collect(Collectors.joining(DOT + NEW_LINE)) + DOT + NEW_LINE;
     }
 
     private String getTemplateFormattedHeader(Feedback feedback, Map<String, String> templateTextByLanguage) {

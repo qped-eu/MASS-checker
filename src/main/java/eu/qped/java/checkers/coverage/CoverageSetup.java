@@ -102,15 +102,11 @@ public class CoverageSetup {
         SyntaxAnalysisReport report = compile(extracted.root());
 
         if (!report.isCompilable()) {
-            List<Feedback> feedbacks = SyntaxFeedbackGenerator.builder().build().generateFeedbacks(
+            List<String> feedbacks = SyntaxFeedbackGenerator.builder().build().generateFeedbacks(
                     report.getSyntaxErrors(),
                     SyntaxSetting.builder().language(setting.getLanguage()).build()
             );
-            List<String> templatedFeedbacks = TemplateBuilder.builder().build().buildFeedbacksInTemplate(
-                    feedbacks,
-                    setting.getLanguage()
-            );
-            return new Data(null, null,templatedFeedbacks , false, zipService);
+            return new Data(null, null,feedbacks , false, zipService);
         }
 
         return new Data(

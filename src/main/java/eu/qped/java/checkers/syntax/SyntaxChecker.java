@@ -28,7 +28,7 @@ public class SyntaxChecker {
 
     private SyntaxAnalysisReport analyseReport;
 
-    public List<Feedback> check() {
+    public List<String> check() {
         buildSyntaxSettings();
         if (syntaxErrorAnalyser == null) {
             syntaxErrorAnalyser = SyntaxErrorAnalyser
@@ -72,7 +72,7 @@ public class SyntaxChecker {
         syntaxChecker.setSyntaxSetting(setting);
         var feedbacks = syntaxChecker.check();
 
-        feedbacks.forEach(e -> e.getReadableCause());
+        feedbacks.forEach(e -> System.out.println(e));
 
     }
 

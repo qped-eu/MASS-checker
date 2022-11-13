@@ -1,10 +1,9 @@
 package eu.qped.java.checkers.mass;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
-import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
@@ -15,6 +14,7 @@ import eu.qped.java.checkers.coverage.QfCovSetting;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
+import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -61,7 +61,16 @@ public class Mass implements Checker {
         }
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
-        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder().qfSemanticSettings(mass.getSemantic()).build();
+        var solutionApproachGeneralSettings = SolutionApproachGeneralSettings.builder()
+                .language(qfObject.getUser().getLanguage())
+                .checkLevel(CheckLevel.BEGINNER)
+                .build()
+        ;
+        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder()
+                .qfSemanticSettings(mass.getSemantic())
+                .solutionApproachGeneralSettings(solutionApproachGeneralSettings)
+                .build()
+        ;
 
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
@@ -164,7 +173,7 @@ public class Mass implements Checker {
     }
 
     private String[] mergeFeedbacks(
-            @NonNull List<Feedback> syntaxFeedbacks,
+            @NonNull List<String> syntaxFeedbacks,
             @NonNull List<StyleFeedback> styleFeedbacks,
             @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
@@ -177,9 +186,8 @@ public class Mass implements Checker {
 
         String[] resultArray = new String[resultSize];
         List<String> resultArrayAsList = new ArrayList<>();
-        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
         if (!syntaxFeedbacks.isEmpty()) {
-            resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
+            resultArrayAsList.addAll(syntaxFeedbacks);
         } else {
             resultArrayAsList.add("Style feedbacks");
             styleFeedbacks.forEach(

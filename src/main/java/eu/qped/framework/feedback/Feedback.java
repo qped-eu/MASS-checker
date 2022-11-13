@@ -11,7 +11,6 @@ import java.util.List;
  * This model must be generated in all checkers.
  *
  * @author Omar Aji
- * @since 15.09.2022
  */
 @Data
 @AllArgsConstructor

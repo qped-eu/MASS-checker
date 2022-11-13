@@ -9,6 +9,7 @@ import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachReportItem;
+import eu.qped.java.utils.SupportedLanguages;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -42,11 +43,12 @@ public class SolutionApproachFeedbackGenerator {
         // formatted feedbacks
         var formattedFeedbacks = formatFeedbacks(feedbacks);
         // build feedback in template and return result
-        return buildFeedbackInTemplate(feedbacks, checkerSetting);
+        return buildFeedbackInTemplate(formattedFeedbacks, checkerSetting);
     }
 
     private List<String> buildFeedbackInTemplate(List<Feedback> feedbacks, SolutionApproachGeneralSettings checkerSettings) {
         if (templateBuilder == null) templateBuilder = TemplateBuilder.builder().build();
+        if(checkerSettings.getLanguage() == null) checkerSettings.setLanguage(SupportedLanguages.ENGLISH);
         return templateBuilder.buildFeedbacksInTemplate(feedbacks, checkerSettings.getLanguage());
     }
 

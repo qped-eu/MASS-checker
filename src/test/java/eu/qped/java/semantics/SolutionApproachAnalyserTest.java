@@ -1,8 +1,10 @@
 package eu.qped.java.semantics;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingItem;
-import eu.qped.java.checkers.solutionapproach.analyser.SolutionApproachAnalyser;
+import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,32 +15,38 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SolutionApproachAnalyserTest {
 
 
-    private SolutionApproachAnalyser solutionApproachAnalyser;
+    private SolutionApproachChecker solutionApproachChecker;
 
     @BeforeEach
     public void setup() {
-        solutionApproachAnalyser = SolutionApproachAnalyser.builder().build();
+        var solutionGeneralSetting = SolutionApproachGeneralSettings.builder()
+                .checkLevel(CheckLevel.BEGINNER)
+                .build();
+        var qfSetting = qfSemanticSettingsFail();
+        solutionApproachChecker = SolutionApproachChecker.builder()
+                .solutionApproachGeneralSettings(solutionGeneralSetting)
+                .qfSemanticSettings(qfSetting)
+                .build()
+        ;
     }
 
     @Test
     void testMethodNoErrorFail() {
-        solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSettingsFail());
-        solutionApproachAnalyser.check();
-        var fs = solutionApproachAnalyser.getFeedbacks();
+        solutionApproachChecker.setQfSemanticSettings(qfSemanticSettingsFail());
+        var fs = solutionApproachChecker.check();
         assertThat(fs).isNotEmpty();
 
         assertThat(fs).anyMatch(
                 f ->
-                        f.getBody().contains("you have used a Loop without a recursive Call, you have to solve it just recursive in tmp/code-example-for-sematnic-testing-fail/CalcSum.java")
+                        f.contains("for loop")
 
         );
     }
 
     @Test
     void testMethodNoErrorPass() {
-        solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSettingsPass());
-        solutionApproachAnalyser.check();
-        var fs = solutionApproachAnalyser.getFeedbacks();
+        solutionApproachChecker.setQfSemanticSettings(qfSemanticSettingsPass());
+        var fs = solutionApproachChecker.check();
         assertThat(fs).isEmpty();
     }
 
