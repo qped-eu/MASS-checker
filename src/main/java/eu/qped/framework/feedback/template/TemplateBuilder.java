@@ -45,6 +45,7 @@ public class TemplateBuilder {
 //                feedbackCause +
 //                feedbackHints +
                 feedbackReference +
+                NEW_Double_LINE +
                 HORIZONTAL_RULE;
     }
 
