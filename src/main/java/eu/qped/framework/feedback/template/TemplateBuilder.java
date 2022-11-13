@@ -1,6 +1,9 @@
 package eu.qped.framework.feedback.template;
 
-import eu.qped.framework.feedback.*;
+import eu.qped.framework.feedback.ConceptReference;
+import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.RelatedLocation;
+import eu.qped.framework.feedback.Type;
 import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
@@ -40,7 +43,7 @@ public class TemplateBuilder {
         String feedbackHints = getTemplateFormattedHints(feedback.getHints());
         String feedbackReference = getTemplateFormattedReference(feedback.getReference(), templateTextByLanguage);
         return "" +
-            feedbackHeader +
+                feedbackHeader +
                 feedbackRelatedLocation +
                 feedbackCause +
                 feedbackHints +
@@ -52,7 +55,7 @@ public class TemplateBuilder {
     private String getTemplateFormattedCause(String cause) {
         return Arrays.stream(cause.split(NEW_LINE))
                 .map(String::trim)
-                .collect(Collectors.joining(DOT+NEW_LINE)) + DOT + NEW_LINE;
+                .collect(Collectors.joining(DOT + NEW_LINE)) + DOT + NEW_LINE;
     }
 
     private String getTemplateFormattedHeader(Feedback feedback, Map<String, String> templateTextByLanguage) {
@@ -60,9 +63,8 @@ public class TemplateBuilder {
                 , templateTextByLanguage.get(feedback.getCheckerName())
                 , counter.incrementAndGet()
                 , templateTextByLanguage.get(String.valueOf(feedback.getType()))
-        )) +
-                DOT
-                + NEW_Double_LINE;
+        ))
+                + NEW_LINE;
     }
 
     private String getTemplateFormattedHints(List<Hint> hints) {
