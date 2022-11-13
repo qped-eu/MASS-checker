@@ -1,6 +1,5 @@
 package eu.qped.java.checkers.mass;
 
-import com.beust.jcommander.internal.Lists;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
@@ -25,7 +24,6 @@ import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
