@@ -21,3 +21,4 @@ $MVN_COMMAND --batch-mode -X -e compile  exec:java@CheckerRunner > output
 
 cat output
 
+exit 1
