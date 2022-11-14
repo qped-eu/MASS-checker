@@ -21,6 +21,4 @@ $MVN_COMMAND --batch-mode -X -e compile  exec:java@CheckerRunner > output
 
 cat output
 
-cat output > qf.json
-
 exit 1
