@@ -19,6 +19,7 @@ public class StyleSettings {
     private String varNamesRegEx;
     private String methodNamesRegEx;
     private String classNameRegEx;
+    private String methodParameterNamesRegEx;
 
 
     private CheckLevel mainLevel;

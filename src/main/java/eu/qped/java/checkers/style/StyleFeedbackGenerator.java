@@ -129,7 +129,13 @@ public class StyleFeedbackGenerator {
 //                                                                    temp.getParentFile().getName() + "." +
                                                                     temp.getName()
                                                             )
-                                                            .line(String.valueOf(violation.getBeginLine()))
+                                                            .line(
+                                                                    String.valueOf(
+                                                                            (temp.getName().contains("TestClass"))
+                                                                                    ? violation.getBeginLine() - 3
+                                                                                    : violation.getBeginLine()
+                                                                    )
+                                                            )
                                                             .content(
                                                                     (defaultFeedbacksByTechnicalCause.containsKey(violation.getRule())) ?
                                                                             Arrays.stream(defaultFeedbacksByTechnicalCause.get(violation.getRule()).get(0).getReadableCause().split(NEW_LINE))

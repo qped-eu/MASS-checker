@@ -1,6 +1,9 @@
 package eu.qped.framework.feedback.template;
 
-import eu.qped.framework.feedback.*;
+import eu.qped.framework.feedback.ConceptReference;
+import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.RelatedLocation;
+import eu.qped.framework.feedback.Type;
 import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
@@ -9,6 +12,7 @@ import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -38,17 +42,20 @@ public class TemplateBuilder {
         String feedbackCause = getTemplateFormattedCause(feedback.getReadableCause());
         String feedbackHints = getTemplateFormattedHints(feedback.getHints());
         String feedbackReference = getTemplateFormattedReference(feedback.getReference(), templateTextByLanguage);
-        return feedbackHeader +
+        return "" +
+                feedbackHeader +
                 feedbackRelatedLocation +
                 feedbackCause +
                 feedbackHints +
                 feedbackReference +
+                NEW_Double_LINE +
                 HORIZONTAL_RULE;
     }
 
     private String getTemplateFormattedCause(String cause) {
-        return cause +
-                NEW_LINE;
+        return Arrays.stream(cause.split(NEW_LINE))
+                .map(String::trim)
+                .collect(Collectors.joining(DOT + NEW_LINE)) + DOT + NEW_LINE;
     }
 
     private String getTemplateFormattedHeader(Feedback feedback, Map<String, String> templateTextByLanguage) {
@@ -56,8 +63,8 @@ public class TemplateBuilder {
                 , templateTextByLanguage.get(feedback.getCheckerName())
                 , counter.incrementAndGet()
                 , templateTextByLanguage.get(String.valueOf(feedback.getType()))
-        )) +
-                NEW_LINE;
+        ))
+                + NEW_LINE;
     }
 
     private String getTemplateFormattedHints(List<Hint> hints) {

@@ -30,6 +30,11 @@ public class StyleConfigurationReader {
     public StyleSettings getStyleSettings() {
         StyleSettings styleSettings = new StyleSettings();
         try {
+            styleSettings.setMethodParameterNamesRegEx(
+                    qfStyleSettings.getMethodParameterNamePattern() != null
+                            ? qfStyleSettings.getMethodParameterNamePattern()
+                            : "undefined"
+            );
             styleSettings.setMaxClassLength(qfStyleSettings.getClassLength() != null ? Integer.parseInt(qfStyleSettings.getClassLength()) : -1);
             styleSettings.setMaxMethodLength(qfStyleSettings.getMethodLength() != null ? Integer.parseInt(qfStyleSettings.getMethodLength()) : -1);
             styleSettings.setMaxFieldsCount(qfStyleSettings.getFieldsCount() != null ? Integer.parseInt(qfStyleSettings.getFieldsCount()) : -1);

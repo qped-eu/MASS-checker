@@ -3,6 +3,7 @@ package eu.qped.java.semantics;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.mass.SemanticSettingItem;
 import eu.qped.java.checkers.semantics.SemanticChecker;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

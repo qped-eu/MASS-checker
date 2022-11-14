@@ -2,6 +2,7 @@ package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
@@ -45,13 +46,13 @@ public class SyntaxChecker {
     }
 
     private void buildSyntaxSettings() {
-        if (syntaxSetting == null ) {
+        if (syntaxSetting == null) {
             syntaxSetting = SyntaxSetting.builder().build();
         }
-        if(syntaxSetting.getLanguage() == null) {
+        if (syntaxSetting.getLanguage() == null) {
             syntaxSetting.setLanguage(SupportedLanguages.ENGLISH);
         }
-        if(syntaxSetting.getCheckLevel() == null) {
+        if (syntaxSetting.getCheckLevel() == null) {
             syntaxSetting.setCheckLevel(CheckLevel.BEGINNER);
         }
     }
@@ -59,10 +60,14 @@ public class SyntaxChecker {
 
     public static void main(String[] args) {
 
-        String codeToCompile = "   public int add(int num1, int num2){\n" +
-                "        int r = num1 + num2;\n" +
-                "        return r\n" +
-                "    }";
+        String codeToCompile = "double krt(double A, double k, double d){\n" +
+                "    int K,L;\n" +
+                "    return  A\n" +
+                "}\n" +
+                "\n" +
+                "double krtH(double a, double k, double d, double x_n){\n" +
+                "    return a;\n" +
+                "}";
 
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
         syntaxChecker.setStringAnswer(codeToCompile);
@@ -70,6 +75,8 @@ public class SyntaxChecker {
         syntaxChecker.setSyntaxSetting(setting);
         var feedbacks = syntaxChecker.check();
 
+        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
+        var test = templateBuilder.buildFeedbacksInTemplate(feedbacks, SupportedLanguages.ENGLISH);
         feedbacks.forEach(System.out::println);
 
     }
