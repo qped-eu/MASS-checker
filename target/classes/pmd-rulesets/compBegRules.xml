@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<ruleset name="rulesetlevel3"
+		 xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+	<description>Quickstart configuration of PMD. Includes the rules that are most likely to apply everywhere.
+	</description>
+	<!-- CodeStyle -->
+
+	<rule name="CollapsibleIfStatements" ref="category/java/design.xml/CollapsibleIfStatements" />
+
+	<rule  name="ExcessiveClassLength" ref="category/java/design.xml/ExcessiveClassLength">
+		<properties>
+			<property name="minimum" value="1000.0" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessiveMethodLength" ref="category/java/design.xml/ExcessiveMethodLength">
+		<properties>
+			<property name="minimum" value="100.0" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessiveParameterList" ref="category/java/design.xml/ExcessiveParameterList">
+		<properties>
+			<property name="minimum" value="15.0" />
+		</properties>
+	</rule>
+
+	<rule name="TooManyFields" ref="category/java/design.xml/TooManyFields">
+		<properties>
+			<property name="maxfields" value="20" />
+		</properties>
+	</rule>
+
+	<rule name="TooManyMethods" ref="category/java/design.xml/TooManyMethods">
+		<properties>
+			<property name="maxmethods" value="100" />
+		</properties>
+	</rule>
+
+
+	<rule name="CyclomaticComplexity" ref="category/java/design.xml/CyclomaticComplexity">
+		<properties>
+			<property name="classReportLevel" value="150" />
+			<property name="methodReportLevel" value="15" />
+			<property name="cycloOptions" value="" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessiveImports" ref="category/java/design.xml/ExcessiveImports">
+		<properties>
+			<property name="minimum" value="30.0" />
+		</properties>
+	</rule>
+
+	<rule name="ExcessivePublicCount" ref="category/java/design.xml/ExcessivePublicCount">
+		<properties>
+			<property name="minimum" value="45.0" />
+		</properties>
+	</rule>
+
+	<!-- Level 2-->
+	<rule name="MethodArgumentCouldBeFinal" ref="category/java/codestyle.xml/MethodArgumentCouldBeFinal" />
+
+</ruleset>

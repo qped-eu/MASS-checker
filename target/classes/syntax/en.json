@@ -1,0 +1,152 @@
+[
+  {
+    "technicalCause": "compiler.err.already.defined",
+    "readableCause": "The compiler expects that you don't define variables or methods more than once. Please make sure that every variable and method is only defined once per scope.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nint oddNumber = 7;\nint oddNumber = 7;\n// new code\nint oddNumber = 7;\nint newOddNumber = 7;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.not.stmt",
+    "readableCause": "The compiler expected a statement, but found something else (a value or an expression for example).",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code. Found an expression instead of a statement.\nif (i == 1) {\n     \"one\";\n}\n// new code. \"one\" is an expression and not a statement.\nif (i == 1) {\n     System.out.println(\"one\");\n}\n"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.unclosed.str.lit",
+    "readableCause": "The compiler expects that you close string literals always with \".",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nString firstName = \"myFirstName;\nString name = \"myFirstName \n     myLastName\";\n// new code. \nString firstName = \"myFirstName\";\nString name = \"myFirstName\" \n     + \"myLastName\";\n"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.else.without.if",
+    "readableCause": "The compiler expects that else statements always directly follow their respective if statements.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "//old code.\nif(true){\n}\nint i = 1;\nelse{\n}// new code.\nif(true) {\n}\nelse {\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.missing.ret.stmt",
+    "readableCause": "Every method with a return type that is not void needs a return statement at the end.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nint myMethod(){\n}\n// new code.\nint myMethod(){\n    return 0;\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.unreachable.stmt",
+    "readableCause": "The compiler expects that you do not write statements after the return statement.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nint myMethod(){\n    return 0;\n    int a = 0;\n}\n// new code.\nint myMethod(){\n    int a = 0;\n    return a;\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.var.might.not.have.been.initialized",
+    "readableCause": "The compiler expects that you initialize a variable.\n This means that you must give this variable a value.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nint a ;\nint b = a;\n// new code.\nint a = 0;\nint b = a;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.abstract.cant.be.instantiated",
+    "readableCause": "The compiler expects that you do not create an instance of an abstract class. \n It is possible though to create an object of a non-abstract subclass of this class."
+  },
+  {
+    "technicalCause": "compiler.err.repeated.modifier",
+    "readableCause": "The compiler expects that you not repeat modifiers like “public”, “private”, ...",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\npublic public int i;\n// new code.\npublic int i;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.illegal.combination.of.modifiers",
+    "readableCause": "The compiler expects that you combine modifiers correctly. \n You can only combine static and final with private, public and protected.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\npublic private int i;\n// new code.\npublic static int i;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.missing.meth.body.or.decl.abstract",
+    "readableCause": "The compiler expects that you declare methods correctly. \n To fix this, you need to declare a method header like \"<type of result> name( <list of parameters>) \" and a method body like \"{ statements }\")."
+  },
+  {
+    "technicalCause": "compiler.err.illegal.start.of.expr",
+    "readableCause": "The compiler expects that you write legal expression. \n This usually happens when you: \n 1. declare a class inside of another class \n 2. declare a method or a class inside of another method \n 3. forget to write a curly brace \"{\" or \"}\" "
+  },
+  {
+    "technicalCause": "compiler.err.illegal.start.of.type",
+    "readableCause": "The compiler expects that you write code in right place. \n This usually happens when you write for, if, else, ... in a wrong place "
+  },
+  {
+    "technicalCause": "';' expected",
+    "readableCause": "The compiler expects that you end statements with a \";\" \n This usually happens when you forget to write a semicolon or a closing bracket.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nint oddNumber = 7\n// new code\nint oddNumber = 7;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "'(' expected",
+    "readableCause": "The compiler expects that you write a \"(\". \n This usually happens when you forget to write an opening bracket in your code.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nif true) {\n}\n// new code\nif (true) {\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "')' expected",
+    "readableCause": "The compiler expects that you write a \")\".\n This usually happens when you forget to write a closing bracket in your code.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nif (true {\n}\n// new code\nif (true) {\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "<identifier> expected",
+    "readableCause": "The compiler expects that you write an \"identifier\".\n This usually happens when you want to define a variable without a name or write code somewhere where Java does not expect code.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nint  = 7; // no name\n// new code\nint i = 7;\n"
+      }
+    ]
+  },
+  {
+    "technicalCause": "class, interface, or enum expected",
+    "readableCause": "The compiler expects that you create a \"class\", \"interface\" or \"enum\".\n This usually happens when you want to write a method outside of the class or write an additional curly bracket \"}\"."
+  }
+]

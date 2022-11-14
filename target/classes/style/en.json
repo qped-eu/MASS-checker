@@ -1,0 +1,128 @@
+[
+  {
+    "technicalCause": "NoPackage",
+    "readableCause": "Feedback for CommentRequired"
+  },
+  {
+    "technicalCause": "MethodNamingConventions",
+    "readableCause": "Your method name does not match the rules that are given.\nJava code conventions recommend: any Method should start with a small letter and the name should describe the function.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "example: run() , canRun() ,..."
+      }
+    ]
+  },
+  {
+    "technicalCause": "MethodParameterNamingConventions",
+    "readableCause": "Your method parameter name does not match the rules that are given.\nJava code conventions recommend: any parameter name should start with a small letter and the name should be clear and in english.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "void methodName(int parameterOne, int parameterTwo){...}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "VariableNamingConventions",
+    "readableCause": "Java code conventions recommend: any variable/Field name should start with a small letter and the name should be clear and in english.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "example: String color;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "FieldNamingConventions",
+    "readableCause": "Your field name does not match the rules that are given\nJava code conventions recommend: any variable/Field name should start with a small letter and the name should be clear and in english.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "example: String color;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "LocalVariableNamingConventions",
+    "readableCause": "Your local variable name does not match the rules that are given\nJava code conventions recommend: any variable name should start with a small letter and the name should be clear and in english.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "example: String color;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "IfStmtsMustUseBraces",
+    "readableCause": "Programming at its finest: every java control Block should have braces!",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "like: if (condition) {consequence}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "WhileLoopMustUseBraces",
+    "readableCause": "Programming at its finest: every java control Block should have braces!",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "like: while (condition) {Loop}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "ForLoopMustUseBraces",
+    "readableCause": "Programming at its finest: every java control Block should have braces!",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "like: for (condition) {Loop}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "BooleanGetMethodName",
+    "readableCause": "Your boolean method name does not match the rules that are given.\nJava code conventions recommend: boolean methods name should start with the verbs can or is.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "like: canRun() , isBlue() , etc..."
+      }
+    ]
+  },
+  {
+    "technicalCause": "ClassNamingConventions",
+    "readableCause": "Your class name does not match the rules that are given\nJava code conventions recommend: every java class name should start with a capital letter and follow the camel case conventions.",
+    "hints": [
+      {
+        "type": "TEXT",
+        "content": "example: class MyClass {//code}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "shortMethodName",
+    "readableCause": "Your Method name is too short for the rules that are given.\nJava code conventions recommend: any method name should be in english and mind. 3 letters."
+  },
+  {
+    "technicalCause": "SimplifyBooleanReturns",
+    "readableCause": "some boolean expressions can be simplified, especially when you are writing a return-statement",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nboolean canRun(int speed) {\n     boolean var= speed> 5;\n     return var;\n}\n// new Code\nboolean canRun(int speed) {\n     return speed > 5;\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "ShortVariable",
+    "readableCause": "You should name your variable clear and in english"
+  },
+  {
+    "technicalCause": "OnlyOneReturn",
+    "readableCause": "it's easy to write [if( condition ) return true; else return false] as [return condition]"
+  }
+]

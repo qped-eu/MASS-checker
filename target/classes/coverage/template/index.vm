@@ -1,0 +1,6 @@
+#foreach($fb in $summary.feedbacks())
+---
+
+$fb.getBody()
+
+#end

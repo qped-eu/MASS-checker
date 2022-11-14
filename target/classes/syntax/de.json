@@ -1,0 +1,152 @@
+[
+  {
+    "technicalCause": "compiler.err.already.defined",
+    "readableCause": "Der Compiler erwartet, dass Methoden oder Variablen nicht mehr als 1 Mal deklariert werden. Stelle bitte sicher, dass alle Variablen und Methoden nur 1 Mal per Scope vorhanden sind..",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nint oddNumber = 7;\nint oddNumber = 7;\n// new code\nint oddNumber = 7;\nint newOddNumber = 7;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.not.stmt",
+    "readableCause": "Der Compiler hat ein Statement erwartet, aber etwas anderes gefunden (z.B. eine Expression).",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code. Found an expression instead of a statement.\nif (i == 1) {\n     \"one\";\n}\n// new code. \"one\" is an expression and not a statement.\nif (i == 1) {\n     System.out.println(\"one\");\n}\n"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.unclosed.str.lit",
+    "readableCause": "Der Compiler erwartet, dass String Literale mit \" abgeschlossen werden.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nString firstName = \"myFirstName;\nString name = \"myFirstName \n     myLastName\";\n// new code. \nString firstName = \"myFirstName\";\nString name = \"myFirstName\" \n     + \"myLastName\";\n"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.else.without.if",
+    "readableCause": "Der Compiler erwartet, dass else-Ausdrücke direkt nach den zu ihnen gehörenden if-Ausdrücken stehen..",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "//old code.\nif(true){\n}\nint i = 1;\nelse{\n}// new code.\nif(true) {\n}\nelse {\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.missing.ret.stmt",
+    "readableCause": "Jede Methode mit einem Ergebnistypen, der nicht void ist, benötigt ein return-Statement.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nint myMethod(){\n}\n// new code.\nint myMethod(){\n    return 0;\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.unreachable.stmt",
+    "readableCause": "Der Kompiler erwartet, dass keine Statements nach einem return-Statement stehen.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nint myMethod(){\n    return 0;\n    int a = 0;\n}\n// new code.\nint myMethod(){\n    int a = 0;\n    return a;\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.var.might.not.have.been.initialized",
+    "readableCause": "Der Compiler erwartet, dass Variablen initialisiert werden.\n Das bedeutet, dass einer Variable ein Wert zugewiesen werden muss.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\nint a ;\nint b = a;\n// new code.\nint a = 0;\nint b = a;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.abstract.cant.be.instantiated",
+    "readableCause": "Der Compiler erwartet, dass keine Instanzen von abstrakten Klassen angelegt werden. \n Es ist möglich, eine Instanz einer nicht abstrakten Unterklasse der Klasse anzulegen."
+  },
+  {
+    "technicalCause": "compiler.err.repeated.modifier",
+    "readableCause": "Der Compiler erwartet, dass Modifier wie “public”, “private”, ... nicht wiederholt werden.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\npublic public int i;\n// new code.\npublic int i;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.illegal.combination.of.modifiers",
+    "readableCause": "Der Compiler erwartet, dass Modifier korrekt kombiniert werden.\n Modifier wie public, protected oder private können nur mit static oder final kombiniert werden.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code.\npublic private int i;\n// new code.\npublic static int i;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "compiler.err.missing.meth.body.or.decl.abstract",
+    "readableCause": "Der Compiler erwartet, dass Methoden korrekt deklariert werden.\n Um diesen Fehler zu beheben, muss der Methodenkopf die Form \"<Ergebnistyp> name( <Liste der Parameter>) \" und der Methodenrumpf die Form \"{ statements }\") haben."
+  },
+  {
+    "technicalCause": "compiler.err.illegal.start.of.expr",
+    "readableCause": "Der Compiler erwartet eine korrekte Expression.\n Normalerweise passiert dieser Fehler, wenn: \n 1. eine Klasse innerhalb einer anderen Klasse angelegt wird \n 2. eine Methode oder Klasse innerhalb einer anderen angelegt wurden \n 3. Klammern vergessen \"{\" oder \"}\" "
+  },
+  {
+    "technicalCause": "compiler.err.illegal.start.of.type",
+    "readableCause": "Der Kompiler erwartet, dass Code am richtigen Ort geschrieben wird. \nDiese Fehlermeldung passiert normalerweise, wenn if, for oder else an eineer falschen Stelle geschrieben wird."
+  },
+  {
+    "technicalCause": "';' expected",
+    "readableCause": "Der Compiler erwartet, dass Statements mit einem \";\" abgeschlossen werden. \n Das passiert normalerweise, wenn eine Klammer zu oder ein Semikolon vergessen wurden.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nint oddNumber = 7\n// new code\nint oddNumber = 7;"
+      }
+    ]
+  },
+  {
+    "technicalCause": "'(' expected",
+    "readableCause": "Der Compiler erwartet eine \"(\". \n Dies passiert normalerweise, wenn eine offene Klammer vergessen wurde.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nif true) {\n}\n// new code\nif (true) {\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "')' expected",
+    "readableCause": "Der Compiler erwartet eine \")\".\n Dies passiert normalerweise, wenn eine geschlossene Klammer vergessen wurde.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nif (true {\n}\n// new code\nif (true) {\n}"
+      }
+    ]
+  },
+  {
+    "technicalCause": "<identifier> expected",
+    "readableCause": "Der Compiler erwartet einen \"identifier\".\n Dies passiert normalerweise, wenn einer Variable ein Name fehlt oder Code an einer unerwarteten Stelle erscheint.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// old code\nint  = 7; // no name\n// new code\nint i = 7;\n"
+      }
+    ]
+  },
+  {
+    "technicalCause": "class, interface, or enum expected",
+    "readableCause": "Der Compiler erwartet, dass eine \"class\", \"interface\" oder \"enum\" erstellt werden.\n Das passiert normalerweise, wenn eine geschlossene geschweifte Klammer \"}\" vergessen wurde."
+  }
+]
