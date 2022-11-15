@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.mass;
 
 import eu.qped.framework.qf.QfObjectBase;
+import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

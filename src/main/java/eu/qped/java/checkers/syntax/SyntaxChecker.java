@@ -2,8 +2,9 @@ package eu.qped.java.checkers.syntax;
 
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.template.TemplateBuilder;
-import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
+import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
 import lombok.*;
 
@@ -18,16 +19,16 @@ public class SyntaxChecker {
 
     private SyntaxSetting syntaxSetting;
     private SyntaxErrorAnalyser syntaxErrorAnalyser;
-    private FeedbackGenerator feedbackGenerator;
+    private SyntaxFeedbackGenerator syntaxFeedbackGenerator;
 
 
     private String classFilesDestination;
     private String stringAnswer;
     private String targetProject;
 
-    private SyntaxCheckReport analyseReport;
+    private SyntaxAnalysisReport analyseReport;
 
-    public List<Feedback> check() {
+    public List<String> check() {
         buildSyntaxSettings();
         if (syntaxErrorAnalyser == null) {
             syntaxErrorAnalyser = SyntaxErrorAnalyser
@@ -39,10 +40,10 @@ public class SyntaxChecker {
         }
         analyseReport = syntaxErrorAnalyser.check();
 
-        if (feedbackGenerator == null) {
-            feedbackGenerator = FeedbackGenerator.builder().build();
+        if (syntaxFeedbackGenerator == null) {
+            syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
         }
-        return feedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
+        return syntaxFeedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
     }
 
     private void buildSyntaxSettings() {
@@ -75,9 +76,7 @@ public class SyntaxChecker {
         syntaxChecker.setSyntaxSetting(setting);
         var feedbacks = syntaxChecker.check();
 
-        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        var test = templateBuilder.buildFeedbacksInTemplate(feedbacks, SupportedLanguages.ENGLISH);
-        feedbacks.forEach(System.out::println);
+        feedbacks.forEach(e -> System.out.println(e));
 
     }
 
