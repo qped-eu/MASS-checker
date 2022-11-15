@@ -159,8 +159,6 @@ public class Mass implements Checker {
                 resultArrayAsList.add("## Semantic feedbacks");
             }
             resultArrayAsList.addAll(semanticFeedbacks);
-            resultArrayAsList.add("Metric feedbacks");
-
             if (!metricsFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Metric feedbacks");
             }
