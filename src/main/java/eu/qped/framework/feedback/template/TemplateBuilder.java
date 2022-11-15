@@ -79,7 +79,7 @@ public class TemplateBuilder {
     private String getTemplateFormattedRelatedLocation(RelatedLocation location, Map<String, String> templateTextByLanguage) {
         String result = "";
         if (location == null) return result;
-        if (!location.getFileName().equals("")) {
+        if (location.getFileName() != null && !location.getFileName().equals("")) {
             result += templateTextByLanguage.get(TemplateTextProvider.KEY_IN)
                     + SPACE + location.getFileName()
                     + DOT + SPACE;
