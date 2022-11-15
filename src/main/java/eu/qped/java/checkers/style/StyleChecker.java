@@ -189,7 +189,6 @@ public class StyleChecker {
         var feedbacks = syntaxChecker.check();
 
         TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        var test = templateBuilder.buildFeedbacksInTemplate(feedbacks, SupportedLanguages.ENGLISH);
         feedbacks.forEach(System.out::println);
 
 
