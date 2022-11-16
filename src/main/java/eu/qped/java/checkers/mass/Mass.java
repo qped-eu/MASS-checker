@@ -44,7 +44,12 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
+    	String preferredLanguage = "en";
+    	
+    	if (qfObject.getUser() != null) {
+    		preferredLanguage =  qfObject.getUser().getLanguage();
+    	} 
+        MainSettings mainSettings = new MainSettings(mass, preferredLanguage);
 
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
@@ -124,7 +129,11 @@ public class Mass implements Checker {
         TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
         resultArrayAsList.add("# Your Feedback\n");
         if (!syntaxFeedbacks.isEmpty()) {
-            resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
+        	String preferredLanguage = "en";
+        	if (qfObject.getUser() != null) {
+        		preferredLanguage = qfObject.getUser().getLanguage();
+        	} 
+            resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, preferredLanguage));
         } else {
             if (!styleFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Style feedbacks\n");
