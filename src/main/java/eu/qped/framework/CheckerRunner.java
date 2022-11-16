@@ -181,7 +181,7 @@ public class CheckerRunner {
 		
 		try {
 			runner.check();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);

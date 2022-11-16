@@ -44,7 +44,12 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
 
-        MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
+    	String preferredLanguage = "en";
+    	
+    	if (qfObject.getUser() != null) {
+    		preferredLanguage =  qfObject.getUser().getLanguage();
+    	} 
+        MainSettings mainSettings = new MainSettings(mass, preferredLanguage);
 
         // Syntax Checker
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
