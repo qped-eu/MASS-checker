@@ -1,15 +1,13 @@
-package eu.qped.java.checkers.semantics;
+package eu.qped.java.checkers.solutionapproach.configs;
 
 import eu.qped.java.checkers.mass.QfSemanticSettings;
-import eu.qped.java.checkers.mass.SemanticSettingItem;
-import eu.qped.java.checkers.semantics.configs.FileSettingEntry;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
@@ -49,23 +47,12 @@ public class SemanticSettingReader {
 
     }
 
-    public List<FileSettingEntry> groupByFileName() {
+    public Map<String, List<SemanticSettingItem>> groupByFileName() {
         setDefault();
-
-        List<FileSettingEntry> result = new ArrayList<>();
-
-        qfSemanticSettings.getSemantics()
-                .stream()
-                .collect(Collectors.groupingBy(SemanticSettingItem::getFilePath))
-                .forEach((filePath, semanticSettingItems) ->
-                        result.add(
-                                FileSettingEntry.builder()
-                                        .filePath(filePath)
-                                        .settingItems(semanticSettingItems).build()
-                        )
-                );
-
-        return result;
+        return
+                qfSemanticSettings.getSemantics()
+                        .stream()
+                        .collect(Collectors.groupingBy(SemanticSettingItem::getFilePath));
     }
 
 }

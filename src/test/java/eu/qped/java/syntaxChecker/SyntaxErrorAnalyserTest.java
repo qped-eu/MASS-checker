@@ -1,8 +1,12 @@
 package eu.qped.java.syntaxChecker;
 
 
-import eu.qped.java.checkers.syntax.SyntaxCheckReport;
-import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
+import eu.qped.framework.CheckLevel;
+import eu.qped.java.checkers.syntax.SyntaxSetting;
+import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
+import eu.qped.java.utils.SupportedLanguages;
 import eu.qped.java.utils.compiler.Compiler;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
@@ -50,7 +54,7 @@ public class SyntaxErrorAnalyserTest {
 
         syntaxErrorAnalyser.setStringAnswer(correctCode);
 
-        SyntaxCheckReport report = syntaxErrorAnalyser.check();
+        SyntaxAnalysisReport report = syntaxErrorAnalyser.check();
 
         Assertions.assertEquals(report.getSyntaxErrors().size(), 0);
         Assertions.assertTrue(report.isCompilable());
@@ -173,19 +177,24 @@ public class SyntaxErrorAnalyserTest {
 
                             @Override
                             public String getCode() {
-                                return "err.expected";
+                                return "';' expected";
                             }
 
                             @Override
                             public String getMessage(Locale locale) {
-                                return "; expected";
+                                return "';' expected";
                             }
                         }
                 ));
 
-        SyntaxCheckReport report = syntaxErrorAnalyser.check();
+        SyntaxAnalysisReport report = syntaxErrorAnalyser.check();
+        SyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+        syntaxFeedbackGenerator.generateFeedbacks(
+                report.getSyntaxErrors(),
+                SyntaxSetting.builder().checkLevel(CheckLevel.BEGINNER).language(SupportedLanguages.ENGLISH).build()
+        ).forEach(System.out::println);
         Assertions.assertEquals(report.getSyntaxErrors().size(), 1);
-        Assertions.assertEquals(report.getSyntaxErrors().get(0).getErrorMessage(), "; expected");
+        Assertions.assertEquals(report.getSyntaxErrors().get(0).getErrorMessage(), "';' expected");
         Assertions.assertFalse(report.isCompilable());
     }
 
@@ -206,7 +215,7 @@ public class SyntaxErrorAnalyserTest {
                 .thenReturn(tempDir.toUri().getPath());
 
         syntaxErrorAnalyser.setTargetProject(tempDir.toUri().getPath());
-        SyntaxCheckReport report = syntaxErrorAnalyser.check();
+        SyntaxAnalysisReport report = syntaxErrorAnalyser.check();
 
         Assertions.assertEquals(report.getPath(), tempDir.toUri().getPath());
 

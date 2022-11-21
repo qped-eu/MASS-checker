@@ -3,10 +3,10 @@ package eu.qped.java.checkers.coverage;
 
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.template.TemplateBuilder;
-import eu.qped.java.checkers.syntax.SyntaxCheckReport;
-import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.compiler.Com;
 import eu.qped.java.utils.compiler.Compiler;
 
@@ -99,18 +99,14 @@ public class CoverageSetup {
         if (extracted.testClasses().isEmpty())
             throw new IllegalStateException(ErrorMSG.MISSING_TESTCLASS);
 
-        SyntaxCheckReport report = compile(extracted.root());
+        SyntaxAnalysisReport report = compile(extracted.root());
 
         if (!report.isCompilable()) {
-            List<Feedback> feedbacks = FeedbackGenerator.builder().build().generateFeedbacks(
+            List<String> feedbacks = SyntaxFeedbackGenerator.builder().build().generateFeedbacks(
                     report.getSyntaxErrors(),
                     SyntaxSetting.builder().language(setting.getLanguage()).build()
             );
-            List<String> templatedFeedbacks = TemplateBuilder.builder().build().buildFeedbacksInTemplate(
-                    feedbacks,
-                    setting.getLanguage()
-            );
-            return new Data(null, null,templatedFeedbacks , false, zipService);
+            return new Data(null, null,feedbacks , false, zipService);
         }
 
         return new Data(
@@ -187,7 +183,7 @@ public class CoverageSetup {
     private static final String DIR_SOURCE = "-s";
     private static final String CLASSPATH = "-classpath";
 
-    private SyntaxCheckReport compile(File root) {
+    private SyntaxAnalysisReport compile(File root) {
 
         String path;
         if (System.getProperty("maven.compile.classpath") != null) {

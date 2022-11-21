@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.syntax;
+package eu.qped.java.checkers.syntax.analyser;
 
 import eu.qped.java.utils.compiler.Compiler;
 import lombok.AllArgsConstructor;
@@ -37,11 +37,11 @@ public class SyntaxErrorAnalyser {
 
 
     /**
-     * @return {@link SyntaxCheckReport} after checking an answer in form of code or class or project. <br/>
-     * A {@link SyntaxCheckReport} contains beside the errors if occurs relevant information like path of the answer.
+     * @return {@link SyntaxAnalysisReport} after checking an answer in form of code or class or project. <br/>
+     * A {@link SyntaxAnalysisReport} contains beside the errors if occurs relevant information like path of the answer.
      */
-    public SyntaxCheckReport check() {
-        SyntaxCheckReport.SyntaxCheckReportBuilder resultBuilder = SyntaxCheckReport.builder();
+    public SyntaxAnalysisReport check() {
+        SyntaxAnalysisReport.SyntaxAnalysisReportBuilder resultBuilder = SyntaxAnalysisReport.builder();
 
         if (compiler == null) {
             compiler = Compiler.builder().build();
@@ -114,8 +114,8 @@ public class SyntaxErrorAnalyser {
                             .startPos(diagnostic.getStartPosition())
                             .endPos(diagnostic.getEndPosition())
                             .line(
-                                    (stringAnswer != null && !(stringAnswer.contains("class") || stringAnswer.contains("interface")) )?
-                                    diagnostic.getLineNumber() - 3 : diagnostic.getLineNumber()
+                                    (stringAnswer != null && !(stringAnswer.contains("class") || stringAnswer.contains("interface"))) ?
+                                            diagnostic.getLineNumber() - 3 : diagnostic.getLineNumber()
                             )
                             .errorTrigger(errorTrigger)
                             .columnNumber(diagnostic.getColumnNumber())

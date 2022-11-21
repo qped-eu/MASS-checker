@@ -1,14 +1,12 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.Feedback;
 import eu.qped.framework.Translator;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticFeedback;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -33,16 +31,16 @@ public class MassExecutor {
     private final MainSettings mainSettings;
 
 
-    private List<eu.qped.framework.feedback.Feedback> syntaxFeedbacks;
+    private List<String> syntaxFeedbacks;
     private List<StyleFeedback> styleFeedbacks;
-    private List<SemanticFeedback> semanticFeedbacks;
+    private List<String> solutionApproachFeedbacks;
     private List<ClassFeedback> classFeedbacks;
     private List<MetricsFeedback> metricsFeedbacks;
     private String[] coverageFeedbacks;
 
 
     private final StyleChecker styleChecker;
-    private final SemanticChecker semanticChecker;
+    private final SolutionApproachChecker solutionApproachChecker;
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
     private MetricsChecker metricsChecker;
@@ -51,14 +49,14 @@ public class MassExecutor {
     /**
      * To create an Object use the factory Class @MassExecutorFactory
      *
-     * @param styleChecker    style checker component
-     * @param semanticChecker semantic checker component
-     * @param syntaxChecker   syntax checker component
-     * @param metricsChecker  metrics checker component
-     * @param mainSettings    settings
+     * @param styleChecker            style checker component
+     * @param solutionApproachChecker semantic checker component
+     * @param syntaxChecker           syntax checker component
+     * @param metricsChecker          metrics checker component
+     * @param mainSettings            settings
      */
 
-    public MassExecutor(final StyleChecker styleChecker, final SemanticChecker semanticChecker,
+    public MassExecutor(final StyleChecker styleChecker, final SolutionApproachChecker solutionApproachChecker,
                         final SyntaxChecker syntaxChecker, final MetricsChecker metricsChecker,
                         final ClassChecker classChecker,
                         final CoverageChecker coverageChecker,
@@ -66,7 +64,7 @@ public class MassExecutor {
     ) {
 
         this.styleChecker = styleChecker;
-        this.semanticChecker = semanticChecker;
+        this.solutionApproachChecker = solutionApproachChecker;
         this.syntaxChecker = syntaxChecker;
         this.metricsChecker = metricsChecker;
         this.classChecker = classChecker;
@@ -97,9 +95,8 @@ public class MassExecutor {
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
             }
             if (semanticNeeded) {
-                semanticChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
-                semanticChecker.check();
-                semanticFeedbacks = semanticChecker.getFeedbacks();
+                solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
+                solutionApproachFeedbacks = solutionApproachChecker.check();
             }
             if (metricsNeeded) {
                 syntaxChecker.setClassFilesDestination("");
@@ -134,7 +131,7 @@ public class MassExecutor {
     private void init() {
         syntaxFeedbacks = new ArrayList<>();
         styleFeedbacks = new ArrayList<>();
-        semanticFeedbacks = new ArrayList<>();
+        solutionApproachFeedbacks = new ArrayList<>();
         metricsFeedbacks = new ArrayList<>();
         classFeedbacks = new ArrayList<>();
     }
@@ -145,14 +142,9 @@ public class MassExecutor {
         Translator translator = new Translator();
 
         //List is Empty when the syntax is correct
-        for (eu.qped.framework.feedback.Feedback feedback : syntaxFeedbacks) {
-            translator.translateFeedback(prefLanguage, feedback);
-        }
-        if (semanticNeeded) {
-            for (Feedback feedback : semanticFeedbacks) {
-                translator.translateBody(prefLanguage, feedback);
-            }
-        }
+//        for (eu.qped.framework.feedback.Feedback feedback : syntaxFeedbacks) {
+//            translator.translateFeedback(prefLanguage, feedback);
+//        }
         if (styleNeeded) {
             for (StyleFeedback feedback : styleFeedbacks) {
                 translator.translateStyleBody(prefLanguage, feedback);
