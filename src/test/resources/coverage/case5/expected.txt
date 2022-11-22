@@ -1,0 +1,11 @@
+Test failed: test.TestFail.test() - test()
+```
+org.opentest4j.AssertionFailedError: Failing.
+  at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:39)
+  at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
+  at test.TestFail.test(TestFail.java:24)
+  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+  ...
+```
+You did not test the checksum method.

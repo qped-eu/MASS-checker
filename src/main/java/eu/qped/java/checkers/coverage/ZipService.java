@@ -25,7 +25,8 @@ public interface ZipService {
     };
 
     TestClass JAVA_TEST_CLASS = (file) -> {
-        return Pattern.matches(".*Test\\.java$", file.getPath());
+        return Pattern.matches(".*[Tt]est\\.java$", file.getPath()) ||
+        		Pattern.matches(".*[Tt]est[^/]*\\.java$", file.getPath());
     };
 
     Classname MAVEN_CLASS_NAME = (file) -> {

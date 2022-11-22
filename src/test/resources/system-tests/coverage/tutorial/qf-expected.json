@@ -1,0 +1,69 @@
+{
+	"attemptCount": 1,
+	"feedback": [
+		"Was ist mit Zahlen wie 2, 4, etc."
+	],
+	"showSolution": false,
+	"user": {
+		"id": "5fd0de0f30795372827b0f2a",
+		"language": "en"
+	},
+	"assignment": {
+		"id": "62e6a2d5eea221ece41cf870",
+		"title": "Coverage Tutorial dry run",
+		"files": []
+	},
+	"question": {
+		"id": "62e6a2dceea221ece41cf8e0",
+		"text": "Write the class `EvenTest` which tests the implementation of the class `Even` shown below. This class just contains one method `isTrue` which is supposed to return `true` if the passed integer value is an even number. \n\n```java\nclass Even {\n\tpublic boolean isTrue(int num) {\n\t\tif (num % 2 == 0) {\n\t\t\treturn true;\n\t\t} else {\n\t\t\treturn false;\n\t\t}\n\t}\n}\n```",
+		"programmingLanguage": "java"
+	},
+	"files": [],
+	"comment": "",
+	"score": null,
+	"stop": false,
+	"answers": [
+		"import static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class EvenTest {\n\n   @Test\n public void test() {\n      new Even().isTrue(1);\n }\n\n}"
+	],
+	"answer": "import static org.junit.jupiter.api.Assertions.*;\n\nimport org.junit.jupiter.api.Test;\n\npublic class EvenTest {\n\n  @Test\n public void test() {\n      new Even().isTrue(1);\n }\n\n}",
+	"mass": {
+		"styleSelected": false,
+		"semanticsSelected": false,
+		"coverageSelected": true,
+		"classSelected": false,
+		"metricsSelected": false,
+		"syntax": {
+			"level": "BEGINNER"
+		},
+		"coverage": {
+			"privateImplementation": "file:src/test/resources/coverage/case1/PrivateImpl.zip",
+			"showExtraMisses": false,
+            "showFullCoverageReport":false,
+            "showTestFailures":false,
+			"feedback": [
+				{
+					"showFor": "FULLY_MISSED",
+					"ID": "isTrueMethod",
+					"fileName": "Even.java",
+					"lineRanges": "2-8",
+					"message": "Sie haben die Methode isTrue nicht getestet.",
+					"suppresses": "even, odd"
+				},
+				{
+					"showFor": "PARTIALLY_MISSED",
+					"ID": "even",
+					"fileName": "Even.java",
+					"message": "Was ist mit Zahlen wie 2, 4, etc.",
+					"lineRanges": "4"
+				},
+				{
+					"showFor": "PARTIALLY_MISSED",
+					"ID": "odd",
+					"fileName": "Even.java",
+					"lineRanges": "6",
+					"message": "Was ist mit Zahlen wie 1, 3, etc."
+				}
+			]
+		}
+	}
+}

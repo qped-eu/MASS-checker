@@ -1,0 +1,36 @@
+{
+    "privateImplementation": "file:src/test/resources/coverage/case2/PrivateImpl.zip",
+    "showExtraMisses": false,
+    "showFullCoverageReport":false,
+    "showTestFailures":true,
+    "feedback": [
+      {
+        "showFor": "PARTIALLY_MISSED",
+        "ID": "null",
+        "fileName": "eu/qped/ClassA.java",
+        "lineRanges": "27-28",
+        "message": "Did you consider a null argument?"
+      },
+      {
+        "showFor": "FULLY_MISSED",
+        "ID": "empty",
+        "fileName": "eu/qped/ClassA.java",
+        "lineRanges": "16-21",
+        "message": "Did you consider the empty String?"
+      },
+      {
+        "showFor": "PARTIALLY_MISSED",
+        "ID": "non-empty",
+        "fileName": "eu/qped/ClassA.java",
+        "lineRanges": "22-26",
+        "message": "Did you consider the empty String?"
+      },
+      {
+        "showFor": "FULLY_MISSED",
+        "fileName": "eu/qped/ClassA.java",
+        "lineRanges": "14-31",
+        "message": "You did not test the checksum method.",
+        "suppresses": "null,empty,non-empty"
+      }
+    ]
+}

@@ -112,8 +112,9 @@ public class MassExecutor {
                     e.printStackTrace();
                 }
             }
-            if (coverageNeeded)
+            if (coverageNeeded) {
                 coverageFeedbacks = coverageChecker.check();
+            }
 
         } else if (coverageNeeded) {
             // Found no other solution:

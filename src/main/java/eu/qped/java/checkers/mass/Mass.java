@@ -9,10 +9,8 @@ import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.coverage.CoverageBlockChecker;
 import eu.qped.java.checkers.coverage.CoverageChecker;
-import eu.qped.java.checkers.coverage.CoverageMapChecker;
-import eu.qped.java.checkers.coverage.QfCovSetting;
+import eu.qped.java.checkers.coverage.CoverageSetup;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
@@ -23,6 +21,7 @@ import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,19 +47,9 @@ public class Mass implements Checker {
         MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
 
         // Syntax Checker
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
-        if (file != null) {
-            MassFilesUtility filesUtility = MassFilesUtility.builder()
-                    .dirPath(file.getUnzipped().getPath()).build();
-            var allJavaFiles = filesUtility.filesWithExtension("java");
-            if (allJavaFiles.isEmpty()) {
-                qfObject.setFeedback(new String[]{"No java files are detected in your solution"});
-                return;
-            }
-            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
-        } else {
-            syntaxChecker.setStringAnswer(qfObject.getAnswer());
-        }
+        SyntaxChecker syntaxChecker;
+        syntaxChecker = getSyntaxChecker(file, qfObject.getAnswer(), null);
+        if (syntaxChecker == null) return;
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
         var solutionApproachGeneralSettings = SolutionApproachGeneralSettings.builder()
@@ -82,16 +71,7 @@ public class Mass implements Checker {
         //CoverageChecker
         CoverageChecker coverageChecker = null;
         if (mainSettings.isCoverageNeeded()) {
-            QfCovSetting covSetting = mass.getCoverage();
-            covSetting.setAnswer(qfObject.getAnswer());
-            covSetting.setLanguage(mainSettings.getPreferredLanguage());
-            covSetting.setFile(file);
-
-            if (covSetting.isUseBlock()) {
-                coverageChecker = new CoverageBlockChecker(covSetting);
-            } else {
-                coverageChecker = new CoverageMapChecker(covSetting);
-            }
+            coverageChecker = new CoverageChecker(file, qfObject.getAnswer(), mass.getCoverage());
         }
 
         //Mass
@@ -115,6 +95,24 @@ public class Mass implements Checker {
         );
 
         qfObject.setFeedback(resultArray);
+    }
+
+    @Nullable
+    public static SyntaxChecker getSyntaxChecker(FileInfo file, String answer, String privateImplUrl) {
+        SyntaxChecker syntaxChecker;
+        syntaxChecker = SyntaxChecker.builder().build();
+        if (file != null) {
+            MassFilesUtility filesUtility = MassFilesUtility.builder()
+                    .dirPath(file.getUnzipped().getPath()).build();
+            var allJavaFiles = filesUtility.filesWithExtension("java");
+            if (allJavaFiles.isEmpty()) {
+                return null;
+            }
+            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
+        } else {
+            syntaxChecker.setStringAnswer(answer);
+        }
+        return syntaxChecker;
     }
 
     private String[] mergeFeedbacks(
@@ -182,11 +180,5 @@ public class Mass implements Checker {
         resultArray = resultArrayAsList.toArray(resultArray);
         return resultArray;
     }
-
-    public int sum() {
-        int a = 3;
-        return a;
-    }
-
 
 }

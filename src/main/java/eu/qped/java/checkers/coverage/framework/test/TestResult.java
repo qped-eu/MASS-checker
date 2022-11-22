@@ -10,25 +10,25 @@ import java.util.Objects;
 public class TestResult {
     private final String className;
     private final String methodName;
-    private final String want;
-    private final String got;
+    private final String expected;
+    private final String actual;
 
     TestResult(String className, String methodName) {
         this.className = Objects.requireNonNull(className);
         this.methodName = Objects.requireNonNull(methodName);
-        this.want = null;
-        this.got = null;
+        this.expected = null;
+        this.actual = null;
     }
 
-    TestResult(String className, String methodName, String want, String got) {
+    TestResult(String className, String methodName, String expected, String actual) {
         this.className = Objects.requireNonNull(className);
         this.methodName = Objects.requireNonNull(methodName);
-        this.want = Objects.requireNonNull(want);
-        this.got = Objects.requireNonNull(got);
+        this.expected = Objects.requireNonNull(expected);
+        this.actual = Objects.requireNonNull(actual);
     }
 
     public boolean hasFailedWithoutAssertion() {
-        return Objects.isNull(want) && Objects.isNull(got);
+        return Objects.isNull(expected) && Objects.isNull(actual);
     }
 
     public String className() {
@@ -39,34 +39,22 @@ public class TestResult {
         return methodName;
     }
 
-    public String want() {
-        return want;
+    public String getExpected() {
+        return expected;
     }
 
-    public String got() {
-        return got;
+    public String getActual() {
+        return actual;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TestResult that = (TestResult) o;
-        return className.equals(that.className) && methodName.equals(that.methodName) && Objects.equals(want, that.want) && Objects.equals(got, that.got);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(className, methodName, want, got);
-    }
 
     @Override
     public String toString() {
         return "TestResult{" +
                 "className='" + className + '\'' +
                 ", methodName='" + methodName + '\'' +
-                ", want='" + want + '\'' +
-                ", got='" + got + '\'' +
+                ", expected='" + expected + '\'' +
+                ", actual='" + actual + '\'' +
                 '}';
     }
 
