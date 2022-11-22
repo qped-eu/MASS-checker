@@ -1,14 +1,17 @@
 package eu.qped.java.checkers.syntax;
 
+import java.util.List;
+
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
 import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor

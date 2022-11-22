@@ -1,5 +1,13 @@
 package eu.qped.java.checkers.solutionapproach.analyser;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
@@ -7,6 +15,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
@@ -16,14 +25,13 @@ import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingReader;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachReportItem;
 import eu.qped.java.utils.SupportedLanguages;
-import lombok.*;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor

@@ -1,5 +1,12 @@
 package eu.qped.java.checkers.style;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfStyleSettings;
@@ -12,16 +19,15 @@ import eu.qped.java.checkers.style.settings.StyleConfigurationReader;
 import eu.qped.java.checkers.style.settings.StyleSettings;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.utils.SupportedLanguages;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import org.apache.logging.log4j.LogManager;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
