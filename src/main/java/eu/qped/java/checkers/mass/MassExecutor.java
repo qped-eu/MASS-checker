@@ -36,7 +36,7 @@ public class MassExecutor {
     private List<String> solutionApproachFeedbacks;
     private List<ClassFeedback> classFeedbacks;
     private List<MetricsFeedback> metricsFeedbacks;
-    private String[] coverageFeedbacks;
+    private List<String> coverageFeedbacks;
 
 
     private final StyleChecker styleChecker;
