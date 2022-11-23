@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -59,8 +60,8 @@ class CoverageLineMappingTest {
         CoverageSetup coverageSetup = new CoverageSetup(null, covSetting.getPrivateImplementation(), answer, null);
 
         CoverageChecker checker = new CoverageChecker(covSetting, coverageSetup);
-        String[] messages = checker.check();
-        String actual = Stream.of(messages).collect(Collectors.joining("\n"));
+        List<String> messages = checker.check();
+        String actual = messages.stream().collect(Collectors.joining("\n"));
 
 		String expected = FileUtils.readFileToString(new File("src/test/resources/coverage/" + caseName + "/expected.txt"), Charset.defaultCharset());
 

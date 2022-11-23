@@ -7,6 +7,7 @@ import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
 import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
+import eu.qped.java.utils.compiler.Compiler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,6 +40,25 @@ public class SyntaxChecker {
                     .classFilesDestination(classFilesDestination)
                     .targetProject(targetProject)
                     .stringAnswer(stringAnswer)
+                    .build();
+        }
+        analyseReport = syntaxErrorAnalyser.check();
+
+        if (syntaxFeedbackGenerator == null) {
+            syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+        }
+        return syntaxFeedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
+    }
+
+    public List<String> check(Compiler compiler) {
+        buildSyntaxSettings();
+        if (syntaxErrorAnalyser == null) {
+            syntaxErrorAnalyser = SyntaxErrorAnalyser
+                    .builder()
+                    .classFilesDestination(classFilesDestination)
+                    .targetProject(targetProject)
+                    .stringAnswer(stringAnswer)
+                    .compiler(compiler)
                     .build();
         }
         analyseReport = syntaxErrorAnalyser.check();

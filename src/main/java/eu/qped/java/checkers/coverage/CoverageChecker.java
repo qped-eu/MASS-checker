@@ -8,31 +8,27 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import eu.qped.framework.FileInfo;
 import eu.qped.java.checkers.coverage.framework.coverage.Jacoco;
 import eu.qped.java.checkers.coverage.framework.test.JUnit5;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
-import eu.qped.java.checkers.mass.Mass;
 import eu.qped.java.checkers.mass.QfCoverageSettings;
 import eu.qped.java.checkers.mass.ShowFor;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
-import org.jetbrains.annotations.Nullable;
 
 public class CoverageChecker {
 
 	private QfCoverageSettings covSetting;
-
+	private CoverageSetup coverageSetup;
+	
 	private final Map<String, FeedbackMessage> feedbackMessages = new HashMap<>();
 	private String fullCoverageReport;
 
-	public CoverageChecker(FileInfo studentAnswerFile, String studentAnswer, QfCoverageSettings covSettings) {
-
-		@Nullable SyntaxChecker syntaxChecker = Mass.getSyntaxChecker(studentAnswerFile, studentAnswer, covSetting.getPrivateImplementation());
-
+	public CoverageChecker(QfCoverageSettings covSettings, CoverageSetup coverageSetup) {
 		this.covSetting = covSettings;
-
+		this.coverageSetup = coverageSetup;
+		
 		AtomicInteger nextFree = new AtomicInteger(0);
 		
 		covSettings.getFeedback().forEach(
@@ -88,10 +84,10 @@ public class CoverageChecker {
 		);
 	}
 
-	public String[] check() {
+	public List<String> check() {
 		CoverageSetup data = coverageSetup;
 		if (!data.isCompiled) {
-			return data.syntaxFeedback.toArray(String[]::new);
+			return data.syntaxFeedback;
 		}
 
 		TestFramework test = new JUnit5();
@@ -193,7 +189,7 @@ public class CoverageChecker {
 		result.add(coverageResults);
 		if (covSetting.getShowFullCoverageReport())
 			result.add(fullCoverageReport);
-		return result.stream().flatMap(s -> s).toArray(String[]::new);
+		return result.stream().flatMap(s -> s).collect(Collectors.toList());
 	}
 
 	public String getFullCoverageAndTestReport() {

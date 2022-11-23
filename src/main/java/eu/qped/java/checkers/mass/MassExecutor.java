@@ -43,7 +43,7 @@ public class MassExecutor {
     private final SolutionApproachChecker solutionApproachChecker;
     private final SyntaxChecker syntaxChecker;
     private final ClassChecker classChecker;
-    private MetricsChecker metricsChecker;
+    private final MetricsChecker metricsChecker;
     private final CoverageChecker coverageChecker;
 
     /**
@@ -70,7 +70,6 @@ public class MassExecutor {
         this.classChecker = classChecker;
         this.coverageChecker = coverageChecker;
         this.mainSettings = mainSettings;
-        this.coverageFeedbacks = new String[]{};
     }
 
     /**

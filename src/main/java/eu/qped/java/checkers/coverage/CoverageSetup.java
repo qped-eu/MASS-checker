@@ -57,7 +57,7 @@ public class CoverageSetup {
             testclasses = Collections.emptyList();
             classes = Collections.emptyList();
         } else {
-            String path = compiler.getCompiledStringResourcePath();
+            String path = root.getAbsolutePath();//compiler.getCompiledStringResourcePath();
             testclasses = preprocessing(extracted.javafileByClassname(), extracted.testClasses(), path);
             classes = preprocessing(extracted.javafileByClassname(), extracted.classes(), path);
             isCompiled = true;
@@ -68,6 +68,7 @@ public class CoverageSetup {
 	private String answerText;
 	private String preferredLanguage;
 	private Convention convention;
+	private File root;
 
 
 
@@ -140,7 +141,7 @@ public class CoverageSetup {
     private static final String CLASSPATH = "-classpath";
 
     private List<String> compile(File root) {
-
+    	this.root = root;
         String path;
         if (System.getProperty("maven.compile.classpath") != null) {
             // requires that the corresponding system property is set in the Maven pom
@@ -154,11 +155,12 @@ public class CoverageSetup {
                 List.of(DIR_CLASS, root.getAbsolutePath(), DIR_SOURCE, root.getAbsolutePath(), CLASSPATH, path))
                 .build();
 
+        
+        
         SyntaxChecker syntaxChecker = SyntaxChecker.builder()
-                .targetProject(root.getAbsolutePath()).
-                .compile(compiler)
+                .targetProject(root.getAbsolutePath())
                 .build();
-        return syntaxChecker.check();
+        return syntaxChecker.check(compiler);
     }
 
     private LinkedList<CoverageFacade> preprocessing(
@@ -192,5 +194,6 @@ public class CoverageSetup {
             throw new InternalError(String.format(ErrorMSG.CANT_READ_FILE, file));
         }
     }
+    
 
 }

@@ -71,7 +71,11 @@ public class Mass implements Checker {
         //CoverageChecker
         CoverageChecker coverageChecker = null;
         if (mainSettings.isCoverageNeeded()) {
-            coverageChecker = new CoverageChecker(file, qfObject.getAnswer(), mass.getCoverage());
+            QfCoverageSettings covSetting = mass.getCoverage();
+
+            CoverageSetup coverageSetup = new CoverageSetup(file, covSetting.getPrivateImplementation(), qfObject.getAnswer(), mainSettings.getPreferredLanguage());
+
+            coverageChecker = new CoverageChecker(covSetting, coverageSetup);
         }
 
         //Mass
