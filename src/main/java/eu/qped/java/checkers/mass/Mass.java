@@ -89,12 +89,14 @@ public class Mass implements Checker {
         var styleFeedbacks = massExecutor.getStyleFeedbacks();
         var solutionApproachFeedbacks = massExecutor.getSolutionApproachFeedbacks();
         var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
+        var coverageFeedacks = massExecutor.getCoverageFeedbacks();
 
         var resultArray = mergeFeedbacks(
                 syntaxFeedbacks,
                 styleFeedbacks,
                 solutionApproachFeedbacks,
                 metricsFeedbacks,
+                coverageFeedacks,
                 qfObject
         );
 
@@ -124,6 +126,7 @@ public class Mass implements Checker {
             @NonNull List<StyleFeedback> styleFeedbacks,
             @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
+            @NonNull List<String> coverageFeedbacks,
             @NonNull QfObject qfObject
     ) {
 
@@ -177,6 +180,11 @@ public class Mass implements Checker {
                         resultArrayAsList.add(tempFeedbackAsString);
                     }
             );
+            if (!coverageFeedbacks.isEmpty()) {
+                resultArrayAsList.add("## Coverage feedbacks");
+            }
+            resultArrayAsList.addAll(coverageFeedbacks);
+
         }
         if (resultArrayAsList.size() <= 1) {
             resultArrayAsList.add("Our checks could not find any improvements for your code. This does not mean that it is semantically correct but it adheres to the standards of the lecture in regards to syntax and style.");

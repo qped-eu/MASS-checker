@@ -13,7 +13,7 @@ public class ClassFeedbackTest {
         ClassFeedback fb =  ClassFeedbackGenerator.generateFeedback("class TestClass", "testField",
                 ClassFeedbackType.WRONG_ACCESS_MODIFIER, "Look at hint 1.2 for further info.");
 
-        String expected = "AccessModifierError: Different access modifier for \n\n**testField** in \n\n**class TestClass** expected.\n\n" +
+        String expected = "AccessModifierError: Different access modifier for **testField** in **class TestClass** expected.\n\n" +
                 "Look at hint 1.2 for further info.";
         Assertions.assertEquals(expected, fb.toString());
     }

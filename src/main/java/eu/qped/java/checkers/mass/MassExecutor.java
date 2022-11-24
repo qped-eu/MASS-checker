@@ -116,6 +116,7 @@ public class MassExecutor {
             }
 
         } else if (coverageNeeded) {
+        	syntaxFeedbacks.clear();
             // Found no other solution:
             // The problem is if the student answer needs a klass from a teacher to compile
             // the syntaxChecker always fails.
