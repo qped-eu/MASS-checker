@@ -43,6 +43,11 @@ public class ClassChecker implements Checker {
         this.classConfigurator = classConfigurator;
     }
 
+    /**
+     * check if the object is null or not( if the object have any Elements within)
+     * @param qfObject Qfobject which contains settings, username , ...
+     * @throws Exception
+     */
     @Override
     public void check(QfObject qfObject) throws Exception {
         if(classConfigurator == null) {
@@ -123,6 +128,12 @@ public class ClassChecker implements Checker {
         }
     }
 
+    /**
+     * read the file and check the result if the file was java, otherwise throws an exception
+     * @param file java file ends with .class or .java
+     * @return the result of the input java code
+     * @throws FileNotFoundException
+     */
     private CompilationUnit parseFile(File file) throws FileNotFoundException {
         ParseResult<CompilationUnit> parseResult = javaParser.parse(file);
         if(parseResult.getResult().isPresent()) {
@@ -147,6 +158,12 @@ public class ClassChecker implements Checker {
     }
 
 
+    /**
+     * Extract all possible modifiers, type and name from the field configuration provided by json and add it to a list of (expected element)
+     * @param keywordConfigs field keyword modifiers from json
+     * @return a list with all possible modifiers
+     * @throws NoModifierException
+     */
     private List<ExpectedElement> getExpectedInfos(List<KeywordConfig> keywordConfigs) throws NoModifierException {
         List<ExpectedElement> infos = new ArrayList<>();
         for (KeywordConfig keywords: keywordConfigs) {
@@ -156,22 +173,39 @@ public class ClassChecker implements Checker {
     }
 
 
+    /**
+     * Chose the source of the code
+     * @param source the source of the file we upload, whether it is java or anything else
+     */
     public void addSource(String source) {
         compilationUnits.add(parseCompUnit(source));
     }
 
+    /**
+     * @param source the source of the file we upload, whether it is java or anything else
+     * @return the parsing code as CompilationUnit object
+     */
     private CompilationUnit parseCompUnit (String source){
         return StaticJavaParser.parse(source);
     }
 
+    /**
+     * @return a list of all feedbacks of the code
+     */
     public List<ClassFeedback> getClassFeedbacks() {
         return classFeedbacks;
     }
 
+    /**
+     * @return where the user save the feedback file
+     */
     public String getTargetPath() {
         return targetPath;
     }
 
+    /**
+     * @param targetPath the path where the user want to save the feedback file
+     */
     public void setTargetPath(String targetPath) {
         this.targetPath = targetPath;
     }

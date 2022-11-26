@@ -146,6 +146,14 @@ class ClassMatcher {
         return findViolation(accessMatch, nonAccessMatch, typeMatch, classDecl, customFeedback);
     }
 
+    /** check if the class have a Violation
+     * @param accessMatch a boolean type describe the modifier like public
+     * @param nonAccessMatch a boolean type describe the modifier like private and protected
+     * @param typeMatch a boolean type describe the class type
+     * @param classDecl an object which have two types either Class or Interface
+     * @param customFeedback a list of feedback that describe a class or interface
+     * @return a list of feedbacks with violation
+     */
     private List<ClassFeedback> findViolation(boolean accessMatch, boolean nonAccessMatch, boolean typeMatch, ClassOrInterfaceDeclaration classDecl,
                                              List<String> customFeedback) {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
@@ -193,6 +201,13 @@ class ClassMatcher {
         return false;
     }
 
+    /**
+     * check if the provided class name equals the actual interface or class name
+     * @param classDecl an object which have two types either Class or Interface
+     * @param className a String which have the name of the class
+     * @return true if the provided class name equals the actual interface or class name
+     * @throws ClassNameException
+     */
     private boolean isClassNameMatch(ClassOrInterfaceDeclaration classDecl, String className) throws ClassNameException {
         if(className.isBlank()) {
             throw new ClassNameException();

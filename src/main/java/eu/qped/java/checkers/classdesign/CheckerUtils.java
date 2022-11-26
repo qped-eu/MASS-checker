@@ -71,10 +71,19 @@ public final class CheckerUtils {
         return containsYes;
     }
 
+    /**
+     * @param keywordConfig field keyword modifiers from json
+     * @return List of all possible types of the keyword
+     */
     private static List<String> getPossibleTypes(KeywordConfig keywordConfig) {
         return keywordConfig.getPossibleTypes();
     }
 
+    /**
+     * take the String variable from keywordConfig and replace the Semicolon with an empty String to get a pure name
+     * @param keywordConfig field keyword modifiers from json
+     * @return name of the keyword modifiers from json
+     */
     private static String getNameFromConfig(KeywordConfig keywordConfig) {
         String name = keywordConfig.getName().trim();
         name = name.replaceAll(";", "");
@@ -83,6 +92,16 @@ public final class CheckerUtils {
         return name;
     }
 
+    public static void main(String[] args) {
+        KeywordConfig keywordConfig = new KeywordConfig() {
+            @Override
+            public List<String> getPossibleTypes() {
+                return null;
+            }
+        };
+        keywordConfig.setName("Russia-Snezhnaya;");
+        System.out.println(getNameFromConfig(keywordConfig));
+    }
 
     /**
      * Checks if the expected access modifier matches up with the present element access modifier
@@ -114,6 +133,11 @@ public final class CheckerUtils {
         return expectedNonAccessModifiers.containsAll(actualModifiers) && actualModifiers.containsAll(expectedNonAccessModifiers);
     }
 
+    /**
+     * Check if the modifiers have non access modifiers
+     * @param presentModifiers present modifiers to check
+     * @return List filled with all non-actual access modifiers
+     */
     private static List<String> getActualNonAccessModifiers(List<Modifier> presentModifiers) {
         List<String> actualModifiers = new ArrayList<>();
         List<String> possibleAccessModifiers = createAccessList();

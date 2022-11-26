@@ -20,10 +20,17 @@ public class ClassConfigurator {
         }
     }
 
+    /** create a ClassConfigurator object
+     * @param qfClassSettings QfClassSettings object
+     * @return a ClassConfigurator object
+     */
     public static ClassConfigurator createClassConfigurator(QfClassSettings qfClassSettings) {
         return new ClassConfigurator(qfClassSettings);
     }
 
+    /**
+     * @return a null object from type ClassConfigurator
+     */
     public static ClassConfigurator createDefaultClassConfigurator() {
         return new ClassConfigurator(null);
     }
@@ -35,10 +42,16 @@ public class ClassConfigurator {
         setClassInfos(new ArrayList<>());
     }
 
+    /**
+     * @return a list of all infos of the class
+     */
     public ArrayList<ClassInfo> getClassInfos() {
         return classInfos;
     }
 
+    /** enable the user to add info to the class
+     * @param classInfos list of ClassInfo objects
+     */
     public void setClassInfos(ArrayList<ClassInfo> classInfos) {
         this.classInfos = classInfos;
     }
