@@ -1,5 +1,9 @@
 package eu.qped.java.checkers.classdesign.feedback;
 
+/**
+ * An enum class that lists the different types of feedback
+ */
+
 public enum ClassFeedbackType {
     //Keyword Errors
     WRONG_ELEMENT_NAME("ElementNameError"),
@@ -35,10 +39,19 @@ public enum ClassFeedbackType {
     DIFFERENT_CLASS_NAMES_EXPECTED("DifferentClassNamesExpected");
 
     private final String error;
+
+    /**
+     * A class cunstructor
+     * @param error the error string
+     */
     ClassFeedbackType(final String error) {
         this.error = error;
     }
 
+    /**
+     * A method that returns the feedback type as a string
+     * @return the error field of the ClassDeffbackType object
+     */
     public String toString() {
         return this.error;
     }

@@ -6,6 +6,7 @@ import java.util.*;
 
 import static eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType.*;
 
+/** A class that generates feedback */
 public final class ClassFeedbackGenerator {
 
     private static final String elementPlaceholder = "%NAME%";
@@ -14,8 +15,15 @@ public final class ClassFeedbackGenerator {
     private static final Map<ClassFeedbackType, String> FEEDBACK_MAP = createFeedbackMap();
     public static final Map<List<Boolean>, ClassFeedbackType> VIOLATION_CHECKS = createViolationMap();
 
+    /**
+     * Constructor for the class FeedbackGenerator
+     */
     private ClassFeedbackGenerator() {}
 
+    /**
+     * A method that assigns every feedback type to a message explaining the problem
+     * @return a map using the class ClassFeedbackType and String
+     */
     private static Map<ClassFeedbackType, String> createFeedbackMap() {
         Map<ClassFeedbackType, String> feedbackMap = new HashMap<>();
 
@@ -66,6 +74,11 @@ public final class ClassFeedbackGenerator {
         return Collections.unmodifiableMap(feedbackMap);
     }
 
+    /**
+     * A method that assigns every violation type to a message explaining the problem
+     * @return a map using a list of Boolean values representing the violation
+     * and a String object that represents the message
+     */
     private static Map<List<Boolean>, ClassFeedbackType> createViolationMap() {
         //Format: (access, non access, type, name) for correctness
         Map<List<Boolean>, ClassFeedbackType> violationMap = new HashMap<>();
@@ -90,10 +103,23 @@ public final class ClassFeedbackGenerator {
         return Collections.unmodifiableMap(violationMap);
     }
 
+    /**
+     * A method that generates a feedback message for a given violation
+     * @param violationType the object with the violation type
+     * @return the corresponding value in the map, the message
+     */
     private static String getFeedbackBody(ClassFeedbackType violationType) {
         return FEEDBACK_MAP.getOrDefault(violationType, "");
     }
 
+    /**
+     * A method creating a complete feedback text
+     * @param className the name of the class where the violation took place
+     * @param elementName the name of the element
+     * @param violationType the type of the violation that occurred
+     * @param customFeedback a string that is customizable
+     * @return the complete text as a ClassFeedback object
+     */
     public static ClassFeedback generateFeedback(String className, String elementName, ClassFeedbackType violationType, String customFeedback) {
         String feedbackBody = violationType+": "+getFeedbackBody(violationType);
         feedbackBody = feedbackBody.replaceAll(classPlaceholder, MarkdownFormatterUtility.asBold(className));

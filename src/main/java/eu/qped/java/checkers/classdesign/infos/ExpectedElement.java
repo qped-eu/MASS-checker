@@ -3,6 +3,9 @@ package eu.qped.java.checkers.classdesign.infos;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A class representing the expected code
+ */
 public class ExpectedElement {
 
     private final boolean isExactMatch;
@@ -13,6 +16,15 @@ public class ExpectedElement {
 
     private final boolean containsYes;
 
+    /**
+     * Class constructor
+     * @param accessMod access modifiers
+     * @param nonAccessMods non access modifiers
+     * @param types variable types
+     * @param name name
+     * @param isExactMatch a boolean expressing if the code in an exact match
+     * @param containsYes a boolean representing if the expected code contaions the actual code
+     */
     public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, List<String> types, String name,
                            boolean isExactMatch,
                            boolean containsYes) {
@@ -24,34 +36,67 @@ public class ExpectedElement {
         this.containsYes = containsYes;
     }
 
+    /**
+     * A getter method for the containsYes field
+     * @return the current value of the variable containsYes
+     */
     public boolean isContainsYes() {
         return containsYes;
     }
 
+    /**
+     * A getter method for the isExactMatch field
+     * @return the current value of the variable isExactMatch
+     */
     public boolean isExactMatch() {
         return isExactMatch;
     }
 
+    /**
+     * A getter method for the possibleAccessModifiers field
+     * @return the current value of the variable possibleAccessModifiers
+     */
     public List<String> getPossibleAccessModifiers() {
         return possibleAccessModifiers;
     }
 
+    /**
+     * A getter method for the possibleNonAccessModifiers field
+     * @return the current value of the variable possibleNonAccessModifiers
+     */
     public List<String> getPossibleNonAccessModifiers() {
         return possibleNonAccessModifiers;
     }
 
+    /**
+     * A getter method for the types field
+     * @return the current value of the variable types
+     */
     public List<String> getTypes() {
         return types;
     }
 
+    /**
+     * A getter method for the types name
+     * @return the current value of the variable name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * A setter method for name
+     * @param name the value to be assigned
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * A methode to compare 2 obects
+     * @param o the object to compare to
+     * @return true of the objects are equal, false if not
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,6 +107,10 @@ public class ExpectedElement {
                 Objects.equals(types, that.types) && Objects.equals(name, that.name);
     }
 
+    /**
+     * A methof to create the hash code
+     * @return the hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(possibleAccessModifiers, possibleNonAccessModifiers, types, name);
