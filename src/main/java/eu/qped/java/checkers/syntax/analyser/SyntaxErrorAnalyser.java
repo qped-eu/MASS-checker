@@ -80,7 +80,10 @@ public class SyntaxErrorAnalyser {
         var errorCode = "";
 
         try {
-            errorCode = diagnostic.getSource().getCharContent(false).toString();
+        	if  (diagnostic.getSource() == null)
+        		return "";
+        	else
+        		errorCode = diagnostic.getSource().getCharContent(false).toString();
         } catch (IOException e) {
             e.printStackTrace();
             return errorCode;
@@ -105,6 +108,8 @@ public class SyntaxErrorAnalyser {
          */
         List<SyntaxError> syntaxErrors = new ArrayList<>();
         for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
+        	if  (diagnostic.getSource() == null)
+        		continue;
             String errorTrigger = getErrorTrigger(diagnostic);
             syntaxErrors.add(
                     SyntaxError.builder()

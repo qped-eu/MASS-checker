@@ -24,11 +24,11 @@ import java.util.List;
 @Builder
 public class SolutionApproachChecker {
 
-    @NonNull
+//    @NonNull
     private QfSemanticSettings qfSemanticSettings;
     private SolutionApproachAnalyser solutionApproachAnalyser;
     private SolutionApproachFeedbackGenerator solutionApproachFeedbackGenerator;
-    @NonNull
+//    @NonNull
     private SolutionApproachGeneralSettings solutionApproachGeneralSettings;
 
     private String targetProjectPath;

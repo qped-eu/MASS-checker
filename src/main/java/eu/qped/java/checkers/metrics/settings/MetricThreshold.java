@@ -32,9 +32,9 @@ public class MetricThreshold implements Comparable<MetricThreshold> {
         if (this.metric == null) {
             throw new IllegalStateException("A metric must be specified.");
         }
-        if (lowerBound == -1d || upperBound == -1d) {
-            throw new IllegalStateException("Illegal bound specified");
-        }
+//        if (lowerBound == -1d || upperBound == -1d) {
+//            throw new IllegalStateException("Illegal bound specified");
+//        }
 
         if (lowerBound <= upperBound) {
             this.lowerBound = lowerBound;

@@ -33,7 +33,7 @@ public class SystemTests {
 	
 	// By setting this to true, the Checker runner is executed in the same process
 	// as the system test runner. This can be used for debugging processes.
-	public static final boolean IN_PROCESS = true;
+//	public static final boolean IN_PROCESS = true;
 
 	private static final String SYSTEM_TEST_CONF_YAML = "system-test-conf.yaml";
 	private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
@@ -60,10 +60,10 @@ public class SystemTests {
 			throw new AssertionError(exception);
 		} else {
 			FileUtils.writeStringToFile(QF_OBJECT_FILE, input, Charset.defaultCharset());
-			if (IN_PROCESS) {
-				CheckerRunner.main(new String[0]);
-			}
-			else {
+//			if (IN_PROCESS) {
+//				CheckerRunner.main(new String[0]);
+//			}
+//			else {
 				ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
 				pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
 				if (IS_DEBUG) {
@@ -79,7 +79,7 @@ public class SystemTests {
 				if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
 					throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
 				}
-			}
+//			}
 			
 			String actual = FileUtils.readFileToString(QF_OBJECT_FILE, Charset.defaultCharset());
 			JSONCompare.assertEquals(expected, actual);
