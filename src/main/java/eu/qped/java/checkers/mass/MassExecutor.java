@@ -135,6 +135,7 @@ public class MassExecutor {
         solutionApproachFeedbacks = new ArrayList<>();
         metricsFeedbacks = new ArrayList<>();
         classFeedbacks = new ArrayList<>();
+        coverageFeedbacks = new ArrayList<>();
     }
 
 
