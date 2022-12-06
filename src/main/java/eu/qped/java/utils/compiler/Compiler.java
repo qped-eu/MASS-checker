@@ -117,18 +117,17 @@ public class Compiler implements CompilerInterface {
     public void addClassFilesDestination(String path) {
         if (options == null) {
             options = CompilerSettingsFactory.createDefaultCompilerSettings();
-        }
-        options.add("-d");
-        options.add(path);
-        options.add("-s");
-        options.add(path);
-
-        if (System.getProperty("maven.compile.classpath") != null) {
-            // requires that the corresponding system property is set in the Maven pom
-        	options.addAll(Arrays.asList("-classpath",System.getProperty("maven.compile.classpath")));
-        } else {
-        	// if the checker is not run from Maven (e.g., during testing), inherit classpath from current JVM
-            options.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));
+            options.add("-d");
+            options.add(path);
+            options.add("-s");
+            options.add(path);
+            if (System.getProperty("maven.compile.classpath") != null) {
+                // requires that the corresponding system property is set in the Maven pom
+            	options.addAll(Arrays.asList("-classpath",System.getProperty("maven.compile.classpath")));
+            } else {
+            	// if the checker is not run from Maven (e.g., during testing), inherit classpath from current JVM
+                options.addAll(Arrays.asList("-classpath",System.getProperty("java.class.path")));
+            }
         }
     }
 

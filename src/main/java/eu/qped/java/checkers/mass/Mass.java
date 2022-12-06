@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.mass;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QfProperty;
@@ -8,20 +9,19 @@ import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
 import eu.qped.java.checkers.classdesign.ClassConfigurator;
-import eu.qped.java.checkers.coverage.CoverageBlockChecker;
 import eu.qped.java.checkers.coverage.CoverageChecker;
-import eu.qped.java.checkers.coverage.CoverageMapChecker;
-import eu.qped.java.checkers.coverage.QfCovSetting;
+import eu.qped.java.checkers.coverage.CoverageSetup;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.semantics.SemanticChecker;
-import eu.qped.java.checkers.semantics.SemanticFeedback;
+import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
+import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,22 +52,21 @@ public class Mass implements Checker {
         MainSettings mainSettings = new MainSettings(mass, preferredLanguage);
 
         // Syntax Checker
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
-        if (file != null) {
-            MassFilesUtility filesUtility = MassFilesUtility.builder()
-                    .dirPath(file.getUnzipped().getPath()).build();
-            var allJavaFiles = filesUtility.filesWithExtension("java");
-            if (allJavaFiles.isEmpty()) {
-                qfObject.setFeedback(new String[]{"No java files are detected in your solution"});
-                return;
-            }
-            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
-        } else {
-            syntaxChecker.setStringAnswer(qfObject.getAnswer());
-        }
+        SyntaxChecker syntaxChecker;
+        syntaxChecker = getSyntaxChecker(file, qfObject.getAnswer(), null);
+        if (syntaxChecker == null) return;
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
-        SemanticChecker semanticChecker = SemanticChecker.builder().qfSemanticSettings(mass.getSemantic()).build();
+        var solutionApproachGeneralSettings = SolutionApproachGeneralSettings.builder()
+                .language(qfObject.getUser().getLanguage())
+                .checkLevel(CheckLevel.BEGINNER)
+                .build()
+        ;
+        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder()
+                .qfSemanticSettings(mass.getSemantic())
+                .solutionApproachGeneralSettings(solutionApproachGeneralSettings)
+                .build()
+        ;
 
         MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
 
@@ -77,20 +76,15 @@ public class Mass implements Checker {
         //CoverageChecker
         CoverageChecker coverageChecker = null;
         if (mainSettings.isCoverageNeeded()) {
-            QfCovSetting covSetting = mass.getCoverage();
-            covSetting.setAnswer(qfObject.getAnswer());
-            covSetting.setLanguage(mainSettings.getPreferredLanguage());
-            covSetting.setFile(file);
+            QfCoverageSettings covSetting = mass.getCoverage();
 
-            if (covSetting.isUseBlock()) {
-                coverageChecker = new CoverageBlockChecker(covSetting);
-            } else {
-                coverageChecker = new CoverageMapChecker(covSetting);
-            }
+            CoverageSetup coverageSetup = new CoverageSetup(file, covSetting.getPrivateImplementation(), qfObject.getAnswer(), mainSettings.getPreferredLanguage());
+
+            coverageChecker = new CoverageChecker(covSetting, coverageSetup);
         }
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, semanticChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
+        MassExecutor massExecutor = new MassExecutor(styleChecker, solutionApproachChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
         massExecutor.execute();
 
         /*
@@ -98,25 +92,46 @@ public class Mass implements Checker {
          */
         var syntaxFeedbacks = massExecutor.getSyntaxFeedbacks();
         var styleFeedbacks = massExecutor.getStyleFeedbacks();
-        var semanticFeedbacks = massExecutor.getSemanticFeedbacks();
+        var solutionApproachFeedbacks = massExecutor.getSolutionApproachFeedbacks();
         var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
+        var coverageFeedacks = massExecutor.getCoverageFeedbacks();
 
         var resultArray = mergeFeedbacks(
                 syntaxFeedbacks,
                 styleFeedbacks,
-                semanticFeedbacks,
+                solutionApproachFeedbacks,
                 metricsFeedbacks,
+                coverageFeedacks,
                 qfObject
         );
 
         qfObject.setFeedback(resultArray);
     }
 
+    @Nullable
+    public static SyntaxChecker getSyntaxChecker(FileInfo file, String answer, String privateImplUrl) {
+        SyntaxChecker syntaxChecker;
+        syntaxChecker = SyntaxChecker.builder().build();
+        if (file != null) {
+            MassFilesUtility filesUtility = MassFilesUtility.builder()
+                    .dirPath(file.getUnzipped().getPath()).build();
+            var allJavaFiles = filesUtility.filesWithExtension("java");
+            if (allJavaFiles.isEmpty()) {
+                return null;
+            }
+            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
+        } else {
+            syntaxChecker.setStringAnswer(answer);
+        }
+        return syntaxChecker;
+    }
+
     private String[] mergeFeedbacks(
-            @NonNull List<Feedback> syntaxFeedbacks,
+            @NonNull List<String> syntaxFeedbacks,
             @NonNull List<StyleFeedback> styleFeedbacks,
-            @NonNull List<SemanticFeedback> semanticFeedbacks,
+            @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
+            @NonNull List<String> coverageFeedbacks,
             @NonNull QfObject qfObject
     ) {
 
@@ -126,10 +141,9 @@ public class Mass implements Checker {
 
         String[] resultArray = new String[resultSize];
         List<String> resultArrayAsList = new ArrayList<>();
-        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
         resultArrayAsList.add("# Your Feedback\n");
         if (!syntaxFeedbacks.isEmpty()) {
-            resultArrayAsList.addAll(templateBuilder.buildFeedbacksInTemplate(syntaxFeedbacks, qfObject.getUser().getLanguage()));
+            resultArrayAsList.addAll(syntaxFeedbacks);
         } else {
             if (!styleFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Style feedbacks\n");
@@ -154,15 +168,7 @@ public class Mass implements Checker {
             if (!semanticFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Semantic feedbacks");
             }
-            semanticFeedbacks.forEach(
-                    semanticFeedback -> {
-                        String tempFeedbackAsString =
-                                semanticFeedback.getBody() +
-                                        NEW_LINE +
-                                        SEPARATOR;
-                        resultArrayAsList.add(tempFeedbackAsString);
-                    }
-            );
+            resultArrayAsList.addAll(semanticFeedbacks);
             if (!metricsFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Metric feedbacks");
             }
@@ -179,6 +185,11 @@ public class Mass implements Checker {
                         resultArrayAsList.add(tempFeedbackAsString);
                     }
             );
+            if (!coverageFeedbacks.isEmpty()) {
+                resultArrayAsList.add("## Coverage feedbacks");
+            }
+            resultArrayAsList.addAll(coverageFeedbacks);
+
         }
         if (resultArrayAsList.size() <= 1) {
             resultArrayAsList.add("Our checks could not find any improvements for your code. This does not mean that it is semantically correct but it adheres to the standards of the lecture in regards to syntax and style.");
@@ -186,6 +197,5 @@ public class Mass implements Checker {
         resultArray = resultArrayAsList.toArray(resultArray);
         return resultArray;
     }
-
 
 }

@@ -21,17 +21,17 @@ import java.util.stream.Collectors;
 
 import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
 
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 public class TemplateBuilder {
 
     private final static AtomicInteger counter = new AtomicInteger(0);
     private TemplateTextProvider templateTextProvider;
 
-    public List<String> buildFeedbacksInTemplate(List<Feedback> feedbacks, String language) {
+    public List<String> buildFeedbacksInTemplate(@NonNull List<Feedback> feedbacks, @NonNull String language) {
         return feedbacks.stream().map(feedback -> buildFeedbackInTemplate(feedback, language)).collect(Collectors.toList());
     }
 
@@ -79,7 +79,7 @@ public class TemplateBuilder {
     private String getTemplateFormattedRelatedLocation(RelatedLocation location, Map<String, String> templateTextByLanguage) {
         String result = "";
         if (location == null) return result;
-        if (!location.getFileName().equals("")) {
+        if (location.getFileName() != null && !location.getFileName().equals("")) {
             result += templateTextByLanguage.get(TemplateTextProvider.KEY_IN)
                     + SPACE + location.getFileName()
                     + DOT + SPACE;

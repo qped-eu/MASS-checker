@@ -1,12 +1,12 @@
 package eu.qped.java.checkers.coverage;
 
 
-import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.template.TemplateBuilder;
-import eu.qped.java.checkers.syntax.SyntaxCheckReport;
-import eu.qped.java.checkers.syntax.SyntaxErrorAnalyser;
-import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.checkers.syntax.feedback.FeedbackGenerator;
+import eu.qped.framework.FileInfo;
+import eu.qped.framework.Translator;
+import eu.qped.java.checkers.coverage.framework.coverage.CoverageFacade;
+import eu.qped.java.checkers.mass.Convention;
+import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.compiler.Com;
 import eu.qped.java.utils.compiler.Compiler;
 
@@ -14,82 +14,33 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class CoverageSetup {
-    private static final String MAVEN = "MAVEN", JAVA = "JAVA";
+	
+    public final List<CoverageFacade> testclasses; //bbrauchen wir
+    public final List<CoverageFacade> classes;//bbrauchen wir
+    public final List<String> syntaxFeedback;
+    public final boolean isCompiled;
+    private final ZipService zipService;
+    private Compiler compiler;
 
-
-    public class Info implements CovInformation {
-        private final byte[] byteCode;
-        private final String classname;
-        private final String content;
-
-        public Info(byte[] byteCode, String classname, String content) {
-            this.byteCode = byteCode;
-            this.classname = classname;
-            this.content = content;
-        }
-
-        @Override
-        public String simpleClassName() {
-            return classname.substring(classname.lastIndexOf(".") + 1);
-        }
-
-        @Override
-        public String content() {
-            return content;
-        }
-
-        @Override
-        public String className() {
-            return classname;
-        }
-
-        @Override
-        public byte[] byteCode() {
-            return byteCode;
-        }
+    public void cleanUp() {
+    	zipService.cleanUp();
     }
 
-    public class Data {
-        public final List<CovInformation> testclasses;
-        public final List<CovInformation> classes;
-        public final List<String> syntaxFeedback;
-        public final boolean isCompiled;
-        private final ZipService zipService;
-
-        public Data(List<CovInformation> testclasses, List<CovInformation> classes, List<String> syntaxFeedback, boolean isCompiled, ZipService zipService) {
-            this.testclasses = testclasses;
-            this.classes = classes;
-            this.syntaxFeedback = syntaxFeedback;
-            this.isCompiled = isCompiled;
-            this.zipService = zipService;
-        }
-
-        public void cleanUp() {
-            zipService.cleanUp();
-        }
-    }
-
-
-    private final QfCovSetting setting;
-
-    public CoverageSetup(QfCovSetting setting) {
-        this.setting = setting;
-    }
-
-
-    /**
-     *
-     */
-    public Data setUp() {
-        ZipService zipService = new Zip();
+	private FileInfo answerFile;
+	public CoverageSetup(FileInfo answerFile, String privateImplementation, String answerText, String preferredLanguage) {
+		super();
+		this.answerFile = answerFile;
+		this.privateImplementation = privateImplementation;
+		this.answerText = answerText;
+		this.preferredLanguage = preferredLanguage;
+		this.convention = Convention.JAVA;
+		
+        zipService = new Zip();
         ZipService.Extracted extracted = extract(zipService);
 
         // Validates if at least on testclass and on class are present
@@ -99,77 +50,79 @@ public class CoverageSetup {
         if (extracted.testClasses().isEmpty())
             throw new IllegalStateException(ErrorMSG.MISSING_TESTCLASS);
 
-        SyntaxCheckReport report = compile(extracted.root());
+        syntaxFeedback = compile(extracted.root());
 
-        if (!report.isCompilable()) {
-            List<Feedback> feedbacks = FeedbackGenerator.builder().build().generateFeedbacks(
-                    report.getSyntaxErrors(),
-                    SyntaxSetting.builder().language(setting.getLanguage()).build()
-            );
-            List<String> templatedFeedbacks = TemplateBuilder.builder().build().buildFeedbacksInTemplate(
-                    feedbacks,
-                    setting.getLanguage()
-            );
-            return new Data(null, null,templatedFeedbacks , false, zipService);
+        if (!syntaxFeedback.isEmpty()) {
+            isCompiled = false;
+            testclasses = Collections.emptyList();
+            classes = Collections.emptyList();
+        } else {
+            String path = root.getAbsolutePath();//compiler.getCompiledStringResourcePath();
+            testclasses = preprocessing(extracted.javafileByClassname(), extracted.testClasses(), path);
+            classes = preprocessing(extracted.javafileByClassname(), extracted.classes(), path);
+            isCompiled = true;
         }
+	}
 
-        return new Data(
-                preprocessing(extracted.javafileByClassname(), extracted.testClasses(), report.getPath()),
-                preprocessing(extracted.javafileByClassname(), extracted.classes(), report.getPath()),
-                new LinkedList<>(),
-                true,
-                zipService);
-    }
+	private String privateImplementation;
+	private String answerText;
+	private String preferredLanguage;
+	private Convention convention;
+	private File root;
+
+
 
 
     /**
-     * Downloads the resource zip-folder "privateImplementation" and stores the files of the folder.
-     * - If the answer of a student is a zip-folder the privateImplementation will be unzipped in the answer folder
-     * and overwrites all classes that have the same name.
-     * - If the answer of the student is a string the privateImplementation will be unzipped and the answer will
-     * be saved as java class in the unzipped folder.
-     * Note: im not using the {@link eu.qped.java.utils.compiler.Compiler} to create the java  file from a string.
-     * - Provides not the real class name
-     * - Always compiles without the possibility to add other files
+     *  Downloads the resource zip-folder "privateImplementation" and stores the files of the folder.
+     *  - If the answer of a student is a zip-folder the privateImplementation will be unzipped in the answer folder
+     *    and overwrites all classes that have the same name.
+     *  - If the answer of the student is a string the privateImplementation will be unzipped and the answer will
+     *    be saved as java class in the unzipped folder.
+     *  Note: im not using the {@link eu.qped.java.utils.compiler.Compiler} to create the java  file from a string.
+     *    - Provides not the real class name
+     *    - Always compiles without the possibility to add other files
      */
     private ZipService.Extracted extract(ZipService zipService) {
 
         try {
             ZipService.Classname classname;
             ZipService.TestClass testClass;
-            if (setting.getConvention().equals(JAVA)) {
+            
+            switch (convention) {
+            case JAVA:
                 classname = ZipService.JAVA_CLASS_NAME;
                 testClass = ZipService.JAVA_TEST_CLASS;
-
-            } else if (setting.getConvention().equals(MAVEN)) {
+                break;
+            case MAVEN:
                 classname = ZipService.MAVEN_CLASS_NAME;
                 testClass = ZipService.MAVEN_TEST_CLASS;
-
-            } else {
+                break;
+            default:
                 throw new IllegalStateException(ErrorMSG.UPS);
             }
 
-            if (Objects.nonNull(setting.getFile()) && (Objects.nonNull(setting.getPrivateImplementation()) && !setting.getPrivateImplementation().isBlank())) {
+            if (Objects.nonNull(answerFile) && (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank())) {
                 // Teacher and Student provide data
                 return zipService.extractBoth(
-                        setting.getFile().getSubmittedFile(),
-                        zipService.download(setting.getPrivateImplementation()),
+                        answerFile.getSubmittedFile(),
+                        zipService.download(privateImplementation),
                         testClass,
                         classname);
 
-            } else if (Objects.nonNull(setting.getFile())) {
+            } else if (Objects.nonNull(answerFile)) {
                 // only Student provide data muss contain a  test class and class
-                return zipService.extract(setting.getFile().getSubmittedFile(), testClass, classname);
+                return zipService.extract(answerFile.getSubmittedFile(),testClass, classname);
 
-            } else if (Objects.nonNull(setting.getPrivateImplementation()) && !setting.getPrivateImplementation().isBlank()) {
+            } else if (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank()) {
                 // Teacher and Student provide data. Students answer is a string.
                 ZipService.Extracted extracted = zipService.extract(
-                        zipService.download(setting.getPrivateImplementation()),
+                        zipService.download(privateImplementation),
                         ZipService.JAVA_TEST_CLASS,
                         ZipService.JAVA_CLASS_NAME);
 
-                if (Objects.nonNull(setting.getAnswer()) && !setting.getAnswer().isBlank()) {
-                    Com.Created answerAsClass = new Com().createClassFromString(extracted.root(), setting.getAnswer());
+                if (Objects.nonNull(answerText) && !answerText.isBlank()) {
+                    Com.Created answerAsClass = new Com().createClassFromString(extracted.root(), answerText);
                     if (answerAsClass.isTrue) {
                         extracted.add(answerAsClass.className, answerAsClass.file, ZipService.JAVA_TEST_CLASS.isTrue(answerAsClass.file));
                     }
@@ -187,8 +140,8 @@ public class CoverageSetup {
     private static final String DIR_SOURCE = "-s";
     private static final String CLASSPATH = "-classpath";
 
-    private SyntaxCheckReport compile(File root) {
-
+    private List<String> compile(File root) {
+    	this.root = root;
         String path;
         if (System.getProperty("maven.compile.classpath") != null) {
             // requires that the corresponding system property is set in the Maven pom
@@ -198,26 +151,27 @@ public class CoverageSetup {
             path = System.getProperty("java.class.path");
         }
 
-        Compiler compiler = Compiler.builder().options(
-                        List.of(DIR_CLASS, root.getAbsolutePath(), DIR_SOURCE, root.getAbsolutePath(), CLASSPATH, path))
+        compiler = Compiler.builder().options(
+                List.of(DIR_CLASS, root.getAbsolutePath(), DIR_SOURCE, root.getAbsolutePath(), CLASSPATH, path))
                 .build();
 
-        SyntaxErrorAnalyser syntaxChecker = SyntaxErrorAnalyser.builder()
+        
+        
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder()
                 .targetProject(root.getAbsolutePath())
-                .compiler(compiler)
                 .build();
-        return syntaxChecker.check();
+        return syntaxChecker.check(compiler);
     }
 
-    private LinkedList<CovInformation> preprocessing(
+    private LinkedList<CoverageFacade> preprocessing(
             Map<String, File> javafileByClassname,
             List<String> classname,
             String absolutePath
-    ) {
-        LinkedList<CovInformation> infos = new LinkedList<>();
+    )  {
+        LinkedList<CoverageFacade> infos = new LinkedList<>();
         for (String name : classname) {
-            infos.add(new Info(
-                    readByteCode(Path.of(absolutePath + "/" + name.replace(".", "/") + ".class").toString()),
+            infos.add(new CoverageFacade(
+                    readByteCode(Path.of(absolutePath + "/" + name.replace(".","/") + ".class").toString()),
                     name,
                     readJavacontent(javafileByClassname.get(name))));
         }
@@ -236,8 +190,10 @@ public class CoverageSetup {
         try {
             return Files.readAllBytes(Paths.get(file));
         } catch (Exception e) {
+        	//FIXME change InternalError to some usefult exception
             throw new InternalError(String.format(ErrorMSG.CANT_READ_FILE, file));
         }
     }
+    
 
 }

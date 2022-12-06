@@ -1,0 +1,30 @@
+{
+   "privateImplementation":"file:src/test/resources/coverage/case1/PrivateImpl.zip",
+   "showExtraMisses":false,
+   "showFullCoverageReport":false,
+   "showTestFailures":false,
+   "feedback":[
+      {
+         "showFor":"FULLY_MISSED",
+         "ID":"isTrueMethod",
+         "fileName":"Even.java",
+         "lineRanges":"2-8",
+         "message":"Sie haben die Methode isTrue nicht getestet.",
+         "suppresses":"even, odd"
+      },
+      {
+         "showFor":"PARTIALLY_MISSED",
+         "ID":"even",
+         "fileName":"Even.java",
+         "message":"Was ist mit Zahlen wie 2, 4, etc.?",
+         "lineRanges":"4"
+      },
+      {
+         "showFor":"PARTIALLY_MISSED",
+         "ID":"odd",
+         "fileName":"Even.java",
+         "lineRanges":"6",
+         "message":"Was ist mit Zahlen wie 1, 3, etc.?"
+      }
+   ]
+}

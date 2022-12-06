@@ -16,7 +16,7 @@ else
 fi
 
 # run Maven with debug output
-# batch mode and piping console output through file helps to get readable logs in Quarterfal
-$MVN_COMMAND --batch-mode -X -e compile  exec:java@CheckerRunner > output
+# batch mode and piping console output through file helps to get readable logs in Quarterfall
+$MVN_COMMAND --batch-mode compile  exec:java@CheckerRunner > output
 
 cat output
