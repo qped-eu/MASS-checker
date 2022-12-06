@@ -1,1 +1,0 @@
-=== QPED - Quarterfall communication - Tests
