@@ -87,7 +87,8 @@ public class MassExecutor {
 
         syntaxFeedbacks = syntaxChecker.check();
         var syntaxAnalyseReport = syntaxChecker.getAnalyseReport();
-        if (syntaxAnalyseReport.isCompilable()) {
+        boolean isCompilable = syntaxAnalyseReport.isCompilable();
+        if (isCompilable) {
             if (styleNeeded) {
                 styleChecker.setTargetPath(syntaxAnalyseReport.getPath());
                 styleChecker.check();
@@ -111,12 +112,11 @@ public class MassExecutor {
                     e.printStackTrace();
                 }
             }
-            if (coverageNeeded) {
-                coverageFeedbacks = coverageChecker.check();
+        }
+        if (coverageNeeded) {
+            if(!isCompilable) {
+                syntaxFeedbacks.clear();
             }
-
-        } else if (coverageNeeded) {
-        	syntaxFeedbacks.clear();
             // Found no other solution:
             // The problem is if the student answer needs a klass from a teacher to compile
             // the syntaxChecker always fails.
