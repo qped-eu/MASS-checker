@@ -1,0 +1,136 @@
+-------------------------------------------------------------------------------
+Test set: eu.qped.framework.SystemTests
+-------------------------------------------------------------------------------
+Tests run: 22, Failures: 0, Errors: 22, Skipped: 0, Time elapsed: 1.408 s <<< FAILURE! - in eu.qped.framework.SystemTests
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[1]  Time elapsed: 0.087 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[2]  Time elapsed: 0.004 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[3]  Time elapsed: 0.003 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[4]  Time elapsed: 0.004 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[5]  Time elapsed: 0.013 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[6]  Time elapsed: 0.008 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[7]  Time elapsed: 0.004 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[8]  Time elapsed: 0.008 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[9]  Time elapsed: 0.004 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[10]  Time elapsed: 0.005 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[11]  Time elapsed: 0.011 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[12]  Time elapsed: 0.004 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[13]  Time elapsed: 0.009 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[14]  Time elapsed: 0.004 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[15]  Time elapsed: 0.002 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[16]  Time elapsed: 0.002 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[17]  Time elapsed: 0.002 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[18]  Time elapsed: 0.002 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[19]  Time elapsed: 0.012 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[20]  Time elapsed: 0.003 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[21]  Time elapsed: 0.003 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+
+eu.qped.framework.SystemTests.systemTests(String, SystemTestDescription, String, String, Exception)[22]  Time elapsed: 0.003 s  <<< ERROR!
+java.io.IOException: Cannot run program "./run.sh" (in directory "."): CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+Caused by: java.io.IOException: CreateProcess error=193, %1 ist keine zulässige Win32-Anwendung
+	at eu.qped.framework.SystemTests.systemTests(SystemTests.java:72)
+

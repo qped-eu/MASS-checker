@@ -1,0 +1,38 @@
+[
+  {
+    "technicalCause": "differentReturnTypeThanExpected",
+    "readableCause": "you've used the return type {$solutionReturnType}. Here you should use the return type {$returnType}"
+  },
+  {
+    "technicalCause": "solutionMustHaveRecursion",
+    "readableCause": "you have to solve the method recursive"
+  },
+  {
+    "technicalCause": "solutionMustHaveRecursionInsteadLoop",
+    "readableCause": "you have used a Loop without a recursive Call, you have to solve it just recursive"
+  },
+  {
+    "technicalCause": "solutionMustNotHaveRecursion",
+    "readableCause": "yor are not allowed to use recursive"
+  },
+  {
+    "technicalCause": "moreThenExpectedWhileLoops",
+    "readableCause": "You should not use no more than {$whileLoop} while loop in your code, but you've used {$solutionWhileCounter} while loop"
+  },
+  {
+    "technicalCause": "moreThenExpectedForLoops",
+    "readableCause": "You should not use no more than {$forLoop} for loop in your code, but you've used {$solutionForCounter} for loop"
+  },
+  {
+    "technicalCause": "moreThenExpectedForEachLoops",
+    "readableCause": "You should not use no more than {$forEachLoop} forEach loop in your code, but you've used {$solutionForEachCounter} forEach loop"
+  },
+  {
+    "technicalCause": "moreThenExpectedDoWhileLoops",
+    "readableCause": "You should not use no more than {$doWhileLoop} doWhile loop in your code, but you've used {$solutionDoWhileCounter} doWhile loop"
+  },
+  {
+    "technicalCause": "moreThenExpectedIfElseStatement",
+    "readableCause": "You should not use no more than {$ifElseStmt} IfElse Statement in your code, but you've used {$solutionIfElseCounter} IfElse Statement"
+  }
+]
