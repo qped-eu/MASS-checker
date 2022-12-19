@@ -22,15 +22,15 @@ public final class CheckerUtils {
      */
 
     public static ExpectedElement extractExpectedInfo(KeywordConfig keywordConfig) throws NoModifierException {
-        List<String> accessMod = new ArrayList<>();
+        final List<String> accessMod = new ArrayList<>();
         fillWithPossibleModifiers(keywordConfig.getAccessModifierMap(), accessMod);
 
-        List<String> nonAccessMods = new ArrayList<>();
+        final List<String> nonAccessMods = new ArrayList<>();
         boolean containsYes = fillWithPossibleModifiers(keywordConfig.getNonAccessModifierMap(), nonAccessMods);
 
-        List<String> type = getPossibleTypes(keywordConfig);
-        String name = getNameFromConfig(keywordConfig);
-        boolean allowExactMatch = keywordConfig.isAllowExactModifierMatching();
+        final List<String> type = getPossibleTypes(keywordConfig);
+        final String name = getNameFromConfig(keywordConfig);
+        final boolean allowExactMatch = keywordConfig.isAllowExactModifierMatching();
         return new ExpectedElement(accessMod, nonAccessMods, type, name, allowExactMatch, containsYes);
     }
 
@@ -44,9 +44,13 @@ public final class CheckerUtils {
      */
     private static boolean fillWithPossibleModifiers(Map<String, String> keywordChoiceMap, List<String> possibleMods) throws NoModifierException {
         boolean containsYes = false;
+        String modifier = ""; // modifiers und choice sollten zuerst deklariert und initialisiert werden. Sie müsse nur einmal erstellt werden und brauchen nicht immer neu erstellt zu werden nach jedem Aufruf.
+        String choice = "";
         for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
-            String modifier = entry.getKey();
-            String choice = entry.getValue();
+            // String modifier = entry.getKey();
+            // String choice = entry.getKey();
+            modifier = entry.getKey(); // Hier werden einfach die werte der varaiblen nach jedem Aufruf nur geholt und nicht neu erstellt. Das ist effizienter
+            choice = entry.getValue();
 
             if(choice.equals(KeywordChoice.YES.toString())) {
                 possibleMods.add(modifier);
@@ -56,8 +60,8 @@ public final class CheckerUtils {
 
         if(!containsYes) {
             for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
-                String modifier = entry.getKey();
-                String choice = entry.getValue();
+                modifier = entry.getKey(); // string gelöscht
+                choice = entry.getValue(); // string gelöscht
 
                 if(!choice.equals(KeywordChoice.NO.toString())) {
                     possibleMods.add(modifier);
@@ -87,8 +91,13 @@ public final class CheckerUtils {
     private static String getNameFromConfig(KeywordConfig keywordConfig) {
         String name = keywordConfig.getName().trim();
         name = name.replaceAll(";", "");
-        int pos = name.indexOf("(");
-        name = pos != -1 ? name.substring(0, pos) : name;
+        final int pos = name.indexOf('('); //die varaible pos sollte final sein, da sie unverändert bleibt. //Laufzeit verbessern anstatt indexOf("(") haben wir 40
+        //name = pos != -1 ? name.substring(0, pos) : name;
+        name = pos == -1 ? name : name.substring(0,pos);
+        /*
+        Die meisten "if (x != y)"-Fälle ohne "else" sind oft Rückgabefälle,
+        so dass die konsequente Anwendung dieser Regel den Code leichter lesbar macht.
+         */
         return name;
     }
 
@@ -124,9 +133,8 @@ public final class CheckerUtils {
                                            boolean containsYes) {
         List<String> actualModifiers = getActualNonAccessModifiers(presentModifiers);
         if(!isExactMatch || !containsYes) {
-            return expectedNonAccessModifiers.containsAll(actualModifiers);
+            return expectedNonAccessModifiers.containsAll(actualModifiers); // expectedNAM soll als Hashset zurückgegeben werden, um die Leistun zu verbessern?!!
         }
-
         if(expectedNonAccessModifiers.size() > 1) {
             expectedNonAccessModifiers.remove("");
         }
@@ -161,9 +169,12 @@ public final class CheckerUtils {
      */
     private static List<String> createAccessList() {
         List<String> possibleAccess = new ArrayList<>();
+        possibleAccess.addAll(Arrays.asList("public","private","protected"));
+        /*
         possibleAccess.add("public");
         possibleAccess.add("private");
         possibleAccess.add("protected");
+         */
         return possibleAccess;
     }
 
@@ -183,12 +194,12 @@ public final class CheckerUtils {
             if (firstMatch.get(i)) {
                 countCurrent++;
             }
-            if (secondMatch.get(i)) {
+            if (secondMatch.get(i)) { //if Bedingungen um schreiben, nur if und ein else. Ansonsten if, else-if und else
                 countAccepted++;
             }
         }
 
-        if (countCurrent == countAccepted && countCurrent > 0) {
+        if ((countCurrent == countAccepted) && (countCurrent > 0)) { //Hier gibt es zwei Bedingungen, die nicht getrennt sind und das führt zu Irreterum, deswegen haben iwr die beiden mit Klammern getrennt.
             for (int i = 0; i < firstMatch.size(); i++) {
                 if (!firstMatch.get(i).equals(secondMatch.get(i))) {
                     //Find the one that's false first, this is the one that has to be treated first!

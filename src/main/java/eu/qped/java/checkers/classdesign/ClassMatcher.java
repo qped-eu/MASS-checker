@@ -30,7 +30,7 @@ class ClassMatcher {
     public ClassFeedback checkClassAmount(List<ClassInfo> classInfos, List<ClassOrInterfaceDeclaration> classDecls) {
         ClassFeedback fb = null;
         if(classInfos.size() > classDecls.size()) {
-            fb = ClassFeedbackGenerator.generateFeedback("", "", ClassFeedbackType.MISSING_CLASSES, "");
+            fb = ClassFeedbackGenerator.generateFeedback("", "", MISSING_CLASSES, ""); //ClassFeedbackType.MISSING_CLASSES ist unnötig, man kann einfach MISSING_CLASSES schreiben, da die Klasse in import enthalten ist
         }
         return fb;
     }
@@ -75,19 +75,23 @@ class ClassMatcher {
 
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = new HashMap<>();
         Iterator<ClassOrInterfaceDeclaration> declIterator = classDecls.iterator();
+        boolean matchFound;
+        String className="";
+        boolean nameMatch;
+        String fullyQualifiedName="";
         while(declIterator.hasNext()) {
             ClassOrInterfaceDeclaration classDecl = declIterator.next();
             Iterator<ClassInfo> infoIterator = classInfos.iterator();
 
             while (infoIterator.hasNext()) {
-                boolean matchFound = false;
+                matchFound = false;
                 ClassInfo classInfo = infoIterator.next();
 
                 ClassKeywordConfig classKeywordConfig = classInfo.getClassKeywordConfig();
-                String className = classKeywordConfig.getName();
-                boolean nameMatch = isClassNameMatch(classDecl, className);
+                className = classKeywordConfig.getName();
+                nameMatch = isClassNameMatch(classDecl, className);
 
-                String fullyQualifiedName = classInfo.getFullyQualifiedName();
+                fullyQualifiedName = classInfo.getFullyQualifiedName();
                 Optional<String> actualQualifiedName = classDecl.getFullyQualifiedName();
                 if(actualQualifiedName.isPresent() && fullyQualifiedName.equals(actualQualifiedName.get())) {
                     matchFound = true;
@@ -116,12 +120,14 @@ class ClassMatcher {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
         Iterator<ClassOrInterfaceDeclaration> classDeclIterator = classDecls.iterator();
-
+        String className="";
+        String classType="";
+        String classTypeName ="";
         while(classDeclIterator.hasNext()) {
             ClassOrInterfaceDeclaration classDecl = classDeclIterator.next();
-            String className = classDecl.getNameAsString();
-            String classType = classDecl.isInterface() ? "interface" : "class";
-            String classTypeName = classType + " " + className;
+            className = classDecl.getNameAsString();
+            classType = classDecl.isInterface() ? "interface" : "class";
+            classTypeName = classType + " " + className;
             collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(classTypeName, "",
                     WRONG_CLASS_NAME, ""));
             classDeclIterator.remove();
@@ -188,14 +194,11 @@ class ClassMatcher {
      */
     private boolean isClassTypeMatch(ClassOrInterfaceDeclaration classDecl, List<String> classTypes) {
         for (String classType: classTypes) {
-            if(classType.equals(ClassType.INTERFACE.toString())) {
-                if(classDecl.isInterface()) {
-                    return true;
-                }
-            } else if (classType.equals(ClassType.CLASS.toString())) {
-                if(!classDecl.isInterface()) {
-                    return true;
-                }
+            if((classType.equals(ClassType.INTERFACE.toString())) && (classDecl.isInterface())) {
+                return true;
+            }
+            else if ((classType.equals(ClassType.CLASS.toString())) &&(!classDecl.isInterface())) {
+                return true;
             }
         }
         return false;

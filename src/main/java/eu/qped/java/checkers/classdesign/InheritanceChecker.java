@@ -46,13 +46,16 @@ class InheritanceChecker {
 
         List<ClassOrInterfaceType> implementedInterfaces = classDecl.getImplementedTypes();
         List<ClassOrInterfaceType> extendedClasses = classDecl.getExtendedTypes();
-
+        boolean matchFound;
+        String classType="";
+        String className="";
+        String classTypeName = "";
         for (ExpectedElement elemInfo : expectedParents) {
-            boolean matchFound = findExactInheritanceMatch(extendedClasses, implementedInterfaces, elemInfo);
+            matchFound = findExactInheritanceMatch(extendedClasses, implementedInterfaces, elemInfo);
 
-            String classType = classDecl.isInterface() ? "interface" : "class";
-            String className = classDecl.getNameAsString();
-            String classTypeName = classType +" "+className;
+            classType = classDecl.isInterface() ? "interface" : "class";
+            className = classDecl.getNameAsString();
+            classTypeName = classType +" "+className;
 
             if (!matchFound) {
                 inheritanceFeedback.addAll(findInheritanceViolation(classTypeName, extendedClasses, implementedInterfaces, elemInfo));
@@ -77,14 +80,16 @@ class InheritanceChecker {
                                               ExpectedElement elemInfo) {
 
         List<String> possibleTypes = elemInfo.getTypes();
+        String interfaceMatch="";
+        String classMatch="";
         for (String type : possibleTypes) {
             if(type.equals(ClassType.INTERFACE.toString())) {
-                String interfaceMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), true);
+                interfaceMatch = findInheritedNameMatch(implementedInterfaces, elemInfo.getName(), true);
                 if(!interfaceMatch.isBlank()) {
                     return true;
                 }
             } else if(type.equals(ClassType.CLASS.toString())) {
-                String classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
+                classMatch = findInheritedNameMatch(extendedClasses, elemInfo.getName(), true);
                 if(!classMatch.isBlank()) {
                     return true;
                 }
@@ -225,9 +230,11 @@ class InheritanceChecker {
     private String findInheritedNameMatch(List<ClassOrInterfaceType> types, String expectedInheritedName, boolean removeMatch) {
         String matchedName = "";
         Iterator<ClassOrInterfaceType> typesIterator = types.iterator();
+        ClassOrInterfaceType actualClassName = null;
+        String actualInheritedName ="";
         while(typesIterator.hasNext()) {
-            ClassOrInterfaceType actualClassName = typesIterator.next();
-            String actualInheritedName = actualClassName.getNameAsString();
+            actualClassName = typesIterator.next();
+            actualInheritedName = actualClassName.getNameAsString();
             if(actualInheritedName.equals(expectedInheritedName)) {
                 matchedName = actualInheritedName;
                 if(removeMatch) {

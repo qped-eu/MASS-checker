@@ -12,8 +12,6 @@ import eu.qped.java.checkers.classdesign.enums.ClassMemberType;
 import eu.qped.java.checkers.classdesign.exceptions.ClassNameException;
 import eu.qped.java.checkers.classdesign.exceptions.NoModifierException;
 import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 import eu.qped.java.checkers.classdesign.infos.*;
 
 import java.io.File;
@@ -65,21 +63,24 @@ public class ClassChecker implements Checker {
      * feedback. This method delegates each task to each class and collects all feedback
      */
     private void checkClasses() throws ClassNameException, NoModifierException {
-        List<ClassInfo> classInfos = classConfigurator.getClassInfos();
-        List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
+        final List<ClassInfo> classInfos = classConfigurator.getClassInfos();
+        final List<ClassOrInterfaceDeclaration> classDecls = getAllClassDeclarations(compilationUnits);
 
         ClassMatcher classMatcher = new ClassMatcher();
-        ClassFeedback amountFB = classMatcher.checkClassAmount(classInfos, classDecls);
+        final ClassFeedback amountFB = classMatcher.checkClassAmount(classInfos, classDecls);
         if(amountFB != null) {
             classFeedbacks.add(amountFB);
         }
 
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedDeclInfo = classMatcher.matchClassNames(classDecls, classInfos);
         classFeedbacks.addAll(classMatcher.generateClassNameFeedback(classDecls));
-
+        ClassOrInterfaceDeclaration classDecl; // Objekt deklarieren und initalsiern
+        ClassInfo classInfo;
+        boolean matchExactFieldAmount;
+        boolean matchExactMethodAmount;
         for(Map.Entry<ClassInfo, ClassOrInterfaceDeclaration> entry : matchedDeclInfo.entrySet()) {
-            ClassOrInterfaceDeclaration classDecl = entry.getValue();
-            ClassInfo classInfo = entry.getKey();
+            classDecl = entry.getValue(); // Obejkt nach jedem Aufruf überschreiben
+            classInfo = entry.getKey();
 
             List<KeywordConfig> fieldKeywordConfigs = new ArrayList<>(classInfo.getFieldKeywordConfigs());
             List<KeywordConfig> methodKeywordConfigs = new ArrayList<>(classInfo.getMethodKeywordConfigs());
@@ -92,8 +93,8 @@ public class ClassChecker implements Checker {
 
             InheritanceChecker inheritanceChecker = new InheritanceChecker(matchedDeclInfo, classInfo.getCustomInheritanceFeedback());
 
-            boolean matchExactFieldAmount = classInfo.isMatchExactFieldAmount();
-            boolean matchExactMethodAmount = classInfo.isMatchExactMethodAmount();
+            matchExactFieldAmount = classInfo.isMatchExactFieldAmount(); // oben deklariert
+            matchExactMethodAmount = classInfo.isMatchExactMethodAmount();
 
             classFeedbacks.addAll(classMatcher.checkClassMatch(classDecl, CheckerUtils.extractExpectedInfo(classInfo.getClassKeywordConfig()), classInfo.getCustomClassFeedback()));
             classFeedbacks.addAll(inheritanceChecker.checkInheritanceMatch(classDecl, getExpectedInfos(inheritsFromConfigs)));
@@ -109,7 +110,7 @@ public class ClassChecker implements Checker {
      * @throws IllegalArgumentException if file can not be parsed
      */
     private void parseCompUnitsFromFiles() throws FileNotFoundException, IllegalArgumentException {
-        File javaOrDirFile = new File(targetPath);
+        final File javaOrDirFile = new File(targetPath);
 
         if(javaOrDirFile.exists()) {
             if(javaOrDirFile.isDirectory()) {
