@@ -24,7 +24,7 @@ class FileDownloadTest {
 	void testDownloadFileLocal() throws FileNotFoundException, ZipException, IOException {
 		FileInfo fileInfo = FileInfo.createForUrl("file:" + JAVA_FILE_PATH, "text/plain");
 		
-		CheckerRunner.downloadAndUnzipIfNecessary(fileInfo);
+		QpedQfFilesUtility.downloadAndUnzipIfNecessary(fileInfo);
 		
 		assertNotNull(fileInfo.getDownloadedFile());
 		assertNull(fileInfo.getUnzippedDirectory());
@@ -40,7 +40,7 @@ class FileDownloadTest {
 	void testDownloadArchiveLocal(String mimeType) throws FileNotFoundException, ZipException, IOException {
 		FileInfo fileInfo = FileInfo.createForUrl("file:" + ZIP_FILE_PATH, mimeType);
 		
-		CheckerRunner.downloadAndUnzipIfNecessary(fileInfo);
+		QpedQfFilesUtility.downloadAndUnzipIfNecessary(fileInfo);
 		
 		assertNotNull(fileInfo.getDownloadedFile());
 		assertNotNull(fileInfo.getUnzippedDirectory());

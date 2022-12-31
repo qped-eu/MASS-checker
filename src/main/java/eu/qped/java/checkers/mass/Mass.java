@@ -3,6 +3,7 @@ package eu.qped.java.checkers.mass;
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.Checker;
 import eu.qped.framework.FileInfo;
+import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.framework.QfProperty;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.template.TemplateBuilder;
@@ -18,11 +19,12 @@ import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSet
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.utils.MassFilesUtility;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.NonNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import java.util.List;
 public class Mass implements Checker {
 
     public static final String SEPARATOR = "--------------------------------------------------";
+    
     @QfProperty
     private FileInfo file;
 
@@ -43,9 +46,9 @@ public class Mass implements Checker {
 
     @Override
     public void check(QfObject qfObject) throws Exception {
-
+    	
         MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
-
+        
         // Syntax Checker
         SyntaxChecker syntaxChecker;
         syntaxChecker = getSyntaxChecker(file, qfObject.getAnswer(), null);
@@ -108,9 +111,13 @@ public class Mass implements Checker {
         SyntaxChecker syntaxChecker;
         syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
-            MassFilesUtility filesUtility = MassFilesUtility.builder()
-                    .dirPath(file.getUnzippedDirectory().getPath()).build();
-            var allJavaFiles = filesUtility.filesWithExtension("java");
+        	try {
+				QpedQfFilesUtility.downloadAndUnzipIfNecessary(file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            var allJavaFiles = QpedQfFilesUtility.filesWithExtension(file.getUnzippedDirectory().getPath(), "java");
             if (allJavaFiles.isEmpty()) {
                 return null;
             }

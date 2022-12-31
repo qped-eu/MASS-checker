@@ -1,7 +1,7 @@
 package eu.qped.java.utils.compiler;
 
+import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.java.utils.FileExtensions;
-import eu.qped.java.utils.MassFilesUtility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -70,14 +70,10 @@ public class Compiler implements CompilerInterface {
             files.add(new File(targetProjectOrClassPath));
 
         } else {
-            var filesUtilityBuilder = MassFilesUtility.builder();
-            MassFilesUtility massFilesUtility;
             if (targetProjectOrClassPath == null || targetProjectOrClassPath.equals("")) {
                 targetProjectOrClassPath = DEFAULT_DIR_PATH;
             }
-            filesUtilityBuilder.dirPath(targetProjectOrClassPath);
-            massFilesUtility = filesUtilityBuilder.build();
-            files = massFilesUtility.filesWithExtension("java");
+            files = QpedQfFilesUtility.filesWithExtension(targetProjectOrClassPath, "java");
             if (files.size() == 0) {
                 return false;
             }

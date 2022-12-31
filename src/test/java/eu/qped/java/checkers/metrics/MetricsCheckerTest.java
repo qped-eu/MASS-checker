@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.metrics;
 
+import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
@@ -9,7 +10,7 @@ import eu.qped.java.checkers.metrics.data.report.MetricsCheckerReport;
 import eu.qped.java.checkers.metrics.settings.MetricSettings;
 import eu.qped.java.checkers.metrics.settings.MetricSettingsReader;
 import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
-import eu.qped.java.utils.MassFilesUtility;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -100,7 +101,7 @@ class MetricsCheckerTest {
         MetricSettings metricSettings = metricSettingsReader.readMetricsCheckerSettings(MetricSettings.builder().build());
 
         List<File> classFiles
-                = MassFilesUtility.builder().dirPath("src/main/java/eu/qped/java/utils/compiler/compiledFiles").build().filesWithExtension("class");
+                = QpedQfFilesUtility.filesWithExtension("src/main/java/eu/qped/java/utils/compiler/compiledFiles", "class");
         String[] pathsToClassFiles = classFiles.stream().map(File::getPath).toArray(String[]::new);
 
         Method runCkjmExtendedMethod = metricsCheckerCustom.getClass().getDeclaredMethod("runCkjmExtended", MetricsCheckerReport.class, String[].class, boolean.class, boolean.class);
