@@ -105,14 +105,14 @@ public class CoverageSetup {
             if (Objects.nonNull(answerFile) && (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank())) {
                 // Teacher and Student provide data
                 return zipService.extractBoth(
-                        answerFile.getSubmittedFile(),
+                        answerFile.getDownloadedFile(),
                         zipService.download(privateImplementation),
                         testClass,
                         classname);
 
             } else if (Objects.nonNull(answerFile)) {
                 // only Student provide data muss contain a  test class and class
-                return zipService.extract(answerFile.getSubmittedFile(),testClass, classname);
+                return zipService.extract(answerFile.getDownloadedFile(),testClass, classname);
 
             } else if (Objects.nonNull(privateImplementation) && !privateImplementation.isBlank()) {
                 // Teacher and Student provide data. Students answer is a string.

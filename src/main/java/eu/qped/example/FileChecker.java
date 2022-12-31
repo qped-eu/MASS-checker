@@ -16,11 +16,11 @@ public class FileChecker implements Checker {
 	@Override
 	public void check(QfObject qfObject) throws Exception {
 		System.out.println("Path to submitted file on local file system:");
-		System.out.println(file.getSubmittedFile());
+		System.out.println(file.getDownloadedFile());
 		
-		if (file.getUnzipped() != null) {
+		if (file.getUnzippedDirectory() != null) {
 			System.out.println("Submitted file was a zip file. Paht to unzipped contents:");
-			printRecursive(file.getUnzipped(), "");
+			printRecursive(file.getUnzippedDirectory(), "");
 		}
 	}
 

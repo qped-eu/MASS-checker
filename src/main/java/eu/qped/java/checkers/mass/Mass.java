@@ -109,12 +109,12 @@ public class Mass implements Checker {
         syntaxChecker = SyntaxChecker.builder().build();
         if (file != null) {
             MassFilesUtility filesUtility = MassFilesUtility.builder()
-                    .dirPath(file.getUnzipped().getPath()).build();
+                    .dirPath(file.getUnzippedDirectory().getPath()).build();
             var allJavaFiles = filesUtility.filesWithExtension("java");
             if (allJavaFiles.isEmpty()) {
                 return null;
             }
-            syntaxChecker.setTargetProject(file.getUnzipped().getPath());
+            syntaxChecker.setTargetProject(file.getUnzippedDirectory().getPath());
         } else {
             syntaxChecker.setStringAnswer(answer);
         }

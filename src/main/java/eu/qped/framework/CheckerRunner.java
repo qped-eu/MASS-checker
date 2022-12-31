@@ -91,22 +91,7 @@ public class CheckerRunner {
 						new TypeReference<FileInfo>() {
 						});
 
-				downloadSubmittedFile(fileInfo);
-
-				if (fileInfo.getMimetype().contains("application/x-zip-compressed") || fileInfo.getMimetype().contains("application/zip") ) {
-					try {
-						File unzipTarget = Files.createTempDirectory("exam-results").toFile();
-						tempFiles.add(unzipTarget);
-
-						ZipFile zipFile = new ZipFile(fileInfo.getSubmittedFile());
-						zipFile.extractAll(unzipTarget.toString());
-
-						fileInfo.setUnzipped(unzipTarget);
-					} catch (ZipException e) {
-						throw new IllegalArgumentException(e);
-					}
-				}
-
+				downloadAndUnzipIfNecessary(fileInfo);
 
 			} else {
 				fileInfo = null;
@@ -139,9 +124,27 @@ public class CheckerRunner {
 		}
 	}
 
-	public static void downloadSubmittedFile(FileInfo fileInfo) throws IOException, FileNotFoundException, MalformedURLException {
-		File submittedFile = File.createTempFile(fileInfo.getId(), fileInfo.getExtension());
-		tempFiles.add(submittedFile);
+	/**
+	 * This method downloads a file from URL of the provided argument to a local temp file, and unzips it
+	 * to a local temp directory of the mime type is zip.
+	 * The allocated temporary file and possibly the directory with all its contained files and directories
+	 * will be deleted at the end of the execution of this program. I.e., when the main-method in this class ends.
+	 * The location of the downloaded file and (in case of a zip file) the location of the extracted files are
+	 * set as properties of the passed FileInfo object.
+	 * The downloaded file is unzipped if the passed fileInfo specifies as mime type either
+	 * "application/zip", "application/zip-compressed" or "application/x-zip-compressed".
+	 * 
+	 * @param fileInfo
+	 * @return The directory containing the downloaded file, if it is a plain file, or the unzipped contents in 
+	 * case the downloaded file was a zip archive.
+	 * @throws FileNotFoundException
+	 * @throws MalformedURLException
+	 * @throws ZipException
+	 * @throws IOException
+	 */
+	public static File downloadAndUnzipIfNecessary(FileInfo fileInfo) throws FileNotFoundException, MalformedURLException, ZipException, IOException {
+		File targetDirectory = createManagedTempDirectory();
+		File submittedFile = new File(targetDirectory, fileInfo.getId() + fileInfo.getExtension());
 
 		try (InputStream input = new URL(fileInfo.getUrl()).openStream()) {
 			try (OutputStream output = new FileOutputStream(submittedFile)) {
@@ -153,7 +156,33 @@ public class CheckerRunner {
 				}
 			}
 		}
-		fileInfo.setSubmittedFile(submittedFile);
+		fileInfo.setDownloadedFile(submittedFile);
+		
+		if (fileInfo.getMimetype().contains("application/x-zip-compressed")
+				|| fileInfo.getMimetype().contains("application/zip-compressed")
+				|| fileInfo.getMimetype().contains("application/zip") ) {
+			File unzipTarget = createManagedTempDirectory();
+
+			ZipFile zipFile = new ZipFile(fileInfo.getDownloadedFile());
+			zipFile.extractAll(unzipTarget.toString());
+
+			fileInfo.setUnzippedDirectory(unzipTarget);
+			return unzipTarget;
+		}
+		
+		return targetDirectory;
+	}
+
+	public static File createManagedTempDirectory() throws IOException {
+		File unzipTarget = Files.createTempDirectory("qf-checker").toFile();
+		tempFiles.add(unzipTarget);
+		return unzipTarget;
+	}
+
+	public static File createManagedTempFile(String filename, String extension) throws IOException {
+		File submittedFile = File.createTempFile(filename, extension);
+		tempFiles.add(submittedFile);
+		return submittedFile;
 	}
 	
 	public File getQfObjectJsonFile() {
