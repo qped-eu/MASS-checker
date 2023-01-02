@@ -16,8 +16,7 @@ import org.junit.runner.RunWith;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(Theories.class)
 public class ClassInheritanceTest {

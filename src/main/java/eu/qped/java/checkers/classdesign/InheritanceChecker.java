@@ -68,7 +68,27 @@ class InheritanceChecker {
 
         return inheritanceFeedback;
     }
+/**
+    public static void main(String[] args) {
+        NodeList<Modifier> modifiers = new NodeList<>();
+        modifiers.add(Modifier.publicModifier());
+        ClassOrInterfaceDeclaration classDecl = new ClassOrInterfaceDeclaration(modifiers, false, "MyClass");
+        List<String> accessMod = new ArrayList<>();
+        accessMod.add("public");
+        List<String> nonAccessMods = new ArrayList<>();
+        nonAccessMods.add("private");
+        List<String> types = new ArrayList<>();
+        types.add("interface");
+        String name = "Class Nemer";
+        boolean isExactMatch = true;
+        boolean containsYes = true;
+        ExpectedElement element = new ExpectedElement(accessMod,nonAccessMods,types,name,isExactMatch, containsYes);
+        List<ExpectedElement> expectedParents = new ArrayList<>();
+        expectedParents.add(element);
+        System.out.println(checkInheritanceMatch(classDecl,expectedParents));
+    }
 
+ */
     /**
      * Differentiate between having to look for implementing types or extending types
      * @param extendedClasses actual extended classes from the class
