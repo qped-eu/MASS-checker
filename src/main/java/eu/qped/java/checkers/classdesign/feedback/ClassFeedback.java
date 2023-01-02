@@ -10,7 +10,7 @@ public class ClassFeedback extends Feedback {
      * Constructor for the ClassFeedback
      * @param body is the body of the feedback represented as a string
      */
-    public ClassFeedback(String body) {
+    public ClassFeedback(final String body) {
         super(body);
     }
 
@@ -24,11 +24,14 @@ public class ClassFeedback extends Feedback {
 
     /**
      * A method used to compare two objects
-     * @param o the object to be compared with
+     * @param object the object to be compared with
      * @return a boolean value, true is the two obects are equal, false if not
      */
     @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
+    public boolean equals(final Object object) {
+        return super.equals(object);
     }
+
+    @Override
+    public int hashCode(){return super.hashCode();}
 }
