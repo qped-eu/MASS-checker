@@ -72,4 +72,23 @@ public class CheckerUtilsTest {
         presentModifiers.add(Modifier.staticModifier());
         assertTrue(CheckerUtils.isNonAccessMatch(presentModifiers, expectedNonAccess, false, false));
     }
+
+    @Test
+    public void compareMatchingLists() {
+        List<Boolean> firstMatch = new ArrayList<>();
+        List<Boolean> secondMatch = new ArrayList<>();
+        firstMatch.add(true);
+        firstMatch.add(false);
+        firstMatch.add(true);
+        firstMatch.add(true);
+
+        secondMatch.add(false);
+        secondMatch.add(false);
+        secondMatch.add(true);
+        secondMatch.add(false);
+        secondMatch.add(true);
+
+        assertEquals(-2,CheckerUtils.compareMatchingLists(firstMatch, secondMatch));
+
+    }
 }
