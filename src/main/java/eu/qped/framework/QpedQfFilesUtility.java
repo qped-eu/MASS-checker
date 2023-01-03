@@ -1,11 +1,5 @@
 package eu.qped.framework;
 
-import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,17 +8,46 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.eclipse.jdt.core.compiler.IProblem;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
+
+import eu.qped.framework.QpedQfFilesUtility.AnswerDescription.AnswerDescriptionBuilder;
+import lombok.Builder;
+import lombok.Getter;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+
 public class QpedQfFilesUtility {
 
-    public static List<File> filesWithExtension(String dirPath, String extension) {
+    private static final String DEFAULT_ANSWER_METHOD = "$answerMethod";
+	private static final String DEFAULT_ANSWER_CLASS = "$AnswerClass";
+
+	public static List<File> filesWithExtension(String dirPath, String extension) {
+        return filesWithExtension(new File(Objects.requireNonNull(dirPath)), extension);
+    }
+    
+    public static List<File> filesWithExtension(File dirPath, String extension) {
         List<File> allFiles = new ArrayList<>();
         List<File> filesWithJavaExtension = new ArrayList<>();
-        File fileOrDirectory = new File(Objects.requireNonNull(dirPath));
+        File fileOrDirectory = Objects.requireNonNull(dirPath);
         if (fileOrDirectory.exists()) {
             if (fileOrDirectory.isDirectory()) {
                 allFiles.add(fileOrDirectory);
@@ -135,4 +158,198 @@ public class QpedQfFilesUtility {
 		tempFiles.add(submittedFile);
 		return submittedFile;
 	}
+	
+	public static File createFileFromAnswerString(File solutionRoot, String answer) throws IOException {
+		AnswerDescription answerDescription = getAnswerDescription(answer);
+		String answerFileContent;
+		int answerLineOffset;
+		String filename;
+		switch (answerDescription.getKind()) {
+		case ASTParser.K_COMPILATION_UNIT: {
+			answerFileContent = answer;
+			answerLineOffset = 0;
+			filename = answerDescription.getPackageName().replaceAll("/", File.separator);
+			if (!filename.isEmpty()) {
+				filename += File.separator;
+			}
+			filename += answerDescription.getPrimaryTypeSimpleName() + ".java";
+			break;
+		}
+		case ASTParser.K_CLASS_BODY_DECLARATIONS: {
+			answerFileContent = "public class " + DEFAULT_ANSWER_CLASS + " {\n"
+					+ answer + "\n"
+					+ "}\n";
+			answerLineOffset = 1;
+			filename = DEFAULT_ANSWER_CLASS + ".java";
+			break;
+		}
+		case ASTParser.K_STATEMENTS: {
+			answerFileContent = "public class "+ DEFAULT_ANSWER_CLASS + " {\n"
+					+ "    public static void " + DEFAULT_ANSWER_METHOD + "() {\n"
+					+ answer + "\n"
+					+ "    }\n"
+					+ "}\n";
+			answerLineOffset = 2;
+			filename = DEFAULT_ANSWER_CLASS + ".java";
+			break;
+		}
+		case ASTParser.K_EXPRESSION: {
+			answerFileContent = "public class " + DEFAULT_ANSWER_CLASS + " {\n"
+					+ "    public static Object " + DEFAULT_ANSWER_METHOD + "() {\n"
+					+ "        return\n"
+					+ answer + "\n"
+					+ "        ;\n"
+					+ "    }\n"
+					+ "}\n";
+			answerLineOffset = 3;
+			filename = DEFAULT_ANSWER_CLASS + ".java";
+			break;
+		}
+		case AnswerDescription.K_INCONCLUSIVE: {
+			// The answer was no legal Java compilation unit, method sequence, statement sequence or expression.
+			// Therefore, we could not determine what kind of code the answer is supposed to contain.
+			// But most Java elements are allowed inside a static method, so let's wrap it in a static method.
+			answerFileContent = "public class " + DEFAULT_ANSWER_CLASS + " {\n"
+					+ "    public static void " + DEFAULT_ANSWER_METHOD + "() {\n"
+					+ answer + "\n"
+					+ "    }"
+					+ "}";
+			answerLineOffset = 2;
+			filename = DEFAULT_ANSWER_CLASS + ".java";
+			break;
+		}
+
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + answerDescription.getKind());
+		}
+		
+		File outputFile = new File(solutionRoot, filename);
+		File outputDirectory = outputFile.getParentFile();
+		if (outputDirectory != null) {
+			outputDirectory.mkdirs();
+		}
+		FileUtils.write(outputFile, answerFileContent, Charset.defaultCharset());
+		return outputFile;
+	}
+
+	public static AnswerDescription getAnswerDescription(String answer) {
+		 AnswerDescriptionBuilder descriptionBuilder = AnswerDescription.builder();
+		
+		ASTParser parser = ASTParser.newParser(AST.getJLSLatest());
+		
+		// first try compilation unit
+		parser.setIgnoreMethodBodies(true);
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		parser.setStatementsRecovery(false);
+		parser.setSource(answer.toCharArray());
+		ASTNode ast = parser.createAST(null);
+		
+		if (ast != null && ast instanceof CompilationUnit cu) {
+			@SuppressWarnings("unchecked")
+			List<ImportDeclaration> imports = cu.imports();
+			PackageDeclaration packageDeclaration = cu.getPackage();
+			@SuppressWarnings("unchecked")
+			List<AbstractTypeDeclaration> types = cu.types();
+			if (!imports.isEmpty() || packageDeclaration != null || !types.isEmpty()) {
+				// it is definitely meant to be a compilation unit
+				descriptionBuilder.kind(ASTParser.K_COMPILATION_UNIT);
+				descriptionBuilder.packageName(packageDeclaration != null ? packageDeclaration.getName().getFullyQualifiedName() : "");
+				if (!types.isEmpty()) {
+					AbstractTypeDeclaration primaryType = types.get(0);
+					for (AbstractTypeDeclaration type : types) {
+						if (Modifier.isPublic(type.getModifiers())) {
+							primaryType = type;
+						}
+					}
+					descriptionBuilder.primaryTypeSimpleName(primaryType.getName().getIdentifier());
+				}
+				descriptionBuilder.ast(ast);
+				return descriptionBuilder.build();
+			}
+		}
+		
+		// if we have not been successful, try member declarations next
+		// first try compilation unit
+		parser.setIgnoreMethodBodies(true);
+		parser.setKind(ASTParser.K_CLASS_BODY_DECLARATIONS);
+		parser.setStatementsRecovery(false);
+		parser.setSource(answer.toCharArray());
+		ast = parser.createAST(null);
+		
+		// class body declarations, such as methods, as wrapped in a new class with name MISSING
+		// in other cases, the type of the AST node would be the fallback "compilation unit"
+		if (ast != null && ast instanceof TypeDeclaration td && td.getName().getIdentifier().equals("MISSING")) {
+			// the answer must consist of class members such as methods
+			// it cannot be a class, as it would have been interpreted as compilation unit above
+			descriptionBuilder.kind(ASTParser.K_CLASS_BODY_DECLARATIONS);
+			// no package and type name are provided in the answer, so we use default values
+			descriptionBuilder.packageName("").primaryTypeSimpleName(null);
+			descriptionBuilder.ast(ast);
+			return descriptionBuilder.build();
+		}
+		
+		// package name and primary type name can only exist for
+		// answers which are compilation units.
+		descriptionBuilder.packageName("").primaryTypeSimpleName(null);
+
+		
+		// if we have not been successful, try expression next
+		// first try compilation unit
+		parser.setKind(ASTParser.K_EXPRESSION);
+		parser.setStatementsRecovery(true);
+		parser.setSource(answer.toCharArray());
+		ast = parser.createAST(null);
+		System.out.println(ast);
+		
+		// statements are wrapped in a block
+		if (ast != null && ast instanceof Expression) {
+			// the answer must consist of an expression
+			descriptionBuilder.kind(ASTParser.K_EXPRESSION);
+			descriptionBuilder.ast(ast);
+			return descriptionBuilder.build();
+		}
+
+
+		// if we have not been successful, try statements next
+		// first try compilation unit
+		parser.setKind(ASTParser.K_STATEMENTS);
+		parser.setStatementsRecovery(true);
+		parser.setSource(answer.toCharArray());
+		ast = parser.createAST(null);
+		System.out.println(ast);
+		
+		// statements are wrapped in a block
+		if (ast != null && ast instanceof Block block && !block.statements().isEmpty()) {
+			// the answer must consist of statements
+			descriptionBuilder.kind(ASTParser.K_STATEMENTS);
+			descriptionBuilder.ast(ast);
+			return descriptionBuilder.build();
+		}
+
+		descriptionBuilder.kind(AnswerDescription.K_INCONCLUSIVE).ast(null);
+		return descriptionBuilder.build();
+	}
+	
+	@Builder
+	@Getter
+	public static class AnswerDescription {
+		public static final int K_INCONCLUSIVE = 0;
+		
+		private String primaryTypeSimpleName;
+		private String packageName;
+		
+		/**
+		 * Determine whether the answer is a complete compilation unit, a sequence of body
+		 * declarations (method, field, etc.), a sequence of statements or an expression.
+		 * 
+		 * One of {@link ASTParser#K_COMPILATION_UNIT}, {@link ASTParser#K_CLASS_BODY_DECLARATIONS},
+		 * {@link ASTParser#K_STATEMENTS}, {@link ASTParser#K_EXPRESSION}, or {@link #K_INCONCLUSIVE} for inconclusive.
+		 */
+		private int kind;
+		
+		private ASTNode ast;
+		
+	}
+	
+	
 }
