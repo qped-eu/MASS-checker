@@ -113,8 +113,6 @@ public class CheckerRunner {
 		else {
 			writer.writeValue(System.out, runner.getQfObject());
 		}
-		
-		QpedQfFilesUtility.cleanupTempFiles();
 	}
 
 	public QfObject getQfObject() {

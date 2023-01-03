@@ -177,49 +177,4 @@ public class StyleChecker {
         PMD.runPmd(configuration);
     }
 
-    public static void main(String[] args) {
-
-        String codeToCompile = "double krt(double A, double k, double d){\n" +
-                "    int K,L;\n" +
-                "    return  A;\n" +
-                "}\n" +
-                "\n" +
-                "double krtH(double a, double k, double d, double x_n){\n" +
-                "    return a;\n" +
-                "}";
-
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
-        syntaxChecker.setStringAnswer(codeToCompile);
-        var setting = SyntaxSetting.builder().checkLevel(CheckLevel.BEGINNER).language("en").build();
-        syntaxChecker.setSyntaxSetting(setting);
-        var feedbacks = syntaxChecker.check();
-
-        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        feedbacks.forEach(System.out::println);
-
-
-        var styleChecker = StyleChecker.builder().build();
-        var qfStyleSetting = QfStyleSettings
-                .builder()
-                .basisLevel("BEGINNER")
-                .complexityLevel("BEGINNER")
-                .namesLevel("BEGINNER")
-                .classLength("-1")
-                .methodLength("-1")
-                .cyclomaticComplexity("-1")
-                .fieldsCount("-1")
-                .variableNamePattern("[a-z][a-zA-Z0-9]*")
-                .methodNamePattern("[a-z][a-zA-Z0-9]*")
-                .classNamePattern("[A-Z][a-zA-Z0-9_]*")
-                .methodParameterNamePattern("[A-Z][a-zA-Z0-9_]*")
-                .build();
-        styleChecker.setQfStyleSettings(qfStyleSetting);
-        styleChecker.setTargetPath(syntaxChecker.getAnalyseReport().getPath());
-        styleChecker.check();
-        var feedbacksS = styleChecker.getStyleFeedbacks();
-
-
-        System.out.println(feedbacksS);
-
-    }
 }

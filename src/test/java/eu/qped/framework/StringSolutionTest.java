@@ -1,4 +1,4 @@
-package com.github.javaparser;
+package eu.qped.framework;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -166,6 +166,18 @@ class StringSolutionTest {
 	}
 
 	@Test
+	public void testMethodsErrorInBody() {
+		 String code = "void rec (){\n"
+	                + "System.out.println(\"pretty\")\n"
+	                + "}";
+		AnswerDescription info = QpedQfFilesUtility.getAnswerDescription(code);
+		assertNotNull(info);
+		assertEquals(ASTParser.K_CLASS_BODY_DECLARATIONS, info.getKind());
+		assertEquals("", info.getPackageName());
+		assertEquals(null, info.getPrimaryTypeSimpleName());
+	}
+
+	@Test
 	public void testStatementsNoError1() {
 		AnswerDescription info = QpedQfFilesUtility.getAnswerDescription("""
 				System.out.println();
@@ -205,8 +217,9 @@ class StringSolutionTest {
 	@Test
 	public void testStatementsIllegalStatement() {
 		AnswerDescription info = QpedQfFilesUtility.getAnswerDescription("""
-				during(true) {
+				int(true) {
 						x = x + 1;
+				} else {
 				}
 		""");
 		assertNotNull(info);

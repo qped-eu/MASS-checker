@@ -90,22 +90,22 @@ public class MassExecutor {
         boolean isCompilable = syntaxAnalyseReport.isCompilable();
         if (isCompilable) {
             if (styleNeeded) {
-                styleChecker.setTargetPath(syntaxAnalyseReport.getPath());
+//                styleChecker.setTargetPath(syntaxAnalyseReport.getPath());
                 styleChecker.check();
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
             }
             if (semanticNeeded) {
-                solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
+//                solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
                 solutionApproachFeedbacks = solutionApproachChecker.check();
             }
             if (metricsNeeded) {
-                syntaxChecker.setClassFilesDestination("");
+//                syntaxChecker.setClassFilesDestination("");
                 metricsChecker.check();
                 metricsFeedbacks = metricsChecker.getMetricsFeedbacks();
             }
             if (classNeeded) {
                 try {
-                    classChecker.setTargetPath(syntaxAnalyseReport.getPath());
+//                    classChecker.setTargetPath(syntaxAnalyseReport.getPath());
                     classChecker.check(null);
                     classFeedbacks = classChecker.getClassFeedbacks();
                 } catch (Exception e) {

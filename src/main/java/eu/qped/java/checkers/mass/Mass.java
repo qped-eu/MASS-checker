@@ -49,12 +49,30 @@ public class Mass implements Checker {
     	
         MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
         
+        File solutionRoot;
+        if (file != null) {
+        	solutionRoot = QpedQfFilesUtility.downloadAndUnzipIfNecessary(file);
+            var allJavaFiles = QpedQfFilesUtility.filesWithExtension(solutionRoot, "java");
+            if (allJavaFiles.isEmpty()) {
+                throw new IllegalArgumentException("Uploaded solution does not contain files with extension java (either as single file or containted in zip archive.");
+            }
+        } else {
+        	solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
+        	QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, qfObject.getAnswer());
+        }
+
+        
         // Syntax Checker
         SyntaxChecker syntaxChecker;
-        syntaxChecker = getSyntaxChecker(file, qfObject.getAnswer(), null);
+        syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
+        
+        
         if (syntaxChecker == null) return;
+
+        // Style Checker
         StyleChecker styleChecker = StyleChecker.builder().qfStyleSettings(mass.getStyle()).build();
 
+        // Solution Approach Checker
         var solutionApproachGeneralSettings = SolutionApproachGeneralSettings.builder()
                 .language(qfObject.getUser().getLanguage())
                 .checkLevel(CheckLevel.BEGINNER)
@@ -66,12 +84,14 @@ public class Mass implements Checker {
                 .build()
         ;
 
-        MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).build();
+        // Metrics Checker
+        MetricsChecker metricsChecker = MetricsChecker.builder().qfMetricsSettings(mass.getMetrics()).solutionRoot(solutionRoot).build();
 
+        // Class Checker
         ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClasses());
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
-        //CoverageChecker
+        // Coverage Checker
         CoverageChecker coverageChecker = null;
         if (mainSettings.isCoverageNeeded()) {
             QfCoverageSettings covSetting = mass.getCoverage();
@@ -104,28 +124,6 @@ public class Mass implements Checker {
         );
 
         qfObject.setFeedback(resultArray);
-    }
-
-    @Nullable
-    public static SyntaxChecker getSyntaxChecker(FileInfo file, String answer, String privateImplUrl) {
-        SyntaxChecker syntaxChecker;
-        syntaxChecker = SyntaxChecker.builder().build();
-        if (file != null) {
-        	try {
-				QpedQfFilesUtility.downloadAndUnzipIfNecessary(file);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            var allJavaFiles = QpedQfFilesUtility.filesWithExtension(file.getUnzippedDirectory().getPath(), "java");
-            if (allJavaFiles.isEmpty()) {
-                return null;
-            }
-            syntaxChecker.setTargetProject(file.getUnzippedDirectory().getPath());
-        } else {
-            syntaxChecker.setStringAnswer(answer);
-        }
-        return syntaxChecker;
     }
 
     private String[] mergeFeedbacks(

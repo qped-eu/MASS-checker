@@ -10,20 +10,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.security.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.Expression;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
@@ -36,9 +42,40 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 public class QpedQfFilesUtility {
-
+	
     private static final String DEFAULT_ANSWER_METHOD = "$answerMethod";
 	private static final String DEFAULT_ANSWER_CLASS = "$AnswerClass";
+	
+	private static final boolean QPED_QF_FILES_DEBUG = Boolean.getBoolean("QPED_QF_FILES_DEBUG");
+
+	private static List<File> tempFiles = new ArrayList<>();
+
+	public static void cleanupTempFiles() {
+		if (QPED_QF_FILES_DEBUG) {
+			return;
+		}
+		
+		for (File file : tempFiles) {
+			if (file.isDirectory()) {
+				try {
+					FileUtils.deleteDirectory(file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					FileUtils.delete(file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		tempFiles.clear();
+	}
+	
+	static {
+		Runtime.getRuntime().addShutdownHook(new Thread(QpedQfFilesUtility::cleanupTempFiles));
+	}
 
 	public static List<File> filesWithExtension(String dirPath, String extension) {
         return filesWithExtension(new File(Objects.requireNonNull(dirPath)), extension);
@@ -76,27 +113,6 @@ public class QpedQfFilesUtility {
         }
         return files;
     }
-
-	private static List<File> tempFiles = new ArrayList<>();
-
-	public static void cleanupTempFiles() {
-		for (File file : tempFiles) {
-			if (file.isDirectory()) {
-				try {
-					FileUtils.deleteDirectory(file);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else {
-				try {
-					FileUtils.delete(file);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		tempFiles.clear();
-	}
 
 	/**
 	 * This method downloads a file from URL of the provided argument to a local temp file, and unzips it
@@ -146,18 +162,31 @@ public class QpedQfFilesUtility {
 		
 		return targetDirectory;
 	}
+	
+	private static final AtomicInteger nextId = new AtomicInteger(0);
 
 	public static File createManagedTempDirectory() throws IOException {
-		File unzipTarget = Files.createTempDirectory("qf-checker").toFile();
-		tempFiles.add(unzipTarget);
-		return unzipTarget;
+		File tempDir;
+		if (QPED_QF_FILES_DEBUG) {
+			String currentTimeStamp = DateTimeFormatter.
+					ofPattern("yyyy-MM-dd--HH-mm-ss").
+					format(LocalDateTime.now())
+					+ nextId.getAndIncrement();
+			tempDir = new File("target" + File.separator + "temp" + File.separator + currentTimeStamp);
+		} else {
+			tempDir = Files.createTempDirectory("qf-checker").toFile();
+		}
+		tempDir.mkdirs();
+		tempFiles.add(tempDir);
+		return tempDir;
 	}
 
-	public static File createManagedTempFile(String filename, String extension) throws IOException {
-		File submittedFile = File.createTempFile(filename, extension);
-		tempFiles.add(submittedFile);
-		return submittedFile;
-	}
+//	public static File createManagedTempFile(String filename, String extension) throws IOException {
+//		File tempDir = createManagedTempDirectory();
+//		File tempFile = File.createTempFile(filename, extension);
+//		tempFiles.add(tempFile);
+//		return tempFile;
+//	}
 	
 	public static File createFileFromAnswerString(File solutionRoot, String answer) throws IOException {
 		AnswerDescription answerDescription = getAnswerDescription(answer);
@@ -272,20 +301,40 @@ public class QpedQfFilesUtility {
 		// first try compilation unit
 		parser.setIgnoreMethodBodies(true);
 		parser.setKind(ASTParser.K_CLASS_BODY_DECLARATIONS);
-		parser.setStatementsRecovery(false);
+		parser.setStatementsRecovery(true);
 		parser.setSource(answer.toCharArray());
 		ast = parser.createAST(null);
 		
 		// class body declarations, such as methods, as wrapped in a new class with name MISSING
 		// in other cases, the type of the AST node would be the fallback "compilation unit"
 		if (ast != null && ast instanceof TypeDeclaration td && td.getName().getIdentifier().equals("MISSING")) {
-			// the answer must consist of class members such as methods
-			// it cannot be a class, as it would have been interpreted as compilation unit above
-			descriptionBuilder.kind(ASTParser.K_CLASS_BODY_DECLARATIONS);
-			// no package and type name are provided in the answer, so we use default values
-			descriptionBuilder.packageName("").primaryTypeSimpleName(null);
-			descriptionBuilder.ast(ast);
-			return descriptionBuilder.build();
+			List<BodyDeclaration> bodyDeclarations = td.bodyDeclarations();
+			boolean onlyPotentialLocalVariables = true;
+			for (BodyDeclaration bodyDeclaration : bodyDeclarations) {
+				if (!(bodyDeclaration instanceof FieldDeclaration)) {
+					onlyPotentialLocalVariables = false;
+					break;
+				} else if (bodyDeclaration instanceof FieldDeclaration fd) {
+					if ((Modifier.isFinal(fd.getModifiers()) && fd.modifiers().size() > 1) ||
+							!Modifier.isFinal(fd.getModifiers()) && fd.modifiers().size() > 0) {
+						onlyPotentialLocalVariables = false;
+						break;
+					}	
+				}
+			}
+			// If the body declarations all are field declrations, it is most likely that
+			// the answer actually consists of statements (with a syntax error) and we
+			// accidentally recognized a local variable declaration as field declaration.
+			// Only fields with a modifier other than final are definitely fields.
+			if (!onlyPotentialLocalVariables) {
+				// the answer must consist of class members such as methods
+				// it cannot be a class, as it would have been interpreted as compilation unit above
+				descriptionBuilder.kind(ASTParser.K_CLASS_BODY_DECLARATIONS);
+				// no package and type name are provided in the answer, so we use default values
+				descriptionBuilder.packageName("").primaryTypeSimpleName(null);
+				descriptionBuilder.ast(ast);
+				return descriptionBuilder.build();
+			}
 		}
 		
 		// package name and primary type name can only exist for
