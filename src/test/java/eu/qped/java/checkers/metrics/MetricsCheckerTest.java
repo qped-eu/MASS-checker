@@ -69,7 +69,7 @@ class MetricsCheckerTest {
         MetricSettings metricSettings = metricSettingsReader.readMetricsCheckerSettings(MetricSettings.builder().build());
 
         List<File> classFiles
-                = QpedQfFilesUtility.filesWithExtension(MetricsCheckerTestUtility.getSolutionRoot().getAbsolutePath(), "class");
+                = QpedQfFilesUtility.filesWithExtension(MetricsCheckerTestUtility.getSolutionRoot(), "class");
         String[] pathsToClassFiles = classFiles.stream().map(File::getPath).toArray(String[]::new);
 
         Method runCkjmExtendedMethod = metricsCheckerCustom.getClass().getDeclaredMethod("runCkjmExtended", MetricsCheckerReport.class, String[].class, boolean.class, boolean.class);

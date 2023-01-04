@@ -1,5 +1,8 @@
 package eu.qped.java.checkers.coverage.framework.coverage;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +26,7 @@ import org.jacoco.core.runtime.RuntimeData;
 
 import eu.qped.java.checkers.coverage.MemoryLoader;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
+import eu.qped.java.checkers.mass.Mass.SolutionWorkspace;
 
 public class Jacoco {
 
@@ -36,7 +40,10 @@ public class Jacoco {
 
 	private String fullCoverageReport;
 
-	public Jacoco(TestFramework testFramework) {
+	private SolutionWorkspace solutionWorkspace;
+
+	public Jacoco(TestFramework testFramework, SolutionWorkspace solutionWorkspace) {
+		this.solutionWorkspace = solutionWorkspace;
 		this.testFramework = Objects.requireNonNull(testFramework,
 				"ERROR::Jacoco.new() Parameter testFramework can't be null");
 	}
@@ -91,12 +98,6 @@ public class Jacoco {
 		
 		StringBuilder fullCoverageReport = new StringBuilder("# Full Coverage Report\n\n");
 		
-		Map<String, String[]> codeByModulename = new HashMap<>();
-		for (CoverageFacade clazz : classes) {
-			codeByModulename.put(clazz.className().replace('.','/') + ".java", clazz.getContent().split("\\n"));
-		}
-
-		
 		// Consider all source files and determine which lines were covered, partially covered or not covered
 		for (ISourceFileCoverage sfCoverage : coverageBuilder.getSourceFiles()) {
 			String packagePath = "";
@@ -111,7 +112,7 @@ public class Jacoco {
 						
 			ModuleCoverageResult result = new ModuleCoverageResult(packagePath + sfCoverage.getName());
 			moduleCoverageResults.add(result);
-			String[] code = codeByModulename.get(fullModuleName);
+			String[] code = getSourceCode(fullModuleName);
 			for (int i = 1; i <= code.length; i++) {
 				fullCoverageReport.append("| ").append(i).append(" | ");
 
@@ -156,6 +157,14 @@ public class Jacoco {
 		}
 		
 		this.fullCoverageReport = fullCoverageReport.toString();
+	}
+
+	private String[] getSourceCode(String relativeFilename) {
+		try {
+			return Files.readAllLines(new File(solutionWorkspace.getSolutionDirectory(), relativeFilename).toPath()).toArray(size -> new String[size]);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot read source file from solution directory: " + relativeFilename, e);
+		}
 	}
 
 	public Stream<ModuleCoverageResult> getModuleCoverageResults() {

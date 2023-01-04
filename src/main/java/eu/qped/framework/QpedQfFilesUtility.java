@@ -36,6 +36,7 @@ import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import eu.qped.framework.QpedQfFilesUtility.AnswerDescription.AnswerDescriptionBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import net.lingala.zip4j.ZipFile;
@@ -77,13 +78,19 @@ public class QpedQfFilesUtility {
 		Runtime.getRuntime().addShutdownHook(new Thread(QpedQfFilesUtility::cleanupTempFiles));
 	}
 
-	public static List<File> filesWithExtension(String dirPath, String extension) {
-        return filesWithExtension(new File(Objects.requireNonNull(dirPath)), extension);
-    }
-    
+	/**
+	 * Returns all files in the specified directory or any subdirectory thereof with the given extension.
+	 * If <code>null</code> is provided for the extension, all files are included.
+	 * The method only includes actual files, the directories themselves are non included in the result.
+	 *   
+	 * @param dirPath The directory whose contents are searched.
+	 * @param extension The required file extension without a leading dot (e.g. "java" instead of ".java")
+	 * or <code>null</code> if any file is to be included.
+	 * @return All files matching the criteria. The result only contains <code>File</code> objects for which <code>isDirectory()</code> returns <code>false</code>;
+	 */
     public static List<File> filesWithExtension(File dirPath, String extension) {
         List<File> allFiles = new ArrayList<>();
-        List<File> filesWithJavaExtension = new ArrayList<>();
+        List<File> filesWithExtension = new ArrayList<>();
         File fileOrDirectory = Objects.requireNonNull(dirPath);
         if (fileOrDirectory.exists()) {
             if (fileOrDirectory.isDirectory()) {
@@ -94,11 +101,14 @@ public class QpedQfFilesUtility {
             }
         }
         for (File file : allFiles) {
+        	if (file.isDirectory())
+        		continue;
+        	
             if (FilenameUtils.getExtension(String.valueOf(file)).equals(extension)) {
-                filesWithJavaExtension.add(file);
+                filesWithExtension.add(file);
             }
         }
-        return filesWithJavaExtension;
+        return filesWithExtension;
     }
 
     private static List<File> getFilesRecursively(File path) {
@@ -188,7 +198,7 @@ public class QpedQfFilesUtility {
 //		return tempFile;
 //	}
 	
-	public static File createFileFromAnswerString(File solutionRoot, String answer) throws IOException {
+	public static CreatedAnswerFileSummary createFileFromAnswerString(File solutionRoot, String answer) throws IOException {
 		AnswerDescription answerDescription = getAnswerDescription(answer);
 		String answerFileContent;
 		int answerLineOffset;
@@ -258,11 +268,18 @@ public class QpedQfFilesUtility {
 			outputDirectory.mkdirs();
 		}
 		FileUtils.write(outputFile, answerFileContent, Charset.defaultCharset());
-		return outputFile;
+		return new CreatedAnswerFileSummary(filename, answerLineOffset);
+	}
+	
+	@Getter
+	@AllArgsConstructor
+	public static class CreatedAnswerFileSummary {
+		private String fileName;
+		private int lineOffset;
 	}
 
 	public static AnswerDescription getAnswerDescription(String answer) {
-		 AnswerDescriptionBuilder descriptionBuilder = AnswerDescription.builder();
+		AnswerDescriptionBuilder descriptionBuilder = AnswerDescription.builder();
 		
 		ASTParser parser = ASTParser.newParser(AST.getJLSLatest());
 		
@@ -273,7 +290,8 @@ public class QpedQfFilesUtility {
 		parser.setSource(answer.toCharArray());
 		ASTNode ast = parser.createAST(null);
 		
-		if (ast != null && ast instanceof CompilationUnit cu) {
+		if (ast != null && ast instanceof CompilationUnit) {
+			CompilationUnit cu = (CompilationUnit) ast;
 			@SuppressWarnings("unchecked")
 			List<ImportDeclaration> imports = cu.imports();
 			PackageDeclaration packageDeclaration = cu.getPackage();
@@ -307,14 +325,17 @@ public class QpedQfFilesUtility {
 		
 		// class body declarations, such as methods, as wrapped in a new class with name MISSING
 		// in other cases, the type of the AST node would be the fallback "compilation unit"
-		if (ast != null && ast instanceof TypeDeclaration td && td.getName().getIdentifier().equals("MISSING")) {
+		if (ast != null && ast instanceof TypeDeclaration && ((TypeDeclaration) ast).getName().getIdentifier().equals("MISSING")) {
+			TypeDeclaration td = (TypeDeclaration) ast;
+
 			List<BodyDeclaration> bodyDeclarations = td.bodyDeclarations();
 			boolean onlyPotentialLocalVariables = true;
 			for (BodyDeclaration bodyDeclaration : bodyDeclarations) {
 				if (!(bodyDeclaration instanceof FieldDeclaration)) {
 					onlyPotentialLocalVariables = false;
 					break;
-				} else if (bodyDeclaration instanceof FieldDeclaration fd) {
+				} else if (bodyDeclaration instanceof FieldDeclaration) {
+					FieldDeclaration fd = (FieldDeclaration) bodyDeclaration;
 					if ((Modifier.isFinal(fd.getModifiers()) && fd.modifiers().size() > 1) ||
 							!Modifier.isFinal(fd.getModifiers()) && fd.modifiers().size() > 0) {
 						onlyPotentialLocalVariables = false;
@@ -368,7 +389,7 @@ public class QpedQfFilesUtility {
 		System.out.println(ast);
 		
 		// statements are wrapped in a block
-		if (ast != null && ast instanceof Block block && !block.statements().isEmpty()) {
+		if (ast != null && ast instanceof Block && !((Block) ast).statements().isEmpty()) {
 			// the answer must consist of statements
 			descriptionBuilder.kind(ASTParser.K_STATEMENTS);
 			descriptionBuilder.ast(ast);
