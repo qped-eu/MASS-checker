@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
@@ -77,10 +78,21 @@ class CoverageLineMappingTest {
 
 		String expected = FileUtils.readFileToString(new File("src/test/resources/coverage/" + caseName + "/expected.txt"), Charset.defaultCharset());
 
+		// filter out stack traces, as the exact trace (especially line numbers) may be depending
+		// on the Java implementation
+		expected = pruneStackTraces(expected);
+		actual = pruneStackTraces(actual);
+		
 		if (startsWithInsteadOfEquals)
 			assertTrue(actual.startsWith(expected));
 		else
 			assertEquals(expected, actual);
+	}
+
+	private String pruneStackTraces(String outputString) {
+		return Stream.of(outputString.split("\n")).
+				filter(s -> !s.startsWith("  at ")).
+				collect(Collectors.joining("\n"));
 	}
 
 }
