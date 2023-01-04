@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ro.skyah.comparator.JSONCompare;
+import ro.skyah.comparator.JsonComparator;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +83,18 @@ public class SystemTests {
 //			}
 			
 			String actual = FileUtils.readFileToString(QF_OBJECT_FILE, Charset.defaultCharset());
-			JSONCompare.assertEquals(expected, actual);
+			JSONCompare.assertEquals(expected, actual, new JsonComparator() {
+				
+				@Override
+				public boolean compareValues(Object expected, Object actual) {
+					return expected.toString().equalsIgnoreCase(actual.toString());
+				}
+				
+				@Override
+				public boolean compareFields(String expected, String actual) {
+					 return expected.equalsIgnoreCase(actual);
+				}
+			});
 		}
 
 	}

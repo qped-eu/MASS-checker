@@ -3,3 +3,4 @@ description: |
     Runs MASS checker, together with the syntax checker and class checker.
 author: "Christoph Bockisch"
 disabled: true
+todo: needs to be updated to new format of mass configuration in qf-object 

@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfStyleSettings;
 import eu.qped.java.checkers.style.pmd.MassSupportedEditablePmdRules;
 import eu.qped.java.checkers.style.pmd.PmdConfigException;
@@ -17,8 +16,6 @@ import eu.qped.java.checkers.style.pmd.XmlFileManager;
 import eu.qped.java.checkers.style.reportModel.StyleCheckReport;
 import eu.qped.java.checkers.style.settings.StyleConfigurationReader;
 import eu.qped.java.checkers.style.settings.StyleSettings;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.SyntaxSetting;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

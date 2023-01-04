@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.tools.Diagnostic;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.QpedQfFilesUtility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +38,8 @@ import lombok.NoArgsConstructor;
 public class SyntaxErrorAnalyser {
 
     private File solutionRoot;
-
+    private CheckLevel level = CheckLevel.BEGINNER;
+    
     /**
      * @return {@link SyntaxAnalysisReport} after checking an answer in form of code or class or project. <br/>
      * A {@link SyntaxAnalysisReport} contains beside the errors if occurs relevant information like path of the answer.
@@ -137,6 +140,10 @@ public class SyntaxErrorAnalyser {
         for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
         	// the source did not originate from a source, so it is not associated with the student solution
         	if  (diagnostic.getSource() == null)
+        		continue;
+        	// For example, if the equals method is overridden but not hashCode that would be reported
+        	// as warning, but it is usually not clear to first-year students.
+        	if (level == CheckLevel.BEGINNER && diagnostic.getKind() == Kind.WARNING)
         		continue;
             String errorTrigger = getErrorTrigger(diagnostic);
             syntaxErrors.add(

@@ -24,8 +24,6 @@ public class QfObject extends QfObjectBase {
 
 	private String[] settings;
 	
-	private FileInfo[] files;
-	
 	@JsonIgnore
 	private Checker checker;
 
@@ -120,12 +118,4 @@ public class QfObject extends QfObjectBase {
 		this.question = question;
 	}
 
-	public FileInfo[] getFiles() {
-		return files;
-	}
-	
-	public void setFiles(FileInfo[] files) {
-		this.files = files;
-	}
-	
 }

@@ -97,7 +97,7 @@ public class Mass implements Checker {
         if (instructorResourcesURL != null && !instructorResourcesURL.isBlank()) {
 
         	// create file info for the provided URL
-        	FileInfo instructorResourcesFileInfo = FileInfo.createForUrl(instructorResourcesURL, URLConnection.guessContentTypeFromName(instructorResourcesURL));
+        	FileInfo instructorResourcesFileInfo = null;
         	
         	// But first check if the URL has the protocol "qf" such as in "qf:provided.zip"
         	String[] splitUrl = instructorResourcesURL.split(":");
@@ -108,13 +108,20 @@ public class Mass implements Checker {
         		int extensionStart = qfFile.lastIndexOf('.');
         		String qfFileLabel = qfFile.substring(0, extensionStart);
         		String qfFileExtension = qfFile.substring(extensionStart);
-        		for (FileInfo fileInfo : qfObject.getFiles()) {
+        		for (FileInfo fileInfo : qfObject.getAssignment().getFiles()) {
         			if (fileInfo.getLabel().equals(qfFileLabel) && fileInfo.getExtension().equals(qfFileExtension)) {
         				// if we find a file info, use this file info instead
         				instructorResourcesFileInfo = fileInfo;
         				break;
         			}
 				}
+        		if (instructorResourcesFileInfo == null) {
+	        		throw new RuntimeException("Provided URL for instructor resources illegal. "
+	        				+ "Used protocol 'qf' but no corresponding file info defined in QF-object, i.e., "
+	        				+ "no such file uploaded in Quarterfall question. (" + instructorResourcesURL + ")");
+        		}
+        	} else {
+        		instructorResourcesFileInfo = FileInfo.createForUrl(instructorResourcesURL, URLConnection.guessContentTypeFromName(instructorResourcesURL));
         	}
         	instructorRoot = QpedQfFilesUtility.downloadAndUnzipIfNecessary(instructorResourcesFileInfo);
         	instructorResources = QpedQfFilesUtility.filesWithExtension(instructorRoot, null);

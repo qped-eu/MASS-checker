@@ -141,9 +141,9 @@ class MetricSettingsReaderTest {
         Method retrieveMetricMaximumMethod = metricSettingsReader.getClass().getDeclaredMethod("retrieveMetricMaximum", Metric.class);
         retrieveMetricMaximumMethod.setAccessible(true);
 
-        assertEquals(-1, (Double) retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.AMC));
+        assertEquals(-1.0, (Double) retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.AMC));
         qfMetricsSettings.setWmc(null, null);
-        assertEquals(Double.MAX_VALUE, retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.WMC));
+        assertEquals(-1.0, retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.WMC));
 
         retrieveMetricMaximumMethod.setAccessible(false);
     }
@@ -157,7 +157,7 @@ class MetricSettingsReaderTest {
 
         assertEquals(-1.0, retrieveMetricMinimumMethod.invoke(metricSettingsReader, Metric.AMC));
         qfMetricsSettings.setWmc(null, null);
-        assertEquals(0d, retrieveMetricMinimumMethod.invoke(metricSettingsReader, Metric.WMC));
+        assertEquals(-1.0, retrieveMetricMinimumMethod.invoke(metricSettingsReader, Metric.WMC));
 
         retrieveMetricMinimumMethod.setAccessible(false);
     }

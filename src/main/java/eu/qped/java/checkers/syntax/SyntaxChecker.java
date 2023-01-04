@@ -35,6 +35,7 @@ public class SyntaxChecker {
             syntaxErrorAnalyser = SyntaxErrorAnalyser
                     .builder()
                     .solutionRoot(targetProject)
+                    .level(syntaxSetting.getCheckLevel())
                     .build();
         }
         analyseReport = syntaxErrorAnalyser.check();
