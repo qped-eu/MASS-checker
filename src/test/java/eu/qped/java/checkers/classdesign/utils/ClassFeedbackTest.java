@@ -1,10 +1,11 @@
 package eu.qped.java.checkers.classdesign.utils;
 
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 
 public class ClassFeedbackTest {
 

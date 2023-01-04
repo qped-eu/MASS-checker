@@ -1,15 +1,19 @@
 package eu.qped.java.checkers.metrics.data;
 
-import eu.qped.java.checkers.metrics.data.report.ClassMetricsMessage;
-import eu.qped.java.checkers.metrics.data.report.ClassMetricsMessageSingle;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.AMC;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.CE;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.LCOM;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.WMC;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.qped.java.checkers.metrics.data.report.ClassMetricsMessage;
+import eu.qped.java.checkers.metrics.data.report.ClassMetricsMessageSingle;
 
 /**
  * Test class for {@link ClassMetricsMessageSingle}.

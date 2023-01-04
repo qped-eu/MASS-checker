@@ -3,6 +3,7 @@ package eu.qped.framework;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -40,6 +41,9 @@ public class FileInfo {
 	 */
 	private String url;
 	
+	public static FileInfo createForUrl(String url) throws MalformedURLException {		
+		return createForUrl(url, URLConnection.guessContentTypeFromName(url));
+	}
 	public static FileInfo createForUrl(String url, String mimetype) throws MalformedURLException {		
 		URL parsedUrl = new URL(url);
 		

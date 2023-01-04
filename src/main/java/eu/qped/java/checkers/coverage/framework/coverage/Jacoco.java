@@ -40,10 +40,10 @@ public class Jacoco {
 
 	private String fullCoverageReport;
 
-	private SolutionWorkspace solutionWorkspace;
+	private File solutionRoot;
 
-	public Jacoco(TestFramework testFramework, SolutionWorkspace solutionWorkspace) {
-		this.solutionWorkspace = solutionWorkspace;
+	public Jacoco(TestFramework testFramework, File solutionRoot) {
+		this.solutionRoot = solutionRoot;
 		this.testFramework = Objects.requireNonNull(testFramework,
 				"ERROR::Jacoco.new() Parameter testFramework can't be null");
 	}
@@ -161,7 +161,7 @@ public class Jacoco {
 
 	private String[] getSourceCode(String relativeFilename) {
 		try {
-			return Files.readAllLines(new File(solutionWorkspace.getSolutionDirectory(), relativeFilename).toPath()).toArray(size -> new String[size]);
+			return Files.readAllLines(new File(solutionRoot, relativeFilename).toPath()).toArray(size -> new String[size]);
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot read source file from solution directory: " + relativeFilename, e);
 		}

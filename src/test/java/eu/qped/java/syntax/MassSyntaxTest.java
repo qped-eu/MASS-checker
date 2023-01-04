@@ -1,23 +1,20 @@
 package eu.qped.java.syntax;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.QpedQfFilesUtility;
-import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.mass.QfMainSettings;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.utils.SupportedLanguages;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MassSyntaxTest {
 

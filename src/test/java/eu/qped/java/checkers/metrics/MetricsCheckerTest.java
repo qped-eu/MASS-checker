@@ -1,5 +1,19 @@
 package eu.qped.java.checkers.metrics;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.java.checkers.mass.QfMetricsSettings;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
@@ -10,19 +24,6 @@ import eu.qped.java.checkers.metrics.data.report.MetricsCheckerReport;
 import eu.qped.java.checkers.metrics.settings.MetricSettings;
 import eu.qped.java.checkers.metrics.settings.MetricSettingsReader;
 import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * Test class for {@link MetricsChecker}

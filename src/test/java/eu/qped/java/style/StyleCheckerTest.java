@@ -1,16 +1,17 @@
 package eu.qped.java.style;
 
-import eu.qped.java.checkers.mass.QfStyleSettings;
-import eu.qped.java.checkers.style.StyleChecker;
-import eu.qped.java.checkers.style.StyleFeedback;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import eu.qped.java.checkers.mass.QfStyleSettings;
+import eu.qped.java.checkers.style.StyleChecker;
+import eu.qped.java.checkers.style.StyleFeedback;
 
 class StyleCheckerTest {
 

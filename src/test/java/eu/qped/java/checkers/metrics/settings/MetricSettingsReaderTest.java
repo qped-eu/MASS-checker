@@ -1,17 +1,20 @@
 package eu.qped.java.checkers.metrics.settings;
 
-import eu.qped.java.checkers.mass.QfMetricsSettings;
-import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.qped.java.checkers.mass.QfMetricsSettings;
+import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
+import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
 
 /**
  * Test class for {@link  MetricSettingsReader}.

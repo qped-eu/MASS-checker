@@ -121,7 +121,7 @@ public class Mass implements Checker {
 	        				+ "no such file uploaded in Quarterfall question. (" + instructorResourcesURL + ")");
         		}
         	} else {
-        		instructorResourcesFileInfo = FileInfo.createForUrl(instructorResourcesURL, URLConnection.guessContentTypeFromName(instructorResourcesURL));
+        		instructorResourcesFileInfo = FileInfo.createForUrl(instructorResourcesURL);
         	}
         	instructorRoot = QpedQfFilesUtility.downloadAndUnzipIfNecessary(instructorResourcesFileInfo);
         	instructorResources = QpedQfFilesUtility.filesWithExtension(instructorRoot, null);
@@ -167,14 +167,7 @@ public class Mass implements Checker {
         ClassChecker classChecker = new ClassChecker(classConfigurator);
 
         // Coverage Checker
-        CoverageChecker coverageChecker = null;
-        if (mainSettings.isCoverageNeeded()) {
-            QfCoverageSettings covSetting = mass.getCoverage();
-
-            //CoverageSetup coverageSetup = new CoverageSetup(file, covSetting.getPrivateImplementation(), qfObject.getAnswer(), mainSettings.getPreferredLanguage());
-
-            coverageChecker = new CoverageChecker(covSetting, solutionWorkspace);
-        }
+        CoverageChecker coverageChecker = new CoverageChecker(mass.getCoverage(), solutionRoot);
 
         //Mass
         MassExecutor massExecutor = new MassExecutor(styleChecker, solutionApproachChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);

@@ -1,11 +1,11 @@
 package eu.qped.java.checkers.classdesign;
 
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
-import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
+import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackType;
 
 public final class TestUtils {
 

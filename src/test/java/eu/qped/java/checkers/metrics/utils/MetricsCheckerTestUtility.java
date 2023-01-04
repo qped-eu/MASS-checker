@@ -1,5 +1,10 @@
 package eu.qped.java.checkers.metrics.utils;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Random;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.java.checkers.mass.QfMetricsSettings;
@@ -8,11 +13,6 @@ import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
 import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Random;
 
 /**
  * Utility class for testing.

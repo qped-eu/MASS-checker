@@ -19,25 +19,29 @@ import eu.qped.java.checkers.coverage.framework.coverage.CoverageFacade;
 import eu.qped.java.checkers.coverage.framework.coverage.Jacoco;
 import eu.qped.java.checkers.coverage.framework.test.JUnit5;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
-import eu.qped.java.checkers.mass.Mass.SolutionWorkspace;
 import eu.qped.java.checkers.mass.QfCoverageSettings;
 import eu.qped.java.checkers.mass.ShowFor;
 
 public class CoverageChecker {
 
-	private QfCoverageSettings covSetting;
+	private QfCoverageSettings covSettings;
 	
-	private final Map<String, FeedbackMessage> feedbackMessages = new HashMap<>();
+	private Map<String, FeedbackMessage> feedbackMessages;
 	private String fullCoverageReport;
 
-	private SolutionWorkspace solutionWorkspace;
+	private File solutionRoot;
 
-	public CoverageChecker(QfCoverageSettings covSettings, SolutionWorkspace solutionWorkspace) {
-		this.covSetting = covSettings;
-		this.solutionWorkspace = solutionWorkspace;
+	public CoverageChecker(QfCoverageSettings covSettings, File solutionRoot) {
+		this.covSettings = covSettings;
+		this.solutionRoot = solutionRoot;
+	}
 
-		AtomicInteger nextFree = new AtomicInteger(0);
+	public void initializeFeedbackMessages() {
+		if (feedbackMessages != null)
+			return;
 		
+		AtomicInteger nextFree = new AtomicInteger(0);
+		feedbackMessages = new HashMap<>();
 		covSettings.getFeedback().forEach(
 				messageSetting -> {
 					String id = messageSetting.getId();
@@ -92,7 +96,8 @@ public class CoverageChecker {
 	}
 
 	public List<String> check() {
-		
+		initializeFeedbackMessages();
+
         List<CoverageFacade> testClasses = new ArrayList<>();
         List<CoverageFacade> classes = new ArrayList<>();
         
@@ -103,7 +108,7 @@ public class CoverageChecker {
 		}
 
 		TestFramework test = new JUnit5();
-		Jacoco coverage = new Jacoco(test, solutionWorkspace);
+		Jacoco coverage = new Jacoco(test, solutionRoot);
 
 		coverage.analyze(testClasses, classes);
 
@@ -178,18 +183,18 @@ public class CoverageChecker {
 		
 		List<Stream<String>> result = new ArrayList<>();
 
-		if (covSetting.getShowTestFailures())
+		if (covSettings.getShowTestFailures())
 			result.add(testResults);
 		result.add(coverageResults);
-		if (covSetting.getShowFullCoverageReport())
+		if (covSettings.getShowFullCoverageReport())
 			result.add(fullCoverageReport);
 		return result.stream().flatMap(s -> s).collect(Collectors.toList());
 	}
 
 	public void separateTestAndApplicationClasses(List<CoverageFacade> testClasses, List<CoverageFacade> classes)
 			throws IOException {
-		List<File> allClassFiles = QpedQfFilesUtility.filesWithExtension(solutionWorkspace.getSolutionDirectory(), "class");
-        String solutionDirectoryPath = solutionWorkspace.getSolutionDirectory().getCanonicalPath() + File.separator;
+		List<File> allClassFiles = QpedQfFilesUtility.filesWithExtension(solutionRoot, "class");
+        String solutionDirectoryPath = solutionRoot.getCanonicalPath() + File.separator;
 
         // The file separator will be used as regular expression by replaceAll.
         // Therefore, we must escape the separator on Windows systems.

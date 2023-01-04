@@ -1,17 +1,19 @@
 package eu.qped.java.checkers.metrics;
 
-import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
-import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator.DefaultMetricSuggestion;
-import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
-import eu.qped.java.checkers.metrics.settings.MetricSettings;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator.DefaultMetricSuggestion;
+import eu.qped.java.checkers.metrics.settings.MetricSettings;
 
 /**
  * Test class for {@link MetricsFeedbackGenerator}.
