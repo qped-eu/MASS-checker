@@ -1,15 +1,17 @@
 package eu.qped.java.checkers.metrics.data;
 
-import eu.qped.java.checkers.metrics.data.report.ClassMetricsEntry;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.qped.java.checkers.metrics.data.report.ClassMetricsEntry;
 
 /**
  * Test class for {@link ClassMetricsEntry}.

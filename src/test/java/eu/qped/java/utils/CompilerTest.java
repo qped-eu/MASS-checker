@@ -1,84 +1,86 @@
 package eu.qped.java.utils;
 
-import eu.qped.java.utils.compiler.Compiler;
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import eu.qped.framework.CheckLevel;
+import eu.qped.framework.QpedQfFilesUtility;
+import eu.qped.java.checkers.syntax.SyntaxSetting;
+import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 
 
 public class CompilerTest {
 
-    private Compiler compiler;
-
-    @BeforeEach
-    void beforeAll(){
-        compiler = Compiler.builder().build();
-    }
-
     @Test
-    public void compileStringTest(){
-        boolean falseResult = compiler.compileFromString("private void print() {\n" +
+    public void compileStringTest() throws IOException{
+    	
+        String erroneousMethod = "private void print() {\n" +
                 "        System.out.println()\n" +
-                "    }");
+                "    }";
 
-        Assertions.assertFalse(falseResult);
+        Assertions.assertFalse(compile(erroneousMethod).isCompilable());
 
-        boolean trueResult = compiler.compileFromString("private void print() {\n" +
+        String correctMethod = "private void print() {\n" +
                 "        System.out.println();\n" +
-                "    }");
+                "    }";
 
-        Assertions.assertTrue(trueResult);
+        Assertions.assertTrue(compile(correctMethod).isCompilable());
 
     }
+
+	public SyntaxAnalysisReport compile(String answer) throws IOException {
+		SyntaxSetting syntaxSetting = SyntaxSetting.builder().build();
+        syntaxSetting.setLanguage(SupportedLanguages.ENGLISH);
+        syntaxSetting.setCheckLevel(CheckLevel.BEGINNER);
+
+        File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
+        QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, answer);
+        
+        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser
+                    .builder()
+                    .solutionRoot(solutionRoot)
+                    .build();
+        SyntaxAnalysisReport analyseReport = syntaxErrorAnalyser.check();
+
+        SyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+        syntaxFeedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
+		return analyseReport;
+	}
 
     @Test
     public void compileProjectFalseTest() throws IOException {
 
-        Path tempDir = Files.createTempDirectory("exam-results");
-        File file = File.createTempFile("test" ,".java", tempDir.toFile());
-
         String falseCode = "class test {private void print() { \n System.out.println() \n  }}";
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(falseCode.getBytes());
+        
+        SyntaxAnalysisReport compilationResult = compile(falseCode);
 
-        boolean result = compiler.compileFromProject(tempDir.toString());
-        Assertions.assertFalse(result);
-        Assertions.assertEquals(1, compiler.getCollectedDiagnostics().size());
-        file.deleteOnExit();
+        Assertions.assertFalse(compilationResult.isCompilable());
+        Assertions.assertEquals(1, compilationResult.getSyntaxErrors().size());
     }
 
     @Test
     public void compileProjectTrueTest() throws IOException {
-        Path tempDir = Files.createTempDirectory("exam-results");
-        File file = File.createTempFile("test" ,".java", tempDir.toFile());
-        File file1 = File.createTempFile("test1" ,".java", tempDir.toFile());
-
         String correctCode = "class test {private void print() { \n System.out.println(); \n  }}";
-        String correctCode1 = "class test1 {public void print() { \n System.out.println(); \n  }}";
 
-        FileOutputStream fos = new FileOutputStream(file);
-        FileOutputStream fos1 = new FileOutputStream(file1);
+        SyntaxAnalysisReport compilationResult = compile(correctCode);
 
-        fos.write(correctCode.getBytes());
-        fos1.write(correctCode1.getBytes());
-
-        boolean result = compiler.compileFromProject(tempDir.toString());
-        Assertions.assertTrue(result);
-        Assertions.assertEquals(0, compiler.getCollectedDiagnostics().size());
-        file.deleteOnExit();
+        Assertions.assertTrue(compilationResult.isCompilable());
+        Assertions.assertEquals(0, compilationResult.getSyntaxErrors().size());
     }
 
     @Test
     public void compileProjectWithoutFilesTest() throws IOException {
-        Path tempDir = Files.createTempDirectory("exam-results");
-        boolean result = compiler.compileFromProject(tempDir.toString());
-        Assertions.assertFalse(result);
+        String emptyAnswer = "";
+
+        SyntaxAnalysisReport compilationResult = compile(emptyAnswer);
+
+        Assertions.assertTrue(compilationResult.isCompilable());
+        Assertions.assertEquals(0, compilationResult.getSyntaxErrors().size());
     }
 
 

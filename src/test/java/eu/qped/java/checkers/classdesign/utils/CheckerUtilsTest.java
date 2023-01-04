@@ -1,22 +1,20 @@
 package eu.qped.java.checkers.classdesign.utils;
 
-import com.github.javaparser.ast.Modifier;
-import eu.qped.framework.Checker;
-import eu.qped.java.checkers.classdesign.CheckerUtils;
-import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
-import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
-import eu.qped.java.checkers.classdesign.enums.KeywordType;
-import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+import com.github.javaparser.ast.Modifier;
+
+import eu.qped.java.checkers.classdesign.CheckerUtils;
+import eu.qped.java.checkers.classdesign.config.FieldKeywordConfig;
+import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+import eu.qped.java.checkers.classdesign.infos.ExpectedElement;
 
 public class CheckerUtilsTest {
 

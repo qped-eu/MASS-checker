@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.syntax;
 
+import java.io.File;
 import java.util.List;
 
 import eu.qped.framework.CheckLevel;
@@ -7,7 +8,6 @@ import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
 import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
 import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
 import eu.qped.java.utils.SupportedLanguages;
-import eu.qped.java.utils.compiler.Compiler;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,10 +25,7 @@ public class SyntaxChecker {
     private SyntaxErrorAnalyser syntaxErrorAnalyser;
     private SyntaxFeedbackGenerator syntaxFeedbackGenerator;
 
-
-    private String classFilesDestination;
-    private String stringAnswer;
-    private String targetProject;
+    private File targetProject;
 
     private SyntaxAnalysisReport analyseReport;
 
@@ -37,28 +34,8 @@ public class SyntaxChecker {
         if (syntaxErrorAnalyser == null) {
             syntaxErrorAnalyser = SyntaxErrorAnalyser
                     .builder()
-                    .classFilesDestination(classFilesDestination)
-                    .targetProject(targetProject)
-                    .stringAnswer(stringAnswer)
-                    .build();
-        }
-        analyseReport = syntaxErrorAnalyser.check();
-
-        if (syntaxFeedbackGenerator == null) {
-            syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
-        }
-        return syntaxFeedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
-    }
-
-    public List<String> check(Compiler compiler) {
-        buildSyntaxSettings();
-        if (syntaxErrorAnalyser == null) {
-            syntaxErrorAnalyser = SyntaxErrorAnalyser
-                    .builder()
-                    .classFilesDestination(classFilesDestination)
-                    .targetProject(targetProject)
-                    .stringAnswer(stringAnswer)
-                    .compiler(compiler)
+                    .solutionRoot(targetProject)
+                    .level(syntaxSetting.getCheckLevel())
                     .build();
         }
         analyseReport = syntaxErrorAnalyser.check();
@@ -79,28 +56,6 @@ public class SyntaxChecker {
         if (syntaxSetting.getCheckLevel() == null) {
             syntaxSetting.setCheckLevel(CheckLevel.BEGINNER);
         }
-    }
-
-
-    public static void main(String[] args) {
-
-        String codeToCompile = "double krt(double A, double k, double d){\n" +
-                "    int K,L;\n" +
-                "    return  A\n" +
-                "}\n" +
-                "\n" +
-                "double krtH(double a, double k, double d, double x_n){\n" +
-                "    return a;\n" +
-                "}";
-
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
-        syntaxChecker.setStringAnswer(codeToCompile);
-        var setting = SyntaxSetting.builder().checkLevel(CheckLevel.BEGINNER).language("en").build();
-        syntaxChecker.setSyntaxSetting(setting);
-        var feedbacks = syntaxChecker.check();
-
-        feedbacks.forEach(e -> System.out.println(e));
-
     }
 
 }

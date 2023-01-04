@@ -1,16 +1,17 @@
 package eu.qped.java.semantics;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingItem;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class SolutionApproachAnalyserTest {
 
@@ -67,7 +68,7 @@ class SolutionApproachAnalyserTest {
                                         .ifElseStmt(-1)
                                         .returnType("int")
                                         .methodName("calcSum")
-                                        .filePath("tmp/code-example-for-sematnic-testing-fail/CalcSum.java")
+                                        .filePath("src/test/resources/code-example-for-sematnic-testing-fail/CalcSum.java")
                                         .build()
                         )
                 )
@@ -90,7 +91,7 @@ class SolutionApproachAnalyserTest {
                                         .ifElseStmt(-1)
                                         .returnType("int")
                                         .methodName("calcSum")
-                                        .filePath("tmp/code-example-for-sematnic-testing-pass/CalcSum.java")
+                                        .filePath("src/test/resources/code-example-for-sematnic-testing-pass/CalcSum.java")
                                         .build()
                         )
                 )

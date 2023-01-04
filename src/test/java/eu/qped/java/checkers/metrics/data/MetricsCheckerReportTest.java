@@ -1,14 +1,16 @@
 package eu.qped.java.checkers.metrics.data;
 
-import eu.qped.java.checkers.metrics.data.report.ClassMetricsEntry;
-import eu.qped.java.checkers.metrics.data.report.MetricsCheckerReport;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.qped.java.checkers.metrics.data.report.ClassMetricsEntry;
+import eu.qped.java.checkers.metrics.data.report.MetricsCheckerReport;
 
 /**
  * Test class for {@link MetricsCheckerReport}.
