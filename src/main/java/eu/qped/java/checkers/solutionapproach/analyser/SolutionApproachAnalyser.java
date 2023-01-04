@@ -266,7 +266,7 @@ public class SolutionApproachAnalyser {
                                         .ifElseStmt(-1)
                                         .returnType("int")
                                         .methodName("calcSum")
-                                        .filePath("tmp/code-example-for-sematnic-testing-fail/CalcSum.java")
+                                        .filePath("src/test/resources/code-example-for-sematnic-testing-fail/CalcSum.java")
                                         .build()
                         )
                 )

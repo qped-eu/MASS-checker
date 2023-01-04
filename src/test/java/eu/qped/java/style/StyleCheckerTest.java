@@ -25,7 +25,7 @@ class StyleCheckerTest {
 
     @Test
     void testMethodFail() {
-        styleChecker.setTargetPath("tmp/code-example-for-style-testing-fail");
+        styleChecker.setTargetPath("src/test/resources/code-example-for-style-testing-fail");
         styleChecker.setQfStyleSettings(getBeginnerStyleSetting());
         styleChecker.check();
         var feedbacks = styleChecker.getStyleFeedbacks();
@@ -46,7 +46,7 @@ class StyleCheckerTest {
     }
     @Test
     void testMethodPass() {
-        styleChecker.setTargetPath("tmp/code-example-for-style-testing-pass");
+        styleChecker.setTargetPath("src/test/resources/code-example-for-style-testing-pass");
         styleChecker.setQfStyleSettings(getBeginnerStyleSetting());
         styleChecker.check();
         var feedbacks = styleChecker.getStyleFeedbacks();
