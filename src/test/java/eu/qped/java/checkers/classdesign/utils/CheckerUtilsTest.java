@@ -24,8 +24,8 @@ public class CheckerUtilsTest {
     @Test
     public void extractElementTest() {
         FieldKeywordConfig field = new FieldKeywordConfig();
-        field.setPublicModifier(KeywordChoice.YES.toString());
-        field.setFinalModifier(KeywordChoice.YES.toString());
+        field.setPublicModifier(KeywordChoice.YES);
+        field.setFinalModifier(KeywordChoice.YES);
         field.setType("int");
         field.setName("a;");
         field.setAllowExactModifierMatching(false);

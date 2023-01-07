@@ -42,28 +42,28 @@ public final class CheckerUtils {
      * @throws NoModifierException if ever modifier has been chosen with NO, an exception is being thrown, since that would mean
      * that every modifier is not allowed.
      */
-    private static boolean fillWithPossibleModifiers(Map<String, String> keywordChoiceMap, List<String> possibleMods) throws NoModifierException {
+    private static boolean fillWithPossibleModifiers(Map<String, KeywordChoice> keywordChoiceMap, List<String> possibleMods) throws NoModifierException {
         boolean containsYes = false;
         String modifier = ""; // modifiers und choice sollten zuerst deklariert und initialisiert werden. Sie müsse nur einmal erstellt werden und brauchen nicht immer neu erstellt zu werden nach jedem Aufruf.
-        String choice = "";
-        for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
+        KeywordChoice choice;
+        for (Map.Entry<String, KeywordChoice> entry: keywordChoiceMap.entrySet()) {
             // String modifier = entry.getKey();
             // String choice = entry.getKey();
             modifier = entry.getKey(); // Hier werden einfach die werte der varaiblen nach jedem Aufruf nur geholt und nicht neu erstellt. Das ist effizienter
             choice = entry.getValue();
 
-            if(choice.equals(KeywordChoice.YES.toString())) {
+            if(choice.equals(KeywordChoice.YES)) {
                 possibleMods.add(modifier);
                 containsYes = true;
             }
         }
 
         if(!containsYes) {
-            for (Map.Entry<String, String> entry: keywordChoiceMap.entrySet()) {
+            for (Map.Entry<String, KeywordChoice> entry: keywordChoiceMap.entrySet()) {
                 modifier = entry.getKey(); // string gelöscht
                 choice = entry.getValue(); // string gelöscht
 
-                if(!choice.equals(KeywordChoice.NO.toString())) {
+                if(!choice.equals(KeywordChoice.NO)) {
                     possibleMods.add(modifier);
                 }
             }
