@@ -25,9 +25,9 @@ public class ExpectedElement {
      * @param isExactMatch a boolean expressing if the code in an exact match
      * @param containsYes a boolean representing if the expected code contaions the actual code
      */
-    public ExpectedElement(List<String> accessMod, List<String> nonAccessMods, List<String> types, String name,
-                           boolean isExactMatch,
-                           boolean containsYes) {
+    public ExpectedElement(final List<String> accessMod, final List<String> nonAccessMods, final List<String> types, final String name,
+                           final boolean isExactMatch,
+                           final boolean containsYes) {
         this.isExactMatch = isExactMatch;
         this.possibleAccessModifiers = accessMod;
         this.possibleNonAccessModifiers = nonAccessMods;
@@ -88,7 +88,7 @@ public class ExpectedElement {
      * A setter method for name
      * @param name the value to be assigned
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -98,10 +98,10 @@ public class ExpectedElement {
      * @return true of the objects are equal, false if not
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ExpectedElement that = (ExpectedElement) o;
+        final ExpectedElement that = (ExpectedElement) o;
         return Objects.equals(possibleAccessModifiers, that.possibleAccessModifiers) &&
                 Objects.equals(possibleNonAccessModifiers, that.possibleNonAccessModifiers) &&
                 Objects.equals(types, that.types) && Objects.equals(name, that.name);

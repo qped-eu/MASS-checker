@@ -62,7 +62,7 @@ public class ClassInfo {
      * A setter method for classKeywordConfig
      * @param classKeywordConfig the value to be assigned
      */
-    public void setClassKeywordConfig(ClassKeywordConfig classKeywordConfig) {
+    public void setClassKeywordConfig(final ClassKeywordConfig classKeywordConfig) {
         this.classKeywordConfig = classKeywordConfig;
     }
 
@@ -78,7 +78,7 @@ public class ClassInfo {
      * A setter method for inheritsFromConfigs
      * @param inheritsFromConfigs the value to be assigned
      */
-    public void setInheritsFromConfigs(List<InheritsFromConfig> inheritsFromConfigs) {
+    public void setInheritsFromConfigs(final List<InheritsFromConfig> inheritsFromConfigs) {
         this.inheritsFromConfigs = inheritsFromConfigs;
     }
 
@@ -94,7 +94,7 @@ public class ClassInfo {
      * A setter method for inheritsFromConfigs
      * @param fieldKeywords the value to be assigned
      */
-    public void setFieldKeywordConfigs(List<FieldKeywordConfig> fieldKeywords) {
+    public void setFieldKeywordConfigs(final List<FieldKeywordConfig> fieldKeywords) {
         this.fieldKeywordConfigs = fieldKeywords;
     }
 
@@ -110,7 +110,7 @@ public class ClassInfo {
      * A setter method for methodKeywords
      * @param methodKeywords the value to be assigned
      */
-    public void setMethodKeywordConfigs(List<MethodKeywordConfig> methodKeywords) {
+    public void setMethodKeywordConfigs(final List<MethodKeywordConfig> methodKeywords) {
         this.methodKeywordConfigs = methodKeywords;
     }
 
@@ -126,7 +126,7 @@ public class ClassInfo {
      * A setter method for customFieldFeedback
      * @param customFieldFeedback the value to be assigned
      */
-    public void setCustomFieldFeedback(List<String> customFieldFeedback) {
+    public void setCustomFieldFeedback(final List<String> customFieldFeedback) {
         this.customFieldFeedback = customFieldFeedback;
     }
 
@@ -142,7 +142,7 @@ public class ClassInfo {
      * A setter method for customMethodFeedback
      * @param customMethodFeedback the value to be assigned
      */
-    public void setCustomMethodFeedback(List<String> customMethodFeedback) {
+    public void setCustomMethodFeedback(final List<String> customMethodFeedback) {
         this.customMethodFeedback = customMethodFeedback;
     }
 
@@ -158,7 +158,7 @@ public class ClassInfo {
      * A setter method for customClassFeedback
      * @param customClassFeedback the value to be assigned
      */
-    public void setCustomClassFeedback(List<String> customClassFeedback) {
+    public void setCustomClassFeedback(final List<String> customClassFeedback) {
         this.customClassFeedback = customClassFeedback;
     }
 
@@ -174,7 +174,7 @@ public class ClassInfo {
      * A setter method for customInheritanceFeedback
      * @param customInheritanceFeedback the value to be assigned
      */
-    public void setCustomInheritanceFeedback(List<String> customInheritanceFeedback) {
+    public void setCustomInheritanceFeedback(final List<String> customInheritanceFeedback) {
         this.customInheritanceFeedback = customInheritanceFeedback;
     }
 
@@ -190,7 +190,7 @@ public class ClassInfo {
      * A setter method for fullyQualifiedName
      * @param fullyQualifiedName the value to be assigned
      */
-    public void setFullyQualifiedName(String fullyQualifiedName) {
+    public void setFullyQualifiedName(final String fullyQualifiedName) {
         this.fullyQualifiedName = fullyQualifiedName;
     }
 
@@ -206,7 +206,7 @@ public class ClassInfo {
      * A setter method for matchExactFieldAmount
      * @param matchExactFieldAmount the value to be assigned
      */
-    public void setMatchExactFieldAmount(boolean matchExactFieldAmount) {
+    public void setMatchExactFieldAmount(final boolean matchExactFieldAmount) {
         this.matchExactFieldAmount = matchExactFieldAmount;
     }
 
@@ -222,7 +222,7 @@ public class ClassInfo {
      * A setter method for matchExactMethodAmount
      * @param matchExactMethodAmount the value to be assigned
      */
-    public void setMatchExactMethodAmount(boolean matchExactMethodAmount) {
+    public void setMatchExactMethodAmount(final boolean matchExactMethodAmount) {
         this.matchExactMethodAmount = matchExactMethodAmount;
     }
 }

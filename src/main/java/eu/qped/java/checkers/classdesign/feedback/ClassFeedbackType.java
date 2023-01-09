@@ -38,6 +38,9 @@ public enum ClassFeedbackType {
     DIFFERENT_INTERFACE_NAMES_EXPECTED("DifferentInterfaceNamesExpected"),
     DIFFERENT_CLASS_NAMES_EXPECTED("DifferentClassNamesExpected");
 
+    /**
+     * A string representing the error in refernce
+     */
     private final String error;
 
     /**
