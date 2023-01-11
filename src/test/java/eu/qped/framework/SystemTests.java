@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -22,8 +24,8 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import ro.skyah.comparator.JSONCompare;
-import ro.skyah.comparator.JsonComparator;
+import io.json.compare.CompareMode;
+import io.json.compare.JSONCompare;
 
 public class SystemTests {
 	
@@ -85,18 +87,11 @@ public class SystemTests {
 //			}
 			
 			String actual = FileUtils.readFileToString(QF_OBJECT_FILE, Charset.defaultCharset());
-			JSONCompare.assertEquals(expected, actual, new JsonComparator() {
-				
-				@Override
-				public boolean compareValues(Object expected, Object actual) {
-					return expected.toString().equalsIgnoreCase(actual.toString());
-				}
-				
-				@Override
-				public boolean compareFields(String expected, String actual) {
-					 return expected.equalsIgnoreCase(actual);
-				}
-			});
+			
+			JSONCompare.assertMatches(
+					expected, 
+					actual,
+					Stream.of(CompareMode.REGEX_DISABLED).collect(Collectors.toSet()));
 		}
 
 	}

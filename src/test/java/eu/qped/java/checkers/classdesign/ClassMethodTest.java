@@ -26,7 +26,7 @@ public class ClassMethodTest {
 
 
     @BeforeEach
-    private void init() {
+    void init() {
         qfClassSettings = new QfClassSettings();
         classInfos = new ArrayList<>();
         classInfo = new ClassInfo();
