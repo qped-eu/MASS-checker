@@ -51,6 +51,7 @@
       "coverageSelected":true,
       "classSelected":false,
       "metricsSelected":false,
+      "instructorResources":"qf:collections.zip",
       "syntax":{
          "level":"BEGINNER"
       },
@@ -70,7 +71,6 @@
       "coverage":{
          "showTestFailures":true,
          "showFullCoverageReport":true,
-         "privateImplementation":"qf:collections.zip",
          "feedback":[
             {
                "showFor":"PARTIALLY_MISSED",

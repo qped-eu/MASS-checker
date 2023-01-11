@@ -1,5 +1,8 @@
 package eu.qped.java.checkers.mass;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
 import eu.qped.framework.qf.QfObjectBase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,5 +32,15 @@ public class QfMass extends QfObjectBase {
     private boolean metricsSelected;
     private boolean coverageSelected;
     private boolean classSelected;
+    
+    /**
+     * Private Base Implementation
+     * <p>
+     * Specify the URL of the ZIP-file containing the private implementation.
+     * 
+     */
+    @JsonProperty("instructorResources")
+    @JsonPropertyDescription("Specify the URL of a ZIP-file containing instructor resources that should be added to the root directory of student resources.")
+    private String instructorResources;
 
 }

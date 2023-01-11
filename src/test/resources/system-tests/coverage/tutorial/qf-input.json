@@ -30,11 +30,11 @@
 		"coverageSelected": true,
 		"classSelected": false,
 		"metricsSelected": false,
+        "instructorResources": "file:src/test/resources/coverage/case1/PrivateImpl.zip",
 		"syntax": {
 			"level": "BEGINNER"
 		},
 		"coverage": {
-			"privateImplementation": "file:src/test/resources/coverage/case1/PrivateImpl.zip",
 			"showExtraMisses": false,
             "showFullCoverageReport":false,
             "showTestFailures":false,

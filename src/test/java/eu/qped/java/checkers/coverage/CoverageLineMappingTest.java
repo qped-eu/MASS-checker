@@ -55,15 +55,17 @@ class CoverageLineMappingTest {
 	}
 
 	public void genericTest(String caseName, boolean startsWithInsteadOfEquals) throws IOException, JsonProcessingException, JsonMappingException {
-		String settingsJson = FileUtils.readFileToString(new File("src/test/resources/coverage/" + caseName + "/CoverageSettings.json"), Charset.defaultCharset());
+		File baseDirectory = new File("src/test/resources/coverage/" + caseName);
+		String settingsJson = FileUtils.readFileToString(new File(baseDirectory, "CoverageSettings.json"), Charset.defaultCharset());
 		ObjectMapper mapper = new ObjectMapper();
 		QfCoverageSettings covSetting = mapper.readValue(settingsJson, QfCoverageSettings.class);
 
-		String answer = FileUtils.readFileToString(new File("src/test/resources/coverage/" + caseName + "/answer.java"), Charset.defaultCharset());
+		String answer = FileUtils.readFileToString(new File(baseDirectory,"answer.java"), Charset.defaultCharset());
+		File privateImplFile = new File(baseDirectory,"PrivateImpl.zip");
 		
 		File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
 		QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, answer);
-    	File instructorRoot = QpedQfFilesUtility.downloadAndUnzipIfNecessary(FileInfo.createForUrl(covSetting.getPrivateImplementation()));
+    	File instructorRoot = QpedQfFilesUtility.downloadAndUnzipIfNecessary(FileInfo.createForUrl(privateImplFile.toURI().toURL().toExternalForm()));
     	FileUtils.copyDirectory(instructorRoot, solutionRoot);
     	
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().
@@ -76,7 +78,7 @@ class CoverageLineMappingTest {
         List<String> messages = checker.check();
         String actual = messages.stream().collect(Collectors.joining("\n"));
 
-		String expected = FileUtils.readFileToString(new File("src/test/resources/coverage/" + caseName + "/expected.txt"), Charset.defaultCharset());
+		String expected = FileUtils.readFileToString(new File(baseDirectory, "expected.txt"), Charset.defaultCharset());
 
 		// filter out stack traces, as the exact trace (especially line numbers) may be depending
 		// on the Java implementation
