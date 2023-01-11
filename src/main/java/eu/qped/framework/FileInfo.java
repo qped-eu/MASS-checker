@@ -44,6 +44,7 @@ public class FileInfo {
 	public static FileInfo createForUrl(String url) throws MalformedURLException {		
 		return createForUrl(url, URLConnection.guessContentTypeFromName(url));
 	}
+	
 	public static FileInfo createForUrl(String url, String mimetype) throws MalformedURLException {		
 		URL parsedUrl = new URL(url);
 		
