@@ -1,23 +1,23 @@
-Test failed: test.TestMissEmpty.failure() - failure()
+# Test failures
+test.TestMissEmpty.failure()
+
+**Reason:** Test failing.
+
+Stack trace (frames in JUnit implementation and internal classes are filtered):
 ```
-org.opentest4j.AssertionFailedError: Test failing.
-  at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:39)
-  at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
-  at test.TestMissEmpty.failure(TestMissEmpty.java:34)
-  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
+org.opentest4j.AssertionFailedError
   ...
 ```
-Test failed: test.TestMissEmpty.error() - error()
+test.TestMissEmpty.error()
+
+**Reason:** Test error.
+
+Stack trace (frames in JUnit implementation and internal classes are filtered):
 ```
-java.lang.RuntimeException: Test error.
-  at test.TestMissEmpty.error(TestMissEmpty.java:39)
-  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-  at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64)
-  at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-  at java.base/java.lang.reflect.Method.invoke(Method.java:564)
+java.lang.RuntimeException
   ...
 ```
+# Test Coverage Feedback
 Did you consider the empty String?
 # Full Coverage Report
 
@@ -25,3 +25,77 @@ Did you consider the empty String?
 
 | Line | Coverage type | Code |
 | ---: | :------------ | ---- |
+| 1 |  | `package eu.qped;` |
+| 2 |  |  |
+| 3 | :white_check_mark: _FULLY covered_ | `public class ClassB {` |
+| 4 |  | `    ` |
+| 5 |  | `    /**` |
+| 6 |  | `     * 1. The checksum of the empty String is -1` |
+| 7 |  | `     * ` |
+| 8 |  | `     * 2. The checksum of null is -2` |
+| 9 |  | `     * ` |
+| 10 |  | `     * 3. The checksum of a non-empty String is its length plus the number of spaces in the String` |
+| 11 |  | `     * @param argument` |
+| 12 |  | `     * @return` |
+| 13 |  | `     */` |
+| 14 |  | `    public int checksum(String s) {` |
+| 15 | :red_circle: **NOT covered** | `        return new ClassA().checksum(s);` |
+| 16 |  | `    }` |
+| 17 |  |  |
+| 18 |  | `    /**` |
+| 19 |  | `     * 1. The checksum of the empty array -1` |
+| 20 |  | `     * ` |
+| 21 |  | `     * 2. The checksum of null is -2` |
+| 22 |  | `     * ` |
+| 23 |  | `     * 3. The checksum of a non-empty array is its length plus the number of spaces in the array` |
+| 24 |  | `     * @param argument` |
+| 25 |  | `     * @return` |
+| 26 |  | `     */` |
+| 27 |  | `    public int checksum(char[] s) {` |
+| 28 | :red_circle: **NOT covered** | `        if (s == null) {` |
+| 29 | :red_circle: **NOT covered** | `            return new ClassA().checksum(null);` |
+| 30 |  | `        }` |
+| 31 |  | `        else {` |
+| 32 |  | `        ` |
+| 33 | :red_circle: **NOT covered** | `            return new ClassA().checksum(new String(s).intern());` |
+| 34 |  | `        }` |
+| 35 |  | `    }` |
+| 36 |  |  |
+| 37 |  | `}` |
+## eu/qped/ClassA.java
+
+| Line | Coverage type | Code |
+| ---: | :------------ | ---- |
+| 1 |  | `package eu.qped;` |
+| 2 |  |  |
+| 3 | :white_check_mark: _FULLY covered_ | `public class ClassA {` |
+| 4 |  |  |
+| 5 |  | `    /**` |
+| 6 |  | `     * 1. The checksum of the empty String is -1` |
+| 7 |  | `     * ` |
+| 8 |  | `     * 2. The checksum of null is -2` |
+| 9 |  | `     * ` |
+| 10 |  | `     * 3. The checksum of a non-empty String is its length plus the number of spaces in the String` |
+| 11 |  | `     * @param argument` |
+| 12 |  | `     * @return` |
+| 13 |  | `     */` |
+| 14 |  | `    public int checksum(String argument) {` |
+| 15 |  | `        ` |
+| 16 | :large_orange_diamond: _**PARTIALLY covered**_ | `        if (argument != null && argument.isEmpty()) {` |
+| 17 | :red_circle: **NOT covered** | `            int result = 0;` |
+| 18 |  | `            // the hash code of the empty String is 0 and therefore, the condition is always satisfied` |
+| 19 | :red_circle: **NOT covered** | `            result += argument.hashCode() == 0 ? -1 : argument.hashCode();` |
+| 20 | :red_circle: **NOT covered** | `            return result;` |
+| 21 |  | `        }` |
+| 22 | :white_check_mark: _FULLY covered_ | `        else if (argument != null) {` |
+| 23 | :white_check_mark: _FULLY covered_ | `            int result = argument.length();` |
+| 24 | :white_check_mark: _FULLY covered_ | `            result += argument.chars().filter(c -> c == ' ').count();` |
+| 25 | :white_check_mark: _FULLY covered_ | `            return result;` |
+| 26 |  | `        }` |
+| 27 |  | `        else {` |
+| 28 | :white_check_mark: _FULLY covered_ | `            return -2;` |
+| 29 |  | `        }` |
+| 30 |  | `        ` |
+| 31 |  | `    }` |
+| 32 |  | `    ` |
+| 33 |  | `}` |

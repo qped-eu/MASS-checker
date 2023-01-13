@@ -109,18 +109,15 @@ public class MassExecutor {
                     classChecker.check(null);
                     classFeedbacks = classChecker.getClassFeedbacks();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
-        }
-        if (coverageNeeded) {
-            if(!isCompilable) {
-                syntaxFeedbacks.clear();
+            if (coverageNeeded) {
+                // Found no other solution:
+                // The problem is if the student answer needs a klass from a teacher to compile
+                // the syntaxChecker always fails.
+                coverageFeedbacks = coverageChecker.check();
             }
-            // Found no other solution:
-            // The problem is if the student answer needs a klass from a teacher to compile
-            // the syntaxChecker always fails.
-            coverageFeedbacks = coverageChecker.check();
         }
 
         // translate Feedback body if needed

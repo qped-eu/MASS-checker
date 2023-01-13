@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -163,11 +163,11 @@ public class CoverageChecker {
 
 		});
 		
-		Set<FeedbackMessage> applicableFeedbackMessages = new HashSet<>();
+		Set<FeedbackMessage> applicableFeedbackMessages = new LinkedHashSet<>();
 		applicableFeedbackMessages.addAll(fullyMissedFeedbackMessages);
 		applicableFeedbackMessages.addAll(partiallyMissedFeedbackMessages);
 		
-		Set<FeedbackMessage> suppressed = new HashSet<>();
+		Set<FeedbackMessage> suppressed = new LinkedHashSet<>();
 		
 		applicableFeedbackMessages.forEach(fm -> {
 			fm.suppresses.forEach(id -> {
@@ -185,7 +185,12 @@ public class CoverageChecker {
 
 		if (covSettings.getShowTestFailures())
 			result.add(testResults);
+
+		if (!applicableFeedbackMessages.isEmpty()) {
+			result.add(Stream.of("# Test Coverage Feedback"));
+		}
 		result.add(coverageResults);
+		
 		if (covSettings.getShowFullCoverageReport())
 			result.add(fullCoverageReport);
 		return result.stream().flatMap(s -> s).collect(Collectors.toList());

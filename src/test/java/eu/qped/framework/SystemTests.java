@@ -25,7 +25,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import io.json.compare.CompareMode;
+import io.json.compare.DefaultJsonComparator;
 import io.json.compare.JSONCompare;
+import io.json.compare.JsonComparator;
 
 public class SystemTests {
 	
@@ -60,7 +62,8 @@ public class SystemTests {
 	@DisplayName("QPED Checkers System Tests")
 	@ParameterizedTest(name = "{0}")
 	@MethodSource("provideStringsSystemTest")
-	public void systemTests(String name, SystemTestDescription description, String input, String expected, Exception exception) throws IOException, InterruptedException, AssertionError {
+	public void systemTests(String name, SystemTestDescription description, String input, String expected,
+			Exception exception) throws IOException, InterruptedException, AssertionError {
 		if (exception != null) {
 			throw new AssertionError(exception);
 		} else {
@@ -69,32 +72,50 @@ public class SystemTests {
 //				CheckerRunner.main(new String[0]);
 //			}
 //			else {
-				ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File(".")).inheritIO();
-				pb.environment().put("PATH", pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
-				if (IS_DEBUG) {
-					pb.environment().put("DEBUG_MVN", "TRUE");
+			ProcessBuilder pb = new ProcessBuilder(systemTestConf.getCloudCheckRuner()).directory(new File("."))
+					.inheritIO();
+			pb.environment().put("PATH",
+					pb.environment().get("PATH") + File.pathSeparator + systemTestConf.getMavenLocation());
+			if (IS_DEBUG) {
+				pb.environment().put("DEBUG_MVN", "TRUE");
+			}
+			Process process = pb.start();
+			if (IS_DEBUG) {
+				int exitCode = process.waitFor();
+				if (exitCode != 0) {
+					throw new AssertionError("Cloud Check finished with exit code: " + exitCode);
 				}
-				Process process = pb.start();
-				if (IS_DEBUG) {
-					int exitCode = process.waitFor();
-					if (exitCode != 0) {
-						throw new AssertionError("Cloud Check finished with exit code: " + exitCode);
-					}
-				}
-				if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
-					throw new AssertionError(new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
-				}
+			}
+			if (!process.waitFor(TIMEOUT_AMOUNT, TIMEOUT_UNIT)) {
+				throw new AssertionError(
+						new TimeoutException("Timeout expired: " + TIMEOUT_AMOUNT + " " + TIMEOUT_UNIT));
+			}
 //			}
-			
+
 			String actual = FileUtils.readFileToString(QF_OBJECT_FILE, Charset.defaultCharset());
-			
-			JSONCompare.assertMatches(
-					expected, 
-					actual,
-					Stream.of(CompareMode.REGEX_DISABLED).collect(Collectors.toSet()));
+
+			// compare only Strings (don't apply regular expressions) and ignore stack
+			// frames
+			JSONCompare.assertMatches(expected, actual, new JsonComparator() {
+
+				public boolean compareValues(Object expected, Object actual) {
+					return pruneStackTraces(expected.toString()).equals(pruneStackTraces(actual.toString()));
+				}
+
+				public boolean compareFields(String expected, String actual) {
+					return pruneStackTraces(expected).equals(pruneStackTraces(actual));
+				}
+			});
 		}
 
 	}
+	
+	public static String pruneStackTraces(String outputString) {
+		return Stream.of(outputString.split("\n")).
+				filter(s -> !s.startsWith("  at ")).
+				collect(Collectors.joining("\n"));
+	}
+
 
 	private static Stream<Arguments> provideStringsSystemTest() {
 		File systemTestsFolder = new File(ClassLoader.getSystemResource(SYSTEM_TESTS_FOLDER_NAME).getPath());

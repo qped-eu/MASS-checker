@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.qped.framework.FileInfo;
 import eu.qped.framework.QpedQfFilesUtility;
+import eu.qped.framework.SystemTests;
 import eu.qped.java.checkers.mass.QfCoverageSettings;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 
@@ -82,8 +83,10 @@ class CoverageLineMappingTest {
 
 		// filter out stack traces, as the exact trace (especially line numbers) may be depending
 		// on the Java implementation
-		expected = pruneStackTraces(expected);
-		actual = pruneStackTraces(actual);
+		expected = SystemTests.pruneStackTraces(expected);
+		actual = SystemTests.pruneStackTraces(actual);
+
+		System.out.println(actual);
 		
 		if (startsWithInsteadOfEquals)
 			assertTrue(actual.startsWith(expected));
@@ -91,10 +94,5 @@ class CoverageLineMappingTest {
 			assertEquals(expected, actual);
 	}
 
-	private String pruneStackTraces(String outputString) {
-		return Stream.of(outputString.split("\n")).
-				filter(s -> !s.startsWith("  at ")).
-				collect(Collectors.joining("\n"));
-	}
 
 }
