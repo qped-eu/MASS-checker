@@ -1,5 +1,4 @@
 {
-   "privateImplementation":"file:src/test/resources/coverage/case1/PrivateImpl.zip",
    "showExtraMisses":false,
    "showFullCoverageReport":false,
    "showTestFailures":false,

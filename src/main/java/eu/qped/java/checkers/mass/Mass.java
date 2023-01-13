@@ -84,12 +84,7 @@ public class Mass implements Checker {
         List<File> studentResources = QpedQfFilesUtility.filesWithExtension(solutionRoot, null);
         
         // if necessary, get instructor resources
-        String instructorResourcesURL = null;
-        if (mainSettings.isCoverageNeeded()) {
-            QfCoverageSettings covSetting = mass.getCoverage();
-            instructorResourcesURL = covSetting.getPrivateImplementation();
-        }
-
+        String instructorResourcesURL = mass.getInstructorResources();
         File instructorRoot = null;
         List<File> instructorResources = Collections.emptyList();
 

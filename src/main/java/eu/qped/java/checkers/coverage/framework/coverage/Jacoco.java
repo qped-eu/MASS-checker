@@ -144,12 +144,17 @@ public class Jacoco {
 					throw new RuntimeException("Unknown line status '" + line.getStatus() + "'. Perhaps it was introduced by a newer version of JaCoCo.");
 				}
 				if (code != null && i <= code.length) {
-					fullCoverageReport.append(" | <span style='background-color:").append(backgroundColor).append("'>");
+					// Markdown in Quarterfall does not support HTML.
+					// If this changes in the future, the currently commented lines can be used to make the
+					// code lines appear color coded depending on their coverage status
+//					fullCoverageReport.append(" | <span style='background-color:").append(backgroundColor).append("'>");
+					fullCoverageReport.append(" | ");
 
 					if (!code[i - 1].isEmpty())
 						fullCoverageReport.append("`").append(code[i - 1].replace(' ', '\u00A0').replace("\t", "\u00A0\u00A0\u00A0\u00A0")).append("`");
 					
-					fullCoverageReport.append("</span> |\n");
+					fullCoverageReport.append(" |\n");
+//					fullCoverageReport.append("</span> |\n");
 				} else {
 					fullCoverageReport.append(" | |\n");
 				}

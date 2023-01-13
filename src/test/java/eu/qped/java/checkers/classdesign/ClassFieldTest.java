@@ -26,7 +26,7 @@ public class ClassFieldTest {
     private FieldKeywordConfig field;
 
     @BeforeEach
-    private void init() {
+    void init() {
         qfClassSettings = new QfClassSettings();
         classInfos = new ArrayList<>();
         classInfo = new ClassInfo();
