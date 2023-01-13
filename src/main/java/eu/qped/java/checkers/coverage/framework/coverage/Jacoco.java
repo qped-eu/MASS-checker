@@ -120,22 +120,22 @@ public class Jacoco {
 				String backgroundColor;
 				switch (line.getStatus()) {
 				case ICounter.FULLY_COVERED:
-					fullCoverageReport.append("_FULLY covered_");
+					fullCoverageReport.append(":white_check_mark: _FULLY covered_");
 					backgroundColor = "#A9DFBF"; // green
 					result.linesFullyCovered.add(i);
 					break;
 				case ICounter.PARTLY_COVERED:
-					fullCoverageReport.append("_**PARTIALLY covered**_");
+					fullCoverageReport.append(":large_orange_diamond: _**PARTIALLY covered**_");
 					backgroundColor = "#F9E79F"; // yellow
 					result.linesPartiallyCovered.add(i);
 					break;
 				case ICounter.NOT_COVERED:
-					fullCoverageReport.append("**NOT covered**");
+					fullCoverageReport.append(":red_circle: **NOT covered**");
 					backgroundColor = "#F5B7B1"; // red
 					result.linesNotCovered.add(i);
 					break;
 				case ICounter.EMPTY:
-					fullCoverageReport.append("_EMPTY_");
+					//fullCoverageReport.append("_EMPTY_");
 					backgroundColor = "#A9DFBF"; // green
 					result.linesEmpty.add(i);
 					break;
