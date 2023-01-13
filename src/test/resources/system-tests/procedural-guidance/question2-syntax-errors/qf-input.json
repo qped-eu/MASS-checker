@@ -26,7 +26,7 @@
             "extension":".zip",
             "path":"assignment/63a46930a046882a0bc1660e/files",
             "mimetype":"application/x-zip-compressed",
-            "url":"file:./src/test/resources/system-tests/procedural-guidance/question2/test.zip"
+            "url":"file:./src/test/resources/system-tests/procedural-guidance/question2-syntax-errors/test.zip"
          }
       ]
    },

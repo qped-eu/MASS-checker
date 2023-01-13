@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.mass;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 
@@ -183,7 +185,8 @@ public class Mass implements Checker {
                 solutionApproachFeedbacks,
                 metricsFeedbacks,
                 coverageFeedacks,
-                qfObject
+                qfObject,
+                solutionRoot
         );
 
         qfObject.setFeedback(resultArray);
@@ -195,7 +198,7 @@ public class Mass implements Checker {
             @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
             @NonNull List<String> coverageFeedbacks,
-            @NonNull QfObject qfObject
+            @NonNull QfObject qfObject, File solutionRoot
     ) {
 
         var resultSize =
@@ -257,8 +260,11 @@ public class Mass implements Checker {
         if (resultArrayAsList.size() <= 1) {
             resultArrayAsList.add("Our checks could not find any improvements for your code. This does not mean that it is semantically correct but it adheres to the standards of the lecture in regards to syntax and style.");
         }
-        resultArray = resultArrayAsList.toArray(resultArray);
-        return resultArray;
+
+        String solutionRootName = solutionRoot.getAbsolutePath() + File.separator;
+		return resultArrayAsList.stream()
+				.map(s -> s.replace(solutionRootName, ""))
+				.toArray(size -> new String[size]);
     }
 
 }
