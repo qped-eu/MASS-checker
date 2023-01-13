@@ -185,7 +185,12 @@ public class CoverageChecker {
 
 		if (covSettings.getShowTestFailures())
 			result.add(testResults);
+
+		if (!applicableFeedbackMessages.isEmpty()) {
+			result.add(Stream.of("# Test Coverage Feedback"));
+		}
 		result.add(coverageResults);
+		
 		if (covSettings.getShowFullCoverageReport())
 			result.add(fullCoverageReport);
 		return result.stream().flatMap(s -> s).collect(Collectors.toList());

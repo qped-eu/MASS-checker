@@ -84,6 +84,8 @@ class CoverageLineMappingTest {
 		// on the Java implementation
 		expected = pruneStackTraces(expected);
 		actual = pruneStackTraces(actual);
+
+		System.out.println(actual);
 		
 		if (startsWithInsteadOfEquals)
 			assertTrue(actual.startsWith(expected));
