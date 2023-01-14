@@ -1,8 +1,11 @@
 package eu.qped.java.checkers.coverage;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -11,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import eu.qped.framework.QpedQfFilesUtility;
+import eu.qped.java.checkers.coverage.framework.coverage.CoverageFacade;
 import eu.qped.java.checkers.coverage.framework.coverage.Jacoco;
 import eu.qped.java.checkers.coverage.framework.test.JUnit5;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
@@ -19,18 +24,24 @@ import eu.qped.java.checkers.mass.ShowFor;
 
 public class CoverageChecker {
 
-	private QfCoverageSettings covSetting;
-	private CoverageSetup coverageSetup;
+	private QfCoverageSettings covSettings;
 	
-	private final Map<String, FeedbackMessage> feedbackMessages = new HashMap<>();
+	private Map<String, FeedbackMessage> feedbackMessages;
 	private String fullCoverageReport;
 
-	public CoverageChecker(QfCoverageSettings covSettings, CoverageSetup coverageSetup) {
-		this.covSetting = covSettings;
-		this.coverageSetup = coverageSetup;
+	private File solutionRoot;
+
+	public CoverageChecker(QfCoverageSettings covSettings, File solutionRoot) {
+		this.covSettings = covSettings;
+		this.solutionRoot = solutionRoot;
+	}
+
+	public void initializeFeedbackMessages() {
+		if (feedbackMessages != null)
+			return;
 		
 		AtomicInteger nextFree = new AtomicInteger(0);
-		
+		feedbackMessages = new HashMap<>();
 		covSettings.getFeedback().forEach(
 				messageSetting -> {
 					String id = messageSetting.getId();
@@ -85,15 +96,21 @@ public class CoverageChecker {
 	}
 
 	public List<String> check() {
-		CoverageSetup data = coverageSetup;
-		if (!data.isCompiled) {
-			return data.syntaxFeedback;
+		initializeFeedbackMessages();
+
+        List<CoverageFacade> testClasses = new ArrayList<>();
+        List<CoverageFacade> classes = new ArrayList<>();
+        
+        try {
+			separateTestAndApplicationClasses(testClasses, classes);
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create lists of test and application classes.", e);
 		}
 
 		TestFramework test = new JUnit5();
-		Jacoco coverage = new Jacoco(test);
+		Jacoco coverage = new Jacoco(test, solutionRoot);
 
-		coverage.analyze(data.testclasses, data.classes);
+		coverage.analyze(testClasses, classes);
 
 		StringBuilder fullReport = new StringBuilder();
 		fullReport.append(coverage.getFullCoverageReport());
@@ -108,9 +125,6 @@ public class CoverageChecker {
 				partiallyMissedFeedbackMessages.add(fm);
 		});
 		
-		
-//		if (!this.moduleName.equals(moduleName))
-//			return false;
 		
 		coverage.getModuleCoverageResults().forEach(mcr -> {
 			// fully missed feedback messages:
@@ -149,26 +163,11 @@ public class CoverageChecker {
 
 		});
 		
-		Set<FeedbackMessage> applicableFeedbackMessages = new HashSet<>();
+		Set<FeedbackMessage> applicableFeedbackMessages = new LinkedHashSet<>();
 		applicableFeedbackMessages.addAll(fullyMissedFeedbackMessages);
 		applicableFeedbackMessages.addAll(partiallyMissedFeedbackMessages);
 		
-//		coverage.getModuleCoverageResults().forEach(mcr -> {
-//			mcr.getLinesNotCovered().forEach(line -> {
-//				feedbackMessages.values().forEach(fm -> {
-//					if (fm.matches(mcr.getModuleName(), line, CoverageType.NON))
-//							applicableFeedbackMessages.add(fm);
-//				});
-//			});
-//			mcr.getLinesPartiallyCovered().forEach(line -> {
-//				feedbackMessages.values().forEach(fm -> {
-//					if (fm.matches(mcr.getModuleName(), line, CoverageType.PARTIAL))
-//							applicableFeedbackMessages.add(fm);
-//				});
-//			});
-//		});
-
-		Set<FeedbackMessage> suppressed = new HashSet<>();
+		Set<FeedbackMessage> suppressed = new LinkedHashSet<>();
 		
 		applicableFeedbackMessages.forEach(fm -> {
 			fm.suppresses.forEach(id -> {
@@ -184,12 +183,55 @@ public class CoverageChecker {
 		
 		List<Stream<String>> result = new ArrayList<>();
 
-		if (covSetting.getShowTestFailures())
+		if (covSettings.getShowTestFailures())
 			result.add(testResults);
+
+		if (!applicableFeedbackMessages.isEmpty()) {
+			result.add(Stream.of("# Test Coverage Feedback"));
+		}
 		result.add(coverageResults);
-		if (covSetting.getShowFullCoverageReport())
+		
+		if (covSettings.getShowFullCoverageReport())
 			result.add(fullCoverageReport);
 		return result.stream().flatMap(s -> s).collect(Collectors.toList());
+	}
+
+	public void separateTestAndApplicationClasses(List<CoverageFacade> testClasses, List<CoverageFacade> classes)
+			throws IOException {
+		List<File> allClassFiles = QpedQfFilesUtility.filesWithExtension(solutionRoot, "class");
+        String solutionDirectoryPath = solutionRoot.getCanonicalPath() + File.separator;
+
+        // The file separator will be used as regular expression by replaceAll.
+        // Therefore, we must escape the separator on Windows systems.
+        String fileSeparator = File.separator;
+        if (fileSeparator.equals("\\")) {
+        	fileSeparator = "\\\\";
+        }
+        for (File file : allClassFiles) {
+        	String filename = file.getCanonicalPath();
+        	
+        	String classname = filename.
+        			substring(solutionDirectoryPath.length(), filename.length() - ".class".length()).
+        			replaceAll(fileSeparator, ".");
+
+        	String[] classnameSegments = classname.split("\\.");
+        	String simpleClassname = classnameSegments[classnameSegments.length - 1];
+        	
+        	CoverageFacade coverageFacade = new CoverageFacade(
+        			Files.readAllBytes(file.toPath()),
+        			classname);
+        	
+        	if (simpleClassname.startsWith("Test") 
+        			|| simpleClassname.startsWith("test")
+        			|| simpleClassname.endsWith("Test")
+        			|| simpleClassname.endsWith("test")) {
+        		// the class is a test
+        		testClasses.add(coverageFacade);
+        	} else {
+        		// the class is an application class (i.e., no test)
+        		classes.add(coverageFacade);
+        	}
+        }
 	}
 
 	public String getFullCoverageAndTestReport() {

@@ -234,61 +234,61 @@ public class MetricSettingsReader {
         try {
             switch (metric) {
                 case AMC:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getAmcMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getAmcMax(), Double.MAX_VALUE);
                     break;
                 case CAM:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getCamMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getCamMax(), Double.MAX_VALUE);
                     break;
                 case CA:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getCaMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getCaMax(), Double.MAX_VALUE);
                     break;
                 case CBM:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getCbmMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getCbmMax(), Double.MAX_VALUE);
                     break;
                 case CBO:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getCboMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getCboMax(), Double.MAX_VALUE);
                     break;
                 case CC:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getCcMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getCcMax(), Double.MAX_VALUE);
                     break;
                 case CE:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getCeMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getCeMax(), Double.MAX_VALUE);
                     break;
                 case DAM:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getDamMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getDamMax(), Double.MAX_VALUE);
                     break;
                 case DIT:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getDitMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getDitMax(), Double.MAX_VALUE);
                     break;
                 case IC:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getIcMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getIcMax(), Double.MAX_VALUE);
                     break;
                 case LCOM:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getLcomMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getLcomMax(), Double.MAX_VALUE);
                     break;
                 case LCOM3:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getLcom3Max());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getLcom3Max(), Double.MAX_VALUE);
                     break;
                 case LOC:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getLocMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getLocMax(), Double.MAX_VALUE);
                     break;
                 case MOA:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getMoaMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getMoaMax(), Double.MAX_VALUE);
                     break;
                 case MFA:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getMfaMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getMfaMax(), Double.MAX_VALUE);
                     break;
                 case NOC:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getNocMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getNocMax(), Double.MAX_VALUE);
                     break;
                 case NPM:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getNpmMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getNpmMax(), Double.MAX_VALUE);
                     break;
                 case RFC:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getRfcMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getRfcMax(), Double.MAX_VALUE);
                     break;
                 case WMC:
-                    metricUpperThreshold = Double.parseDouble(qfMetricsSettings.getWmcMax());
+                    metricUpperThreshold = readDoubleOrElse(qfMetricsSettings.getWmcMax(), Double.MAX_VALUE);
                     break;
             }
         } catch (NumberFormatException | NullPointerException e) {
@@ -308,61 +308,61 @@ public class MetricSettingsReader {
         try {
             switch (metric) {
                 case AMC:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getAmcMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getAmcMin(), 0.0);
                     break;
                 case CAM:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getCamMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getCamMin(), 0.0);
                     break;
                 case CA:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getCaMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getCaMin(), 0.0);
                     break;
                 case CBM:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getCbmMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getCbmMin(), 0.0);
                     break;
                 case CBO:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getCboMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getCboMin(), 0.0);
                     break;
                 case CC:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getCcMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getCcMin(), 0.0);
                     break;
                 case CE:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getCeMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getCeMin(), 0.0);
                     break;
                 case DAM:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getDamMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getDamMin(), 0.0);
                     break;
                 case DIT:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getDitMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getDitMin(), 0.0);
                     break;
                 case IC:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getIcMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getIcMin(), 0.0);
                     break;
                 case LCOM:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getLcomMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getLcomMin(), 0.0);
                     break;
                 case LCOM3:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getLcom3Min());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getLcom3Min(), 0.0);
                     break;
                 case LOC:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getLocMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getLocMin(), 0.0);
                     break;
                 case MOA:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getMoaMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getMoaMin(), 0.0);
                     break;
                 case MFA:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getMfaMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getMfaMin(), 0.0);
                     break;
                 case NOC:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getNocMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getNocMin(), 0.0);
                     break;
                 case NPM:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getNpmMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getNpmMin(), 0.0);
                     break;
                 case RFC:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getRfcMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getRfcMin(), 0.0);
                     break;
                 case WMC:
-                    metricLowerThreshold = Double.parseDouble(qfMetricsSettings.getWmcMin());
+                    metricLowerThreshold = readDoubleOrElse(qfMetricsSettings.getWmcMin(), 0.0);
                     break;
             }
         } catch (NumberFormatException | NullPointerException e) {
@@ -370,4 +370,13 @@ public class MetricSettingsReader {
         }
         return metricLowerThreshold;
     }
+
+	private Double readDoubleOrElse(String string, double defaultValue) {
+		if (string != null && string.isBlank()) {
+			return defaultValue;
+		}
+		else {
+			return Double.parseDouble(string);
+		}
+	}
 }

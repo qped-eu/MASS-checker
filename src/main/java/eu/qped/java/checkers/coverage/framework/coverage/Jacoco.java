@@ -1,5 +1,8 @@
 package eu.qped.java.checkers.coverage.framework.coverage;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +26,7 @@ import org.jacoco.core.runtime.RuntimeData;
 
 import eu.qped.java.checkers.coverage.MemoryLoader;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
+import eu.qped.java.checkers.mass.Mass.SolutionWorkspace;
 
 public class Jacoco {
 
@@ -36,7 +40,10 @@ public class Jacoco {
 
 	private String fullCoverageReport;
 
-	public Jacoco(TestFramework testFramework) {
+	private File solutionRoot;
+
+	public Jacoco(TestFramework testFramework, File solutionRoot) {
+		this.solutionRoot = solutionRoot;
 		this.testFramework = Objects.requireNonNull(testFramework,
 				"ERROR::Jacoco.new() Parameter testFramework can't be null");
 	}
@@ -91,12 +98,6 @@ public class Jacoco {
 		
 		StringBuilder fullCoverageReport = new StringBuilder("# Full Coverage Report\n\n");
 		
-		Map<String, String[]> codeByModulename = new HashMap<>();
-		for (CoverageFacade clazz : classes) {
-			codeByModulename.put(clazz.className().replace('.','/') + ".java", clazz.getContent().split("\\n"));
-		}
-
-		
 		// Consider all source files and determine which lines were covered, partially covered or not covered
 		for (ISourceFileCoverage sfCoverage : coverageBuilder.getSourceFiles()) {
 			String packagePath = "";
@@ -111,7 +112,7 @@ public class Jacoco {
 						
 			ModuleCoverageResult result = new ModuleCoverageResult(packagePath + sfCoverage.getName());
 			moduleCoverageResults.add(result);
-			String[] code = codeByModulename.get(fullModuleName);
+			String[] code = getSourceCode(fullModuleName);
 			for (int i = 1; i <= code.length; i++) {
 				fullCoverageReport.append("| ").append(i).append(" | ");
 
@@ -119,22 +120,22 @@ public class Jacoco {
 				String backgroundColor;
 				switch (line.getStatus()) {
 				case ICounter.FULLY_COVERED:
-					fullCoverageReport.append("_FULLY covered_");
+					fullCoverageReport.append(":white_check_mark: _FULLY covered_");
 					backgroundColor = "#A9DFBF"; // green
 					result.linesFullyCovered.add(i);
 					break;
 				case ICounter.PARTLY_COVERED:
-					fullCoverageReport.append("_**PARTIALLY covered**_");
+					fullCoverageReport.append(":large_orange_diamond: _**PARTIALLY covered**_");
 					backgroundColor = "#F9E79F"; // yellow
 					result.linesPartiallyCovered.add(i);
 					break;
 				case ICounter.NOT_COVERED:
-					fullCoverageReport.append("**NOT covered**");
+					fullCoverageReport.append(":red_circle: **NOT covered**");
 					backgroundColor = "#F5B7B1"; // red
 					result.linesNotCovered.add(i);
 					break;
 				case ICounter.EMPTY:
-					fullCoverageReport.append("_EMPTY_");
+					//fullCoverageReport.append("_EMPTY_");
 					backgroundColor = "#A9DFBF"; // green
 					result.linesEmpty.add(i);
 					break;
@@ -143,12 +144,17 @@ public class Jacoco {
 					throw new RuntimeException("Unknown line status '" + line.getStatus() + "'. Perhaps it was introduced by a newer version of JaCoCo.");
 				}
 				if (code != null && i <= code.length) {
-					fullCoverageReport.append(" | <span style='background-color:").append(backgroundColor).append("'>");
+					// Markdown in Quarterfall does not support HTML.
+					// If this changes in the future, the currently commented lines can be used to make the
+					// code lines appear color coded depending on their coverage status
+//					fullCoverageReport.append(" | <span style='background-color:").append(backgroundColor).append("'>");
+					fullCoverageReport.append(" | ");
 
 					if (!code[i - 1].isEmpty())
 						fullCoverageReport.append("`").append(code[i - 1].replace(' ', '\u00A0').replace("\t", "\u00A0\u00A0\u00A0\u00A0")).append("`");
 					
-					fullCoverageReport.append("</span> |\n");
+					fullCoverageReport.append(" |\n");
+//					fullCoverageReport.append("</span> |\n");
 				} else {
 					fullCoverageReport.append(" | |\n");
 				}
@@ -156,6 +162,14 @@ public class Jacoco {
 		}
 		
 		this.fullCoverageReport = fullCoverageReport.toString();
+	}
+
+	private String[] getSourceCode(String relativeFilename) {
+		try {
+			return Files.readAllLines(new File(solutionRoot, relativeFilename).toPath()).toArray(size -> new String[size]);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot read source file from solution directory: " + relativeFilename, e);
+		}
 	}
 
 	public Stream<ModuleCoverageResult> getModuleCoverageResults() {

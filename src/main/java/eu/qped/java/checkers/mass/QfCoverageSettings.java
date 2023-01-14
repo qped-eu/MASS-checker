@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "privateImplementation",
     "showFullCoverageReport",
     "showTestFailures",
     "feedback"
@@ -30,15 +29,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 public class QfCoverageSettings {
 
-    /**
-     * Private Base Implementation
-     * <p>
-     * Specify the URL of the ZIP-file containing the private implementation.
-     * 
-     */
-    @JsonProperty("privateImplementation")
-    @JsonPropertyDescription("Specify the URL of the ZIP-file containing the private implementation.")
-    private String privateImplementation;
     /**
      * Show Full Coverage Report
      * <p>
@@ -71,29 +61,6 @@ public class QfCoverageSettings {
     private List<Feedback> feedback = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    /**
-     * Private Base Implementation
-     * <p>
-     * Specify the URL of the ZIP-file containing the private implementation.
-     * 
-     */
-    @JsonProperty("privateImplementation")
-    public String getPrivateImplementation() {
-        return privateImplementation;
-    }
-
-    /**
-     * Private Base Implementation
-     * <p>
-     * Specify the URL of the ZIP-file containing the private implementation.
-     * 
-     */
-    @JsonProperty("privateImplementation")
-    public void setPrivateImplementation(String privateImplementation) {
-        this.privateImplementation = privateImplementation;
-    }
-
     /**
      * Show Full Coverage Report
      * <p>
@@ -180,10 +147,6 @@ public class QfCoverageSettings {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(QfCoverageSettings.class.getName()).append('@').append(Integer.toHexString(System.identityHashCode(this))).append('[');
-        sb.append("privateImplementation");
-        sb.append('=');
-        sb.append(((this.privateImplementation == null)?"<null>":this.privateImplementation));
-        sb.append(',');
         sb.append("showFullCoverageReport");
         sb.append('=');
         sb.append(((this.showFullCoverageReport == null)?"<null>":this.showFullCoverageReport));
@@ -214,7 +177,6 @@ public class QfCoverageSettings {
 		int result = 1;
 		result = prime * result + ((additionalProperties == null) ? 0 : additionalProperties.hashCode());
 		result = prime * result + ((feedback == null) ? 0 : feedback.hashCode());
-		result = prime * result + ((privateImplementation == null) ? 0 : privateImplementation.hashCode());
 		result = prime * result + ((showFullCoverageReport == null) ? 0 : showFullCoverageReport.hashCode());
 		result = prime * result + ((showTestFailures == null) ? 0 : showTestFailures.hashCode());
 		return result;
@@ -238,11 +200,6 @@ public class QfCoverageSettings {
 			if (other.feedback != null)
 				return false;
 		} else if (!feedback.equals(other.feedback))
-			return false;
-		if (privateImplementation == null) {
-			if (other.privateImplementation != null)
-				return false;
-		} else if (!privateImplementation.equals(other.privateImplementation))
 			return false;
 		if (showFullCoverageReport == null) {
 			if (other.showFullCoverageReport != null)

@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: eu.qped.java.checkers.metrics.MetricsCheckerTest
--------------------------------------------------------------------------------
-Tests run: 6, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 6.089 s <<< FAILURE! - in eu.qped.java.checkers.metrics.MetricsCheckerTest
-eu.qped.java.checkers.metrics.MetricsCheckerTest.testClassFilesPath  Time elapsed: 0.377 s  <<< FAILURE!
-java.lang.AssertionError
-	at eu.qped.java.checkers.metrics.MetricsCheckerTest.testClassFilesPath(MetricsCheckerTest.java:54)
-

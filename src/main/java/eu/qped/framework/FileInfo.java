@@ -3,6 +3,7 @@ package eu.qped.framework;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -10,14 +11,41 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class FileInfo {
 
+	/**
+	 * Simple filename on server, i.e., part of the URL.
+	 */
 	private String id;
+	
+	/**
+	 * Simple filename of original file. 
+	 */
 	private String label;
+	
+	/**
+	 * File extension, including a leading dot (".").
+	 */
 	private String extension;
+	
+	/**
+	 * Path on the server, i.e., following the domain name in the URL.
+	 */
 	private String path;
+	
+	/**
+	 * The file's mime type.
+	 */
 	private String mimetype;
+	
+	/**
+	 * The URL for this file.
+	 */
 	private String url;
 	
-	public static FileInfo createForUri(String url, String mimetype) throws MalformedURLException {		
+	public static FileInfo createForUrl(String url) throws MalformedURLException {		
+		return createForUrl(url, URLConnection.guessContentTypeFromName(url));
+	}
+	
+	public static FileInfo createForUrl(String url, String mimetype) throws MalformedURLException {		
 		URL parsedUrl = new URL(url);
 		
 		String path = parsedUrl.getPath();
@@ -34,29 +62,29 @@ public class FileInfo {
 	}
 	
 	@JsonIgnore
-	private File submittedFile;
+	private File downloadedFile;
 	
 	@JsonIgnore
-	private File unzipped;
+	private File unzippedDirectory;
 
 	@JsonIgnore
-	public File getSubmittedFile() {
-		return submittedFile;
+	public File getDownloadedFile() {
+		return downloadedFile;
 	}
 
 	@JsonIgnore
-	protected void setSubmittedFile(File submittedFile) {
-		this.submittedFile = submittedFile;
+	protected void setDownloadedFile(File downloadedFile) {
+		this.downloadedFile = downloadedFile;
 	}
 
 	@JsonIgnore
-	public File getUnzipped() {
-		return unzipped;
+	public File getUnzippedDirectory() {
+		return unzippedDirectory;
 	}
 
 	@JsonIgnore
-	protected void setUnzipped(File unzipped) {
-		this.unzipped = unzipped;
+	protected void setUnzippedDirectory(File unzippedDirectory) {
+		this.unzippedDirectory = unzippedDirectory;
 	}
 
 	public String getId() {

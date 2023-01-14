@@ -1,5 +1,25 @@
 package eu.qped.framework.feedback.template;
 
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.CODE_JAVA;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.DOT;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.HORIZONTAL_RULE;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.NEW_Double_LINE;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.NEW_LINE;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.SPACE;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asBold;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asCodeBlock;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asHeading4;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asLink;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import eu.qped.framework.feedback.ConceptReference;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.RelatedLocation;
@@ -9,17 +29,12 @@ import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.SupportedLanguages;
-import lombok.*;
-import org.apache.commons.lang.StringUtils;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
 @Setter
 @Getter

@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: eu.qped.java.checkers.metrics.data.MetricsCheckerReportTest
--------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.046 s - in eu.qped.java.checkers.metrics.data.MetricsCheckerReportTest

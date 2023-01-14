@@ -87,40 +87,37 @@ public class MassExecutor {
 
         syntaxFeedbacks = syntaxChecker.check();
         var syntaxAnalyseReport = syntaxChecker.getAnalyseReport();
-        if (syntaxAnalyseReport.isCompilable()) {
+        boolean isCompilable = syntaxAnalyseReport.isCompilable();
+        if (isCompilable) {
             if (styleNeeded) {
-                styleChecker.setTargetPath(syntaxAnalyseReport.getPath());
+//                styleChecker.setTargetPath(syntaxAnalyseReport.getPath());
                 styleChecker.check();
                 styleFeedbacks = styleChecker.getStyleFeedbacks();
             }
             if (semanticNeeded) {
-                solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
+//                solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
                 solutionApproachFeedbacks = solutionApproachChecker.check();
             }
             if (metricsNeeded) {
-                syntaxChecker.setClassFilesDestination("");
+//                syntaxChecker.setClassFilesDestination("");
                 metricsChecker.check();
                 metricsFeedbacks = metricsChecker.getMetricsFeedbacks();
             }
             if (classNeeded) {
                 try {
-                    classChecker.setTargetPath(syntaxAnalyseReport.getPath());
+//                    classChecker.setTargetPath(syntaxAnalyseReport.getPath());
                     classChecker.check(null);
                     classFeedbacks = classChecker.getClassFeedbacks();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
             if (coverageNeeded) {
+                // Found no other solution:
+                // The problem is if the student answer needs a klass from a teacher to compile
+                // the syntaxChecker always fails.
                 coverageFeedbacks = coverageChecker.check();
             }
-
-        } else if (coverageNeeded) {
-        	syntaxFeedbacks.clear();
-            // Found no other solution:
-            // The problem is if the student answer needs a klass from a teacher to compile
-            // the syntaxChecker always fails.
-            coverageFeedbacks = coverageChecker.check();
         }
 
         // translate Feedback body if needed

@@ -3,9 +3,11 @@ package eu.qped.java.checkers.coverage.framework.test;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.engine.JupiterTestEngine;
 import org.junit.platform.engine.support.descriptor.MethodSource;
@@ -55,49 +57,79 @@ public class JUnit5 implements TestFramework {
 		
         TestExecutionSummary summary = sgl.getSummary();
 
-        List<String> testFailures = new ArrayList<>();
+        List<String> testFailures = new LinkedList<>();
         
         for (Failure failure : summary.getFailures()) {
         	StringBuilder failureMessage = new StringBuilder();
         	
         	
-        	failureMessage.append("Test failed: ");
         	failure.getTestIdentifier().getSource().ifPresentOrElse(
         			s -> {
         				if (s instanceof MethodSource) {
         					MethodSource ms = (MethodSource) s;
-        					failureMessage.append(ms.getClassName()).append(".").
-        					append(ms.getMethodName()).
-        					append("(").append(ms.getMethodParameterTypes()).append(") - ").
-        					append(failure.getTestIdentifier().getDisplayName());
+        					failureMessage.append(ms.getClassName()).append(".");
+        					
+        					String testMethodName = 
+        							new StringBuilder().append(ms.getMethodName()).
+        							append("(").append(ms.getMethodParameterTypes()).append(")").toString();
+        					failureMessage.append(testMethodName);
+        					
+        					if (!testMethodName.equals(failure.getTestIdentifier().getDisplayName())) {
+        						failureMessage.append(" [").
+        						append(failure.getTestIdentifier().getDisplayName()).append("]");
+        					}
+        				} else {
+        					failureMessage.append(failure.getTestIdentifier().getDisplayName());
         				}
         			}, 
         			() -> failureMessage.append(failure.getTestIdentifier().getDisplayName()));
         	
-        	failureMessage.append("\n");
+        	failureMessage.append("\n\n")
+        		.append("**Reason:** ")
+        		.append(failure.getException().getMessage())
+        		.append("\n\n");
         	
-//        	failure.getTestIdentifier().getParentId().ifPresent(p ->
-//        		failureMessage.append("in: ").append(p).append("\n"));
+        	failureMessage.append("Stack trace (frames in JUnit implementation and internal classes are filtered):\n");
+
         	failureMessage.append("```\n");
-        	addThrowable(failure.getException(), failureMessage);
+        	addThrowable(failure.getException(), false, failureMessage);
         	failureMessage.append("\n```");
         	
         	testFailures.add(failureMessage.toString());
         }
+        if (!testFailures.isEmpty()) {
+        	testFailures.add(0, "# Test failures");
+        }
         return testFailures;
     }
 
-	private void addThrowable(Throwable exception, StringBuilder failureMessage) {
-		failureMessage.append(exception.getClass().getName()).append(": ").append(exception.getMessage());
-		StackTraceElement[] stes = exception.getStackTrace();
-		for (int i = 0; i < Math.min(stes.length, 5); i++) {
-			failureMessage.append("\n  at " + stes[i].toString());
+	private void addThrowable(Throwable exception, boolean includeMessage, StringBuilder failureMessage) {
+		failureMessage.append(exception.getClass().getName());
+		
+		if (includeMessage) {
+			failureMessage.append(": ").append(exception.getMessage());
 		}
-		if (stes.length > 5)
+		
+		StackTraceElement[] stes = exception.getStackTrace();
+		List<String> stackFrames = Stream.of(stes).filter(ste ->
+			!ste.getClassName().startsWith("org.junit.") &&
+			!ste.getClassName().startsWith("junit.") &&
+			!ste.getClassName().startsWith("org.opentest4j.") &&
+			!ste.getClassName().startsWith("jdk.")
+		).map(ste ->
+			"\n  at " + ste.toString()
+		).collect(Collectors.toList());
+
+		stackFrames.stream().limit(5).forEach(line ->
+			failureMessage.append(line)
+		);
+		
+		if (stackFrames.size() > 5) {
 			failureMessage.append("\n  ...");
+		}
 		if (exception.getCause() != null) {
 			failureMessage.append("\nCaused by:\n");
-			addThrowable(exception.getCause(), failureMessage);
+			addThrowable(exception.getCause(), true, failureMessage);
 		}
 	}
 

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class SyntaxAnalysisReport {
 
     private List<SyntaxError> syntaxErrors;
-    private String path;
+    private File path;
     private CompiledSourceType compiledSourceType;
     private boolean isCompilable;
     private String codeAsString;
