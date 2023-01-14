@@ -1,63 +1,47 @@
 [![](https://qped.eu/logo.png)](https://qped.eu/)
 
-QPED (Quality-focused Programming Education) - Feedback tools for Java and Python
+QPED (Quality-focused Programming Education) - Feedback tools for Java
 ========================
-[What is QPED?](https://qped.eu)
------------
-QPED is a project that has seen life as an Erasmus+ project funded by the European government.
-It is a combined venture of four different universities (Open Universiteit Nederland, Fundacio per a la Universitat oberta de Catalunya, Philipps Universität Marburg and Technische Universiteit Eindhoven) and the Quarterfall-organisation.
-For more information about Quarterfall please refer to [their website](https://www.quarterfall.com/).
 
-QPED aims to improve the quality of software by improving the written code underneath.
-Our philosophy is that if the quality and readability of the underlying code improves, then the software itself will become higher quality.
-In order to achieve that, we focus on improving the quality mindedness of early learners in a university context.
+What this readme is not about
+----------
 
-Since in the beginning of their studies, students mostly learn about programming and language features, more meta-topics like testing or readability are mostly sidelined or "to be learned later".
-QPED wants to teach the importance of high quality code and testing to students early so that they write their code adhering to standards from the start instead of having to relearn how to code correctly a few semesters later.
-However, detailed feedback on code can be quite tedious for teachers to provide since at any given point during a semester they are vastly outnumbered by the students.
-Because of this, we provide teachers with this particular piece of software.
+For a description of the implementation of the MASS Checker (QPED Feedback tools for Java) as well as the QPED project, please refer to the `readme.md` in the `master` branch.
 
-What is this software about?
-------------
-### General
-With this software, you can analyze and automatically generate feedback for learners of computer science.
-This project is aimed at early learners beginning their education by learning the JAVA and Python programming language.
-For the respective versions of this project, please refer to their respective folder.
+Purpose of the `qf` branch
+----------
 
-### What does it do?
-At the moment, it is a highly customizable software that can compile and analyze submitted code and generate feedback.
-The generated feedback can be configured by the user to be in a specific language (e.g. German, English, etc) and can be adjusted to the level of knowledge of the learner.
+This `qf` branch has the purpose of providing a binary distribution of the MASS Checker to limit the data to download and avoid the need for compilation when running MASS.
+MASS is particularly designed to be used for generating feedback in the [Quarterfall learning platform](https://www.quarterfall.com/) which integrates MASS as "Cloudcheck".
+Thus, to run MASS, the Git head revision is pulled and the `run.sh` is executed.
+Using the `qf` branch reduces the time required for performing the MASS check.
 
-Furthermore, it is possible to require a learner to use a specific loop within their solution or solve a task recursively.
-It is also possible to use different metrics and mutation testing to evaluate the test-quality of the submitted code and give the learner helpfull feedback.
-For a full list of possible configurations, please refer to the section below.
+How to update the `qf` branch
+----------
 
-### How can I interface with this programme?
-Interfacing with this programme works solely via a JSON-Object.
-For specific instructions, please refer to the documentation of the [framework](./src/main/java/eu/qped/framework/readme.md).
+To update this branch to a the latest version of the MASS Checker in the `master` branch, you must do the following.
 
-### How can it be configured?
-Configuration is also done via different JSON-Objects.
-For specific properties and objects that can be used for configuration, please refer to the documentation of the [checkers](./src/main/java/eu/qped/java/readme.md).
+* Go to your local copy of the `master` branch.
 
-Requirements
-------------
-This project is meant to interface specifically with the Quarterfall plattform in the form of a cloud-check, though it can be used with other plattforms.
-We interface with Quarterfall by using a JSON configuration that is done in Quarterfall and submitted to this software.
-The output is also generated as a JSON-object.
-However, the feedback itself is formatted in markdown.
+* Make sure the `master` branch is fully functioning by running the complete test suite, e.g. using `mvn test`.
 
-Development
------------
-The implementation makes use of the Lombok project, which is properly configured in the Maven POM.
-If you want to build the project in your IDE, you need to have Lombok installed as an IDE extension.
-You can follow the instructions in this [tutorial](https://www.baeldung.com/lombok-ide).  
+* Check out a local copy of the `qf` branch and replace the contents of the `src/main` folder with those of the `master` branch's working copy.
+
+* Replace the `pom.xml` file in the same way.
+
+* Do the same with the folder `target/classes`.
+  * Note that the classes-folder may be hidden in an IDE, therefore rather do the copying in the console or system explorer.
+  * Also note that in the `master` branch the `target/classes` folder is not version controlled. Therefore make sure to compile all sources first, e.g., by running the tests as above or by running `mvn compile`.
+
+* Do **not** replace the `run.sh` file unless you know exactly what you are doing. This script on the `qf` branch executes in "quiet" mode to avoid runtime overhead.
+
+* Commit and push the changes `qf` branch to the `origin`.
 
 Licence
 ----------
 MIT-licence
 
-Copyright (c) 2021 QPED Organization
+Copyright (c) 2021 - 2023 QPED Organization
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
