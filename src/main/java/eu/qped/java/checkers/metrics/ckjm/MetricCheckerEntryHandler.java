@@ -31,11 +31,11 @@ public class MetricCheckerEntryHandler implements CkjmOutputHandler {
     }
 
     @Override
-    public void handleClass(String className, ClassMetrics c) {
+    public void handleClass(final String className, final ClassMetrics c) {
 
-        List<ClassMetricsMessage> metricsForClass = new ArrayList<>();
+        final List<ClassMetricsMessage> metricsForClass = new ArrayList<>();
 
-        Map<String, Integer> metricValuesCC = getCCMapInternal(c);
+        final Map<String, Integer> metricValuesCC = getCCMapInternal(c);
 
         metricsForClass.add(new ClassMetricsMessageSingle(AMC, c.getAmc()));
         metricsForClass.add(new ClassMetricsMessageSingle(CA, c.getCa()));
@@ -55,7 +55,7 @@ public class MetricCheckerEntryHandler implements CkjmOutputHandler {
         metricsForClass.add(new ClassMetricsMessageSingle(NOC, c.getNoc()));
         metricsForClass.add(new ClassMetricsMessageSingle(NPM, c.getNpm()));
         metricsForClass.add(new ClassMetricsMessageSingle(RFC, c.getRfc()));
-        metricsForClass.add(new ClassMetricsMessageSingle(WMC, c.getWmc()));
+        metricsForClass.add(new ClassMetricsMessageSingle(Metric.WMC, c.getWmc()));
 
         this.outputMetrics.add(new ClassMetricsEntry(className, metricsForClass));
     }
@@ -66,11 +66,11 @@ public class MetricCheckerEntryHandler implements CkjmOutputHandler {
      * @param classMetrics the given classMetrics
      * @return a map containing CC-values for this class' methods
      */
-    private Map<String, Integer> getCCMapInternal(ClassMetrics classMetrics) {
+    private Map<String, Integer> getCCMapInternal(final ClassMetrics classMetrics) {
 
-        List<String> methodNames = classMetrics.getMethodNames();
-        Map<String, Integer> metricValuesCC = new HashMap<>();
-        for (String methodName : methodNames) {
+        final List<String> methodNames = classMetrics.getMethodNames();
+        final Map<String, Integer> metricValuesCC = new HashMap<>();
+        for (final String methodName : methodNames) {
             metricValuesCC.put(methodName, classMetrics.getCC(methodName));
         }
         return metricValuesCC;
@@ -111,7 +111,7 @@ public class MetricCheckerEntryHandler implements CkjmOutputHandler {
          *  @param description (long) description for an abbreviation of a given metric
          *
          */
-        Metric(String description) {
+        Metric(final String description) {
             this.description = description;
         }
 
