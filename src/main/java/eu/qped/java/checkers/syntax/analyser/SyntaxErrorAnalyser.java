@@ -76,7 +76,6 @@ public class SyntaxErrorAnalyser {
         // create compiler options
         List<String> options = new ArrayList<>();
         
-        options.add("-verbose"); // Verbose output. This includes information about each class loaded and each source file compiled.
         options.add("-Xlint");   // Enable all recommended warnings. In this release, enabling all available warnings is recommended.
         options.add("-g");       // Generate all debugging information, including local variables. By default, only line number and source file information is generated.
 
