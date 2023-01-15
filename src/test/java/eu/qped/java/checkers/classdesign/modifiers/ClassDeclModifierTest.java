@@ -65,9 +65,9 @@ public class ClassDeclModifierTest {
     }
 
     @DataPoints("choices")
-    public static String[] choiceValue() {
-        return new String[] {
-                KeywordChoice.YES.toString(), KeywordChoice.NO.toString()
+    public static KeywordChoice[] choiceValue() {
+        return new KeywordChoice[] {
+                KeywordChoice.YES, KeywordChoice.NO
         };
     }
 

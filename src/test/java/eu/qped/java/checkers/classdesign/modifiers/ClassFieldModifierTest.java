@@ -62,8 +62,8 @@ public class ClassFieldModifierTest {
 
 
     @DataPoints("choices")
-    public static String[] choiceValues() {
-        return new String[] {KeywordChoice.YES.toString(), KeywordChoice.NO.toString()};
+    public static KeywordChoice[] choiceValues() {
+        return new KeywordChoice[] {KeywordChoice.YES, KeywordChoice.NO};
     }
 
     @DataPoints("exactMatching")
