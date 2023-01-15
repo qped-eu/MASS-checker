@@ -96,7 +96,7 @@ public class Jacoco {
 		
 		moduleCoverageResults = new HashSet<>();
 		
-		StringBuilder fullCoverageReport = new StringBuilder("# Full Coverage Report\n\n");
+		StringBuilder fullCoverageReport = new StringBuilder("### Full Coverage Report\n\n");
 		
 		// Consider all source files and determine which lines were covered, partially covered or not covered
 		for (ISourceFileCoverage sfCoverage : coverageBuilder.getSourceFiles()) {
@@ -106,7 +106,7 @@ public class Jacoco {
 
 			String fullModuleName = packagePath + sfCoverage.getName();
 					
-			fullCoverageReport.append("## ").append(fullModuleName).append("\n\n");
+			fullCoverageReport.append("#### ").append(fullModuleName).append("\n\n");
 			fullCoverageReport.append("| Line | Coverage type | Code |\n");
 			fullCoverageReport.append("| ---: | :------------ | ---- |\n");
 						

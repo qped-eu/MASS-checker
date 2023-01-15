@@ -60,7 +60,7 @@ public class JUnit5 implements TestFramework {
         List<String> testFailures = new LinkedList<>();
         
         for (Failure failure : summary.getFailures()) {
-        	StringBuilder failureMessage = new StringBuilder();
+        	StringBuilder failureMessage = new StringBuilder("#### ");
         	
         	
         	failure.getTestIdentifier().getSource().ifPresentOrElse(
@@ -89,7 +89,7 @@ public class JUnit5 implements TestFramework {
         		.append(failure.getException().getMessage())
         		.append("\n\n");
         	
-        	failureMessage.append("Stack trace (frames in JUnit implementation and internal classes are filtered):\n");
+        	failureMessage.append("**Stack trace** (frames in JUnit implementation and internal classes are filtered):\n");
 
         	failureMessage.append("```\n");
         	addThrowable(failure.getException(), false, failureMessage);
@@ -98,7 +98,7 @@ public class JUnit5 implements TestFramework {
         	testFailures.add(failureMessage.toString());
         }
         if (!testFailures.isEmpty()) {
-        	testFailures.add(0, "# Test failures");
+        	testFailures.add(0, "### Test failures");
         }
         return testFailures;
     }

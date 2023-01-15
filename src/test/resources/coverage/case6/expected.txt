@@ -1,27 +1,27 @@
-# Test failures
-test.TestMissEmpty.failure()
+### Test failures
+#### test.TestMissEmpty.failure()
 
 **Reason:** Test failing.
 
-Stack trace (frames in JUnit implementation and internal classes are filtered):
+**Stack trace** (frames in JUnit implementation and internal classes are filtered):
 ```
 org.opentest4j.AssertionFailedError
   ...
 ```
-test.TestMissEmpty.error()
+#### test.TestMissEmpty.error()
 
 **Reason:** Test error.
 
-Stack trace (frames in JUnit implementation and internal classes are filtered):
+**Stack trace** (frames in JUnit implementation and internal classes are filtered):
 ```
 java.lang.RuntimeException
   ...
 ```
-# Test Coverage Feedback
-Did you consider the empty String?
-# Full Coverage Report
+### Test Coverage Feedback
+- Did you consider the empty String?
+### Full Coverage Report
 
-## eu/qped/ClassB.java
+#### eu/qped/ClassB.java
 
 | Line | Coverage type | Code |
 | ---: | :------------ | ---- |
@@ -62,7 +62,7 @@ Did you consider the empty String?
 | 35 |  | `    }` |
 | 36 |  |  |
 | 37 |  | `}` |
-## eu/qped/ClassA.java
+#### eu/qped/ClassA.java
 
 | Line | Coverage type | Code |
 | ---: | :------------ | ---- |
