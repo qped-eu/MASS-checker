@@ -35,7 +35,7 @@ To update this branch to a the latest version of the MASS Checker in the `master
 
 * Do **not** replace the `run.sh` file unless you know exactly what you are doing. This script on the `qf` branch executes in "quiet" mode to avoid runtime overhead.
 
-* Commit and push the changes `qf` branch to the `origin`.
+* Commit and push the changesd`qf` branch to the `origin`.
 
 Licence
 ----------
