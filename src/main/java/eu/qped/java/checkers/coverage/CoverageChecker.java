@@ -177,7 +177,7 @@ public class CoverageChecker {
 		
 		applicableFeedbackMessages.removeAll(suppressed);
 		
-		Stream<String> coverageResults = applicableFeedbackMessages.stream().map(FeedbackMessage::getMessage);
+		Stream<String> coverageResults = applicableFeedbackMessages.stream().map(fm -> "- " + fm.getMessage());
 		Stream<String> fullCoverageReport = Stream.of(this.fullCoverageReport);
 		Stream<String> testResults = coverage.getTestResults();
 		
@@ -187,7 +187,7 @@ public class CoverageChecker {
 			result.add(testResults);
 
 		if (!applicableFeedbackMessages.isEmpty()) {
-			result.add(Stream.of("# Test Coverage Feedback"));
+			result.add(Stream.of("### Test Coverage Feedback"));
 		}
 		result.add(coverageResults);
 		
