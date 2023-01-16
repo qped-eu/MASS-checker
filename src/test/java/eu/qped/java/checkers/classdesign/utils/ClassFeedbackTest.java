@@ -6,6 +6,8 @@ import eu.qped.java.checkers.classdesign.feedback.ClassFeedbackGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 public class ClassFeedbackTest {
 
     @Test

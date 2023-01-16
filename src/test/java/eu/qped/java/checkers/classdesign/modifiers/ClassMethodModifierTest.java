@@ -68,8 +68,8 @@ public class ClassMethodModifierTest {
     }
 
     @DataPoints("choices")
-    public static String[] choiceValues() {
-        return new String[] {KeywordChoice.YES.toString(), KeywordChoice.NO.toString()};
+    public static KeywordChoice[] choiceValues() {
+        return new KeywordChoice[] {KeywordChoice.YES, KeywordChoice.NO};
     }
 
     @DataPoints("exactMatching")
@@ -85,7 +85,7 @@ public class ClassMethodModifierTest {
     //test name
     //test missing
 
-    private static void chooseAccessModifier(MethodKeywordConfig method, String accessMod, String choice) {
+    private static void chooseAccessModifier(MethodKeywordConfig method, String accessMod, KeywordChoice choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
         runnableMap.put("public", () -> method.setPublicModifier(choice));
         runnableMap.put("protected", () -> method.setProtectedModifier(choice));
@@ -95,7 +95,7 @@ public class ClassMethodModifierTest {
     }
 
 
-    private static void chooseNonAccessModifier(MethodKeywordConfig method, String nonAccessMod, String choice) {
+    private static void chooseNonAccessModifier(MethodKeywordConfig method, String nonAccessMod, KeywordChoice choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
         runnableMap.put("abstract", () -> method.setAbstractModifier(choice));
         runnableMap.put("static", () -> method.setStaticModifier(choice));
@@ -132,7 +132,7 @@ public class ClassMethodModifierTest {
     public void constructorTest(@FromDataPoints("accessModifiers") String correctMod) {
         init();
 
-        chooseAccessModifier(method, correctMod, KeywordChoice.YES.toString());
+        chooseAccessModifier(method, correctMod, KeywordChoice.YES);
         method.setType("");
         method.setName("TestClass");
 
@@ -141,7 +141,7 @@ public class ClassMethodModifierTest {
         source += correctMod + " int test() {}" + "}";
 
         MethodKeywordConfig method2 = new MethodKeywordConfig();
-        chooseAccessModifier(method2, correctMod, KeywordChoice.YES.toString());
+        chooseAccessModifier(method2, correctMod, KeywordChoice.YES);
         method2.setType("int");
         method2.setName("test");
         methodKeywordConfigs.add(method2);
@@ -192,7 +192,7 @@ public class ClassMethodModifierTest {
     public void correctEmptyNonAccess(@FromDataPoints("accessModifiers") String correctMod,
                                @FromDataPoints("accessModifiers") String wrongMod,
                                @FromDataPoints("emptyModifier") String nonAccessMod,
-                               @FromDataPoints("choices") String choice,
+                               @FromDataPoints("choices") KeywordChoice choice,
                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -206,7 +206,7 @@ public class ClassMethodModifierTest {
         setup();
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Collections.singletonList(nonAccessMod);
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
         }
@@ -238,7 +238,7 @@ public class ClassMethodModifierTest {
     public void faultEmptyNonAccess(@FromDataPoints("accessModifiers") String correctMod,
                                    @FromDataPoints("accessModifiers") String wrongMod,
                                    @FromDataPoints("emptyModifier") String emptyModifier,
-                                   @FromDataPoints("choices") String choice,
+                                   @FromDataPoints("choices") KeywordChoice choice,
                                    @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -253,7 +253,7 @@ public class ClassMethodModifierTest {
 
         String allowedAccess = wrongMod;
         List<String> allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(emptyModifier));
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = correctMod;
             allowedNonAccess = Collections.singletonList(emptyModifier);
         }
@@ -277,7 +277,7 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -286,7 +286,7 @@ public class ClassMethodModifierTest {
     public void defaultCorrect(@FromDataPoints("reducedAccess") String correctMod,
                                 @FromDataPoints("reducedAccess") String wrongMod,
                                 @FromDataPoints("defaultKeyword") String nonAccessMod,
-                                @FromDataPoints("choices") String choice,
+                                @FromDataPoints("choices") KeywordChoice choice,
                                 @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -300,7 +300,7 @@ public class ClassMethodModifierTest {
         setup();
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Collections.singletonList(nonAccessMod);
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
         }
@@ -331,7 +331,7 @@ public class ClassMethodModifierTest {
     public void defaultAccessFault(@FromDataPoints("reducedAccess") String correctMod,
                                @FromDataPoints("reducedAccess") String wrongMod,
                                @FromDataPoints("defaultKeyword") String nonAccessMod,
-                               @FromDataPoints("choices") String choice,
+                               @FromDataPoints("choices") KeywordChoice choice,
                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -346,7 +346,7 @@ public class ClassMethodModifierTest {
 
         String allowedAccess = wrongMod;
         List<String> allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(nonAccessMod));
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = correctMod;
             allowedNonAccess = Collections.singletonList(nonAccessMod);
         }
@@ -370,7 +370,7 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("interface TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("interface TestClass", "test", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -381,7 +381,7 @@ public class ClassMethodModifierTest {
     public void abstractCorrect(@FromDataPoints("reducedAccess") String correctMod,
                                 @FromDataPoints("reducedAccess") String wrongMod,
                                 @FromDataPoints("abstractKeyword") String abstractKeyword,
-                                @FromDataPoints("choices") String choice,
+                                @FromDataPoints("choices") KeywordChoice choice,
                                 @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -396,7 +396,7 @@ public class ClassMethodModifierTest {
 
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Collections.singletonList(abstractKeyword);
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(abstractKeyword));
         }
@@ -426,7 +426,7 @@ public class ClassMethodModifierTest {
     public void abstractAccessFault(@FromDataPoints("reducedAccess") String correctMod,
                                 @FromDataPoints("reducedAccess") String wrongMod,
                                 @FromDataPoints("abstractKeyword") String abstractKeyword,
-                                @FromDataPoints("choices") String choice,
+                                @FromDataPoints("choices") KeywordChoice choice,
                                 @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -440,7 +440,7 @@ public class ClassMethodModifierTest {
 
         String allowedAccess = wrongMod;
         List<String> allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(abstractKeyword));
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = correctMod;
             allowedNonAccess = Collections.singletonList(abstractKeyword);
         }
@@ -464,7 +464,7 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -474,7 +474,7 @@ public class ClassMethodModifierTest {
     public void modifierCorrect(@FromDataPoints("accessModifiers") String correctMod,
                                 @FromDataPoints("accessModifiers") String wrongMod,
                                 @FromDataPoints("allNonAccessModifierCombinations") String[] nonAccessComb,
-                                @FromDataPoints("choices") String choice,
+                                @FromDataPoints("choices") KeywordChoice choice,
                                 @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -489,7 +489,7 @@ public class ClassMethodModifierTest {
         String source = "class TestClass {";
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Arrays.asList(nonAccessComb);
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Arrays.asList(nonAccessComb));
         }
@@ -516,7 +516,7 @@ public class ClassMethodModifierTest {
     public void accessFault(@FromDataPoints("accessModifiers") String correctMod,
                                 @FromDataPoints("accessModifiers") String wrongMod,
                                 @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
-                                @FromDataPoints("choices") String choice,
+                                @FromDataPoints("choices") KeywordChoice choice,
                                 @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -528,7 +528,7 @@ public class ClassMethodModifierTest {
         String source = "class TestClass {";
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Arrays.asList(correctNonAccess);
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongMod;
         }
         source += allowedAccess + " " + String.join(" ", allowedNonAccess) + " int test() {}" + "}";
@@ -544,7 +544,7 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -552,7 +552,7 @@ public class ClassMethodModifierTest {
     @Theory
     public void nonAccessFault(@FromDataPoints("accessModifiers") String correctMod,
                             @FromDataPoints("allNonAccessModifierCombinations") String[] expectedNonAccess,
-                            @FromDataPoints("choices") String choice,
+                            @FromDataPoints("choices") KeywordChoice choice,
                             @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         List<String> expectedList = Arrays.asList(expectedNonAccess);
@@ -566,7 +566,7 @@ public class ClassMethodModifierTest {
 
         String source = "class TestClass {";
         List<String> allowedNonAccess = expectedList;
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
         if(!isExactMatch && !allowedNonAccess.isEmpty()) {
@@ -585,7 +585,7 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -594,7 +594,7 @@ public class ClassMethodModifierTest {
     public void accessAndNonAccessFault(@FromDataPoints("accessModifiers") String correctMod,
                                @FromDataPoints("accessModifiers") String wrongMod,
                                @FromDataPoints("allNonAccessModifierCombinations") String[] expectedNonAccess,
-                               @FromDataPoints("choices") String choice,
+                               @FromDataPoints("choices") KeywordChoice choice,
                                @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -611,7 +611,7 @@ public class ClassMethodModifierTest {
         String source = "class TestClass {";
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = expectedList;
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
@@ -631,7 +631,7 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb1};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -640,7 +640,7 @@ public class ClassMethodModifierTest {
     public void multipleAccessFaults(@FromDataPoints("accessModifiers") String correctMod,
                             @FromDataPoints("accessModifiers") String wrongMod,
                             @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
-                            @FromDataPoints("choices") String choice,
+                            @FromDataPoints("choices") KeywordChoice choice,
                             @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         assumeFalse(correctMod.equals(wrongMod));
@@ -656,7 +656,7 @@ public class ClassMethodModifierTest {
         String source = "class TestClass {";
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Arrays.asList(correctNonAccess);
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongMod;
         }
         source += allowedAccess + " " + String.join(" ", allowedNonAccess) + " int test() {}";
@@ -678,8 +678,8 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
 
         HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
         assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
@@ -688,7 +688,7 @@ public class ClassMethodModifierTest {
     @Theory
     public void multipleNonAccessFaults(@FromDataPoints("accessModifiers") String correctMod,
                                      @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
-                                     @FromDataPoints("choices") String choice,
+                                     @FromDataPoints("choices") KeywordChoice choice,
                                      @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         List<String> expectedList = Arrays.asList(correctNonAccess);
@@ -705,7 +705,7 @@ public class ClassMethodModifierTest {
 
         String source = "class TestClass {";
         List<String> allowedNonAccess = expectedList;
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
         if(!isExactMatch && !allowedNonAccess.isEmpty()) {
@@ -731,8 +731,8 @@ public class ClassMethodModifierTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
-        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest()", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest", ClassFeedbackType.WRONG_NON_ACCESS_MODIFIER);
 
         HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
         assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));
@@ -742,7 +742,7 @@ public class ClassMethodModifierTest {
     public void multipleAccessAndNonAccessFaults(@FromDataPoints("accessModifiers") String correctMod,
                                          @FromDataPoints("accessModifiers") String wrongMod,
                                         @FromDataPoints("allNonAccessModifierCombinations") String[] correctNonAccess,
-                                        @FromDataPoints("choices") String choice,
+                                        @FromDataPoints("choices") KeywordChoice choice,
                                         @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctMod.equals(wrongMod));
@@ -764,7 +764,7 @@ public class ClassMethodModifierTest {
         String source = "class TestClass {";
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = expectedList;
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), expectedList);
         }
@@ -790,8 +790,8 @@ public class ClassMethodModifierTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
-        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest()", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb1 = TestUtils.getFeedback("class TestClass", "test", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
+        ClassFeedback fb2 = TestUtils.getFeedback("class TestClass", "notTest", ClassFeedbackType.WRONG_ACCESS_MODIFIER);
 
         HashSet<ClassFeedback> expectedFeedback = new HashSet<>(Arrays.asList(fb1, fb2));
         assertEquals(expectedFeedback, new HashSet<>(classChecker.getClassFeedbacks()));

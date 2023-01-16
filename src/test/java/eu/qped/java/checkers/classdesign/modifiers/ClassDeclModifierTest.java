@@ -65,9 +65,9 @@ public class ClassDeclModifierTest {
     }
 
     @DataPoints("choices")
-    public static String[] choiceValue() {
-        return new String[] {
-                KeywordChoice.YES.toString(), KeywordChoice.NO.toString()
+    public static KeywordChoice[] choiceValue() {
+        return new KeywordChoice[] {
+                KeywordChoice.YES, KeywordChoice.NO
         };
     }
 
@@ -77,7 +77,7 @@ public class ClassDeclModifierTest {
     }
 
 
-    private static void setAccessModifier(KeywordConfig field, String accessMod, String choice) {
+    private static void setAccessModifier(KeywordConfig field, String accessMod, KeywordChoice choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
         runnableMap.put("public", () -> field.setPublicModifier(choice));
         runnableMap.put("protected", () -> field.setProtectedModifier(choice));
@@ -86,7 +86,7 @@ public class ClassDeclModifierTest {
         runnableMap.get(accessMod).run();
     }
 
-    private static void setNonAccessModifier(ClassKeywordConfig classConfig, String nonAccessMod, String choice) {
+    private static void setNonAccessModifier(ClassKeywordConfig classConfig, String nonAccessMod, KeywordChoice choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
         runnableMap.put("abstract", () -> classConfig.setAbstractModifier(choice));
         runnableMap.put("static", () -> classConfig.setStaticModifier(choice));
@@ -137,7 +137,7 @@ public class ClassDeclModifierTest {
     public void innerClassCorrect(@FromDataPoints("innerClassAccess") String correctMod,
                                   @FromDataPoints("innerClassAccess") String wrongMod,
                                   @FromDataPoints("innerClassNonAccess") String correctNonAccess,
-                                  @FromDataPoints("choices") String choice,
+                                  @FromDataPoints("choices") KeywordChoice choice,
                                   @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctNonAccess.equals("abstract") && (correctMod.equals("private") || correctMod.equals("protected")));
@@ -157,7 +157,7 @@ public class ClassDeclModifierTest {
 
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(innerClassNonAccess()), Collections.singletonList(correctNonAccess));
             Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
@@ -186,7 +186,7 @@ public class ClassDeclModifierTest {
     public void innerClassAccessWrong(@FromDataPoints("innerClassAccess") String correctAccess,
                                 @FromDataPoints("innerClassAccess") String wrongAccess,
                                 @FromDataPoints("innerClassNonAccess") String correctNonAccess,
-                                @FromDataPoints("choices") String choice,
+                                @FromDataPoints("choices") KeywordChoice choice,
                                 @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctAccess.equals(wrongAccess));
@@ -205,7 +205,7 @@ public class ClassDeclModifierTest {
 
         String allowedAccess = correctAccess;
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongAccess;
             Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
         }
@@ -234,7 +234,7 @@ public class ClassDeclModifierTest {
     public void innerClassNonAccessWrong(@FromDataPoints("innerClassAccess") String correctAccess,
                                 @FromDataPoints("innerClassNonAccess") String correctNonAccess,
                                 @FromDataPoints("innerClassNonAccess") String wrongNonAccess,
-                                @FromDataPoints("choices") String choice,
+                                @FromDataPoints("choices") KeywordChoice choice,
                                 @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctNonAccess.equals(wrongNonAccess));
@@ -252,7 +252,7 @@ public class ClassDeclModifierTest {
         classInfos.add(innerClassInfo);
 
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(innerClassNonAccess()), Collections.singletonList(correctNonAccess));
             Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
         }
@@ -282,7 +282,7 @@ public class ClassDeclModifierTest {
                                             @FromDataPoints("innerClassAccess") String wrongAccess,
                                             @FromDataPoints("innerClassNonAccess") String correctNonAccess,
                                             @FromDataPoints("innerClassNonAccess") String wrongNonAccess,
-                                            @FromDataPoints("choices") String choice,
+                                            @FromDataPoints("choices") KeywordChoice choice,
                                             @FromDataPoints("exactMatching") Boolean isExactMatch) {
 
         Assume.assumeFalse(correctAccess.equals(wrongAccess) || correctNonAccess.equals(wrongNonAccess));
@@ -303,7 +303,7 @@ public class ClassDeclModifierTest {
         String allowedAccess = correctAccess;
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
 
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongAccess;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(innerClassNonAccess()), Collections.singletonList(correctNonAccess));
             Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
@@ -333,7 +333,7 @@ public class ClassDeclModifierTest {
     public void outerClassCorrect(@FromDataPoints("outerClassAccess") String correctMod,
                                 @FromDataPoints("outerClassAccess") String wrongMod,
                                 @FromDataPoints("nonAccessModifiers") String correctNonAccess,
-                                @FromDataPoints("choices") String choice) {
+                                @FromDataPoints("choices") KeywordChoice choice) {
 
         Assume.assumeFalse(correctMod.equals(wrongMod));
 
@@ -344,7 +344,7 @@ public class ClassDeclModifierTest {
 
         String allowedAccess = correctMod;
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
-        if(choice.equals(KeywordChoice.NO.toString())) {
+        if(choice.equals(KeywordChoice.NO)) {
             allowedAccess = wrongMod;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(correctNonAccess));
             Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
@@ -371,7 +371,7 @@ public class ClassDeclModifierTest {
     public void outerClassAccessWrong(@FromDataPoints("outerClassAccess") String correctAccess,
                                                   @FromDataPoints("outerClassAccess") String wrongAccess,
                                                   @FromDataPoints("nonAccessModifiers") String correctNonAccess,
-                                                  @FromDataPoints("choices") String choice) {
+                                                  @FromDataPoints("choices") KeywordChoice choice) {
 
         Assume.assumeFalse(correctAccess.equals(wrongAccess));
 
@@ -379,7 +379,7 @@ public class ClassDeclModifierTest {
         setNonAccessModifier(classConfig, correctNonAccess, choice);
 
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(correctNonAccess));
             Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));
         }
@@ -408,7 +408,7 @@ public class ClassDeclModifierTest {
     public void outerClassNonAccessWrong(@FromDataPoints("outerClassAccess") String correctAccess,
                                       @FromDataPoints("outerClassAccess") String wrongAccess,
                                       @FromDataPoints("nonAccessModifiers") String correctNonAccess,
-                                      @FromDataPoints("choices") String choice) {
+                                      @FromDataPoints("choices") KeywordChoice choice) {
 
         Assume.assumeFalse(correctAccess.equals(wrongAccess));
 
@@ -417,7 +417,7 @@ public class ClassDeclModifierTest {
 
         String allowedAccess = correctAccess;
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongAccess;
         }
         String source = allowedAccess +" "+ String.join(" ", allowedNonAccess) +" class TestClass {" +
@@ -445,7 +445,7 @@ public class ClassDeclModifierTest {
     public void outerClassAccessAndNonAccessWrong(@FromDataPoints("outerClassAccess") String correctAccess,
                                 @FromDataPoints("outerClassAccess") String wrongAccess,
                                 @FromDataPoints("nonAccessModifiers") String correctNonAccess,
-                                @FromDataPoints("choices") String choice) {
+                                @FromDataPoints("choices") KeywordChoice choice) {
 
         Assume.assumeFalse(correctAccess.equals(wrongAccess));
 
@@ -455,7 +455,7 @@ public class ClassDeclModifierTest {
 
         String allowedAccess = correctAccess;
         List<String> allowedNonAccess = Collections.singletonList(correctNonAccess);
-        if(choice.equals(KeywordChoice.YES.toString())) {
+        if(choice.equals(KeywordChoice.YES)) {
             allowedAccess = wrongAccess;
             allowedNonAccess = TestUtils.getDifferenceNonAccess(Arrays.asList(nonAccessValues()), Collections.singletonList(correctNonAccess));
             Assume.assumeFalse(allowedNonAccess.contains("abstract") && allowedNonAccess.contains("final"));

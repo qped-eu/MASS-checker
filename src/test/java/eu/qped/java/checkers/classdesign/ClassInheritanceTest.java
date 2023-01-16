@@ -45,7 +45,7 @@ public class ClassInheritanceTest {
         qfClassSettings.setClassInfos(classInfos);
     }
 
-    private static void chooseInheritsType(InheritsFromConfig inheritsConfig, String classType, String choice) {
+    private static void chooseInheritsType(InheritsFromConfig inheritsConfig, String classType, KeywordChoice choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
         runnableMap.put("interface", () -> inheritsConfig.setInterfaceType(choice));
         runnableMap.put("class", () -> inheritsConfig.setClassType(choice));
@@ -63,14 +63,14 @@ public class ClassInheritanceTest {
     }
 
     @DataPoints("choices")
-    public static String[] choiceValues() {
-        return new String[] {KeywordChoice.YES.toString(), KeywordChoice.NO.toString()};
+    public static KeywordChoice[] choiceValues() {
+        return new KeywordChoice[] {KeywordChoice.YES, KeywordChoice.NO};
     }
 
     @Theory
     public void correctType(@FromDataPoints("classTypes") String inheritsType,
                             @FromDataPoints("inheritsKeyword") String inheritsKeyword,
-                            @FromDataPoints("choices")String choice) {
+                            @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
         Assume.assumeFalse(inheritsType.equals("class") && inheritsKeyword.equals("implements"));
@@ -79,7 +79,7 @@ public class ClassInheritanceTest {
         chooseInheritsType(inheritsConfig, inheritsType, choice);
 
         String allowedKeyword = inheritsKeyword;
-        if (choice.equals(KeywordChoice.NO.toString())) {
+        if (choice.equals(KeywordChoice.NO)) {
             allowedKeyword = inheritsType.equals("interface") ? "extends" : "implements";
         }
         String source = "class TestClass "+allowedKeyword+" SuperClass{}";
@@ -103,7 +103,7 @@ public class ClassInheritanceTest {
     @Theory
     public void wrongType(@FromDataPoints("classTypes") String inheritsType,
                             @FromDataPoints("inheritsKeyword") String inheritsKeyword,
-                            @FromDataPoints("choices")String choice) {
+                            @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
         Assume.assumeFalse(inheritsType.equals("class") && inheritsKeyword.equals("implements"));
@@ -112,7 +112,7 @@ public class ClassInheritanceTest {
         chooseInheritsType(inheritsConfig, inheritsType, choice);
 
         String allowedKeyword = inheritsKeyword;
-        if (choice.equals(KeywordChoice.YES.toString())) {
+        if (choice.equals(KeywordChoice.YES)) {
             allowedKeyword = inheritsType.equals("interface") ? "extends" : "implements";
         }
         String source = "class TestClass "+allowedKeyword+" SuperClass{}";
@@ -174,7 +174,7 @@ public class ClassInheritanceTest {
         Assume.assumeFalse(inheritsType.equals("interface") && inheritsKeyword.equals("extends"));
 
         String source = "class TestClass "+inheritsKeyword+" SuperClass{}";
-        chooseInheritsType(inheritsConfig, inheritsType, KeywordChoice.YES.toString());
+        chooseInheritsType(inheritsConfig, inheritsType, KeywordChoice.YES);
 
         inheritsConfig.setName("NotSuperClass");
 
@@ -198,7 +198,7 @@ public class ClassInheritanceTest {
     public void wrongInterfaceAndName() {
         init();
 
-        chooseInheritsType(inheritsConfig, "interface", KeywordChoice.YES.toString());
+        chooseInheritsType(inheritsConfig, "interface", KeywordChoice.YES);
         String source = "class TestClass extends SuperClass{}";
         inheritsConfig.setName("NotSuperClass");
 
@@ -221,7 +221,7 @@ public class ClassInheritanceTest {
     public void wrongClassAndName() {
         init();
 
-        chooseInheritsType(inheritsConfig, "class", KeywordChoice.YES.toString());
+        chooseInheritsType(inheritsConfig, "class", KeywordChoice.YES);
         String source = "class TestClass implements SuperClass{}";
         inheritsConfig.setName("NotSuperClass");
 
@@ -290,13 +290,13 @@ public class ClassInheritanceTest {
     @Theory
     public void missingInterface(@FromDataPoints("classTypes") String inheritsType,
                             @FromDataPoints("inheritsKeyword") String inheritsKeyword,
-                            @FromDataPoints("choices")String choice) {
+                            @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
         Assume.assumeFalse(inheritsType.equals("class") && inheritsKeyword.equals("implements"));
         Assume.assumeFalse(inheritsType.equals("interface") && inheritsKeyword.equals("extends"));
-        Assume.assumeFalse(inheritsType.equals("interface") && choice.equals(KeywordChoice.NO.toString()));
-        Assume.assumeFalse(inheritsType.equals("class") && choice.equals(KeywordChoice.YES.toString()));
+        Assume.assumeFalse(inheritsType.equals("interface") && choice.equals(KeywordChoice.NO));
+        Assume.assumeFalse(inheritsType.equals("class") && choice.equals(KeywordChoice.YES));
 
         chooseInheritsType(inheritsConfig, inheritsType, choice);
         String source = "class TestClass {}";
@@ -320,13 +320,13 @@ public class ClassInheritanceTest {
     @Theory
     public void missingClass(@FromDataPoints("classTypes") String inheritsType,
                                  @FromDataPoints("inheritsKeyword") String inheritsKeyword,
-                                 @FromDataPoints("choices")String choice) {
+                                 @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
         Assume.assumeFalse(inheritsType.equals("class") && inheritsKeyword.equals("implements"));
         Assume.assumeFalse(inheritsType.equals("interface") && inheritsKeyword.equals("extends"));
-        Assume.assumeFalse(inheritsType.equals("interface") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsType.equals("class") && choice.equals(KeywordChoice.NO.toString()));
+        Assume.assumeFalse(inheritsType.equals("interface") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsType.equals("class") && choice.equals(KeywordChoice.NO));
 
         chooseInheritsType(inheritsConfig, inheritsType, choice);
         String source = "class TestClass {}";
@@ -349,12 +349,12 @@ public class ClassInheritanceTest {
 
     @Theory
     public void correctMultipleInterfaces(@FromDataPoints("classTypes") String inheritsFirstType,
-                                            @FromDataPoints("choices")String choice) {
+                                            @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
 
-        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO.toString()));
+        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO));
 
         InheritsFromConfig inheritsConfig2 = new InheritsFromConfig();
         chooseInheritsType(inheritsConfig2, inheritsFirstType, choice);
@@ -384,14 +384,14 @@ public class ClassInheritanceTest {
     @Theory
     public void correctOneClassOneInterface(@FromDataPoints("classTypes") String inheritsFirstType,
                                           @FromDataPoints("classTypes") String inheritsSecondType,
-                                          @FromDataPoints("choices")String choice) {
+                                          @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
 
-        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO.toString()));
-        Assume.assumeFalse(inheritsSecondType.equals("interface") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsSecondType.equals("class") && choice.equals(KeywordChoice.NO.toString()));
+        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO));
+        Assume.assumeFalse(inheritsSecondType.equals("interface") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsSecondType.equals("class") && choice.equals(KeywordChoice.NO));
 
         InheritsFromConfig inheritsConfig2 = new InheritsFromConfig();
         chooseInheritsType(inheritsConfig2, inheritsSecondType, choice);
@@ -420,12 +420,12 @@ public class ClassInheritanceTest {
 
     @Theory
     public void wrongOneInterfaceOneClass(@FromDataPoints("classTypes") String inheritsFirstType,
-                                            @FromDataPoints("choices")String choice) {
+                                            @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
 
-        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO.toString()));
+        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO));
 
         InheritsFromConfig inheritsConfig2 = new InheritsFromConfig();
         chooseInheritsType(inheritsConfig2, inheritsFirstType, choice);
@@ -457,13 +457,13 @@ public class ClassInheritanceTest {
     @Theory
     public void wrongTwoInterfaces(@FromDataPoints("classTypes") String inheritsFirstType,
                                           @FromDataPoints("classTypes") String inheritsSecondType,
-                                          @FromDataPoints("choices")String choice) {
+                                          @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
-        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO.toString()));
-        Assume.assumeFalse(inheritsSecondType.equals("interface") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsSecondType.equals("class") && choice.equals(KeywordChoice.NO.toString()));
+        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO));
+        Assume.assumeFalse(inheritsSecondType.equals("interface") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsSecondType.equals("class") && choice.equals(KeywordChoice.NO));
 
         InheritsFromConfig inheritsConfig2 = new InheritsFromConfig();
         chooseInheritsType(inheritsConfig2, inheritsSecondType, choice);
@@ -494,11 +494,11 @@ public class ClassInheritanceTest {
 
     @Theory
     public void wrongMultipleInterfaceNames(@FromDataPoints("classTypes") String inheritsFirstType,
-                                          @FromDataPoints("choices")String choice) {
+                                          @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
-        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES.toString()));
-        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO.toString()));
+        Assume.assumeFalse(inheritsFirstType.equals("class") && choice.equals(KeywordChoice.YES));
+        Assume.assumeFalse(inheritsFirstType.equals("interface") && choice.equals(KeywordChoice.NO));
 
         InheritsFromConfig inheritsConfig2 = new InheritsFromConfig();
         chooseInheritsType(inheritsConfig2, inheritsFirstType, choice);
