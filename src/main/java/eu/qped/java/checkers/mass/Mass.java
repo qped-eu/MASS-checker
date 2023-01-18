@@ -194,7 +194,7 @@ public class Mass implements Checker {
 
     private String[] mergeFeedbacks(
             @NonNull List<String> syntaxFeedbacks,
-            @NonNull List<StyleFeedback> styleFeedbacks,
+            @NonNull List<String> styleFeedbacks,
             @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
             @NonNull List<String> coverageFeedbacks,
@@ -214,23 +214,7 @@ public class Mass implements Checker {
             if (!styleFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Style feedbacks\n");
             }
-            styleFeedbacks.forEach(
-                    styleFeedback -> {
-                        String tempFeedbackAsString =
-                                "in: " + styleFeedback.getFile() + "." + " Line: " + styleFeedback.getLine()
-                                        + NEW_LINE
-//                                        + styleFeedback.getDesc()
-//                                        + NEW_LINE
-                                        + styleFeedback.getContent()
-                                        + NEW_LINE
-//                                        + styleFeedback.getLine()
-//                                        + NEW_LINE
-                                        + styleFeedback.getExample()
-                                        + NEW_LINE
-                                        + SEPARATOR;
-                        resultArrayAsList.add(tempFeedbackAsString);
-                    }
-            );
+            resultArrayAsList.addAll(styleFeedbacks);
             if (!semanticFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Semantic feedbacks");
             }

@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.style.settings;
+package eu.qped.java.checkers.style.config;
 
 import eu.qped.framework.CheckLevel;
 import lombok.AllArgsConstructor;

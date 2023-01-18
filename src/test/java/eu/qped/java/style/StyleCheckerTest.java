@@ -20,25 +20,23 @@ class StyleCheckerTest {
 
     @BeforeEach
     void setup() {
-        styleChecker = StyleChecker.builder().build();
+        styleChecker = StyleChecker.builder()
+                .qfStyleSettings(getBeginnerStyleSetting())
+                .build();
     }
 
     @Test
     void testMethodFail() {
-        styleChecker.setTargetPath("src/test/resources/code-example-for-style-testing-fail");
+        styleChecker.setTargetPath("tmp/code-example-for-style-testing-fail");
         styleChecker.setQfStyleSettings(getBeginnerStyleSetting());
-        styleChecker.check();
-        var feedbacks = styleChecker.getStyleFeedbacks();
-
-
+        var feedbacks = styleChecker.check();
         assertThat(feedbacks).isNotEmpty();
-
-        Condition<? super List<? extends StyleFeedback>> correctFeedbacks =
+        Condition<? super List<? extends String>> correctFeedbacks =
                 new Condition<>(
                         feedbackList ->
                                 feedbackList.stream().anyMatch(
                                         f ->
-                                                f.getContent().contains(METHOD_FAIL_FEEDBACK)
+                                                f.contains(METHOD_FAIL_FEEDBACK)
                                 )
                         , ""
                 );
@@ -46,17 +44,16 @@ class StyleCheckerTest {
     }
     @Test
     void testMethodPass() {
-        styleChecker.setTargetPath("src/test/resources/code-example-for-style-testing-pass");
+        styleChecker.setTargetPath("tmp/code-example-for-style-testing-pass");
         styleChecker.setQfStyleSettings(getBeginnerStyleSetting());
-        styleChecker.check();
-        var feedbacks = styleChecker.getStyleFeedbacks();
+        var feedbacks = styleChecker.check();
 
-        Condition<? super List<? extends StyleFeedback>> correctFeedbacks =
+        Condition<? super List<? extends String>> correctFeedbacks =
                 new Condition<>(
                         feedbackList ->
                                 feedbackList.stream().noneMatch(
                                         f ->
-                                                f.getContent().contains(METHOD_FAIL_FEEDBACK)
+                                                f.contains(METHOD_FAIL_FEEDBACK)
                                 )
                         , ""
                 );

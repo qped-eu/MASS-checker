@@ -27,21 +27,21 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
 
     @Override
     public List<Feedback> format(List<Feedback> feedbacks) {
-        return feedbacks.stream().map(this::formatInMarkdown).collect(Collectors.toList());
+        return feedbacks.stream().map(this::format).collect(Collectors.toList());
     }
 
-    private Feedback formatInMarkdown(Feedback feedback) {
-        Feedback formatted = Feedback.builder().build();
-        formatted.setTechnicalCause(feedback.getTechnicalCause());
-        formatted.setReadableCause(formatReadableCause(feedback.getReadableCause()));
-        formatted.setType(feedback.getType());
-        formatted.setRelatedLocation(feedback.getRelatedLocation());
+    @Override
+    public Feedback format(Feedback feedback) {
+        feedback.setTechnicalCause(feedback.getTechnicalCause());
+        feedback.setReadableCause(formatReadableCause(feedback.getReadableCause()));
+        feedback.setType(feedback.getType());
+        feedback.setRelatedLocation(feedback.getRelatedLocation());
         if (feedback.getHints() == null) feedback.setHints(Collections.emptyList());
         List<Hint> formattedHints = formatHints(feedback.getHints());
-        formatted.setHints(formattedHints);
-        formatted.setReference(feedback.getReference());
-        formatted.setCheckerName(feedback.getCheckerName());
-        return formatted;
+        feedback.setHints(formattedHints);
+        feedback.setReference(feedback.getReference());
+        feedback.setCheckerName(feedback.getCheckerName());
+        return feedback;
     }
 
     private String formatReadableCause(String readableCause) {
@@ -68,3 +68,4 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
         return formattedHints;
     }
 }
+

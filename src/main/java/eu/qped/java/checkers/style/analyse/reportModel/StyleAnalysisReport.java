@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.style.reportModel;
+package eu.qped.java.checkers.style.analyse.reportModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StyleCheckReport {
+public class StyleAnalysisReport {
 
     @JsonProperty("formatVersion")
     private int formatVersion;

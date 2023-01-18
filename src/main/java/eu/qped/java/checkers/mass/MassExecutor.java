@@ -32,7 +32,7 @@ public class MassExecutor {
 
 
     private List<String> syntaxFeedbacks;
-    private List<StyleFeedback> styleFeedbacks;
+    private List<String> styleFeedbacks;
     private List<String> solutionApproachFeedbacks;
     private List<ClassFeedback> classFeedbacks;
     private List<MetricsFeedback> metricsFeedbacks;
@@ -90,12 +90,11 @@ public class MassExecutor {
         boolean isCompilable = syntaxAnalyseReport.isCompilable();
         if (isCompilable) {
             if (styleNeeded) {
-//                styleChecker.setTargetPath(syntaxAnalyseReport.getPath());
-                styleChecker.check();
-                styleFeedbacks = styleChecker.getStyleFeedbacks();
+                styleChecker.setTargetPath(syntaxAnalyseReport.getPath().toString());
+                styleFeedbacks = styleChecker.check();
             }
             if (semanticNeeded) {
-//                solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath());
+                solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath().toString());
                 solutionApproachFeedbacks = solutionApproachChecker.check();
             }
             if (metricsNeeded) {
@@ -139,16 +138,6 @@ public class MassExecutor {
     private void translate(boolean styleNeeded, boolean semanticNeeded, boolean metricsNeeded) {
         String prefLanguage = mainSettings.getPreferredLanguage();
         Translator translator = new Translator();
-
-        //List is Empty when the syntax is correct
-//        for (eu.qped.framework.feedback.Feedback feedback : syntaxFeedbacks) {
-//            translator.translateFeedback(prefLanguage, feedback);
-//        }
-        if (styleNeeded) {
-            for (StyleFeedback feedback : styleFeedbacks) {
-                translator.translateStyleBody(prefLanguage, feedback);
-            }
-        }
         if (metricsNeeded) {
             for (MetricsFeedback feedback : metricsFeedbacks) {
                 translator.translateMetricsBody(prefLanguage, feedback);
