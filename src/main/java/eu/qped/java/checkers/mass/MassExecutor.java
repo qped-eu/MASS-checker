@@ -11,6 +11,7 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.SupportedLanguages;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Builder
 public class MassExecutor {
 
     private final MainSettings mainSettings;
@@ -56,6 +58,7 @@ public class MassExecutor {
      * @param mainSettings            settings
      */
 
+    @Builder
     public MassExecutor(final StyleChecker styleChecker, final SolutionApproachChecker solutionApproachChecker,
                         final SyntaxChecker syntaxChecker, final MetricsChecker metricsChecker,
                         final ClassChecker classChecker,
