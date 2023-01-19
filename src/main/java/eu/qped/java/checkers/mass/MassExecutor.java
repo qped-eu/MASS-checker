@@ -27,7 +27,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@Builder
 public class MassExecutor {
 
     private final MainSettings mainSettings;
@@ -57,7 +56,6 @@ public class MassExecutor {
      * @param metricsChecker          metrics checker component
      * @param mainSettings            settings
      */
-
     @Builder
     public MassExecutor(final StyleChecker styleChecker, final SolutionApproachChecker solutionApproachChecker,
                         final SyntaxChecker syntaxChecker, final MetricsChecker metricsChecker,
