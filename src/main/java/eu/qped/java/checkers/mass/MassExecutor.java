@@ -11,6 +11,7 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.SupportedLanguages;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,10 +28,10 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Builder
 public class MassExecutor {
 
     private final MainSettings mainSettings;
-
 
     private List<String> syntaxFeedbacks;
     private List<String> styleFeedbacks;
@@ -47,31 +48,6 @@ public class MassExecutor {
     private final MetricsChecker metricsChecker;
     private final CoverageChecker coverageChecker;
 
-    /**
-     * To create an Object use the factory Class @MassExecutorFactory
-     *
-     * @param styleChecker            style checker component
-     * @param solutionApproachChecker semantic checker component
-     * @param syntaxChecker           syntax checker component
-     * @param metricsChecker          metrics checker component
-     * @param mainSettings            settings
-     */
-    @Builder
-    public MassExecutor(final StyleChecker styleChecker, final SolutionApproachChecker solutionApproachChecker,
-                        final SyntaxChecker syntaxChecker, final MetricsChecker metricsChecker,
-                        final ClassChecker classChecker,
-                        final CoverageChecker coverageChecker,
-                        final MainSettings mainSettings
-    ) {
-
-        this.styleChecker = styleChecker;
-        this.solutionApproachChecker = solutionApproachChecker;
-        this.syntaxChecker = syntaxChecker;
-        this.metricsChecker = metricsChecker;
-        this.classChecker = classChecker;
-        this.coverageChecker = coverageChecker;
-        this.mainSettings = mainSettings;
-    }
 
     /**
      * execute the Mass System

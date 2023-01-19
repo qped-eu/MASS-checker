@@ -28,6 +28,7 @@ import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.style.StyleChecker;
+import eu.qped.java.checkers.style.StyleChecker.StyleCheckerBuilder;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
@@ -64,7 +65,6 @@ public class Mass implements Checker {
     public void check(QfObject qfObject) throws Exception {
     	
         MassExecutor.MassExecutorBuilder massExecutorBuilder = MassExecutor.builder();
-
         MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
         
         massExecutorBuilder.mainSettings(mainSettings);
@@ -145,7 +145,7 @@ public class Mass implements Checker {
 	        		build();
 	        massExecutorBuilder.styleChecker(styleChecker);
         }
-
+        
         // Solution Approach Checker
         // FIXME: why are there two settings objects? the one built here and mass.getSemantic()?
         if (mass.isSemanticSelected()) {
@@ -172,7 +172,6 @@ public class Mass implements Checker {
 	        		solutionRoot(solutionRoot).
 	        		build();
 	        massExecutorBuilder.metricsChecker(metricsChecker);
-	        
         }
 
         // Class Checker
