@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import eu.qped.java.utils.SupportedLanguages;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ class StyleCheckerTest {
 
     @Test
     void testMethodFail() {
-        styleChecker.setTargetPath("tmp/code-example-for-style-testing-fail");
+        styleChecker.setTargetPath("src/test/resources/code-example-for-style-testing-fail");
         styleChecker.setQfStyleSettings(getBeginnerStyleSetting());
         var feedbacks = styleChecker.check();
         assertThat(feedbacks).isNotEmpty();
@@ -44,7 +45,7 @@ class StyleCheckerTest {
     }
     @Test
     void testMethodPass() {
-        styleChecker.setTargetPath("tmp/code-example-for-style-testing-pass");
+        styleChecker.setTargetPath("src/test/resources/code-example-for-style-testing-pass");
         styleChecker.setQfStyleSettings(getBeginnerStyleSetting());
         var feedbacks = styleChecker.check();
 
@@ -79,6 +80,7 @@ class StyleCheckerTest {
                 .variableNamePattern("[a-z][a-zA-Z0-9]*")
                 .methodNamePattern("[a-z][a-zA-Z0-9]*")
                 .classNamePattern("[A-Z][a-zA-Z0-9_]*")
+                .language(SupportedLanguages.ENGLISH)
                 .build();
     }
 
