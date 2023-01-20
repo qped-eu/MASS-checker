@@ -1,8 +1,8 @@
-name: Test
+name: Integration and System Tests
 #Trigger for the workflow
   #Triggers only on push on master
 
-on: workflow_dispatch
+on: workflow_call
       
 jobs:
   test:
