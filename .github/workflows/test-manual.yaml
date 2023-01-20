@@ -1,4 +1,4 @@
-name: Run All Tests Before Merge
+name: Run All Tests Manually
 
 on: workflow_dispatch
       
