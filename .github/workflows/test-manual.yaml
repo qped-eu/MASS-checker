@@ -4,4 +4,4 @@ on: workflow_dispatch
       
 jobs:
   call-workflow-all-tests:
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test.yaml
