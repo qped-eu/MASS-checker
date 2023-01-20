@@ -45,8 +45,8 @@ class MassSyntaxTest {
         
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
 
-        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, null, null, mainSettingsConfiguratorConf);
+        MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf);
+        MassExecutor massE = MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
 
         massE.execute();
 
@@ -65,8 +65,8 @@ class MassSyntaxTest {
         
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
 
-        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, null, null, mainSettingsConfiguratorConf);
+        MassExecutor massE = 
+        		MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
 
         massE.execute();
 
@@ -85,8 +85,8 @@ class MassSyntaxTest {
         
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
 
-        MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
-                null, null, null, mainSettingsConfiguratorConf);
+        MassExecutor massE =
+        		MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
 
 
         massE.execute();

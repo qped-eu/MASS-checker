@@ -8,4 +8,6 @@ public interface IFeedbackFormatter {
 
     List<Feedback> format(List<Feedback> feedbacks);
 
+    Feedback format(Feedback feedback);
+
 }

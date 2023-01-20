@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.style.reportModel;
+package eu.qped.java.checkers.style.analyse.reportModel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,10 +1,10 @@
 package eu.qped.framework.feedback;
 
+import eu.qped.framework.feedback.defaultfeedback.DefaultFeedback;
+import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.framework.feedback.hint.Hint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import eu.qped.framework.feedback.template.TemplateBuilder;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -58,6 +58,27 @@ public class Feedback {
      */
     @Nullable
     private RelatedLocation relatedLocation;
+
+    @Setter(AccessLevel.PACKAGE)
+    private boolean isFormatted = false;
+
+    public void updateFeedback(@NonNull DefaultFeedback defaultFeedback) {
+        this.technicalCause = defaultFeedback.getTechnicalCause();
+        this.readableCause = defaultFeedback.getReadableCause();
+        if (defaultFeedback.getHints() != null) {
+            this.hints = defaultFeedback.getHints();
+        }
+    }
+
+    protected Feedback format() {
+        MarkdownFeedbackFormatter markdownFeedbackFormatter = MarkdownFeedbackFormatter.builder().build();
+        return markdownFeedbackFormatter.format(this);
+    }
+
+    protected String buildFeedbackInTemplate(@NonNull String language) {
+        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
+        return templateBuilder.buildFeedbackInTemplate(this, language);
+    }
 
 
 }

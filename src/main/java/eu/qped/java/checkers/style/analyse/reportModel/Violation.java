@@ -1,5 +1,6 @@
-package eu.qped.java.checkers.style.reportModel;
+package eu.qped.java.checkers.style.analyse.reportModel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -40,6 +41,9 @@ public class Violation {
 
     @JsonProperty(value = "externalInfoUrl")
     private String externalInfoUrl;
+
+    @JsonIgnore
+    private String fileName;
 
 
 }

@@ -28,6 +28,7 @@ import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.style.StyleChecker;
+import eu.qped.java.checkers.style.StyleChecker.StyleCheckerBuilder;
 import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
@@ -63,7 +64,10 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
     	
+        MassExecutor.MassExecutorBuilder massExecutorBuilder = MassExecutor.builder();
         MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
+        
+        massExecutorBuilder.mainSettings(mainSettings);
         
         Map<String, Integer> filenameToLineOffset = new HashMap<>();
         
@@ -128,48 +132,66 @@ public class Mass implements Checker {
         SolutionWorkspace solutionWorkspace = new SolutionWorkspace(solutionRoot, studentResources, instructorResources, filenameToLineOffset);
         
         // Syntax Checker
+        // configuration for syntax check is always needed
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().
         		targetProject(solutionRoot).
         		build();
+        massExecutorBuilder.syntaxChecker(syntaxChecker);
         
         // Style Checker
-        StyleChecker styleChecker = StyleChecker.builder().
-        		qfStyleSettings(mass.getStyle()).
-        		build();
-
+        if (mass.isStyleSelected()) {
+	        StyleChecker styleChecker = StyleChecker.builder().
+	        		qfStyleSettings(mass.getStyle()).
+	        		build();
+	        massExecutorBuilder.styleChecker(styleChecker);
+        }
+        
         // Solution Approach Checker
         // FIXME: why are there two settings objects? the one built here and mass.getSemantic()?
-        var solutionApproachGeneralSettings = SolutionApproachGeneralSettings.builder().
-                language(
-                		qfObject.getUser() != null ?
-                		qfObject.getUser().getLanguage() :
-                		Locale.ENGLISH.getLanguage()
-                		).
-                checkLevel(CheckLevel.BEGINNER).
-                build();
-        
-        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder().
-                qfSemanticSettings(mass.getSemantic()).
-                solutionApproachGeneralSettings(solutionApproachGeneralSettings).
-                build();
+        if (mass.isSemanticSelected()) {
+	        var solutionApproachGeneralSettings = SolutionApproachGeneralSettings.builder().
+	                language(
+	                		qfObject.getUser() != null ?
+	                		qfObject.getUser().getLanguage() :
+	                		Locale.ENGLISH.getLanguage()
+	                		).
+	                checkLevel(CheckLevel.BEGINNER).
+	                build();
+	        
+	        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder().
+	                qfSemanticSettings(mass.getSemantic()).
+	                solutionApproachGeneralSettings(solutionApproachGeneralSettings).
+	                build();
+	        massExecutorBuilder.solutionApproachChecker(solutionApproachChecker);
+        }
 
         // Metrics Checker
-        MetricsChecker metricsChecker = MetricsChecker.builder().
-        		qfMetricsSettings(mass.getMetrics()).
-        		solutionRoot(solutionRoot).
-        		build();
+        if (mass.isMetricsSelected()) {
+	        MetricsChecker metricsChecker = MetricsChecker.builder().
+	        		qfMetricsSettings(mass.getMetrics()).
+	        		solutionRoot(solutionRoot).
+	        		build();
+	        massExecutorBuilder.metricsChecker(metricsChecker);
+        }
 
         // Class Checker
-        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClasses());
-        ClassChecker classChecker = new ClassChecker(classConfigurator);
+        if (mass.isClassSelected()) {
+	        ClassConfigurator classConfigurator = ClassConfigurator.createClassConfigurator(mass.getClasses());
+	        ClassChecker classChecker = new ClassChecker(classConfigurator);
+	        massExecutorBuilder.classChecker(classChecker);
+        }
 
         // Coverage Checker
-        CoverageChecker coverageChecker = new CoverageChecker(mass.getCoverage(), solutionRoot);
+        if (mass.isCoverageSelected()) {
+        	CoverageChecker coverageChecker = new CoverageChecker(mass.getCoverage(), solutionRoot);
+        	massExecutorBuilder.coverageChecker(coverageChecker);
+        }
 
         //Mass
-        MassExecutor massExecutor = new MassExecutor(styleChecker, solutionApproachChecker, syntaxChecker, metricsChecker, classChecker, coverageChecker, mainSettings);
+        MassExecutor massExecutor = massExecutorBuilder.build();
         massExecutor.execute();
 
+        
         /*
          feedbacks
          */
@@ -194,7 +216,7 @@ public class Mass implements Checker {
 
     private String[] mergeFeedbacks(
             @NonNull List<String> syntaxFeedbacks,
-            @NonNull List<StyleFeedback> styleFeedbacks,
+            @NonNull List<String> styleFeedbacks,
             @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
             @NonNull List<String> coverageFeedbacks,
@@ -214,23 +236,7 @@ public class Mass implements Checker {
             if (!styleFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Style feedbacks\n");
             }
-            styleFeedbacks.forEach(
-                    styleFeedback -> {
-                        String tempFeedbackAsString =
-                                "in: " + styleFeedback.getFile() + "." + " Line: " + styleFeedback.getLine()
-                                        + NEW_LINE
-//                                        + styleFeedback.getDesc()
-//                                        + NEW_LINE
-                                        + styleFeedback.getContent()
-                                        + NEW_LINE
-//                                        + styleFeedback.getLine()
-//                                        + NEW_LINE
-                                        + styleFeedback.getExample()
-                                        + NEW_LINE
-                                        + SEPARATOR;
-                        resultArrayAsList.add(tempFeedbackAsString);
-                    }
-            );
+            resultArrayAsList.addAll(styleFeedbacks);
             if (!semanticFeedbacks.isEmpty()) {
                 resultArrayAsList.add("## Semantic feedbacks");
             }
