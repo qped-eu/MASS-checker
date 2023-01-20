@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import eu.qped.java.utils.SupportedLanguages;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +23,7 @@ class SolutionApproachAnalyserTest {
     public void setup() {
         var solutionGeneralSetting = SolutionApproachGeneralSettings.builder()
                 .checkLevel(CheckLevel.BEGINNER)
+                .language(SupportedLanguages.ENGLISH)
                 .build();
         var qfSetting = qfSemanticSettingsFail();
         solutionApproachChecker = SolutionApproachChecker.builder()

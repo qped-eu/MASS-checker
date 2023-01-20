@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.style.pmd;
+package eu.qped.java.checkers.style.analyse.pmd;
 
 public final class PmdRulesSets {
 
