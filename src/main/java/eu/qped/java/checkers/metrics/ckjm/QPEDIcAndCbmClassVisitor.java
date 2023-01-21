@@ -23,16 +23,27 @@ import java.util.*;
  */
 public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
 
+    /**The array of methods*/
     private Method[] methods;
+    /**The current class*/
     private JavaClass currentClass;
+    /**The parent pool*/
     private ConstantPoolGen parentPool;
+    /**The parent methods*/
     private List<Method[]> parentMethods;
-    private Set<MethodInvokation> invocationsFromParents;
-    private Set<MethodInvokation> invocationsFromCurrentClass;
+    /**Invocations from parents*/
+    private Set<MethodInvokation> invFormParents;
+    /**invocations from current class*/
+    private Set<MethodInvokation> invFromCClass;
+    /**parents readers*/
     private Set<FieldAccess> parentsReaders;
-    private Set<FieldAccess> currentClassSetters;
+    /**current class setters*/
+    private Set<FieldAccess> cClassSetters;
+    /**method couplings*/
     private Set<MethodCoupling> methodCouplings;
+    /**parents*/
     private JavaClass[] parents;
+    /**parent*/
     private JavaClass parent;
 
     /**
@@ -53,35 +64,38 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      */
     private int case3;
 
-
-    QPEDIcAndCbmClassVisitor(IClassMetricsContainer classMap) {
+    /**
+     * Constrcutor
+     * @param classMap is passed to the constructor of the parent class
+     */
+    public QPEDIcAndCbmClassVisitor(final IClassMetricsContainer classMap) {
         super(classMap);
     }
 
     @Override
-    protected void visitJavaClass_body(JavaClass jc) {
+    protected void visitJavaClass_body(final JavaClass javaClass) {
         case1 = case2 = case3 = 0;
-        currentClass = jc;
+        currentClass = javaClass;
         try {
-            parents = jc.getSuperClasses();
+            parents = javaClass.getSuperClasses();
             parentMethods = new ArrayList<>();
-            methods = jc.getMethods();
-            invocationsFromParents = new TreeSet<>();
-            invocationsFromCurrentClass = new TreeSet<>();
+            methods = javaClass.getMethods();
+            invFormParents = new TreeSet<>();
+            invFromCClass = new TreeSet<>();
             parentsReaders = new TreeSet<>();
-            currentClassSetters = new TreeSet<>();
+            cClassSetters = new TreeSet<>();
             methodCouplings = new TreeSet<>();
 
-            for (JavaClass j : parents) {
+            for (final JavaClass j : parents) {
                 parentPool = new ConstantPoolGen(j.getConstantPool());
                 parent = j;
                 parentMethods.add(j.getMethods());
-                for (Method m : j.getMethods()) {
+                for (final Method m : j.getMethods()) {
                     m.accept(this);
                 }
             }
 
-            for (Method m : methods) {
+            for (final Method m : methods) {
                 if (hasBeenDefinedInParentToo(m)) {
                     investigateMethod(m);
                 }
@@ -102,37 +116,38 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * Used to visit methods of parents of investigated class.
      */
     @Override
-    public void visitMethod(final Method m) {
-        MethodGen mg = new MethodGen(m, getParentClassName(), parentPool);
-        if (!mg.isAbstract() && !mg.isNative()) {
-            for (InstructionHandle ih = mg.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
-                Instruction i = ih.getInstruction();
-                if (instructionNotVisited(i)) {
+    public void visitMethod(final Method mehtod) {
+        final MethodGen methodGen = new MethodGen(mehtod, getParentClassName(), parentPool);
+        if (!methodGen.isAbstract() && !methodGen.isNative()) {
+            for (InstructionHandle ih = methodGen.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
+                final Instruction instruction = ih.getInstruction();
+                if (instructionNotVisited(instruction)) {
 
-                    i.accept(new org.apache.bcel.generic.EmptyVisitor() {
+                    instruction.accept(new EmptyVisitor() {
 
                         @Override
-                        public void visitInvokeInstruction(InvokeInstruction ii) {
-                            String methodName, className;
-                            Type[] args = ii.getArgumentTypes(parentPool);
-                            methodName = ii.getMethodName(parentPool);
-                            className = ii.getClassName(parentPool);
+                        public void visitInvokeInstruction(final InvokeInstruction invokeInstruction) {
+                            String methodName;
+                            String className;
+                            final Type[] args = invokeInstruction.getArgumentTypes(parentPool);
+                            methodName = invokeInstruction.getMethodName(parentPool);
+                            className = invokeInstruction.getClassName(parentPool);
 
-                            MethodInvokation mi = new MethodInvokation(className, methodName, args, getParentClassName(), m.getName(), m.getArgumentTypes());
-                            invocationsFromParents.add(mi);
+                            final MethodInvokation methodInvokation = new MethodInvokation(className, methodName, args, getParentClassName(), mehtod.getName(), mehtod.getArgumentTypes());
+                            invFormParents.add(methodInvokation);
 
                         }
 
                         @Override
-                        public void visitFieldInstruction(FieldInstruction fi) {
-                            if (isGetInstruction(fi)) {
-                                FieldAccess fa = new FieldAccess(fi.getFieldName(parentPool), m, parent);
-                                parentsReaders.add(fa);
+                        public void visitFieldInstruction(final FieldInstruction fieldInstruction) {
+                            if (isGetInstruction(fieldInstruction)) {
+                                final FieldAccess fieldAccess = new FieldAccess(fieldInstruction.getFieldName(parentPool), mehtod, parent);
+                                parentsReaders.add(fieldAccess);
                             }
                         }
 
-                        private boolean isGetInstruction(FieldInstruction fi) {
-                            String instr = fi.toString(parentPool.getConstantPool());
+                        private boolean isGetInstruction(final FieldInstruction fieldInstruction) {
+                            final String instr = fieldInstruction.toString(parentPool.getConstantPool());
                             return instr.startsWith("get");
                         }
 
@@ -146,16 +161,18 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * Determines whether a given methodInvocation is a call of a redefined method.
      *
      * @param methodInvocation the given method invocation to be checked
-     * @return true when methodInvocation is an invocation of a method that has been redefined in investigated class.
+     * @return true when methodInvocation is an invocation of a method
+     * that has been redefined in investigated class.
      */
-    private boolean callsRedefinedMethod(MethodInvokation methodInvocation) {
-        for (Method method : methods) {
+    private boolean callsRedefinedMethod(final MethodInvokation methodInvocation) {
+        boolean result = false;
+        for (final Method method : methods) {
             if (isInvocationOfTheMethod(method, methodInvocation)) {
                 methodInvocation.setDestClass(mClassName);
-                return true;
+                result = true;
             }
         }
-        return false;
+        return result;
     }
 
     /**
@@ -166,12 +183,12 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * @param args2 second given type
      * @return true if args1 equals args2 on mentioned conditions, else false.
      */
-    private boolean compareTypes(Type[] args1, Type[] args2) {
+    private boolean compareTypes(final Type[] args1, final Type... args2) {
         boolean areEqual = args1.length == args2.length;
         if (areEqual) {
             for (int i = 0; i < args1.length; i++) {
-                String methodInvocationArgSignature = args2[i].getSignature();
-                if (!args1[i].getSignature().equals(methodInvocationArgSignature)) {
+                final String mthdInvArgSig = args2[i].getSignature();
+                if (!args1[i].getSignature().equals(mthdInvArgSig)) {
                     areEqual = false;
                     break;
                 }
@@ -184,15 +201,15 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * for documentation see {@link #case1}.
      */
     private void countCase1() {
-        for (FieldAccess fap : parentsReaders) {
+        for (final FieldAccess fap : parentsReaders) {
             if (!isFieldDefinedInCurrentClass(fap.getFieldName())) {
-                for (FieldAccess fac : currentClassSetters) {
+                for (final FieldAccess fac : cClassSetters) {
                     if (fap.getFieldName().equals(fac.getFieldName())) {
-                        MethodCoupling mc = new MethodCoupling(fap.getAccessorClass().getClassName(),
+                        final MethodCoupling methodCoupling = new MethodCoupling(fap.getAccessorClass().getClassName(),
                                 fap.getAccessor().getName(),
                                 fac.getAccessorClass().getClassName(),
                                 fac.getAccessor().getName());
-                        if (methodCouplings.add(mc)) {
+                        if (methodCouplings.add(methodCoupling)) {
                             case1++;
                             break;
                         }
@@ -206,13 +223,13 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * for documentation see {@link #case2}.
      */
     private void countCase2() {
-        for (MethodInvokation mi : invocationsFromParents) {
+        for (final MethodInvokation mi : invFormParents) {
             if (invokedByParents(mi)) {
                 if (mi.isNotConstructorInvocation()) {
                     if (callsRedefinedMethod(mi)) {
-                        MethodCoupling mc = new MethodCoupling(mi.getDestClass(), mi.getDestMethod(),
+                        final MethodCoupling methodCoupling = new MethodCoupling(mi.getDestClass(), mi.getDestMethod(),
                                 mi.getSrcClass(), mi.getSrcMethod());
-                        if (methodCouplings.add(mc)) {
+                        if (methodCouplings.add(methodCoupling)) {
                             case2++;
                         }
                     }
@@ -226,23 +243,23 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      */
     private void countCase3() {
         boolean isFromParents = false;
-        for (MethodInvokation mi : invocationsFromCurrentClass) {
+        for (final MethodInvokation mi : invFromCClass) {
             if (mi.isNotConstructorInvocation() && !isRedefinedInCurrentClass(mi)) {
                 for (int i = 0; i < parentMethods.size(); i++) {
-                    Method[] get = parentMethods.get(i);
-                    int j = 0;
-                    while (j < get.length) {
-                        Method m = get[j];
-                        isFromParents = isInvocationOfTheMethod(m, mi);
+                    final Method[] get = parentMethods.get(i);
+                    int pointer = 0;
+                    while (pointer < get.length) {
+                        final Method method = get[pointer];
+                        isFromParents = isInvocationOfTheMethod(method, mi);
                         if (isFromParents) {
                             mi.setDestClass(parents[i].getClassName());
-                            MethodCoupling mc = new MethodCoupling(mi.getDestClass(), mi.getDestMethod(),
+                            final MethodCoupling methodCoupling = new MethodCoupling(mi.getDestClass(), mi.getDestMethod(),
                                     mi.getSrcClass(), mi.getSrcMethod());
-                            if (methodCouplings.add(mc)) {
+                            if (methodCouplings.add(methodCoupling)) {
                                 break;
                             }
                         }
-                        j++;
+                        pointer++;
                     }
                     if (isFromParents) {
                         break;
@@ -261,11 +278,12 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      *
      * @return true if m equals pm, else false
      */
-    private boolean equalMethods(Method m, Method pm) {
-        if (m.getName().equals(pm.getName())) {
-            return compareTypes(m.getArgumentTypes(), m.getArgumentTypes());
+    private boolean equalMethods(final Method method, final Method method1) {
+        boolean result = false;
+        if (method.getName().equals(method1.getName())) {
+            result = compareTypes(method.getArgumentTypes(), method.getArgumentTypes());
         }
-        return false;
+        return result;
     }
 
     /**
@@ -274,24 +292,24 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * @param method the given method
      */
     private void investigateMethod(final Method method) {
-        MethodGen mg = new MethodGen(method, mClassName, mPoolGen);
-        if (!mg.isAbstract() && !mg.isNative()) {
-            for (InstructionHandle ih = mg.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
-                Instruction i = ih.getInstruction();
-                if (instructionNotVisited(i)) {
-                    i.accept(new org.apache.bcel.generic.EmptyVisitor() {
+        final MethodGen methodGen = new MethodGen(method, mClassName, mPoolGen);
+        if (!methodGen.isAbstract() && !methodGen.isNative()) {
+            for (InstructionHandle ih = methodGen.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
+                final Instruction instruction = ih.getInstruction();
+                if (instructionNotVisited(instruction)) {
+                    instruction.accept(new EmptyVisitor() {
 
                         @Override
-                        public void visitInvokeInstruction(InvokeInstruction ii) {
+                        public void visitInvokeInstruction(final InvokeInstruction invokeInstruction) {
                             String methodName;
                             String className;
-                            Type[] args = ii.getArgumentTypes(mPoolGen);
-                            methodName = ii.getMethodName(mPoolGen);
-                            className = ii.getClassName(mPoolGen);
+                            final Type[] args = invokeInstruction.getArgumentTypes(mPoolGen);
+                            methodName = invokeInstruction.getMethodName(mPoolGen);
+                            className = invokeInstruction.getClassName(mPoolGen);
 
                             if (args.length > 0) {
-                                MethodInvokation mi = new MethodInvokation(className, methodName, args, mClassName, method.getName(), method.getArgumentTypes());
-                                invocationsFromCurrentClass.add(mi);
+                                final MethodInvokation methodInvokation = new MethodInvokation(className, methodName, args, mClassName, method.getName(), method.getArgumentTypes());
+                                invFromCClass.add(methodInvokation);
                             }
                         }
                     });
@@ -301,28 +319,28 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Investigates method (and looks for setters) - a member of the currently investigated class.
-     *
+     * Investigates method (and looks for setters)
+     * a member of the currently investigated class.
      * @param method the given method
      */
     private void investigateMethodAndLookForSetters(final Method method) {
-        MethodGen mg = new MethodGen(method, mClassName, mPoolGen);
-        if (!mg.isAbstract() && !mg.isNative()) {
-            for (InstructionHandle ih = mg.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
-                Instruction i = ih.getInstruction();
-                if (instructionNotVisited(i)) {
-                    i.accept(new org.apache.bcel.generic.EmptyVisitor() {
+        final MethodGen methodGen = new MethodGen(method, mClassName, mPoolGen);
+        if (!methodGen.isAbstract() && !methodGen.isNative()) {
+            for (InstructionHandle ih = methodGen.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
+                final Instruction instruction = ih.getInstruction();
+                if (instructionNotVisited(instruction)) {
+                    instruction.accept(new EmptyVisitor() {
 
                         @Override
-                        public void visitFieldInstruction(FieldInstruction fi) {
+                        public void visitFieldInstruction(final FieldInstruction fieldInstruction) {
 
-                            if (isSetInstruction(fi)) {
-                                currentClassSetters.add(new FieldAccess(fi.getFieldName(mPoolGen), method, currentClass));
+                            if (isSetInstruction(fieldInstruction)) {
+                                cClassSetters.add(new FieldAccess(fieldInstruction.getFieldName(mPoolGen), method, currentClass));
                             }
                         }
 
-                        private boolean isSetInstruction(FieldInstruction fi) {
-                            return fi.toString(currentClass.getConstantPool()).startsWith("put");
+                        private boolean isSetInstruction(final FieldInstruction fieldInstruction) {
+                            return fieldInstruction.toString(currentClass.getConstantPool()).startsWith("put");
                         }
                     });
                 }
@@ -336,7 +354,7 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * @param fieldName the name of the field to be checked
      * @return true if given field is defined in {@link #currentClass}, else false
      */
-    private boolean isFieldDefinedInCurrentClass(String fieldName) {
+    private boolean isFieldDefinedInCurrentClass(final String fieldName) {
         return Arrays.stream(currentClass.getFields()).anyMatch(f -> f.getName().equals(fieldName));
     }
 
@@ -346,41 +364,41 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * @param methodInvocation the given method invocation
      * @return true if it was invoked by parents, else false.
      */
-    private boolean invokedByParents(MethodInvokation methodInvocation) {
+    private boolean invokedByParents(final MethodInvokation methodInvocation) {
         return Arrays.stream(parents).anyMatch(jc -> jc.getClassName().equals(methodInvocation.getDestClass()));
     }
 
     /**
      * It compares the method's names and the lists of method's arguments.
-     * Determines whether a given method invocation comes from method m.
+     * Determines whether a given method invocation comes from method method.
      *
-     * @param m                given method
+     * @param method                given method
      * @param methodInvocation the given method invocation
      * @return true if it was invoked by method, else false.
      */
-    private boolean isInvocationOfTheMethod(Method m, MethodInvokation methodInvocation) {
-
-        if (m.getName().equals(methodInvocation.getDestMethod())) {
-            Type[] args = m.getArgumentTypes();
-            return compareTypes(args, methodInvocation.getDestMethodArgs());
+    private boolean isInvocationOfTheMethod(final Method method, final MethodInvokation methodInvocation) {
+        boolean result = false;
+        if (method.getName().equals(methodInvocation.getDestMethod())) {
+            final Type[] args = method.getArgumentTypes();
+            result =  compareTypes(args, methodInvocation.getDestMethodArgs());
         }
-        return false;
+        return result;
     }
 
     /**
-     * Determines whether method m has already been defined in parent class.
+     * Determines whether method method has already been defined in parent class.
      *
-     * @param m the given method
+     * @param method the given method
      * @return true if defined in parent, else false.
      */
-    private boolean hasBeenDefinedInParentToo(Method m) {
-
-        String name = m.getName();
-        if (name.equals("<init>") || name.equals("<clinit>")) {
-            return false;
+    private boolean hasBeenDefinedInParentToo(final Method method) {
+        boolean result = parentMethods.stream().flatMap(Arrays::stream).anyMatch(pm -> equalMethods(method, pm));
+        final String name = method.getName();
+        if ("<init>".equals(name) || "<clinit>".equals(name)) {
+            result =  false;
         }
 
-        return parentMethods.stream().flatMap(Arrays::stream).anyMatch(pm -> equalMethods(m, pm));
+        return result;
     }
 
     /**
@@ -389,32 +407,35 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * @param methodInvocation the given method invocation
      * @return true if redefined in current class, else false.
      */
-    private boolean isRedefinedInCurrentClass(MethodInvokation methodInvocation) {
-        for (Method m : methods) {
+    private boolean isRedefinedInCurrentClass(final MethodInvokation methodInvocation) {
+        boolean result = false;
+        for (final Method m : methods) {
             if (isInvocationOfTheMethod(m, methodInvocation)) {
-                return true;
+                result = true;
             }
         }
-        return false;
+        return result;
     }
 
     /**
      * saves the generated results to {@link #mClassMetrics}
      */
     private void saveResults() {
-        int sum = case1 + case2 + case3;
+        final int sum = case1 + case2 + case3;
         mClassMetrics.setCbm(sum);
-        Set<String> coupledParents = new TreeSet<>();
+        final Set<String> coupledParents = new TreeSet<>();
 
-        for (MethodCoupling mc : methodCouplings) {
+        for (final MethodCoupling mc : methodCouplings) {
             if (mc.getClassA().equals(mClassName)) {
                 coupledParents.add(mc.getClassB());
-                if (mc.getClassB().equals(mClassName))
+                if (mc.getClassB().equals(mClassName)) {
                     LoggerHelper.printError("Both of the involved in MethodCoupling classes are the investigated class!", new RuntimeException());
+                }
             } else {
                 coupledParents.add(mc.getClassA());
-                if (!mc.getClassB().equals(mClassName))
+                if (!mc.getClassB().equals(mClassName)) {
                     LoggerHelper.printError("None  of the involved in MethodCoupling classes is the investigated class!", new RuntimeException());
+                }
             }
         }
         mClassMetrics.setIc(coupledParents.size());
@@ -427,9 +448,9 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * @param instruction the given instruction
      * @return true if instruction was not visited, else false.
      */
-    private boolean instructionNotVisited(Instruction instruction) {
-        short opcode = instruction.getOpcode();
-        return (InstructionConst.getInstruction(opcode) == null);
+    private boolean instructionNotVisited(final Instruction instruction) {
+        final short opcode = instruction.getOpcode();
+        return InstructionConst.getInstruction(opcode) == null;
     }
 
     /**

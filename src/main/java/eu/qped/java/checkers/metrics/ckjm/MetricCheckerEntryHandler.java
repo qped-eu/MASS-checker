@@ -9,9 +9,9 @@ import gr.spinellis.ckjm.ClassMetrics;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.*;
 
@@ -24,52 +24,58 @@ import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metri
 @Getter
 public class MetricCheckerEntryHandler implements CkjmOutputHandler {
 
+    /**
+     * The map of class name to its assigned metrics
+     */
     private final List<ClassMetricsEntry> outputMetrics;
 
+    /**
+     * The constructor, initializes the outputMetrics variable with an empty ArrayList
+     */
     public MetricCheckerEntryHandler() {
         this.outputMetrics = new ArrayList<>();
     }
 
     @Override
-    public void handleClass(final String className, final ClassMetrics c) {
+    public void handleClass(final String className, final ClassMetrics cMetrics) {
 
         final List<ClassMetricsMessage> metricsForClass = new ArrayList<>();
 
-        final Map<String, Integer> metricValuesCC = getCCMapInternal(c);
+        final Map<String, Integer> metricValuesCC = getCCMapInternal(cMetrics);
 
-        metricsForClass.add(new ClassMetricsMessageSingle(AMC, c.getAmc()));
-        metricsForClass.add(new ClassMetricsMessageSingle(CA, c.getCa()));
-        metricsForClass.add(new ClassMetricsMessageSingle(CAM, c.getCam()));
-        metricsForClass.add(new ClassMetricsMessageSingle(CBM, c.getCbm()));
-        metricsForClass.add(new ClassMetricsMessageSingle(CBO, c.getCbo()));
+        metricsForClass.add(new ClassMetricsMessageSingle(AMC, cMetrics.getAmc()));
+        metricsForClass.add(new ClassMetricsMessageSingle(CA, cMetrics.getCa()));
+        metricsForClass.add(new ClassMetricsMessageSingle(CAM, cMetrics.getCam()));
+        metricsForClass.add(new ClassMetricsMessageSingle(CBM, cMetrics.getCbm()));
+        metricsForClass.add(new ClassMetricsMessageSingle(CBO, cMetrics.getCbo()));
         metricsForClass.add(new ClassMetricsMessageMulti(CC, metricValuesCC));
-        metricsForClass.add(new ClassMetricsMessageSingle(CE, c.getCe()));
-        metricsForClass.add(new ClassMetricsMessageSingle(DAM, c.getDam()));
-        metricsForClass.add(new ClassMetricsMessageSingle(DIT, c.getDit()));
-        metricsForClass.add(new ClassMetricsMessageSingle(LCOM, c.getLcom()));
-        metricsForClass.add(new ClassMetricsMessageSingle(LCOM3, c.getLcom3()));
-        metricsForClass.add(new ClassMetricsMessageSingle(LOC, c.getLoc()));
-        metricsForClass.add(new ClassMetricsMessageSingle(MOA, c.getMoa()));
-        metricsForClass.add(new ClassMetricsMessageSingle(MFA, c.getMfa()));
-        metricsForClass.add(new ClassMetricsMessageSingle(IC, c.getIc()));
-        metricsForClass.add(new ClassMetricsMessageSingle(NOC, c.getNoc()));
-        metricsForClass.add(new ClassMetricsMessageSingle(NPM, c.getNpm()));
-        metricsForClass.add(new ClassMetricsMessageSingle(RFC, c.getRfc()));
-        metricsForClass.add(new ClassMetricsMessageSingle(Metric.WMC, c.getWmc()));
+        metricsForClass.add(new ClassMetricsMessageSingle(CE, cMetrics.getCe()));
+        metricsForClass.add(new ClassMetricsMessageSingle(DAM, cMetrics.getDam()));
+        metricsForClass.add(new ClassMetricsMessageSingle(DIT, cMetrics.getDit()));
+        metricsForClass.add(new ClassMetricsMessageSingle(LCOM, cMetrics.getLcom()));
+        metricsForClass.add(new ClassMetricsMessageSingle(LCOM3, cMetrics.getLcom3()));
+        metricsForClass.add(new ClassMetricsMessageSingle(LOC, cMetrics.getLoc()));
+        metricsForClass.add(new ClassMetricsMessageSingle(MOA, cMetrics.getMoa()));
+        metricsForClass.add(new ClassMetricsMessageSingle(MFA, cMetrics.getMfa()));
+        metricsForClass.add(new ClassMetricsMessageSingle(IC, cMetrics.getIc()));
+        metricsForClass.add(new ClassMetricsMessageSingle(NOC, cMetrics.getNoc()));
+        metricsForClass.add(new ClassMetricsMessageSingle(NPM, cMetrics.getNpm()));
+        metricsForClass.add(new ClassMetricsMessageSingle(RFC, cMetrics.getRfc()));
+        metricsForClass.add(new ClassMetricsMessageSingle(WMC, cMetrics.getWmc()));
 
         this.outputMetrics.add(new ClassMetricsEntry(className, metricsForClass));
     }
 
     /**
-     * Retrieves the internally private Map ([method name, cc value]-pair) for Cyclomatic Complexity metric.
-     *
+     * Retrieves the internally private Map ([method name, cc value]-pair)
+     * for Cyclomatic Complexity metric.
      * @param classMetrics the given classMetrics
      * @return a map containing CC-values for this class' methods
      */
     private Map<String, Integer> getCCMapInternal(final ClassMetrics classMetrics) {
 
         final List<String> methodNames = classMetrics.getMethodNames();
-        final Map<String, Integer> metricValuesCC = new HashMap<>();
+        final Map<String, Integer> metricValuesCC = new ConcurrentHashMap<>();
         for (final String methodName : methodNames) {
             metricValuesCC.put(methodName, classMetrics.getCC(methodName));
         }
@@ -103,13 +109,16 @@ public class MetricCheckerEntryHandler implements CkjmOutputHandler {
         RFC("Response For A Class"),
         WMC("Weighted Methods Per Class");
 
+        /**
+         * The description of what this metric measures
+         */
         private final String description;
 
         /**
          * Main constructor.
-         * as well as min and max values for a specific metric. These values cannot be exceeded.
-         *  @param description (long) description for an abbreviation of a given metric
-         *
+         * as well as min and max values for a specific metric.
+         * These values cannot be exceeded.
+         * @param description (long) description for an abbreviation of a given metric
          */
         Metric(final String description) {
             this.description = description;
