@@ -42,7 +42,6 @@ public class SolutionApproachChecker {
                     .build();
         }
         var solutionApproachReportEntries = solutionApproachAnalyser.check();
-        System.out.println(">>>>>>>>>>>>>>>>>> Here Semanic");
 
         if (solutionApproachFeedbackGenerator == null) {
             solutionApproachFeedbackGenerator = SolutionApproachFeedbackGenerator.builder().build();
