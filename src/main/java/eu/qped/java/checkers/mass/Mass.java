@@ -63,7 +63,7 @@ public class Mass implements Checker {
     
     @Override
     public void check(QfObject qfObject) throws Exception {
-    	
+        System.out.println(">>>>>>>>>>>>>>>>>> Here ");
         MassExecutor.MassExecutorBuilder massExecutorBuilder = MassExecutor.builder();
         MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
         
