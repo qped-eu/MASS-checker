@@ -124,7 +124,8 @@ public class TemplateBuilder {
         if (conceptReference != null && !conceptReference.equals("")) {
             boolean hasSection = conceptReference.getSection() != null && !conceptReference.getSection().equals("");
             boolean hasPages = conceptReference.getPageNumbers() != null && conceptReference.getPageNumbers().size() != 0;
-            result += templateTextByLanguage.get(TemplateTextProvider.KEY_MORE_INFORMATION)
+            result += NEW_LINE
+                    + templateTextByLanguage.get(TemplateTextProvider.KEY_MORE_INFORMATION)
                     + SPACE
                     + asBold(asLink(conceptReference.getReferenceName(), conceptReference.getReferenceLink()))
                     + SPACE
