@@ -72,7 +72,7 @@ public class MassExecutor {
             }
             if (semanticNeeded) {
                 System.out.println(">>>>>>>>>>>>::::");
-                System.out.println(syntaxAnalyseReport.getPath());
+                System.out.println(syntaxAnalyseReport.getPath().toString());
                 solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath().toString());
                 solutionApproachFeedbacks = solutionApproachChecker.check();
             }

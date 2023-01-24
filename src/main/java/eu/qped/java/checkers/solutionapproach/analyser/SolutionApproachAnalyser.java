@@ -89,7 +89,7 @@ public class SolutionApproachAnalyser {
                     path = filePath;
                 }
             }
-        } else path = targetProjectPath;  // answer is string
+        } else path = targetProjectPath + "/$AnswerClass.java";  // answer is string
         return path;
     }
 
