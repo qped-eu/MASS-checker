@@ -71,6 +71,8 @@ public class MassExecutor {
                 styleFeedbacks = styleChecker.check();
             }
             if (semanticNeeded) {
+                System.out.println(">>>>>>>>>>>>::::");
+                System.out.println(syntaxAnalyseReport.getPath());
                 solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath().toString());
                 solutionApproachFeedbacks = solutionApproachChecker.check();
             }
