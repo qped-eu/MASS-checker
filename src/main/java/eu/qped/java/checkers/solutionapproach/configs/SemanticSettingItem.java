@@ -1,9 +1,12 @@
 package eu.qped.java.checkers.solutionapproach.configs;
 
+import eu.qped.framework.feedback.taskspecificfeedback.TaskSpecificFeedback;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,5 +31,7 @@ public class SemanticSettingItem {
     private Integer doWhileLoop;
 
     private String returnType;
+
+    private List<TaskSpecificFeedback> taskSpecificFeedbacks;
 
 }

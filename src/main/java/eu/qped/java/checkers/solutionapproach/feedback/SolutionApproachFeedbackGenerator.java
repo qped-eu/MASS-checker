@@ -55,6 +55,7 @@ public class SolutionApproachFeedbackGenerator {
         }
         var keyWordReplacer = KeyWordReplacer.builder().build();
         for (SolutionApproachReportItem reportItem : reportItems) {
+            defaultFeedbacksStore.customizeStore(reportItem.getRelatedSemanticSettingItem().getTaskSpecificFeedbacks());
             var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(reportItem.getErrorCode());
             if (defaultFeedback != null) {
                 Feedback feedback = Feedback.builder().build();
@@ -85,9 +86,13 @@ public class SolutionApproachFeedbackGenerator {
                         .methodName(reportItem.getRelatedSemanticSettingItem().getMethodName())
                         .build()
                 );
+                feedback.setReference(
+                        defaultFeedbacksStore.getConceptReference(reportItem.getErrorCode())
+                );
+
                 result.add(feedback);
             }
-
+            defaultFeedbacksStore.rebuildStoreToDefault();
         }
         return result;
     }

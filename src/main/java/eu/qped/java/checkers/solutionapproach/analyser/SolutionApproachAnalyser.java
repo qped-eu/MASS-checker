@@ -1,13 +1,5 @@
 package eu.qped.java.checkers.solutionapproach.analyser;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.apache.commons.lang3.mutable.MutableBoolean;
-
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
@@ -15,23 +7,17 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorWithDefaults;
-
-import eu.qped.framework.CheckLevel;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
-import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
-import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingItem;
 import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingReader;
-import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachReportItem;
-import eu.qped.java.utils.SupportedLanguages;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -252,38 +238,51 @@ public class SolutionApproachAnalyser {
 
 
     public static void main(String[] args) throws IOException {
-        var qfSemanticSetting = QfSemanticSettings
-                .builder()
-                .semantics(
-                        List.of(
-                                SemanticSettingItem
-                                        .builder()
-                                        .recursive(true)
-                                        .whileLoop(0)
-                                        .forLoop(0)
-                                        .forEachLoop(0)
-                                        .doWhileLoop(0)
-                                        .ifElseStmt(-1)
-                                        .returnType("int")
-                                        .methodName("calcSum")
-                                        .filePath("src/test/resources/code-example-for-sematnic-testing-fail/CalcSum.java")
-                                        .build()
-                        )
-                )
-                .build();
-        var solutionGeneralSetting = SolutionApproachGeneralSettings.builder()
-                .checkLevel(CheckLevel.BEGINNER)
-                .build();
-        solutionGeneralSetting.setLanguage(SupportedLanguages.ENGLISH);
+//        var qfSemanticSetting = QfSemanticSettings
+//                .builder()
+//                .semantics(
+//                        List.of(
+//                                SemanticSettingItem
+//                                        .builder()
+//                                        .recursive(true)
+//                                        .whileLoop(0)
+//                                        .forLoop(0)
+//                                        .forEachLoop(0)
+//                                        .doWhileLoop(0)
+//                                        .ifElseStmt(-1)
+//                                        .returnType("int")
+//                                        .methodName("calcSum")
+//                                        .filePath("src/test/resources/code-example-for-sematnic-testing-fail/CalcSum.java")
+//                                        .taskSpecificFeedbacks(List.of(
+//                                                TaskSpecificFeedback.builder()
+//                                                        .technicalCause("moreThenExpectedForLoops")
+//                                                        .readableCause("For Loop Test")
+//                                                        .conceptReference(ConceptReference.builder()
+//                                                                .referenceName("test")
+//                                                                .section("section Test")
+//                                                                .build()
+//                                                        )
+//                                                        .build()
+//                                        ))
+//                                        .build()
+//                        )
+//                )
+//                .build();
+//        var solutionGeneralSetting = SolutionApproachGeneralSettings.builder()
+//                .checkLevel(CheckLevel.BEGINNER)
+//                .build();
+//        solutionGeneralSetting.setLanguage(SupportedLanguages.ENGLISH);
+//
+//        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder()
+//                .qfSemanticSettings(qfSemanticSetting)
+//                .solutionApproachGeneralSettings(solutionGeneralSetting)
+//                .build();
+//
+//        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
+//        var result = solutionApproachChecker.check();
+//        result.forEach(e -> System.out.println(e));
 
-        SolutionApproachChecker solutionApproachChecker = SolutionApproachChecker.builder()
-                .qfSemanticSettings(qfSemanticSetting)
-                .solutionApproachGeneralSettings(solutionGeneralSetting)
-                .build();
 
-        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        var result = solutionApproachChecker.check();
-        result.forEach(e -> System.out.println(e));
 //        solutionApproachChecker.check().forEach(e -> System.out.println(e.getReadableCause()));
 //            solutionApproachAnalyser.setQfSemanticSettings(qfSemanticSetting);
 //            solutionApproachAnalyser.check().forEach(e -> System.out.println(e.getErrorCode()));
