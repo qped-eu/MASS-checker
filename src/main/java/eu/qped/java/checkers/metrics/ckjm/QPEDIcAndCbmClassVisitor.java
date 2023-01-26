@@ -14,64 +14,107 @@ import org.apache.bcel.generic.*;
 import java.util.*;
 
 /**
- * Custom visitor class for the metrics:
- * IC {@link Metric#IC} and
- * CBM {@link Metric#CBM}.
- *
- * @author marian (from CKJM-extended tool)
- * @author Jannik Seus (edited)
+
+ Custom visitor class for the metrics:
+ IC {@link Metric#IC} and
+ CBM {@link Metric#CBM}.
+ <p>This class extends the {@link AbstractClassVisitor} and is responsible for calculating the IC and CBM metrics.
+ The IC metric measures the number of methods that are invoked by a class, and the CBM metric measures the number of methods
+ that are invoked by a class and use the return value of the invoked method.
+ <p>The class uses several variables to keep track of method invocations, field access, and method couplings.
+ The {@link #case1}, {@link #case2} and {@link #case3} variables are used to keep track of specific cases when
+ inherited methods use a field or call a redefined method.
+ @author marian (from CKJM-extended tool)
+ @author Jannik Seus (edited)
  */
 public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
 
-    /**The array of methods*/
-    private Method[] methods;
-    /**The current class*/
-    private JavaClass currentClass;
-    /**The parent pool*/
-    private ConstantPoolGen parentPool;
-    /**The parent methods*/
-    private List<Method[]> parentMethods;
-    /**Invocations from parents*/
-    private Set<MethodInvokation> invFormParents;
-    /**invocations from current class*/
-    private Set<MethodInvokation> invFromCClass;
-    /**parents readers*/
-    private Set<FieldAccess> parentsReaders;
-    /**current class setters*/
-    private Set<FieldAccess> cClassSetters;
-    /**method couplings*/
-    private Set<MethodCoupling> methodCouplings;
-    /**parents*/
-    private JavaClass[] parents;
-    /**parent*/
-    private JavaClass parent;
-
     /**
-     * determines how many inherited methods use a field, that is defined
-     * in a new/redefined method.
+
+     The array of methods for the current class being visited.
+     */
+     private Method[] methods;
+     /**
+
+     The current class being visited.
+     */
+     private JavaClass currentClass;
+     /**
+     The parent pool for the current class being visited.
+     */
+     private ConstantPoolGen parentPool;
+     /**
+     The parent methods for the current class being visited.
+     */
+     private List<Method[]> parentMethods;
+     /**
+     The method invocations from parents for the current class being visited.
+     */
+     private Set<MethodInvokation> invFormParents;
+     /**
+      The method invocations from the current class being visited.
+      */
+     private Set<MethodInvokation> invFromCClass;
+     /**
+     The parents readers for the current class being visited.
+     */
+     private Set<FieldAccess> parentsReaders;
+     /**
+     The current class setters for the current class being visited.
+     */
+     private Set<FieldAccess> cClassSetters;
+     /**
+     The method couplings for the current class being visited.
+     */
+     private Set<MethodCoupling> methodCouplings;
+     /**
+     The parents for the current class being visited.
+     */
+     private JavaClass[] parents;
+     /**
+     The parent for the current class being visited.
+     */
+    private JavaClass parent;
+    /**
+
+     The variable that determines how many inherited methods use a field, that is defined
+     in a new/redefined method.
      */
     private int case1;
 
     /**
-     * determines how many inherited methods call a redefined method
+     * Determines how many inherited methods call a redefined method
      * and use the return value of the redefined method.
      */
     private int case2;
 
     /**
-     * determines how many inherited methods are called by a redefined method
+     * Determines how many inherited methods are called by a redefined method
      * and use a parameter that is defined in the redefined method.
      */
     private int case3;
 
     /**
-     * Constrcutor
-     * @param classMap is passed to the constructor of the parent class
+     * Constructor
+     * @param classMap is passed to the constructor of the parent class and used to store the computed metrics
      */
     public QPEDIcAndCbmClassVisitor(final IClassMetricsContainer classMap) {
         super(classMap);
     }
 
+    /**
+     * Visits the body of a Java class and calculates the IC and CBM metrics.
+     *
+     * @param javaClass the Java class to visit
+     * The method first initializes the variables case1, case2 and case3 to zero, sets the currentClass to javaClass.
+     * Then, it gets the superclass of the current class, initializes the parentMethods list,
+     * gets the methods of the current class, creates new TreeSet for invFormParents, invFromCClass, parentsReaders,
+     * cClassSetters and methodCouplings.
+     * Then, it loops through the parents and for each parent it gets the methods, and accepts the method,
+     * then for each method in methods, it checks if the method has been defined in parent, and if so,
+     * it investigates the method, and looks for setters. Finally, it counts case1, case2 and case3, and saves the results.
+     * If an exception is thrown, it throws an IllegalArgumentException.
+     */
     @Override
     protected void visitJavaClass_body(final JavaClass javaClass) {
         case1 = case2 = case3 = 0;
@@ -114,10 +157,13 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
 
     /**
      * Used to visit methods of parents of investigated class.
+     * This method will look for the invocation of methods and the reading of fields in the parent methods,
+     * and store that information in the {@link #invFormParents} and {@link #parentsReaders} sets, respectively.
+     * @param method the method of the parent class that is being visited
      */
     @Override
-    public void visitMethod(final Method mehtod) {
-        final MethodGen methodGen = new MethodGen(mehtod, getParentClassName(), parentPool);
+    public void visitMethod(final Method method) {
+        final MethodGen methodGen = new MethodGen(method, getParentClassName(), parentPool);
         if (!methodGen.isAbstract() && !methodGen.isNative()) {
             for (InstructionHandle ih = methodGen.getInstructionList().getStart(); ih != null; ih = ih.getNext()) {
                 final Instruction instruction = ih.getInstruction();
@@ -133,7 +179,7 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
                             methodName = invokeInstruction.getMethodName(parentPool);
                             className = invokeInstruction.getClassName(parentPool);
 
-                            final MethodInvokation methodInvokation = new MethodInvokation(className, methodName, args, getParentClassName(), mehtod.getName(), mehtod.getArgumentTypes());
+                            final MethodInvokation methodInvokation = new MethodInvokation(className, methodName, args, getParentClassName(), method.getName(), method.getArgumentTypes());
                             invFormParents.add(methodInvokation);
 
                         }
@@ -141,10 +187,15 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
                         @Override
                         public void visitFieldInstruction(final FieldInstruction fieldInstruction) {
                             if (isGetInstruction(fieldInstruction)) {
-                                final FieldAccess fieldAccess = new FieldAccess(fieldInstruction.getFieldName(parentPool), mehtod, parent);
-                                parentsReaders.add(fieldAccess);
+                                handleGetInstruction(fieldInstruction);
                             }
                         }
+
+                        private void handleGetInstruction(final FieldInstruction fieldInstruction) {
+                            final FieldAccess fieldAccess = new FieldAccess(fieldInstruction.getFieldName(parentPool), method, parent);
+                            parentsReaders.add(fieldAccess);
+                        }
+
 
                         private boolean isGetInstruction(final FieldInstruction fieldInstruction) {
                             final String instr = fieldInstruction.toString(parentPool.getConstantPool());
@@ -158,11 +209,11 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Determines whether a given methodInvocation is a call of a redefined method.
+     * Determines whether a given {@link MethodInvokation} is a call of a redefined method in the investigated class.
      *
      * @param methodInvocation the given method invocation to be checked
-     * @return true when methodInvocation is an invocation of a method
-     * that has been redefined in investigated class.
+     * @return true when the methodInvocation is an invocation of a method that has been redefined in the investigated class,
+     * false otherwise.
      */
     private boolean callsRedefinedMethod(final MethodInvokation methodInvocation) {
         boolean result = false;
@@ -176,12 +227,11 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Determines whether two given types are equal,
-     * i.e. if they have the same length and signature.
+     * Determines whether two given types are equal, i.e. if they have the same length and signature.
      *
-     * @param args1 first given type
-     * @param args2 second given type
-     * @return true if args1 equals args2 on mentioned conditions, else false.
+     * @param args1 The first given type to compare.
+     * @param args2 The second given type to compare.
+     * @return true if args1 and args2 have the same length and signature, false otherwise.
      */
     private boolean compareTypes(final Type[] args1, final Type... args2) {
         boolean areEqual = args1.length == args2.length;
@@ -198,7 +248,9 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * for documentation see {@link #case1}.
+     * Counts the number of cases where inherited methods use a field defined in a new/redefined method.
+     * This is done by comparing the parents' readers and the current class setters.
+     * If a parent method reads a field that is defined in a new/redefined method, the method coupling is added to the set and case1 is incremented.
      */
     private void countCase1() {
         for (final FieldAccess fap : parentsReaders) {
@@ -220,7 +272,9 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * for documentation see {@link #case2}.
+     * Counts the number of inherited methods that call a redefined method
+     * and use the return value of the redefined method.
+     * This value is stored in the {@code case2} variable.
      */
     private void countCase2() {
         for (final MethodInvokation mi : invFormParents) {
@@ -239,7 +293,14 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * for documentation see {@link #case3}.
+     * This method counts the number of cases where inherited methods call a redefined method and use the
+     * parameter that is defined in the redefined method.
+     * The method iterates through all the method invocations from current class and checks if they are not constructor
+     * invocations and not redefined in current class. Then it iterates through all the parent methods and checks if
+     * the current method invocation is an invocation of that method. If it is, it sets the destination class to the
+     * class of that parent method. Then it creates a new MethodCoupling object with the source and destination class and
+     * methods and adds it to the methodCouplings set. If the methodCoupling is successfully added, it increments the
+     * case3 counter.
      */
     private void countCase3() {
         boolean isFromParents = false;
@@ -273,10 +334,11 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Determines whether two methods are equal,
-     * i.e. when they have the same name and the same set of arguments.
+     * Compares two given methods to see if they are equal, by comparing their name and argument types.
      *
-     * @return true if m equals pm, else false
+     * @param method the first method to compare
+     * @param method1 the second method to compare
+     * @return true if the name and argument types of the two methods are equal, false otherwise
      */
     private boolean equalMethods(final Method method, final Method method1) {
         boolean result = false;
@@ -287,9 +349,9 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Investigates method - a member of the currently investigated class.
+     * Investigates the given method and looks for invocations of other methods.
      *
-     * @param method the given method
+     * @param method the given method to investigate
      */
     private void investigateMethod(final Method method) {
         final MethodGen methodGen = new MethodGen(method, mClassName, mPoolGen);
@@ -319,9 +381,9 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Investigates method (and looks for setters)
-     * a member of the currently investigated class.
-     * @param method the given method
+
+     This method is used to investigate the given method and look for setters.
+     @param method The method to investigate.
      */
     private void investigateMethodAndLookForSetters(final Method method) {
         final MethodGen methodGen = new MethodGen(method, mClassName, mPoolGen);
@@ -359,22 +421,21 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Determines whether a given method invocation comes from parents.
+     * Determines whether the given method invocation was made by any of the parent classes.
      *
-     * @param methodInvocation the given method invocation
-     * @return true if it was invoked by parents, else false.
+     * @param methodInvocation the given method invocation to check
+     * @return true if the method invocation was made by any of the parent classes, else false.
      */
     private boolean invokedByParents(final MethodInvokation methodInvocation) {
         return Arrays.stream(parents).anyMatch(jc -> jc.getClassName().equals(methodInvocation.getDestClass()));
     }
 
     /**
-     * It compares the method's names and the lists of method's arguments.
-     * Determines whether a given method invocation comes from method method.
+     * Determines whether a given method invocation is a call of the specified method.
      *
-     * @param method                given method
-     * @param methodInvocation the given method invocation
-     * @return true if it was invoked by method, else false.
+     * @param method The method to check against
+     * @param methodInvocation The method invocation to check
+     * @return true if the method invocation is a call of the specified method, false otherwise.
      */
     private boolean isInvocationOfTheMethod(final Method method, final MethodInvokation methodInvocation) {
         boolean result = false;
@@ -386,10 +447,10 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Determines whether method method has already been defined in parent class.
-     *
-     * @param method the given method
-     * @return true if defined in parent, else false.
+
+     Checks if the given method has been defined in any of the parent classes of the current class.
+     @param method The method to check
+     @return true if the method has been defined in any of the parent classes, false otherwise.
      */
     private boolean hasBeenDefinedInParentToo(final Method method) {
         boolean result = parentMethods.stream().flatMap(Arrays::stream).anyMatch(pm -> equalMethods(method, pm));
@@ -402,10 +463,11 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Determines whether method methodInvocation is redefined in current class.
+     * Determines if the given method invocation is a call to a method that has been redefined in the current class.
      *
-     * @param methodInvocation the given method invocation
-     * @return true if redefined in current class, else false.
+     * @param methodInvocation the method invocation to be checked
+     * @return true if the method invocation is a call to a method that has been redefined in the current class,
+     * false otherwise
      */
     private boolean isRedefinedInCurrentClass(final MethodInvokation methodInvocation) {
         boolean result = false;
@@ -418,7 +480,10 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * saves the generated results to {@link #mClassMetrics}
+     * Saves the results of the method coupling analysis by setting the calculated values for the
+     * Coupling Between Methods (CBM) and the number of coupled parents (IC) in the ClassMetrics object.
+     * Additionally, it validates the MethodCoupling instances and throws an error if they contain
+     * both the investigated class or neither of the involved classes.
      */
     private void saveResults() {
         final int sum = case1 + case2 + case3;
@@ -443,10 +508,10 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
 
 
     /**
-     * Determines whether a single instruction was not visited.
+     * Determines whether the given instruction has not been visited before.
      *
-     * @param instruction the given instruction
-     * @return true if instruction was not visited, else false.
+     * @param instruction the instruction to be checked
+     * @return true if the instruction has not been visited before, false otherwise.
      */
     private boolean instructionNotVisited(final Instruction instruction) {
         final short opcode = instruction.getOpcode();
@@ -454,12 +519,51 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
     }
 
     /**
-     * Getter method for parent's class name.
+     * Retrieves the name of the parent class.
      *
-     * @return the parent class name as a String
+     * @return a string representing the name of the parent class.
      */
     private String getParentClassName() {
         return parent.getClassName();
     }
 
+    public int getCase1() {
+        return case1;
+    }
+
+    public int getCase2() {
+        return case2;
+    }
+
+    public int getCase3() {
+        return case3;
+    }
+
+    public JavaClass getCurrentClass() {
+        return currentClass;
+    }
+
+    public List<Method[]> getParentMethods() {
+        return parentMethods;
+    }
+
+    public Set<MethodInvokation> getInvFormParents() {
+        return invFormParents;
+    }
+
+    public Set<MethodInvokation> getInvFromCClass() {
+        return invFromCClass;
+    }
+
+    public Set<FieldAccess> getParentsReaders() {
+        return parentsReaders;
+    }
+
+    public Set<FieldAccess> getcClassSetters() {
+        return cClassSetters;
+    }
+
+    public Set<MethodCoupling> getMethodCouplings() {
+        return methodCouplings;
+    }
 }
