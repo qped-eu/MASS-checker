@@ -1,7 +1,6 @@
 package eu.qped.java.checkers.metrics.ckjm;
 
-import static jdk.internal.org.objectweb.asm.Opcodes.ACC_PUBLIC;
-import static jdk.internal.org.objectweb.asm.Opcodes.V1_8;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,20 +8,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInput;
-import java.io.DataOutputStream;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
+
 
 import gr.spinellis.ckjm.CkjmOutputHandler;
 import gr.spinellis.ckjm.ClassMetrics;
 import gr.spinellis.ckjm.IClassMetricsContainer;
-import jdk.internal.org.objectweb.asm.ClassReader;
-import jdk.internal.org.objectweb.asm.ClassWriter;
+import gr.spinellis.ckjm.utils.FieldAccess;
+import gr.spinellis.ckjm.utils.MethodInvokation;
+
+import org.apache.bcel.generic.Type;
 import org.apache.bcel.classfile.*;
-import org.jetbrains.annotations.NotNull;
+import org.apache.bcel.generic.MethodGen;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -107,6 +105,31 @@ class QPEDIcAndCbmClassVisitorTest {
         assertEquals(2, visitor.getParentMethods().size());
         assertArrayEquals(parentMethods1, visitor.getParentMethods().get(0));
         assertArrayEquals(parentMethods2, visitor.getParentMethods().get(1));
+    }
+
+    @Test
+    public void testVisitMethodForInvokeInstruction() {
+        QPEDIcAndCbmClassVisitor visitor = new QPEDIcAndCbmClassVisitor(null);
+        Method method = new Method();
+        MethodGen methodGen = new MethodGen(method, "ParentClass", null);
+        Type[] args = new Type[] { Type.INT };
+        MethodInvokation expectedMethodInvokation = new MethodInvokation("ClassName", "MethodName", args, "ParentClass", method.getName(), method.getArgumentTypes());
+
+        visitor.visitMethod(method);
+
+        assertTrue(visitor.getInvFormParents().contains(expectedMethodInvokation));
+    }
+
+    @Test
+    public void testVisitMethodForFieldInstruction() {
+        QPEDIcAndCbmClassVisitor visitor = new QPEDIcAndCbmClassVisitor(null);
+        Method method = new Method();
+        MethodGen methodGen = new MethodGen(method, "ParentClass", null);
+        FieldAccess expectedFieldAccess = new FieldAccess("fieldName", method, null);
+
+        visitor.visitMethod(method);
+
+        assertTrue(visitor.getParentsReaders().contains(expectedFieldAccess));
     }
 }
 
