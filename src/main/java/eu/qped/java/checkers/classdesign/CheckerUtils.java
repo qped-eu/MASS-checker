@@ -101,16 +101,6 @@ public final class CheckerUtils {
         return name;
     }
 
-    public static void main(String[] args) {
-        KeywordConfig keywordConfig = new KeywordConfig() {
-            @Override
-            public List<String> getPossibleTypes() {
-                return null;
-            }
-        };
-        keywordConfig.setName("Russia-Snezhnaya;");
-        System.out.println(getNameFromConfig(keywordConfig));
-    }
 
     /**
      * Checks if the expected access modifier matches up with the present element access modifier

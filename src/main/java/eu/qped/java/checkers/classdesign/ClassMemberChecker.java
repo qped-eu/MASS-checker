@@ -119,7 +119,7 @@ class ClassMemberChecker<T extends Node> {
             violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(matchingResult);
             elementName = new StringBuilder(getVariableName(presentElement));
             if (CHECKER_TYPE.equals(ClassMemberType.METHOD)) {
-                if ((elementName.indexOf("()")) < -1) {
+                if ((elementName.indexOf("()")) == -1) {
                     elementName.append("()");
                 }
                 if (violationFound.equals(MISSING_FIELDS)) {
