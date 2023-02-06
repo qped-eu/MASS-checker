@@ -2,7 +2,7 @@ name: Test on Push
 
 on:
   push:
-    branches: ["Bearbeitung"]
+    branches: ["Working"]
 
 jobs:
   build:
