@@ -9,6 +9,6 @@ import java.util.List;
  * */
 public interface TestFramework {
 
-    TestCollection testing(List<String> testClasses, ClassLoader loader, TestCollection collection) throws Exception;
+    List<String> testing(List<String> testClasses, ClassLoader loader);
 
 }

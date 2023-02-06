@@ -1,10 +1,18 @@
 package eu.qped.java.checkers.metrics.utils;
 
-import eu.qped.java.checkers.mass.QfMetricsSettings;
-import eu.qped.java.utils.compiler.Compiler;
-
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Random;
+
+import eu.qped.framework.CheckLevel;
+import eu.qped.framework.QpedQfFilesUtility;
+import eu.qped.java.checkers.mass.QfMetricsSettings;
+import eu.qped.java.checkers.syntax.SyntaxSetting;
+import eu.qped.java.checkers.syntax.analyser.SyntaxAnalysisReport;
+import eu.qped.java.checkers.syntax.analyser.SyntaxErrorAnalyser;
+import eu.qped.java.checkers.syntax.feedback.SyntaxFeedbackGenerator;
+import eu.qped.java.utils.SupportedLanguages;
 
 /**
  * Utility class for testing.
@@ -12,26 +20,54 @@ import java.util.Random;
  */
 public class MetricsCheckerTestUtility {
 
-    public static Field getFieldByName(String name, Field[] fields) {
+    private static final String TEST_CLASS_NAME = "DCTest";
+	private static File solutionRoot;
+
+	public static Field getFieldByName(String name, Field[] fields) {
         for (Field f : fields) {
             if (f.getName().equals(name)) return f;
         }
         return null;
     }
 
-    public static void generateTestClass() {
-        Compiler c = Compiler.builder().build();
-        String stringAnswer = "    import java.util.ArrayList;\n" +
+	public static File getSolutionRoot() throws IOException {
+		if (solutionRoot == null)
+			generateTestClass();
+		return solutionRoot;
+	}
+	
+	public static String getTestClassName() {
+		return TEST_CLASS_NAME;
+	}
+	
+    public static void generateTestClass() throws IOException {
+    	if (solutionRoot != null)
+    		return;
+        String answer = "    import java.util.ArrayList;\n" +
                 "import java.util.List;\n" +
-                "    public class DCTest{\n" +
+                "    public class " + TEST_CLASS_NAME + "{\n" +
                 "        List<String> xx(){\n" +
                 "            List list = new ArrayList();\n" +
                 "            list.add(\"8888\");\n" +
                 "            return list;\n" +
                 "        }\n" +
                 "    }";
-        c.compileFromString(stringAnswer);
-    }
+		SyntaxSetting syntaxSetting = SyntaxSetting.builder().build();
+        syntaxSetting.setLanguage(SupportedLanguages.ENGLISH);
+        syntaxSetting.setCheckLevel(CheckLevel.BEGINNER);
+
+        solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
+        QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, answer);
+        
+        SyntaxErrorAnalyser syntaxErrorAnalyser = SyntaxErrorAnalyser
+                    .builder()
+                    .solutionRoot(solutionRoot)
+                    .build();
+        SyntaxAnalysisReport analyseReport = syntaxErrorAnalyser.check();
+
+        SyntaxFeedbackGenerator syntaxFeedbackGenerator = SyntaxFeedbackGenerator.builder().build();
+        syntaxFeedbackGenerator.generateFeedbacks(analyseReport.getSyntaxErrors(), syntaxSetting);
+	}
 
     public static QfMetricsSettings generateSampleQFMetricsSettings() {
         QfMetricsSettings qfMetricsSettings = new QfMetricsSettings();

@@ -1,17 +1,20 @@
 package eu.qped.java.checkers.metrics.settings;
 
-import eu.qped.java.checkers.mass.QfMetricsSettings;
-import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.qped.java.checkers.mass.QfMetricsSettings;
+import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
+import eu.qped.java.checkers.metrics.utils.MetricsCheckerTestUtility;
 
 /**
  * Test class for {@link  MetricSettingsReader}.
@@ -141,9 +144,9 @@ class MetricSettingsReaderTest {
         Method retrieveMetricMaximumMethod = metricSettingsReader.getClass().getDeclaredMethod("retrieveMetricMaximum", Metric.class);
         retrieveMetricMaximumMethod.setAccessible(true);
 
-        assertEquals(-1, (Double) retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.AMC));
+        assertEquals(-1.0, (Double) retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.AMC));
         qfMetricsSettings.setWmc(null, null);
-        assertEquals(Double.MAX_VALUE, retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.WMC));
+        assertEquals(-1.0, retrieveMetricMaximumMethod.invoke(metricSettingsReader, Metric.WMC));
 
         retrieveMetricMaximumMethod.setAccessible(false);
     }
@@ -157,7 +160,7 @@ class MetricSettingsReaderTest {
 
         assertEquals(-1.0, retrieveMetricMinimumMethod.invoke(metricSettingsReader, Metric.AMC));
         qfMetricsSettings.setWmc(null, null);
-        assertEquals(0d, retrieveMetricMinimumMethod.invoke(metricSettingsReader, Metric.WMC));
+        assertEquals(-1.0, retrieveMetricMinimumMethod.invoke(metricSettingsReader, Metric.WMC));
 
         retrieveMetricMinimumMethod.setAccessible(false);
     }

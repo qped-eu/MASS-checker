@@ -1,0 +1,219 @@
+{
+  "answer" : "package test;\r\n\r\nimport static org.junit.jupiter.api.Assertions.*;\r\n\r\nimport java.util.Arrays;\r\n\r\nimport org.junit.jupiter.api.BeforeEach;\r\nimport org.junit.jupiter.api.Test;\r\n\r\nimport collections.Bag;\r\n\r\nimport org.junit.Assert;\r\n\r\nclass TestBag {\r\n\r\n\t //Tests to implement\r\n\r\n}",
+  "feedback" : [ "# Your Feedback\n", "## Coverage feedbacks", "### Test Coverage Feedback", "- Equals method: You have not tested the equals method with an empty bag as parameter.", "- Equals method: You have not tested the equals method with an non-empty bag as this.", "- Equals method: You have not tested the equals method with an non-empty bag as parameter.", "- Equals method: You have not tested the equals method with two bags of equal length.", "- Method equals: You have not tested the equals method at all.", "- Method equals: You have not tested the equals method with null parameter.", "- Method equals: You have not tested the equals method with a parameter not instance of Bag.", "- Equals method: You have not tested the equals method with an empty bag as this. ", "- Method length: You have not tested the length of an empty bag.", "- Method length: You have not tested the length of a non-empty bag.", "- Remove method: You have not tested the requirement `length = 0' of the non-happy-path.", "- Remove method: You have not tested the requirement `the bag does not contain element elem' of the non-happy path.", "- Method length: You have not tested the length method at all.", "- Method add: You have not tested the add method with an non-empty bag.", "- Method cardinality: You have not tested the cardinality of a bag that contains the element exactly once.", "- Method add: You have not tested the add method with values that are added more than once.", "- Method cardinality: You have not tested the cardinality of a bag that contains the element more than once.", "- Method remove: You have not tested the remove method at all.", "- Method remove: You have not tested the add method with values that are added more than once.", "- Method getElements: You have not tested the getElems method with a non-empty bag.", "- You have not created a new bag needed to test the class Bag.", "- Method cardinality: You have not tested the cardinality method at all.", "- Method add: You have not tested the add method at all.", "- Method cardinality: You have not tested the cardinality using an empty bag.", "- Method add: You have not tested the add method with an empty bag.", "- Method cardinality: You have not tested the cardinality of a bag that does not contain the element.", "- Equals method: You have not tested the equals method with two bags of unequal length.", "- Method getElements: You have not tested the getElems method at all.", "- Method getElements: You have not tested the getElems method with an empty bag.", "### Full Coverage Report\n\n#### collections/Bag.java\n\n| Line | Coverage type | Code |\n| ---: | :------------ | ---- |\n| 1 |  | `/***` |\n| 2 |  | ` * elements.size() used instead of length() for coverage detection of own method length(). ` |\n| 3 |  | ` * ` |\n| 4 |  | ` * It can be determined that all needed happy paths and non happy paths are executed.` |\n| 5 |  | ` * But, it is not possible to detect whether these path executions are part of an assert.` |\n| 6 |  | ` * A method call can take place outside an assert method call.  ` |\n| 7 |  | ` * ` |\n| 8 |  | ` * If a method has not been tested at all, we give detailed information of all tests not performed.` |\n| 9 |  | ` * It is better that we let them figure out for themselves what tests are needed.` |\n| 10 |  | ` * ` |\n| 11 |  | ` * We have to add test cases to test the internal invariant.` |\n| 12 |  | ` */` |\n| 13 |  |  |\n| 14 |  |  |\n| 15 |  |  |\n| 16 |  | `package collections;` |\n| 17 |  | `import java.util.ArrayList;` |\n| 18 |  | `import java.util.Arrays;` |\n| 19 |  | `import java.util.Collections;` |\n| 20 |  |  |\n| 21 |  | `/**` |\n| 22 |  | ` * This class represents a bag of integers. A bag can contain duplicate elements.` |\n| 23 |  | ` * The bag is not limited in the number of elements it can hold.` |\n| 24 |  | ` * The number of elements in the bag is represented by its length.  ` |\n| 25 |  |  |\n| 26 |  | ` * External invariant:` |\n| 27 |  | ` *   @inv Number of elements >= 0` |\n| 28 |  | ` */` |\n| 29 |  |  |\n| 30 |  | `public class Bag {` |\n| 31 |  | `  ` |\n| 32 |  | `  // Internal invariant` |\n| 33 |  | `  // @inv elementen.size() >= 0 ` |\n| 34 |  | `  private ArrayList<Integer> elements;` |\n| 35 |  | `  ` |\n| 36 |  | `  // Attribute is used for testing the student's test ` |\n| 37 | :red_circle: **NOT covered** | `  private int attributeForStudentTestTest = 0;` |\n| 38 |  | `  ` |\n| 39 |  | `  /**` |\n| 40 |  | `   *   @desc Constructor ` |\n| 41 |  | `   *   @sub Happy path {` |\n| 42 |  | `   *     @requires true` |\n| 43 |  | `   *     @ensures A new bag is instantiated, with length = 0.  ` |\n| 44 |  | `   *   }` |\n| 45 |  | `   */` |\n| 46 | :red_circle: **NOT covered** | `   public Bag() {` |\n| 47 | :red_circle: **NOT covered** | `      elements = new ArrayList<>();     // You have not created a new bag needed to test the class Bag.` |\n| 48 | :red_circle: **NOT covered** | `  }` |\n| 49 |  | `  ` |\n| 50 |  | `  /**` |\n| 51 |  | `   * @desc add an elem to the bag` |\n| 52 |  | `   * @param elem the element to add ` |\n| 53 |  | `   * @sub happy path {` |\n| 54 |  | `   *   @requires true` |\n| 55 |  | `   *   @ensures new cardinality(eleml) = old cardinality(elem) + 1` |\n| 56 |  | `   *   @ensures the new length of the bag is the old length plus 1` |\n| 57 |  | `   *   @ensures returns true ` |\n| 58 |  | `   * }` |\n| 59 |  | `   */` |\n| 60 |  | `  public boolean add(int elem) {` |\n| 61 | :red_circle: **NOT covered** | `      attributeForStudentTestTest++;     // Method add: You have not tested the add method at all.` |\n| 62 | :red_circle: **NOT covered** | `      if (elements.size() == 0) {` |\n| 63 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;   // Method add: You have not tested the add method with an empty bag. ` |\n| 64 |  | `      } else {` |\n| 65 | :red_circle: **NOT covered** | `          attributeForStudentTestTest++; // Method add: You have not tested the add method with an non-empty bag. ` |\n| 66 |  | `      }` |\n| 67 | :red_circle: **NOT covered** | `      if (elements.contains(elem)) {` |\n| 68 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;   // Method add: You have not tested the add method with values that are added more than once.` |\n| 69 |  | `      }` |\n| 70 | :red_circle: **NOT covered** | `      return elements.add(elem); ` |\n| 71 |  | `  }` |\n| 72 |  | `  ` |\n| 73 |  | `  /**` |\n| 74 |  | `   * @desc Remove elemet elem from the bag` |\n| 75 |  | `   * @param elem the element to remove` |\n| 76 |  | `   * @sub Happy-path {` |\n| 77 |  | `   *   @requires length > 0 and the bag contains n elements of elem, with n > 0` |\n| 78 |  | `   *   @ensures new cardinality(elem) = old cardinality(elem) - 1` |\n| 79 |  | `   *   @ensures length is old length minus 1` |\n| 80 |  | `   *   @ensures returns true` |\n| 81 |  | `   * }` |\n| 82 |  | `   * @sub Non-happy-path {` |\n| 83 |  | `   *   @requires length = 0 or the bag does not contain element elem` |\n| 84 |  | `   *   @ensures the bag is not changed` |\n| 85 |  | `   *   @ensures length is old length` |\n| 86 |  | `   *   @ensures returns false` |\n| 87 |  | `   * }` |\n| 88 |  | `   */` |\n| 89 |  | `  public boolean remove(int elem) {` |\n| 90 | :red_circle: **NOT covered** | `      attributeForStudentTestTest++;       // Method remove: You have not tested the remove method at all.` |\n| 91 | :red_circle: **NOT covered** | `      if (elements.size() > 0  && elements.contains(elem)) {` |\n| 92 | :red_circle: **NOT covered** | `          attributeForStudentTestTest++;   // Remove method: You have not tested the requirement `length > 0' and a bag containing elem (happy-path scenario).          ` |\n| 93 |  | `      }` |\n| 94 | :red_circle: **NOT covered** | `      if (elements.size() == 0) {` |\n| 95 | :red_circle: **NOT covered** | `          attributeForStudentTestTest++;   // Remove method: You have not tested the requirement `length = 0' of the non-happy-path.          ` |\n| 96 |  | `      }` |\n| 97 | :red_circle: **NOT covered** | `      if (!elements.contains(elem)) {      ` |\n| 98 | :red_circle: **NOT covered** | `          attributeForStudentTestTest++;   // Remove method: You have not tested the requirement `the bag does not contain element elem' of the non-happy path. ` |\n| 99 |  | `      }      ` |\n| 100 | :red_circle: **NOT covered** | `      return elements.remove(Integer.valueOf(elem));` |\n| 101 |  | `  }` |\n| 102 |  | `  ` |\n| 103 |  | `  /**` |\n| 104 |  | `   * @desc Return the number of elements in the bag` |\n| 105 |  | `   * @sub {` |\n| 106 |  | `   *   @requires true  ` |\n| 107 |  | `   *   @ensures returns the number of elements` |\n| 108 |  | `   * } ` |\n| 109 |  | `   */` |\n| 110 |  | `  public int length() {` |\n| 111 | :red_circle: **NOT covered** | `     attributeForStudentTestTest++;     // Method length: You have not tested the length method at all.` |\n| 112 | :red_circle: **NOT covered** | `     if (elements.size() == 0) {` |\n| 113 | :red_circle: **NOT covered** | `       attributeForStudentTestTest++;   // Method length: You have not tested the length of an empty bag.` |\n| 114 |  | `     } else { ` |\n| 115 | :red_circle: **NOT covered** | `       attributeForStudentTestTest++;   // Method length: You have not tested the length of a non-empty bag.` |\n| 116 |  | `     }` |\n| 117 | :red_circle: **NOT covered** | `     return elements.size();   ` |\n| 118 |  | `  }  ` |\n| 119 |  | `  ` |\n| 120 |  | `  /**` |\n| 121 |  | `   * @desc Determine if this bag contains exactly the same elements as bag obj.` |\n| 122 |  | `   * @param obj the other bag ` |\n| 123 |  | `   * @sub {` |\n| 124 |  | `   *   @requires true` |\n| 125 |  | `   *   @ensures true if they contain the same elements otherwise false` |\n| 126 |  | `   * }   ` |\n| 127 |  | `   */` |\n| 128 |  | `  public boolean equals(Object obj) {` |\n| 129 | :red_circle: **NOT covered** | `    attributeForStudentTestTest++;      // Method equals: You have not tested the equals method at all.` |\n| 130 | :red_circle: **NOT covered** | `    if (obj == null) {` |\n| 131 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Method equals: You have not tested the equals method with null parameter.` |\n| 132 | :red_circle: **NOT covered** | `        return false;` |\n| 133 |  | `    }` |\n| 134 | :red_circle: **NOT covered** | `    if (!(obj instanceof Bag)) {` |\n| 135 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Method equals: You have not tested the equals method with a parameter not instance of Bag.` |\n| 136 | :red_circle: **NOT covered** | `        return false;` |\n| 137 |  | `        }` |\n| 138 | :red_circle: **NOT covered** | `    if (elements.size() == 0) {` |\n| 139 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Equals method: You have not tested the equals method with an empty bag as this. ` |\n| 140 |  | `    }` |\n| 141 | :red_circle: **NOT covered** | `    if (((Bag) obj).elements.size() == 0) {` |\n| 142 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Equals method: You have not tested the equals method with an empty bag as parameter. ` |\n| 143 |  | `    }` |\n| 144 | :red_circle: **NOT covered** | `    if (elements.size() > 0) {` |\n| 145 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Equals method: You have not tested the equals method with an non-empty bag as this. ` |\n| 146 |  | `    }` |\n| 147 | :red_circle: **NOT covered** | `    if (((Bag) obj).elements.size() > 0) {` |\n| 148 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Equals method: You have not tested the equals method with an non-empty bag as parameter. ` |\n| 149 |  | `    }` |\n| 150 | :red_circle: **NOT covered** | `    if (elements.size() == ((Bag) obj).elements.size()) {` |\n| 151 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Equals method: You have not tested the equals method with two bags of equal length. ` |\n| 152 |  | `    }` |\n| 153 | :red_circle: **NOT covered** | `    if (elements.size() != ((Bag) obj).elements.size()) {` |\n| 154 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;  // Equals method: You have not tested the equals method with two bags of unequal length. ` |\n| 155 |  | `    }` |\n| 156 |  |  |\n| 157 | :red_circle: **NOT covered** | `    if (this.elements.size() != ((Bag)obj).elements.size()) {` |\n| 158 | :red_circle: **NOT covered** | `      return false;` |\n| 159 |  | `    }` |\n| 160 | :red_circle: **NOT covered** | `    int[] elems1 = this.getElems();` |\n| 161 | :red_circle: **NOT covered** | `    int[] elems2 = ((Bag)obj).getElems();` |\n| 162 | :red_circle: **NOT covered** | `    Arrays.sort(elems1);` |\n| 163 | :red_circle: **NOT covered** | `    Arrays.sort(elems2);` |\n| 164 | :red_circle: **NOT covered** | `    return Arrays.equals(elems1, elems2);` |\n| 165 |  | `  }` |\n| 166 |  | `  ` |\n| 167 |  | `  ` |\n| 168 |  | `  /**` |\n| 169 |  | `   * @desc Get all the elements in the bag` |\n| 170 |  | `   * @sub {` |\n| 171 |  | `   *   @requires true` |\n| 172 |  | `   *   @ensures returns all the elements in the bag` |\n| 173 |  | `   * }  ` |\n| 174 |  | `   */` |\n| 175 |  | `  public int[] getElems() {` |\n| 176 | :red_circle: **NOT covered** | `    attributeForStudentTestTest++;              // Method getElements: You have not tested the getElems method at all.` |\n| 177 | :red_circle: **NOT covered** | `    int[] elems = new int[elements.size()];      ` |\n| 178 | :red_circle: **NOT covered** | `    if (elements.size() == 0) {` |\n| 179 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;          // Method getElements: You have not tested the getElems method with an empty bag.` |\n| 180 |  | `    } else {` |\n| 181 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;          // Method getElements: You have not tested the getElems method with a non-empty bag.` |\n| 182 |  | `    }` |\n| 183 | :red_circle: **NOT covered** | `    for (int i = 0; i < elements.size(); i++) {` |\n| 184 | :red_circle: **NOT covered** | `      elems[i] = elements.get(i);` |\n| 185 |  | `    }` |\n| 186 | :red_circle: **NOT covered** | `    return elems;` |\n| 187 |  | `  }` |\n| 188 |  | `  ` |\n| 189 |  | `  /**` |\n| 190 |  | `   * @desc Get the cardinality of element elem in the bag` |\n| 191 |  | `   * @param elem the element to determine the cardinality for` |\n| 192 |  | `   * @sub {` |\n| 193 |  | `   *  @requires true  ` |\n| 194 |  | `   *  @ensures returns the number of element elem in the bag` |\n| 195 |  | `   */` |\n| 196 |  | `  public int cardinality(int elem) {` |\n| 197 | :red_circle: **NOT covered** | `      int card = 0;` |\n| 198 | :red_circle: **NOT covered** | `      attributeForStudentTestTest++;        // Method cardinality: You have not tested the cardinality method at all.` |\n| 199 | :red_circle: **NOT covered** | `      if (elements.size() == 0) {` |\n| 200 | :red_circle: **NOT covered** | `        attributeForStudentTestTest++;      // Method cardinality: You have not tested the cardinality using an empty bag.` |\n| 201 |  | `      } else {` |\n| 202 | :red_circle: **NOT covered** | `        card = Collections.frequency(elements, elem);` |\n| 203 | :red_circle: **NOT covered** | `        if (card == 0) {` |\n| 204 | :red_circle: **NOT covered** | `          attributeForStudentTestTest++;   // Method cardinality: You have not tested the cardinality of a bag that does not contain the element.` |\n| 205 | :red_circle: **NOT covered** | `        } else if (card == 1) {` |\n| 206 | :red_circle: **NOT covered** | `          attributeForStudentTestTest++;   // Method cardinality: You have not tested the cardinality of a bag that contains the element exactly once.` |\n| 207 |  | `        } else {` |\n| 208 | :red_circle: **NOT covered** | `          attributeForStudentTestTest++;   // Method cardinality: You have not tested the cardinality of a bag that contains the element more than once.` |\n| 209 |  | `        }` |\n| 210 |  | `      }` |\n| 211 | :red_circle: **NOT covered** | `      return card;  ` |\n| 212 |  | `  }` |\n| 213 |  | ` ` |\n| 214 |  | `} ` |\n| 215 |  |  |\n| 216 |  |  |\n| 217 |  |  |\n" ],
+  "answers" : [ "package test;\r\n\r\nimport static org.junit.jupiter.api.Assertions.*;\r\n\r\nimport java.util.Arrays;\r\n\r\nimport org.junit.jupiter.api.BeforeEach;\r\nimport org.junit.jupiter.api.Test;\r\n\r\nimport collections.Bag;\r\n\r\nimport org.junit.Assert;\r\n\r\nclass TestBag {\r\n\r\n\t //Tests to implement\r\n\r\n}" ],
+  "attemptCount" : 1,
+  "showSolution" : false,
+  "user" : {
+    "id" : "5fd0de0f30795372827b0f2a",
+    "firstName" : null,
+    "lastName" : null,
+    "language" : "en"
+  },
+  "assignment" : {
+    "id" : "63a46930a046882a0bc1660e",
+    "title" : "Bag",
+    "files" : [ {
+      "id" : "63a46930a046882a0bc1660f",
+      "label" : "collections",
+      "extension" : ".zip",
+      "path" : "assignment/63a46930a046882a0bc1660e/files",
+      "mimetype" : "application/x-zip-compressed",
+      "url" : "file:./src/test/resources/system-tests/procedural-guidance/question1/collections.zip"
+    }, {
+      "id" : "63a46930a046882a0bc16610",
+      "label" : "test",
+      "extension" : ".zip",
+      "path" : "assignment/63a46930a046882a0bc1660e/files",
+      "mimetype" : "application/x-zip-compressed",
+      "url" : "https://upload.quarterfall.com/assignment/63a46930a046882a0bc1660e/files/63a46930a046882a0bc16610.zip"
+    } ]
+  },
+  "block" : null,
+  "question" : {
+    "id" : "63a46930a046882a0bc16614",
+    "text" : "Based on the specification of class Bag given, write a Junit testfile with all testcases needed.\n\n\n \n",
+    "solution" : null,
+    "programmingLanguage" : "java"
+  },
+  "checkerClass" : null,
+  "settings" : null,
+  "score" : 0,
+  "stop" : false,
+  "mass" : {
+    "styleSelected" : true,
+    "semanticSelected" : false,
+    "coverageSelected" : true,
+    "classSelected" : false,
+    "metricsSelected" : false,
+    "instructorResources" : "qf:collections.zip",
+    "syntax" : {
+      "level" : "BEGINNER"
+    },
+    "style" : {
+      "basisLevel" : "INTERMEDIATE",
+      "complexityLevel" : "INTERMEDIATE",
+      "namesLevel" : "INTERMEDIATE",
+      "classLength" : -1,
+      "methodLength" : -1,
+      "cyclomaticComplexity" : -1,
+      "fieldsCount" : -1,
+      "variableNamePattern" : "[a-z][a-zA-Z0-9]*",
+      "methodNamePattern" : "[a-z][a-zA-Z0-9]*",
+      "methodParameterNamePattern" : "[a-z][a-zA-Z0-9]*",
+      "classNamePattern" : "[A-Z][a-zA-Z0-9_]*"
+    },
+    "coverage" : {
+      "showTestFailures" : true,
+      "showFullCoverageReport" : true,
+      "feedback" : [ {
+        "showFor" : "PARTIALLY_MISSED",
+        "fileName" : "Bag.java",
+        "lineRanges" : "47",
+        "message" : "You have not created a new bag needed to test the class Bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "61",
+        "fileName" : "Bag.java",
+        "message" : "Method add: You have not tested the add method at all."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "63",
+        "fileName" : "Bag.java",
+        "message" : "Method add: You have not tested the add method with an empty bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "65",
+        "fileName" : "Bag.java",
+        "message" : "Method add: You have not tested the add method with an non-empty bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "68",
+        "fileName" : "Bag.java",
+        "message" : "Method add: You have not tested the add method with values that are added more than once."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "90",
+        "fileName" : "Bag.java",
+        "message" : "Method remove: You have not tested the remove method at all."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "92",
+        "fileName" : "Bag.java",
+        "message" : "Method remove: You have not tested the add method with values that are added more than once."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "95",
+        "fileName" : "Bag.java",
+        "message" : "Remove method: You have not tested the requirement `length = 0' of the non-happy-path."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "98",
+        "fileName" : "Bag.java",
+        "message" : "Remove method: You have not tested the requirement `the bag does not contain element elem' of the non-happy path."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "111",
+        "fileName" : "Bag.java",
+        "message" : "Method length: You have not tested the length method at all."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "113",
+        "fileName" : "Bag.java",
+        "message" : "Method length: You have not tested the length of an empty bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "115",
+        "fileName" : "Bag.java",
+        "message" : "Method length: You have not tested the length of a non-empty bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "129",
+        "fileName" : "Bag.java",
+        "message" : "Method equals: You have not tested the equals method at all."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "131",
+        "fileName" : "Bag.java",
+        "message" : "Method equals: You have not tested the equals method with null parameter."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "135",
+        "fileName" : "Bag.java",
+        "message" : "Method equals: You have not tested the equals method with a parameter not instance of Bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "139",
+        "fileName" : "Bag.java",
+        "message" : "Equals method: You have not tested the equals method with an empty bag as this. "
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "142",
+        "fileName" : "Bag.java",
+        "message" : "Equals method: You have not tested the equals method with an empty bag as parameter."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "145",
+        "fileName" : "Bag.java",
+        "message" : "Equals method: You have not tested the equals method with an non-empty bag as this."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "148",
+        "fileName" : "Bag.java",
+        "message" : "Equals method: You have not tested the equals method with an non-empty bag as parameter."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "151",
+        "fileName" : "Bag.java",
+        "message" : "Equals method: You have not tested the equals method with two bags of equal length."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "154",
+        "fileName" : "Bag.java",
+        "message" : "Equals method: You have not tested the equals method with two bags of unequal length."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "176",
+        "fileName" : "Bag.java",
+        "message" : "Method getElements: You have not tested the getElems method at all."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "179",
+        "fileName" : "Bag.java",
+        "message" : "Method getElements: You have not tested the getElems method with an empty bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "181",
+        "fileName" : "Bag.java",
+        "message" : "Method getElements: You have not tested the getElems method with a non-empty bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "198",
+        "fileName" : "Bag.java",
+        "message" : "Method cardinality: You have not tested the cardinality method at all."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "200",
+        "fileName" : "Bag.java",
+        "message" : "Method cardinality: You have not tested the cardinality using an empty bag."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "204",
+        "fileName" : "Bag.java",
+        "message" : "Method cardinality: You have not tested the cardinality of a bag that does not contain the element."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "206",
+        "fileName" : "Bag.java",
+        "message" : "Method cardinality: You have not tested the cardinality of a bag that contains the element exactly once."
+      }, {
+        "showFor" : "PARTIALLY_MISSED",
+        "lineRanges" : "208",
+        "fileName" : "Bag.java",
+        "message" : "Method cardinality: You have not tested the cardinality of a bag that contains the element more than once."
+      } ]
+    }
+  },
+  "files" : [ ],
+  "comment" : ""
+}

@@ -1,20 +1,20 @@
 package eu.qped.java.syntax;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.template.TemplateBuilder;
+import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.mass.QfMainSettings;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.utils.SupportedLanguages;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MassSyntaxTest {
 
@@ -34,13 +34,16 @@ class MassSyntaxTest {
     }
 
     @Test
-    void testMethodNoError() {
+    void testMethodNoError() throws IOException {
 
         String code = "void rec (){\n"
                 + "System.out.println(\"pretty\");\n"
                 + "}";
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+        File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
+        QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
+        
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
                 null, null, null, mainSettingsConfiguratorConf);
@@ -51,13 +54,16 @@ class MassSyntaxTest {
     }
 
     @Test
-    void testMethodMissingSemicolon() {
+    void testMethodMissingSemicolon() throws IOException {
 
         String code = "void rec (){\n"
                 + "System.out.println(\"pretty\")\n"
                 + "}";
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+        File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
+        QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
+        
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
 
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
                 null, null, null, mainSettingsConfiguratorConf);
@@ -70,11 +76,15 @@ class MassSyntaxTest {
     }
 
     @Test
-    void testClassNoError() {
+    void testClassNoError() throws IOException {
 
         String code = "class Simple {}";
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().stringAnswer(code).build();
+        File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
+        QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
+        
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
+
         MassExecutor massE = new MassExecutor(null, null, syntaxChecker,
                 null, null, null, mainSettingsConfiguratorConf);
 

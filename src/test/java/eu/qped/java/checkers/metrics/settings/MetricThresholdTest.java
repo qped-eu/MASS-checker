@@ -1,15 +1,21 @@
 package eu.qped.java.checkers.metrics.settings;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.AMC;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.CC;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.LCOM;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.LCOM3;
+import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.RFC;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test class for {@link MetricThreshold}.

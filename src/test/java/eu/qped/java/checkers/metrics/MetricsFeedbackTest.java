@@ -1,20 +1,23 @@
 package eu.qped.java.checkers.metrics;
 
-import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
-import eu.qped.java.checkers.metrics.settings.MetricSettings;
-import eu.qped.java.checkers.metrics.data.report.ClassMetricsEntry;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.List;
-
-import static eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
+import eu.qped.java.checkers.metrics.data.report.ClassMetricsEntry;
+import eu.qped.java.checkers.metrics.settings.MetricSettings;
 
 /**
  * Test class for {@link MetricsFeedback}.

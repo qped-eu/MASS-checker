@@ -1,0 +1,252 @@
+{
+   "attemptCount":1,
+   "feedback":[
+      
+   ],
+   "showSolution":false,
+   "user":{
+      "id":"5fd0de0f30795372827b0f2a",
+      "language":"en"
+   },
+   "assignment":{
+      "id":"63a46930a046882a0bc1660e",
+      "title":"Bag",
+      "files":[
+         {
+            "id":"63a46930a046882a0bc1660f",
+            "label":"collections",
+            "extension":".zip",
+            "path":"assignment/63a46930a046882a0bc1660e/files",
+            "mimetype":"application/x-zip-compressed",
+            "url":"file:./src/test/resources/system-tests/procedural-guidance/question1/collections.zip"
+         },
+         {
+            "id":"63a46930a046882a0bc16610",
+            "label":"test",
+            "extension":".zip",
+            "path":"assignment/63a46930a046882a0bc1660e/files",
+            "mimetype":"application/x-zip-compressed",
+            "url":"https://upload.quarterfall.com/assignment/63a46930a046882a0bc1660e/files/63a46930a046882a0bc16610.zip"
+         }
+      ]
+   },
+   "question":{
+      "id":"63a46930a046882a0bc16614",
+      "text":"Based on the specification of class Bag given, write a Junit testfile with all testcases needed.\n\n\n \n",
+      "programmingLanguage":"java"
+   },
+   "files":[
+      
+   ],
+   "comment":"",
+   "score":0,
+   "stop":false,
+   "answers":[
+      "package test;\r\n\r\nimport static org.junit.jupiter.api.Assertions.*;\r\n\r\nimport java.util.Arrays;\r\n\r\nimport org.junit.jupiter.api.BeforeEach;\r\nimport org.junit.jupiter.api.Test;\r\n\r\nimport collections.Bag;\r\n\r\nimport org.junit.Assert;\r\n\r\nclass TestBag {\r\n\r\n\t //Tests to implement\r\n\r\n}"
+   ],
+   "answer":"package test;\r\n\r\nimport static org.junit.jupiter.api.Assertions.*;\r\n\r\nimport java.util.Arrays;\r\n\r\nimport org.junit.jupiter.api.BeforeEach;\r\nimport org.junit.jupiter.api.Test;\r\n\r\nimport collections.Bag;\r\n\r\nimport org.junit.Assert;\r\n\r\nclass TestBag {\r\n\r\n\t //Tests to implement\r\n\r\n}",
+   "mass":{
+      "styleSelected":true,
+      "semanticSelected":false,
+      "coverageSelected":true,
+      "classSelected":false,
+      "metricsSelected":false,
+      "instructorResources":"qf:collections.zip",
+      "syntax":{
+         "level":"BEGINNER"
+      },
+      "style":{
+         "basisLevel":"INTERMEDIATE",
+         "complexityLevel":"INTERMEDIATE",
+         "namesLevel":"INTERMEDIATE",
+         "classLength":-1,
+         "methodLength":-1,
+         "cyclomaticComplexity":-1,
+         "fieldsCount":-1,
+         "variableNamePattern":"[a-z][a-zA-Z0-9]*",
+         "methodNamePattern":"[a-z][a-zA-Z0-9]*",
+         "methodParameterNamePattern":"[a-z][a-zA-Z0-9]*",
+         "classNamePattern":"[A-Z][a-zA-Z0-9_]*"
+      },
+      "coverage":{
+         "showTestFailures":true,
+         "showFullCoverageReport":true,
+         "feedback":[
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "fileName":"Bag.java",
+               "lineRanges":"47",
+               "message":"You have not created a new bag needed to test the class Bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"61",
+               "fileName":"Bag.java",
+               "message":"Method add: You have not tested the add method at all."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"63",
+               "fileName":"Bag.java",
+               "message":"Method add: You have not tested the add method with an empty bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"65",
+               "fileName":"Bag.java",
+               "message":"Method add: You have not tested the add method with an non-empty bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"68",
+               "fileName":"Bag.java",
+               "message":"Method add: You have not tested the add method with values that are added more than once."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"90",
+               "fileName":"Bag.java",
+               "message":"Method remove: You have not tested the remove method at all."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"92",
+               "fileName":"Bag.java",
+               "message":"Method remove: You have not tested the add method with values that are added more than once."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"95",
+               "fileName":"Bag.java",
+               "message":"Remove method: You have not tested the requirement `length = 0' of the non-happy-path."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"98",
+               "fileName":"Bag.java",
+               "message":"Remove method: You have not tested the requirement `the bag does not contain element elem' of the non-happy path."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"111",
+               "fileName":"Bag.java",
+               "message":"Method length: You have not tested the length method at all."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"113",
+               "fileName":"Bag.java",
+               "message":"Method length: You have not tested the length of an empty bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"115",
+               "fileName":"Bag.java",
+               "message":"Method length: You have not tested the length of a non-empty bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"129",
+               "fileName":"Bag.java",
+               "message":"Method equals: You have not tested the equals method at all."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"131",
+               "fileName":"Bag.java",
+               "message":"Method equals: You have not tested the equals method with null parameter."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"135",
+               "fileName":"Bag.java",
+               "message":"Method equals: You have not tested the equals method with a parameter not instance of Bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"139",
+               "fileName":"Bag.java",
+               "message":"Equals method: You have not tested the equals method with an empty bag as this. "
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"142",
+               "fileName":"Bag.java",
+               "message":"Equals method: You have not tested the equals method with an empty bag as parameter."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"145",
+               "fileName":"Bag.java",
+               "message":"Equals method: You have not tested the equals method with an non-empty bag as this."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"148",
+               "fileName":"Bag.java",
+               "message":"Equals method: You have not tested the equals method with an non-empty bag as parameter."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"151",
+               "fileName":"Bag.java",
+               "message":"Equals method: You have not tested the equals method with two bags of equal length."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"154",
+               "fileName":"Bag.java",
+               "message":"Equals method: You have not tested the equals method with two bags of unequal length."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"176",
+               "fileName":"Bag.java",
+               "message":"Method getElements: You have not tested the getElems method at all."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"179",
+               "fileName":"Bag.java",
+               "message":"Method getElements: You have not tested the getElems method with an empty bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"181",
+               "fileName":"Bag.java",
+               "message":"Method getElements: You have not tested the getElems method with a non-empty bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"198",
+               "fileName":"Bag.java",
+               "message":"Method cardinality: You have not tested the cardinality method at all."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"200",
+               "fileName":"Bag.java",
+               "message":"Method cardinality: You have not tested the cardinality using an empty bag."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"204",
+               "fileName":"Bag.java",
+               "message":"Method cardinality: You have not tested the cardinality of a bag that does not contain the element."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"206",
+               "fileName":"Bag.java",
+               "message":"Method cardinality: You have not tested the cardinality of a bag that contains the element exactly once."
+            },
+            {
+               "showFor":"PARTIALLY_MISSED",
+               "lineRanges":"208",
+               "fileName":"Bag.java",
+               "message":"Method cardinality: You have not tested the cardinality of a bag that contains the element more than once."
+            }
+         ]
+      }
+   }
+}

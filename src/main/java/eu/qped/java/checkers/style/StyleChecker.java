@@ -1,7 +1,13 @@
 package eu.qped.java.checkers.style;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+
 import eu.qped.framework.CheckLevel;
-import eu.qped.framework.feedback.template.TemplateBuilder;
 import eu.qped.java.checkers.mass.QfStyleSettings;
 import eu.qped.java.checkers.style.pmd.MassSupportedEditablePmdRules;
 import eu.qped.java.checkers.style.pmd.PmdConfigException;
@@ -10,18 +16,15 @@ import eu.qped.java.checkers.style.pmd.XmlFileManager;
 import eu.qped.java.checkers.style.reportModel.StyleCheckReport;
 import eu.qped.java.checkers.style.settings.StyleConfigurationReader;
 import eu.qped.java.checkers.style.settings.StyleSettings;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.checkers.syntax.SyntaxSetting;
-import eu.qped.java.utils.SupportedLanguages;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDConfiguration;
-import org.apache.logging.log4j.LogManager;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -171,49 +174,4 @@ public class StyleChecker {
         PMD.runPmd(configuration);
     }
 
-    public static void main(String[] args) {
-
-        String codeToCompile = "double krt(double A, double k, double d){\n" +
-                "    int K,L;\n" +
-                "    return  A;\n" +
-                "}\n" +
-                "\n" +
-                "double krtH(double a, double k, double d, double x_n){\n" +
-                "    return a;\n" +
-                "}";
-
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().build();
-        syntaxChecker.setStringAnswer(codeToCompile);
-        var setting = SyntaxSetting.builder().checkLevel(CheckLevel.BEGINNER).language("en").build();
-        syntaxChecker.setSyntaxSetting(setting);
-        var feedbacks = syntaxChecker.check();
-
-        TemplateBuilder templateBuilder = TemplateBuilder.builder().build();
-        feedbacks.forEach(System.out::println);
-
-
-        var styleChecker = StyleChecker.builder().build();
-        var qfStyleSetting = QfStyleSettings
-                .builder()
-                .basisLevel("BEGINNER")
-                .complexityLevel("BEGINNER")
-                .namesLevel("BEGINNER")
-                .classLength("-1")
-                .methodLength("-1")
-                .cyclomaticComplexity("-1")
-                .fieldsCount("-1")
-                .variableNamePattern("[a-z][a-zA-Z0-9]*")
-                .methodNamePattern("[a-z][a-zA-Z0-9]*")
-                .classNamePattern("[A-Z][a-zA-Z0-9_]*")
-                .methodParameterNamePattern("[A-Z][a-zA-Z0-9_]*")
-                .build();
-        styleChecker.setQfStyleSettings(qfStyleSetting);
-        styleChecker.setTargetPath(syntaxChecker.getAnalyseReport().getPath());
-        styleChecker.check();
-        var feedbacksS = styleChecker.getStyleFeedbacks();
-
-
-        System.out.println(feedbacksS);
-
-    }
 }

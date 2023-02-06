@@ -1,11 +1,21 @@
 package eu.qped.java.checkers.coverage.framework.coverage;
 
-public interface CoverageFacade {
+public class CoverageFacade {
 
-    String className();
+    private final byte[] byteCode;
+    private final String className;
 
-    String simpleClassName();
+    public CoverageFacade(byte[] byteCode, String className) {
+        this.byteCode = byteCode;
+        this.className = className;
+    }
 
-    byte[] byteCode();
+    public String className() {
+        return className;
+    }
+
+    public byte[] byteCode() {
+        return byteCode;
+    }
 
 }

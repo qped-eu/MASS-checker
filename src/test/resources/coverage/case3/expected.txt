@@ -1,0 +1,2 @@
+### Test Coverage Feedback
+- You did not test the checksum method.

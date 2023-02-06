@@ -1,0 +1,12 @@
+### Test failures
+#### test.TestFail.test()
+
+**Reason:** Failing.
+
+**Stack trace** (frames in JUnit implementation and internal classes are filtered):
+```
+org.opentest4j.AssertionFailedError
+  ...
+```
+### Test Coverage Feedback
+- You did not test the checksum method.
