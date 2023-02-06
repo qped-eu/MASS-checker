@@ -1,7 +1,6 @@
-package eu.qped.java.checkers.style;
+package eu.qped.java.checkers.style.analyse.reportModel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.qped.java.checkers.style.reportModel.StyleCheckReport;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +11,16 @@ import java.io.IOException;
 @Data
 @AllArgsConstructor
 @Builder
-public class ReportFromJsonMapper {
+public class StyleAnalysisReportParser {
 
-    public StyleCheckReport mapToReportObject() {
+    public StyleAnalysisReport parse() {
         ObjectMapper jacksonMapper = new ObjectMapper();
         File jsonFile = new File("src/main/java/eu/qped/java/checkers/style/resources/report.json").getAbsoluteFile();
-        StyleCheckReport result;
+        StyleAnalysisReport result;
         try {
-            result = jacksonMapper.readValue(jsonFile, StyleCheckReport.class);
+            result = jacksonMapper.readValue(jsonFile, StyleAnalysisReport.class);
         } catch (IOException e) {
-            return StyleCheckReport.builder().build();
+            return StyleAnalysisReport.builder().build();
         }
         return result;
     }

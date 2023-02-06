@@ -1,4 +1,4 @@
-package eu.qped.java.checkers.style.pmd;
+package eu.qped.java.checkers.style.analyse.pmd;
 
 import org.apache.logging.log4j.LogManager;
 import org.w3c.dom.Document;
