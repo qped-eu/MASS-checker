@@ -45,11 +45,7 @@ public class SolutionApproachAnalyser {
         var settings = reader.groupByFileName();
         // per File
         settings.forEach((filePath, semanticSettingItems) -> {
-            System.out.println(">>>>>>>>>>>>>>>>>>>> Start");
-            System.out.println(filePath);
             String path = getRelatedPath(filePath);
-            System.out.println(filePath);
-            System.out.println(">>>>>>>>>>>>>>>>>>>> End");
             var compilationUnit = parse(path); // AST per File
             // AST per Method in File
             semanticSettingItems.forEach(
@@ -271,9 +267,6 @@ public class SolutionApproachAnalyser {
 //                                        .build()
 //                        )
 //                )
-//                .build();
-//        var solutionGeneralSetting = SolutionApproachGeneralSettings.builder()
-//                .checkLevel(CheckLevel.BEGINNER)
 //                .build();
 //        solutionGeneralSetting.setLanguage(SupportedLanguages.ENGLISH);
 //

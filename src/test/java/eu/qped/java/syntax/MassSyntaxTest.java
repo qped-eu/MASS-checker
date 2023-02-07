@@ -41,6 +41,7 @@ class MassSyntaxTest {
                 + "}";
 
         File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
+        System.out.println(solutionRoot);
         QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
         
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();

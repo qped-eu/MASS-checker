@@ -7,8 +7,8 @@ import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Type;
 import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbacksStore;
 import eu.qped.framework.feedback.fromatter.KeyWordReplacer;
+import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
-import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachReportItem;
 import eu.qped.java.utils.FileExtensions;
 import lombok.AllArgsConstructor;
@@ -33,7 +33,7 @@ public class SolutionApproachFeedbackGenerator {
     private FeedbackManager feedbackManager;
 
 
-    public List<String> generateFeedbacks(List<SolutionApproachReportItem> reportEntries, SolutionApproachGeneralSettings checkerSetting) {
+    public List<String> generateFeedbacks(List<SolutionApproachReportItem> reportEntries, QfSemanticSettings checkerSetting) {
         List<Feedback> nakedFeedbacks = generateNakedFeedbacks(reportEntries, checkerSetting);
         var adaptedFeedbacks = adaptFeedbackByCheckerSetting(nakedFeedbacks, checkerSetting);
         if (feedbackManager == null) feedbackManager = FeedbackManager.builder().build();
@@ -41,11 +41,11 @@ public class SolutionApproachFeedbackGenerator {
         return feedbackManager.buildFeedbackInTemplate(checkerSetting.getLanguage());
     }
 
-    private List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, SolutionApproachGeneralSettings checkerSetting) {
+    private List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, QfSemanticSettings checkerSetting) {
         return feedbacks;
     }
 
-    private List<Feedback> generateNakedFeedbacks(List<SolutionApproachReportItem> reportItems, SolutionApproachGeneralSettings checkerSetting) {
+    private List<Feedback> generateNakedFeedbacks(List<SolutionApproachReportItem> reportItems, QfSemanticSettings checkerSetting) {
         List<Feedback> result = new ArrayList<>();
         if (defaultFeedbacksStore == null) {
             defaultFeedbacksStore = new DefaultFeedbacksStore(

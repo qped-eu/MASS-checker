@@ -56,6 +56,7 @@ public class StyleFeedbackGenerator {
                 .collect(Collectors.toList());
         for (Violation violation : violations) {
             var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(violation.getRule());
+            // TODO: default Feedback
             if (defaultFeedback != null) {
                 Feedback feedback = Feedback.builder().build();
                 // TODO: can change

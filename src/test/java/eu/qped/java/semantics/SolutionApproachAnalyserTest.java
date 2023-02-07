@@ -1,18 +1,17 @@
 package eu.qped.java.semantics;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import eu.qped.java.utils.SupportedLanguages;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.qped.framework.CheckLevel;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingItem;
-import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
+import eu.qped.java.utils.SupportedLanguages;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Locale;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SolutionApproachAnalyserTest {
 
@@ -21,13 +20,8 @@ class SolutionApproachAnalyserTest {
 
     @BeforeEach
     public void setup() {
-        var solutionGeneralSetting = SolutionApproachGeneralSettings.builder()
-                .checkLevel(CheckLevel.BEGINNER)
-                .language(SupportedLanguages.ENGLISH)
-                .build();
         var qfSetting = qfSemanticSettingsFail();
         solutionApproachChecker = SolutionApproachChecker.builder()
-                .solutionApproachGeneralSettings(solutionGeneralSetting)
                 .qfSemanticSettings(qfSetting)
                 .build()
         ;
@@ -74,6 +68,9 @@ class SolutionApproachAnalyserTest {
                                         .build()
                         )
                 )
+                .checkLevel(CheckLevel.BEGINNER)
+                .language(Locale.ENGLISH.getLanguage())
+
                 .build();
     }
 
@@ -97,6 +94,8 @@ class SolutionApproachAnalyserTest {
                                         .build()
                         )
                 )
+                .checkLevel(CheckLevel.BEGINNER)
+                .language(SupportedLanguages.ENGLISH)
                 .build();
     }
 
