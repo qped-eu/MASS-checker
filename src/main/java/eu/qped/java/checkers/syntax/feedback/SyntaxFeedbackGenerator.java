@@ -73,7 +73,7 @@ public class SyntaxFeedbackGenerator {
                 feedbackBuilder.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()));
             } else {
                 feedbackBuilder.technicalCause(error.getErrorMessage());
-                feedbackBuilder.technicalCause(error.getErrorMessage());
+                feedbackBuilder.readableCause(error.getErrorMessage());
             }
             result.add(feedbackBuilder.build());
         }
