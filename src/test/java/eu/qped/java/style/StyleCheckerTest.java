@@ -1,18 +1,16 @@
 package eu.qped.java.style;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
+import eu.qped.java.checkers.mass.QfStyleSettings;
+import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.utils.SupportedLanguages;
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import eu.qped.java.checkers.mass.QfStyleSettings;
-import eu.qped.java.checkers.style.StyleChecker;
-import eu.qped.java.checkers.style.StyleFeedback;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class StyleCheckerTest {
 
@@ -43,6 +41,7 @@ class StyleCheckerTest {
                 );
         assertThat(feedbacks).has(correctFeedbacks);
     }
+
     @Test
     void testMethodPass() {
         styleChecker.setTargetPath("src/test/resources/code-example-for-style-testing-pass");

@@ -58,17 +58,17 @@ public class SolutionApproachFeedbackGenerator {
             defaultFeedbacksStore.customizeStore(reportItem.getRelatedSemanticSettingItem().getTaskSpecificFeedbacks());
             var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(reportItem.getErrorCode());
             if (defaultFeedback != null) {
-                Feedback feedback = Feedback.builder().build();
-                feedback.setType(Type.CORRECTION);
-                feedback.setCheckerName(SolutionApproachChecker.class.getSimpleName());
-                feedback.setTechnicalCause(reportItem.getErrorCode());
-                feedback.setReadableCause(
+                var feedbackBuilder = Feedback.builder();
+                feedbackBuilder.type(Type.CORRECTION);
+                feedbackBuilder.checkerName(SolutionApproachChecker.class.getSimpleName());
+                feedbackBuilder.technicalCause(reportItem.getErrorCode());
+                feedbackBuilder.readableCause(
                         keyWordReplacer.replace(
                                 defaultFeedback.getReadableCause(),
                                 reportItem
                         )
                 );
-                feedback.setHints((defaultFeedback.getHints() != null) ?
+                feedbackBuilder.hints((defaultFeedback.getHints() != null) ?
                         defaultFeedback.getHints().stream().peek(hint ->
                                 hint.setContent(keyWordReplacer.replace(
                                         hint.getContent(),
@@ -77,7 +77,7 @@ public class SolutionApproachFeedbackGenerator {
                         ).collect(Collectors.toList())
                         : Collections.emptyList()
                 );
-                feedback.setRelatedLocation(RelatedLocation.builder()
+                feedbackBuilder.relatedLocation(RelatedLocation.builder()
                         .fileName(
                                 reportItem.getRelatedSemanticSettingItem().getFilePath().substring(
                                         reportItem.getRelatedSemanticSettingItem().getFilePath().lastIndexOf("/") + 1
@@ -86,11 +86,10 @@ public class SolutionApproachFeedbackGenerator {
                         .methodName(reportItem.getRelatedSemanticSettingItem().getMethodName())
                         .build()
                 );
-                feedback.setReference(
+                feedbackBuilder.reference(
                         defaultFeedbacksStore.getConceptReference(reportItem.getErrorCode())
                 );
-
-                result.add(feedback);
+                result.add(feedbackBuilder.build());
             }
             defaultFeedbacksStore.rebuildStoreToDefault();
         }

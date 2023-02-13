@@ -28,6 +28,7 @@ public class Feedback {
     /**
      * Contains the system designation of the relevant error for which this feedback is generated
      */
+    @NonNull
     private String technicalCause;
     /**
      * Provides information whether the error for which this feedback is generated needs to be corrected or improvement.
@@ -38,6 +39,7 @@ public class Feedback {
      * Thus, this field contains information about the cause of the detected error, which must be understandable for the student. <br/>
      * This feedback component named <b>knowledge about mistakes [KM]</b> in @see <a href="https://www.waxmann.com/waxmann-buecher/?no_cache=1&tx_p2waxmann_pi2%5Bbuchnr%5D=1641&tx_p2waxmann_pi2%5Baction%5D=show&tx_p2waxmann_pi2%5Bcontroller%5D=Buch&cHash=70094cfe0fbda759e008598052dbe275">Narciss, Susanne. Informatives tutorielles Feedback</a>
      */
+    @NonNull
     private String readableCause;
     /**
      * This feedback component also focuses on the errors in a submitted solution. <br/>
@@ -62,11 +64,14 @@ public class Feedback {
     @Setter(AccessLevel.PACKAGE)
     private boolean isFormatted = false;
 
-    public void updateFeedback(@NonNull DefaultFeedback defaultFeedback) {
-        this.technicalCause = defaultFeedback.getTechnicalCause();
-        this.readableCause = defaultFeedback.getReadableCause();
-        if (defaultFeedback.getHints() != null) {
-            this.hints = defaultFeedback.getHints();
+    public static class FeedbackBuilder {
+        public FeedbackBuilder updateFeedback(@NonNull DefaultFeedback defaultFeedback) {
+            this.technicalCause = defaultFeedback.getTechnicalCause();
+            this.readableCause = defaultFeedback.getReadableCause();
+            if (defaultFeedback.getHints() != null) {
+                this.hints = defaultFeedback.getHints();
+            }
+            return this;
         }
     }
 

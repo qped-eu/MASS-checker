@@ -54,18 +54,12 @@ public class SyntaxFeedbackGenerator {
         }
 
         for (SyntaxError error : errors) {
-            var feedback = Feedback.builder().build();
-            feedback.setType(Type.CORRECTION);
-            feedback.setCheckerName(SyntaxChecker.class.getSimpleName());
-            if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
-                feedback.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()));
-            } else if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()) != null) {
-                feedback.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()));
-            } else {
-                feedback.setTechnicalCause(error.getErrorMessage());
-                feedback.setReadableCause(error.getErrorMessage());
-            }
-            feedback.setRelatedLocation(RelatedLocation.builder()
+            // TODO: handel Improvement
+            var feedbackBuilder = Feedback.builder();
+            // TODO: to change
+            feedbackBuilder.type(Type.CORRECTION);
+            feedbackBuilder.checkerName(SyntaxChecker.class.getSimpleName());
+            feedbackBuilder.relatedLocation(RelatedLocation.builder()
                     .startLine((int) error.getLine())
                     .methodName("")
                     .fileName(
@@ -73,7 +67,15 @@ public class SyntaxFeedbackGenerator {
                     )
                     .build()
             );
-            result.add(feedback);
+            if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
+                feedbackBuilder.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()));
+            } else if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()) != null) {
+                feedbackBuilder.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()));
+            } else {
+                feedbackBuilder.technicalCause(error.getErrorMessage());
+                feedbackBuilder.technicalCause(error.getErrorMessage());
+            }
+            result.add(feedbackBuilder.build());
         }
         return result;
     }

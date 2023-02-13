@@ -40,7 +40,7 @@ public class SolutionApproachChecker {
                     .targetProjectPath(targetProjectPath)
                     .build();
         }
-        var solutionApproachReportEntries = solutionApproachAnalyser.check();
+        var solutionApproachReportEntries = solutionApproachAnalyser.analyse();
 
         if (solutionApproachFeedbackGenerator == null) {
             solutionApproachFeedbackGenerator = SolutionApproachFeedbackGenerator.builder().build();

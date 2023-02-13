@@ -36,7 +36,7 @@ public class SolutionApproachAnalyser {
     private String targetProjectPath;
 
 
-    public List<SolutionApproachReportItem> check() {
+    public List<SolutionApproachReportItem> analyse() {
 
         List<SolutionApproachReportItem> solutionApproachEntries = new ArrayList<>();
 

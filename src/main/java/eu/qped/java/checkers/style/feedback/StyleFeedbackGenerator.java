@@ -58,13 +58,13 @@ public class StyleFeedbackGenerator {
             var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(violation.getRule());
             // TODO: default Feedback
             if (defaultFeedback != null) {
-                Feedback feedback = Feedback.builder().build();
+                var feedbackBuilder = Feedback.builder();
                 // TODO: can change
-                feedback.setType(Type.IMPROVEMENT);
-                feedback.setCheckerName(StyleChecker.class.getSimpleName());
-                feedback.updateFeedback(defaultFeedback);
+                feedbackBuilder.type(Type.IMPROVEMENT);
+                feedbackBuilder.checkerName(StyleChecker.class.getSimpleName());
+                feedbackBuilder.updateFeedback(defaultFeedback);
                 File file = new File(violation.getFileName());
-                feedback.setRelatedLocation(
+                feedbackBuilder.relatedLocation(
                         RelatedLocation.builder()
                                 .fileName(file.getName())
                                 .startLine(
@@ -79,7 +79,30 @@ public class StyleFeedbackGenerator {
                                 )
                                 .build()
                 );
-                result.add(feedback);
+                result.add(feedbackBuilder.build());
+
+//                Feedback feedback = Feedback.builder().build();
+//                // TODO: can change
+//                feedback.setType(Type.IMPROVEMENT);
+//                feedback.setCheckerName(StyleChecker.class.getSimpleName());
+//                feedback.updateFeedback(defaultFeedback);
+//                File file = new File(violation.getFileName());
+//                feedback.setRelatedLocation(
+//                        RelatedLocation.builder()
+//                                .fileName(file.getName())
+//                                .startLine(
+//                                        file.getName().contains("TestClass")
+//                                                ? violation.getBeginLine() - 3
+//                                                : violation.getBeginLine()
+//                                )
+//                                .endLine(
+//                                        file.getName().contains("TestClass")
+//                                                ? violation.getEndLine() - 3
+//                                                : violation.getEndLine()
+//                                )
+//                                .build()
+//                );
+//                result.add(feedback);
 
             }
         }
