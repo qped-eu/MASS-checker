@@ -82,7 +82,7 @@ public class ClassMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a", ClassFeedbackType.WRONG_ELEMENT_TYPE);
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "a()", ClassFeedbackType.WRONG_ELEMENT_TYPE);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -105,7 +105,7 @@ public class ClassMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ELEMENT_NAME);
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "b()", ClassFeedbackType.WRONG_ELEMENT_NAME);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
@@ -127,7 +127,7 @@ public class ClassMethodTest {
             e.printStackTrace();
         }
 
-        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "b", ClassFeedbackType.WRONG_ELEMENT_TYPE);
+        ClassFeedback fb = TestUtils.getFeedback("class TestClass", "b()", ClassFeedbackType.WRONG_ELEMENT_TYPE);
         ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
         assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
     }
