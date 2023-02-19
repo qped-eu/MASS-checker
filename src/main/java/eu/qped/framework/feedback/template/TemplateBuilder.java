@@ -3,7 +3,7 @@ package eu.qped.framework.feedback.template;
 import eu.qped.framework.feedback.ConceptReference;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.RelatedLocation;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
+import eu.qped.framework.feedback.defaultfeedback.StoredFeedbackDirectoryProvider;
 import eu.qped.framework.feedback.hint.Hint;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
@@ -128,7 +128,7 @@ public class TemplateBuilder {
     }
 
     private Map<String, String> getTemplateKeyWords(String language) {
-        var dirPath = DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory(TemplateBuilder.class);
+        var dirPath = StoredFeedbackDirectoryProvider.provideStoredFeedbackDirectory(TemplateBuilder.class);
         if (templateTextProvider == null) {
             templateTextProvider = new TemplateTextProvider();
         }

@@ -5,7 +5,7 @@ import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackManager;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Type;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbacksStore;
+import eu.qped.framework.feedback.defaultfeedback.FeedbacksStore;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.analyse.reportModel.StyleAnalysisReport;
 import eu.qped.java.checkers.style.analyse.reportModel.Violation;
@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory;
+import static eu.qped.framework.feedback.defaultfeedback.StoredFeedbackDirectoryProvider.provideStoredFeedbackDirectory;
 
 @AllArgsConstructor
 @Builder
 @Data
 public class StyleFeedbackGenerator {
 
-    private DefaultFeedbacksStore defaultFeedbacksStore;
+    private FeedbacksStore feedbacksStore;
     private FeedbackManager feedbackManager;
 
     /**
@@ -43,9 +43,9 @@ public class StyleFeedbackGenerator {
 
     public List<Feedback> generateNakedFeedback(StyleAnalysisReport report, StyleSettings settings) {
         List<Feedback> result = new ArrayList<>();
-        if (defaultFeedbacksStore == null) {
-            defaultFeedbacksStore = new DefaultFeedbacksStore(
-                    provideDefaultFeedbackDirectory(StyleChecker.class)
+        if (feedbacksStore == null) {
+            feedbacksStore = new FeedbacksStore(
+                    provideStoredFeedbackDirectory(StyleChecker.class)
                     , settings.getLanguage() + FileExtensions.JSON
             );
         }
@@ -55,7 +55,7 @@ public class StyleFeedbackGenerator {
                 )
                 .collect(Collectors.toList());
         for (Violation violation : violations) {
-            var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(violation.getRule());
+            var defaultFeedback = feedbacksStore.getRelatedFeedbackByTechnicalCause(violation.getRule());
             // TODO: default Feedback
             if (defaultFeedback != null) {
                 var feedbackBuilder = Feedback.builder();

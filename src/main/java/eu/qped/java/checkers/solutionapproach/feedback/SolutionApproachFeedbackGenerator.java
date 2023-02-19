@@ -5,7 +5,7 @@ import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackManager;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Type;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbacksStore;
+import eu.qped.framework.feedback.defaultfeedback.FeedbacksStore;
 import eu.qped.framework.feedback.fromatter.KeyWordReplacer;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory;
+import static eu.qped.framework.feedback.defaultfeedback.StoredFeedbackDirectoryProvider.provideStoredFeedbackDirectory;
 
 @Data
 @NoArgsConstructor
@@ -29,7 +29,7 @@ import static eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirector
 @Builder
 public class SolutionApproachFeedbackGenerator {
 
-    private DefaultFeedbacksStore defaultFeedbacksStore;
+    private FeedbacksStore feedbacksStore;
     private FeedbackManager feedbackManager;
 
 
@@ -47,16 +47,16 @@ public class SolutionApproachFeedbackGenerator {
 
     private List<Feedback> generateNakedFeedbacks(List<SolutionApproachReportItem> reportItems, QfSemanticSettings checkerSetting) {
         List<Feedback> result = new ArrayList<>();
-        if (defaultFeedbacksStore == null) {
-            defaultFeedbacksStore = new DefaultFeedbacksStore(
-                    provideDefaultFeedbackDirectory(SolutionApproachChecker.class)
+        if (feedbacksStore == null) {
+            feedbacksStore = new FeedbacksStore(
+                    provideStoredFeedbackDirectory(SolutionApproachChecker.class)
                     , checkerSetting.getLanguage() + FileExtensions.JSON
             );
         }
         var keyWordReplacer = KeyWordReplacer.builder().build();
         for (SolutionApproachReportItem reportItem : reportItems) {
-            defaultFeedbacksStore.customizeStore(reportItem.getRelatedSemanticSettingItem().getTaskSpecificFeedbacks());
-            var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(reportItem.getErrorCode());
+            feedbacksStore.customizeStore(reportItem.getRelatedSemanticSettingItem().getTaskSpecificFeedbacks());
+            var defaultFeedback = feedbacksStore.getRelatedFeedbackByTechnicalCause(reportItem.getErrorCode());
             if (defaultFeedback != null) {
                 var feedbackBuilder = Feedback.builder();
                 feedbackBuilder.type(Type.CORRECTION);
@@ -87,11 +87,11 @@ public class SolutionApproachFeedbackGenerator {
                         .build()
                 );
                 feedbackBuilder.reference(
-                        defaultFeedbacksStore.getConceptReference(reportItem.getErrorCode())
+                        feedbacksStore.getConceptReference(reportItem.getErrorCode())
                 );
                 result.add(feedbackBuilder.build());
             }
-            defaultFeedbacksStore.rebuildStoreToDefault();
+            feedbacksStore.rebuildStore();
         }
         return result;
     }

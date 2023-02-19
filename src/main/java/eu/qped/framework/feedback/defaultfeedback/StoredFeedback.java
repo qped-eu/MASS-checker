@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DefaultFeedback {
+public class StoredFeedback {
     private String technicalCause;
     private String readableCause;
     private List<Hint> hints;

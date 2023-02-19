@@ -5,7 +5,7 @@ import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import org.jetbrains.annotations.NotNull;
 
-public final class DefaultFeedbackDirectoryProvider {
+public final class StoredFeedbackDirectoryProvider {
 
     private final static String STYLE_DIR_PATH = "src/main/resources/style/";
 
@@ -18,7 +18,7 @@ public final class DefaultFeedbackDirectoryProvider {
      * @param aClass is the checker therefore feedbacks needed.
      * @return the path of a file basically json that contains all the data of the feedbacks pro checker.
      */
-    public static String provideDefaultFeedbackDirectory(@NotNull Class<?> aClass) {
+    public static String provideStoredFeedbackDirectory(@NotNull Class<?> aClass) {
         if (aClass.equals(StyleChecker.class)) {
             return STYLE_DIR_PATH;
         }

@@ -21,11 +21,11 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class DefaultFeedbacksStore {
+public class FeedbacksStore {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private List<DefaultFeedback> defaultFeedbacks;
+    private List<StoredFeedback> storedFeedbacks;
 
     @Setter(AccessLevel.PRIVATE)
     @Getter(AccessLevel.PRIVATE)
@@ -41,14 +41,14 @@ public class DefaultFeedbacksStore {
     private String storeFileName;
 
 
-    public DefaultFeedbacksStore(@NonNull String storeDirectory, @NonNull String storeFileName) {
+    public FeedbacksStore(@NonNull String storeDirectory, @NonNull String storeFileName) {
         this.storeDirectory = storeDirectory;
         this.storeFileName = storeFileName;
-        defaultFeedbacks = parse(storeDirectory, storeFileName);
+        storedFeedbacks = parse(storeDirectory, storeFileName);
     }
 
-    private List<DefaultFeedback> parse(@NonNull String dir, @NonNull String fileName) {
-        List<DefaultFeedback> result = new ArrayList<DefaultFeedback>();
+    private List<StoredFeedback> parse(@NonNull String dir, @NonNull String fileName) {
+        List<StoredFeedback> result = new ArrayList<StoredFeedback>();
         try {
             String filePath = dir + fileName;
             String defaultFilePath = dir + SupportedLanguages.ENGLISH + FileExtensions.JSON;
@@ -71,12 +71,12 @@ public class DefaultFeedbacksStore {
     }
 
 
-    public DefaultFeedback getRelatedDefaultFeedbackByTechnicalCause(String technicalCause) {
-        DefaultFeedback.DefaultFeedbackBuilder resultBuilder = DefaultFeedback.builder();
+    public StoredFeedback getRelatedFeedbackByTechnicalCause(String technicalCause) {
+        var resultBuilder = StoredFeedback.builder();
         resultBuilder.readableCause(null);
 
-        var relatedDefaultFeedback = defaultFeedbacks.stream()
-                .filter(defaultFeedback -> defaultFeedback.getTechnicalCause().equals(technicalCause))
+        var relatedDefaultFeedback = storedFeedbacks.stream()
+                .filter(storedFeedback -> storedFeedback.getTechnicalCause().equals(technicalCause))
                 .findFirst();
 
         if (relatedDefaultFeedback.isPresent()) {
@@ -122,7 +122,7 @@ public class DefaultFeedbacksStore {
         setHasTaskSpecificFeedbacks(true);
     }
 
-    public void rebuildStoreToDefault() {
+    public void rebuildStore() {
         setTaskSpecificFeedbacks(null);
         setHasTaskSpecificFeedbacks(false);
     }

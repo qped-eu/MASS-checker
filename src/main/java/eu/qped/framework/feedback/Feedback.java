@@ -1,6 +1,6 @@
 package eu.qped.framework.feedback;
 
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedback;
+import eu.qped.framework.feedback.defaultfeedback.StoredFeedback;
 import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.template.TemplateBuilder;
@@ -65,11 +65,11 @@ public class Feedback {
     private boolean isFormatted = false;
 
     public static class FeedbackBuilder {
-        public FeedbackBuilder updateFeedback(@NonNull DefaultFeedback defaultFeedback) {
-            this.technicalCause = defaultFeedback.getTechnicalCause();
-            this.readableCause = defaultFeedback.getReadableCause();
-            if (defaultFeedback.getHints() != null) {
-                this.hints = defaultFeedback.getHints();
+        public FeedbackBuilder updateFeedback(@NonNull StoredFeedback storedFeedback) {
+            this.technicalCause = storedFeedback.getTechnicalCause();
+            this.readableCause = storedFeedback.getReadableCause();
+            if (storedFeedback.getHints() != null) {
+                this.hints = storedFeedback.getHints();
             }
             return this;
         }
