@@ -1,15 +1,12 @@
 package eu.qped.framework.feedback.template;
 
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.CODE_JAVA;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.DOT;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.HORIZONTAL_RULE;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.NEW_Double_LINE;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.NEW_LINE;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.SPACE;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asBold;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asCodeBlock;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asHeading4;
-import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.asLink;
+import eu.qped.framework.feedback.ConceptReference;
+import eu.qped.framework.feedback.Feedback;
+import eu.qped.framework.feedback.RelatedLocation;
+import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
+import eu.qped.framework.feedback.hint.Hint;
+import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,23 +15,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-
-import eu.qped.framework.feedback.ConceptReference;
-import eu.qped.framework.feedback.Feedback;
-import eu.qped.framework.feedback.RelatedLocation;
-import eu.qped.framework.feedback.Type;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider;
-import eu.qped.framework.feedback.hint.Hint;
-import eu.qped.framework.feedback.hint.HintType;
-import eu.qped.java.checkers.syntax.SyntaxChecker;
-import eu.qped.java.utils.SupportedLanguages;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.Setter;
+import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
 
 @Setter
 @Getter
@@ -155,37 +136,37 @@ public class TemplateBuilder {
     }
 
 
-    public static void main(String[] args) {
-        var hint = Hint.builder()
-                .type(HintType.CODE_EXAMPLE)
-                .content(asCodeBlock("int i = 0;", CODE_JAVA))
-                .build();
-        var errorLocation = RelatedLocation.builder()
-                .methodName("getName")
-                .fileName("TestClass.java")
-                .startLine(2)
-                .build();
-        var reference = ConceptReference.builder()
-                .referenceName("folie 1")
-                .referenceLink("www.google.com")
-                .section("Sektion 1")
-                .pageNumbers(List.of(1, 2, 11))
-                .build();
-
-        Feedback feedback = Feedback.builder()
-                .checkerName(SyntaxChecker.class.getSimpleName())
-                .type(Type.CORRECTION)
-                .readableCause("du Hast Simcolen  vergessen")
-                .technicalCause("';' expect")
-                .hints(List.of(hint))
-                .relatedLocation(errorLocation)
-                .reference(reference)
-                .build();
-        var templateBuilder = TemplateBuilder.builder().build();
-        var result = templateBuilder.buildFeedbacksInTemplate(List.of(feedback), SupportedLanguages.ENGLISH);
-        System.out.println(result.get(0));
-
-    }
+//    public static void main(String[] args) {
+//        var hint = Hint.builder()
+//                .type(HintType.CODE_EXAMPLE)
+//                .content(asCodeBlock("int i = 0;", CODE_JAVA))
+//                .build();
+//        var errorLocation = RelatedLocation.builder()
+//                .methodName("getName")
+//                .fileName("TestClass.java")
+//                .startLine(2)
+//                .build();
+//        var reference = ConceptReference.builder()
+//                .referenceName("folie 1")
+//                .referenceLink("www.google.com")
+//                .section("Sektion 1")
+//                .pageNumbers(List.of(1, 2, 11))
+//                .build();
+//
+//        Feedback feedback = Feedback.builder()
+//                .checkerName(SyntaxChecker.class.getSimpleName())
+//                .type(Type.CORRECTION)
+//                .readableCause("du Hast Simcolen  vergessen")
+//                .technicalCause("';' expect")
+//                .hints(List.of(hint))
+//                .relatedLocation(errorLocation)
+//                .reference(reference)
+//                .build();
+//        var templateBuilder = TemplateBuilder.builder().build();
+//        var result = templateBuilder.buildFeedbacksInTemplate(List.of(feedback), SupportedLanguages.ENGLISH);
+//        System.out.println(result.get(0));
+//
+//    }
 
 
 }

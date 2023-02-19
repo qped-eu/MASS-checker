@@ -4,7 +4,6 @@ package eu.qped.framework.feedback.fromatter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +18,29 @@ public class KeyWordReplacer {
 
     Pattern keyWordPattern;
 
-    @Getter(AccessLevel.PRIVATE)
-    @Setter(AccessLevel.PRIVATE)
-    ObjectMapper objectMapper = new ObjectMapper();
 
     private void setDefaultKeyWordPattern() {
         this.setKeyWordPattern(Pattern.compile("\\{\\$(.+?)\\}"));
     }
+
+
+    public String replace(@NonNull String target, @NonNull String toReplace, @NonNull String replacement) {
+        if (keyWordPattern == null) setDefaultKeyWordPattern();
+        Matcher matcher = keyWordPattern.matcher(target);
+        StringBuilder result = new StringBuilder();
+        int i = 0;
+        while (matcher.find()) {
+            String match = matcher.group(1);
+            if (match.equals(toReplace)) {
+                result.append(target, i, matcher.start());
+                result.append(replacement);
+                i = matcher.end();
+            }
+        }
+        result.append(target.substring(i));
+        return result.toString();
+    }
+
 
     public String replace(@NonNull String target, @NonNull Map<String, String> replacements) {
         if (keyWordPattern == null) setDefaultKeyWordPattern();
@@ -46,12 +61,12 @@ public class KeyWordReplacer {
     }
 
     public String replace(@NonNull String target, @NonNull Object object) {
-        if (objectMapper == null) objectMapper = new ObjectMapper();
         Map<String, String> replacements = mapObject(object);
         return replace(target, replacements);
     }
 
     private Map<String, String> mapObject(@NonNull Object objectToMap) {
+        var objectMapper = new ObjectMapper();
         Map<String, Object> mappedObject = objectMapper.convertValue(objectToMap, Map.class);
         Map<String, String> result = new HashMap<>();
 
@@ -72,36 +87,38 @@ public class KeyWordReplacer {
                 try {
                     Map<String, String> subObjectMapped = mapObject(fieldValue);
                     result.putAll(subObjectMapped);
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
         });
         return result;
     }
 
-    public static void main(String[] args) {
-        TestLevel2 testLevel2 = TestLevel2.builder()
-                .listToIgnore(new ArrayList<>())
-                .mapTestLevel2(new HashMap<>() {{
-                    put("key5", 5);
-                    put("key6", 6);
-                }})
-                .key3("3")
-                .key4(4)
-                .build();
-        TestLevel1 testLevel1 = TestLevel1.builder()
-                .testLevel2(testLevel2)
-                .key1("1")
-                .key2(2)
-                .listToIgnore(null)
-                .mapTestLevel1(new HashMap<>() {{
-                    put("key7", "7");
-                    put("key8", "8");
-                }})
-                .build();
-        String target = " {$key1} {$key2} {$key3} {$key4} {$key5} {$key6} {$key7} {$key8} {$key1} {$key2} {$} ";
-        KeyWordReplacer keyWordReplacer = KeyWordReplacer.builder().build();
-        String result = keyWordReplacer.replace(target, testLevel1);
-        System.out.println(result);
-    }
+//    public static void main(String[] args) {
+//        TestLevel2 testLevel2 = TestLevel2.builder()
+//                .listToIgnore(new ArrayList<>())
+//                .mapTestLevel2(new HashMap<>() {{
+//                    put("key5", 5);
+//                    put("key6", 6);
+//                }})
+//                .key3("3")
+//                .key4(4)
+//                .build();
+//        TestLevel1 testLevel1 = TestLevel1.builder()
+//                .testLevel2(testLevel2)
+//                .key1("1")
+//                .key2(2)
+//                .listToIgnore(null)
+//                .mapTestLevel1(new HashMap<>() {{
+//                    put("key7", "7");
+//                    put("key8", "8");
+//                }})
+//                .build();
+//        String target = " {$key1} {$key2} {$key3} {$key4} {$key5} {$key6} {$key7} {$key8} {$key1} {$key2} {$} ";
+//        KeyWordReplacer keyWordReplacer = KeyWordReplacer.builder().build();
+//        String result = keyWordReplacer.replace(target, testLevel1);
+////        String result = keyWordReplacer.replace(target, "key1" , "11111");
+//        System.out.println(result);
+//    }
 
 }
