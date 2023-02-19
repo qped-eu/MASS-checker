@@ -5,7 +5,9 @@ import eu.qped.framework.feedback.hint.Hint;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -21,4 +23,8 @@ public class TaskSpecificFeedback {
     private List<Hint> hints;
     @Nullable
     private ConceptReference conceptReference;
+
+    public List<Hint> getHints() {
+        return hints == null ? Collections.emptyList() : hints.stream().map(Hint::clone).collect(Collectors.toList());
+    }
 }

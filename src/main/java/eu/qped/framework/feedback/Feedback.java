@@ -1,13 +1,16 @@
 package eu.qped.framework.feedback;
 
 import eu.qped.framework.feedback.defaultfeedback.StoredFeedback;
+import eu.qped.framework.feedback.fromatter.KeyWordReplacer;
 import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.template.TemplateBuilder;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * representation of a feedback for the student. <br/>
@@ -65,14 +68,30 @@ public class Feedback {
     private boolean isFormatted = false;
 
     public static class FeedbackBuilder {
-        public FeedbackBuilder updateFeedback(@NonNull StoredFeedback storedFeedback) {
+        public void updateFeedback(@NonNull StoredFeedback storedFeedback) {
             this.technicalCause = storedFeedback.getTechnicalCause();
             this.readableCause = storedFeedback.getReadableCause();
             if (storedFeedback.getHints() != null) {
                 this.hints = storedFeedback.getHints();
             }
-            return this;
         }
+
+        public void replaceKeyWords(@NonNull Object replacement) {
+            var keyWordReplacer = KeyWordReplacer.builder().build();
+            this.readableCause = keyWordReplacer.replace(this.readableCause, replacement);
+            if (this.hints != null) {
+                this.hints = this.hints.stream().peek(hint ->
+                        hint.setContent(keyWordReplacer.replace(
+                                hint.getContent(),
+                                replacement
+                        ))
+                ).collect(Collectors.toList());
+            }
+        }
+    }
+
+    public List<Hint> getHints() {
+        return hints == null ? Collections.emptyList() : hints.stream().map(Hint::clone).collect(Collectors.toList());
     }
 
     protected Feedback format() {
