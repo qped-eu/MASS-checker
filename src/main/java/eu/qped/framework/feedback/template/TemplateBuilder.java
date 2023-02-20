@@ -1,5 +1,6 @@
 package eu.qped.framework.feedback.template;
 
+import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.framework.feedback.ConceptReference;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.RelatedLocation;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static eu.qped.framework.QpedQfFilesUtility.DEFAULT_ANSWER_CLASS;
 import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
 
 @Setter
@@ -75,7 +77,7 @@ public class TemplateBuilder {
     private String getTemplateFormattedRelatedLocation(RelatedLocation location, Map<String, String> templateTextByLanguage) {
         String result = "";
         if (location == null) return result;
-        if (location.getFileName() != null && !location.getFileName().equals("")) {
+        if (location.getFileName() != null && !location.getFileName().equals("") && !location.getFileName().equals(DEFAULT_ANSWER_CLASS)) {
             result += templateTextByLanguage.get(TemplateTextProvider.KEY_IN)
                     + SPACE + location.getFileName()
                     + DOT + SPACE;
@@ -96,7 +98,7 @@ public class TemplateBuilder {
                     + SPACE + location.getStartLine()
                     + DOT + SPACE;
         }
-        result += NEW_LINE;
+        result += NEW_Double_LINE;
         return result;
     }
 
