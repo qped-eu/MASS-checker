@@ -1,6 +1,5 @@
 package eu.qped.framework.feedback.template;
 
-import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.framework.feedback.ConceptReference;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.RelatedLocation;
@@ -46,7 +45,7 @@ public class TemplateBuilder {
                 feedbackCause +
                 feedbackHints +
                 feedbackReference +
-                NEW_Double_LINE +
+//                NEW_Double_LINE +
                 HORIZONTAL_RULE;
     }
 
@@ -62,14 +61,14 @@ public class TemplateBuilder {
                 , counter.incrementAndGet()
                 , templateTextByLanguage.get(String.valueOf(feedback.getType()))
         ))
-                + NEW_LINE;
+                + NEW_Double_LINE;
     }
 
     private String getTemplateFormattedHints(List<Hint> hints) {
         StringBuilder feedbackHints = new StringBuilder();
         if (hints == null) hints = Collections.emptyList();
         for (var hint : hints) {
-            feedbackHints.append(hint.getContent()).append(NEW_LINE);
+            feedbackHints.append(hint.getContent()).append(NEW_Double_LINE);
         }
         return feedbackHints.toString();
     }
@@ -77,42 +76,44 @@ public class TemplateBuilder {
     private String getTemplateFormattedRelatedLocation(RelatedLocation location, Map<String, String> templateTextByLanguage) {
         String result = "";
         if (location == null) return result;
-        if (location.getFileName() != null && !location.getFileName().equals("") && !location.getFileName().contains(DEFAULT_ANSWER_CLASS)) {
+        boolean isNotInDefaultAnswerClass = !location.getFileName().contains(DEFAULT_ANSWER_CLASS);
+        if (StringUtils.isNotEmpty(location.getFileName()) && isNotInDefaultAnswerClass) {
             result += templateTextByLanguage.get(TemplateTextProvider.KEY_IN)
                     + SPACE + location.getFileName()
                     + DOT + SPACE;
         }
-        if (location.getMethodName() != null && !location.getMethodName().equals("")) {
+        if (StringUtils.isNotEmpty(location.getMethodName())) {
             result += templateTextByLanguage.get(TemplateTextProvider.KEY_METHOD)
                     + SPACE + location.getMethodName()
                     + DOT + SPACE;
         }
-        if (location.getStartLine() != 0 && location.getEndLine() != 0) {
+        if (location.getStartLine() != 0 && location.getEndLine() != 0 && location.getStartLine() != location.getEndLine()) {
             result += templateTextByLanguage.get(TemplateTextProvider.KEY_BETWEEN_LINES)
-                    + SPACE + location.getStartLine()
+                    + SPACE + (isNotInDefaultAnswerClass ? location.getStartLine() : location.getStartLine() - 1)
                     + SPACE + templateTextByLanguage.get(TemplateTextProvider.KEY_AND)
-                    + SPACE + location.getEndLine()
+                    + SPACE + (isNotInDefaultAnswerClass ? location.getEndLine() : location.getEndLine() - 1)
                     + DOT + SPACE;
         } else if (location.getStartLine() != 0) {
             result += templateTextByLanguage.get(TemplateTextProvider.KEY_LINE)
-                    + SPACE + location.getStartLine()
+                    + SPACE + (isNotInDefaultAnswerClass ? location.getStartLine() : location.getStartLine() - 1)
                     + DOT + SPACE;
         }
-        result += NEW_Double_LINE;
+        if (StringUtils.isNotEmpty(result)) {
+            result += NEW_Double_LINE;
+        }
         return result;
     }
 
     private String getTemplateFormattedReference(ConceptReference conceptReference, Map<String, String> templateTextByLanguage) {
         String result = "";
-        if (conceptReference != null && !conceptReference.equals("")) {
-            boolean hasSection = conceptReference.getSection() != null && !conceptReference.getSection().equals("");
+        if (conceptReference != null) {
             boolean hasPages = conceptReference.getPageNumbers() != null && conceptReference.getPageNumbers().size() != 0;
-            result += NEW_LINE
+            result += ""
                     + templateTextByLanguage.get(TemplateTextProvider.KEY_MORE_INFORMATION)
                     + SPACE
                     + asBold(asLink(conceptReference.getReferenceName(), conceptReference.getReferenceLink()))
                     + SPACE
-                    + (hasSection ?
+                    + (StringUtils.isNotEmpty(conceptReference.getSection()) ?
                     templateTextByLanguage.get(TemplateTextProvider.KEY_AT)
                             + SPACE
                             + asBold(conceptReference.getSection())
@@ -123,8 +124,10 @@ public class TemplateBuilder {
                             + SPACE
                             + StringUtils.join(conceptReference.getPageNumbers(), ",")
                             + SPACE
-                    : "")
-                    + NEW_LINE;
+                    : "");
+        }
+        if (StringUtils.isNotEmpty(result)) {
+            result += NEW_Double_LINE;
         }
         return result;
     }

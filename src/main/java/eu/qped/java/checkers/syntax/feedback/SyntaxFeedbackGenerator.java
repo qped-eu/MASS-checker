@@ -1,4 +1,5 @@
 package eu.qped.java.checkers.syntax.feedback;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackManager;
@@ -58,10 +59,7 @@ public class SyntaxFeedbackGenerator {
             feedbackBuilder.checkerName(SyntaxChecker.class.getSimpleName());
             feedbackBuilder.relatedLocation(RelatedLocation.builder()
                     .startLine((int) error.getLine())
-                    .methodName("")
-                    .fileName(
-                            error.getFileName() != null && error.getFileName().equals("TestClass.java") ? "" : error.getFileName()
-                    )
+                    .fileName(error.getFileName())
                     .build()
             );
             if (feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
