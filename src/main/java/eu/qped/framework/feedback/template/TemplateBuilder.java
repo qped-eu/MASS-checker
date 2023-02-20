@@ -108,7 +108,7 @@ public class TemplateBuilder {
         String result = "";
         if (conceptReference != null) {
             boolean hasPages = conceptReference.getPageNumbers() != null && conceptReference.getPageNumbers().size() != 0;
-            result += ""
+            result += NEW_LINE
                     + templateTextByLanguage.get(TemplateTextProvider.KEY_MORE_INFORMATION)
                     + SPACE
                     + asBold(asLink(conceptReference.getReferenceName(), conceptReference.getReferenceLink()))
