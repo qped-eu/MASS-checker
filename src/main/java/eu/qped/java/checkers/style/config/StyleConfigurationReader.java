@@ -36,6 +36,11 @@ public class StyleConfigurationReader {
                             ? qfStyleSettings.getLanguage()
                             : SupportedLanguages.ENGLISH
             );
+            styleSettings.setIsCorrection(
+                    qfStyleSettings.getIsCorrection() != null
+                            ? qfStyleSettings.getIsCorrection()
+                            : false
+            );
             styleSettings.setMethodParameterNamesRegEx(
                     qfStyleSettings.getMethodParameterNamePattern() != null
                             ? qfStyleSettings.getMethodParameterNamePattern()

@@ -28,4 +28,5 @@ public class QfStyleSettings extends QfObjectBase {
     private String classNamePattern;
 
     private String language;
+    private Boolean isCorrection;
 }

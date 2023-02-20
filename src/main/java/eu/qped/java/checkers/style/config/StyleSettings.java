@@ -29,4 +29,5 @@ public class StyleSettings {
     private CheckLevel basisLevel;
 
     private String language;
+    private Boolean isCorrection;
 }

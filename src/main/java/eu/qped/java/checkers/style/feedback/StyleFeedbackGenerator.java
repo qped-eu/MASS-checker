@@ -55,56 +55,33 @@ public class StyleFeedbackGenerator {
                 )
                 .collect(Collectors.toList());
         for (Violation violation : violations) {
+            var feedbackBuilder = Feedback.builder();
+            feedbackBuilder.type((!settings.getIsCorrection()) ? Type.IMPROVEMENT : Type.CORRECTION);
+            feedbackBuilder.checkerName(StyleChecker.class.getSimpleName());
+            File file = new File(violation.getFileName());
+            feedbackBuilder.relatedLocation(
+                    RelatedLocation.builder()
+                            .fileName(file.getName())
+                            .startLine(
+                                    file.getName().contains("TestClass")
+                                            ? violation.getBeginLine() - 3
+                                            : violation.getBeginLine()
+                            )
+                            .endLine(
+                                    file.getName().contains("TestClass")
+                                            ? violation.getEndLine() - 3
+                                            : violation.getEndLine()
+                            )
+                            .build()
+            );
             var defaultFeedback = feedbacksStore.getRelatedFeedbackByTechnicalCause(violation.getRule());
-            // TODO: default Feedback
             if (defaultFeedback != null) {
-                var feedbackBuilder = Feedback.builder();
-                // TODO: can change
-                feedbackBuilder.type(Type.IMPROVEMENT);
-                feedbackBuilder.checkerName(StyleChecker.class.getSimpleName());
                 feedbackBuilder.updateFeedback(defaultFeedback);
-                File file = new File(violation.getFileName());
-                feedbackBuilder.relatedLocation(
-                        RelatedLocation.builder()
-                                .fileName(file.getName())
-                                .startLine(
-                                        file.getName().contains("TestClass")
-                                                ? violation.getBeginLine() - 3
-                                                : violation.getBeginLine()
-                                )
-                                .endLine(
-                                        file.getName().contains("TestClass")
-                                                ? violation.getEndLine() - 3
-                                                : violation.getEndLine()
-                                )
-                                .build()
-                );
-                result.add(feedbackBuilder.build());
-
-//                Feedback feedback = Feedback.builder().build();
-//                // TODO: can change
-//                feedback.setType(Type.IMPROVEMENT);
-//                feedback.setCheckerName(StyleChecker.class.getSimpleName());
-//                feedback.updateFeedback(defaultFeedback);
-//                File file = new File(violation.getFileName());
-//                feedback.setRelatedLocation(
-//                        RelatedLocation.builder()
-//                                .fileName(file.getName())
-//                                .startLine(
-//                                        file.getName().contains("TestClass")
-//                                                ? violation.getBeginLine() - 3
-//                                                : violation.getBeginLine()
-//                                )
-//                                .endLine(
-//                                        file.getName().contains("TestClass")
-//                                                ? violation.getEndLine() - 3
-//                                                : violation.getEndLine()
-//                                )
-//                                .build()
-//                );
-//                result.add(feedback);
-
+            } else {
+                feedbackBuilder.readableCause(((violation.getDescription() != null) ? violation.getDescription() : violation.getRule()));
+                feedbackBuilder.technicalCause(violation.getRule());
             }
+            result.add(feedbackBuilder.build());
         }
         return result;
     }
