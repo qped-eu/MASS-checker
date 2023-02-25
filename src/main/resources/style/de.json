@@ -1,0 +1,26 @@
+[
+  {
+    "technicalCause": "CommentRequired",
+    "readableCause": "Eine Stil-Verletzung wird verursacht, wenn in einem Codeabschnitt ein Kommentar fehlt, obwohl er benötigt wird."
+  },
+  {
+    "technicalCause": "MethodNamingConventions",
+    "readableCause": "Die Namen von Methoden in deinem Code folgen nicht den empfohlenen Regeln . Methoden sollten klare und eindeutige Namen haben, die beschreiben, was sie tun, und mit einem kleinen Buchstaben beginnen.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// alte Code \npublic int AddNumbers(int x, int y) {\n    return x + y;\n}\n// neue Code \npublic int addNumbers(int x, int y) {\n    return x + y;\n}\n"
+      }
+    ]
+  },
+  {
+    "technicalCause": "LocalVariableNamingConventions",
+    "readableCause": "Die Namen von Variablen in einem Codeblock folgen nicht den empfohlenen Regeln. Variablennamen sollten klar und eindeutig sein, und in der Regel mit einem kleinen Buchstaben beginnen.",
+    "hints": [
+      {
+        "type": "CODE_EXAMPLE",
+        "content": "// alte Code\nString MyString = \"Hello\";\n// neue Code\nString myString = \"Hello\";"
+      }
+    ]
+  }
+]
