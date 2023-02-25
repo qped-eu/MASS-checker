@@ -41,11 +41,11 @@
   },
   {
     "technicalCause": "compiler.err.missing.ret.stmt",
-    "readableCause": "Jede Methode mit einem Ergebnistypen, der nicht void ist, benötigt ein return-Statement.",
+    "readableCause": "In Java tritt der Fehler \"compiler.err.missing.ret.stmt\" auf, wenn erwartet wird, dass eine Methode einen Wert zurückgibt, jedoch kein Return-Statement vorhanden ist oder wenn das Return-Statement in einer Methode fehlt, die deklariert wurde, einen Wert zurückzugeben.",
     "hints": [
       {
         "type": "CODE_EXAMPLE",
-        "content": "// old code.\nint myMethod(){\n}\n// new code.\nint myMethod(){\n    return 0;\n}"
+        "content": "// Beispielcode ohne Rückgabewert\npublic int addNumbers(int x, int y) {\n    int sum = x + y;\n    // Hier fehlt das Rückgabe-Statement\n}\n\n// Beispielcode mit korrigiertem Rückgabewert\npublic int addNumbers(int x, int y) {\n    int sum = x + y;\n    return sum; // Rückgabe-Statement hinzugefügt\n}\n"
       }
     ]
   },
