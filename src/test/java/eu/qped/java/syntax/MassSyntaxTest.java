@@ -1,20 +1,21 @@
 package eu.qped.java.syntax;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.io.IOException;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.QpedQfFilesUtility;
 import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.mass.QfMainSettings;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.checkers.syntax.SyntaxSetting;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MassSyntaxTest {
 
@@ -43,8 +44,13 @@ class MassSyntaxTest {
         File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
         System.out.println(solutionRoot);
         QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
-        
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
+        var syntaxSetting = SyntaxSetting.builder()
+                .language(Locale.ENGLISH.getLanguage())
+                .checkLevel(
+                        CheckLevel.ADVANCED
+                )
+                .build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).syntaxSetting(syntaxSetting).build();
 
         MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf);
         MassExecutor massE = MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
@@ -63,11 +69,16 @@ class MassSyntaxTest {
 
         File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
         QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
-        
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
+        var syntaxSetting = SyntaxSetting.builder()
+                .language(Locale.ENGLISH.getLanguage())
+                .checkLevel(
+                        CheckLevel.ADVANCED
+                )
+                .build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).syntaxSetting(syntaxSetting).build();
 
-        MassExecutor massE = 
-        		MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
+        MassExecutor massE =
+                MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
 
         massE.execute();
 
@@ -83,11 +94,11 @@ class MassSyntaxTest {
 
         File solutionRoot = QpedQfFilesUtility.createManagedTempDirectory();
         QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
-        
+
         SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
 
         MassExecutor massE =
-        		MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
+                MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
 
 
         massE.execute();

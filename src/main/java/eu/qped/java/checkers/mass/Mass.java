@@ -1,9 +1,6 @@
 package eu.qped.java.checkers.mass;
 
-import eu.qped.framework.Checker;
-import eu.qped.framework.FileInfo;
-import eu.qped.framework.QfProperty;
-import eu.qped.framework.QpedQfFilesUtility;
+import eu.qped.framework.*;
 import eu.qped.framework.QpedQfFilesUtility.CreatedAnswerFileSummary;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.java.checkers.classdesign.ClassChecker;
@@ -14,6 +11,7 @@ import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.checkers.syntax.SyntaxSetting;
 import eu.qped.java.utils.markdown.MarkdownFormatterUtility;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -119,9 +117,22 @@ public class Mass implements Checker {
 
         // Syntax Checker
         // configuration for syntax check is always needed
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().
-                targetProject(solutionRoot).
-                build();
+        var syntaxSetting = SyntaxSetting.builder()
+                .language(
+                        qfObject.getUser() != null ?
+                                qfObject.getUser().getLanguage() :
+                                Locale.ENGLISH.getLanguage()
+                )
+                .checkLevel(
+                        mass.getSyntax() != null && mass.getSyntax().getLevel() != null && EnumSet.allOf(CheckLevel.class).contains(CheckLevel.valueOf(mass.getSyntax().getLevel()))
+                                ? CheckLevel.valueOf(mass.getSyntax().getLevel())
+                                : CheckLevel.BEGINNER
+                )
+                .build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder()
+                .targetProject(solutionRoot)
+                .syntaxSetting(syntaxSetting)
+                .build();
         massExecutorBuilder.syntaxChecker(syntaxChecker);
 
         // Style Checker
@@ -133,7 +144,6 @@ public class Mass implements Checker {
         }
 
         // Solution Approach Checker
-        // FIXME: why are there two settings objects? the one built here and mass.getSemantic()?
         if (mass.isSemanticSelected()) {
             mass.getSemantic().setLanguage(
                     qfObject.getUser() != null ?
