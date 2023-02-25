@@ -52,7 +52,6 @@ public class MassExecutor {
      */
     public void execute() {
         init();
-        System.out.println(">>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         boolean styleNeeded = mainSettings.isStyleNeeded();
         boolean semanticNeeded = mainSettings.isSemanticNeeded();
         boolean metricsNeeded = mainSettings.isMetricsNeeded();
@@ -69,6 +68,7 @@ public class MassExecutor {
                 styleFeedbacks = styleChecker.check();
             }
             if (semanticNeeded) {
+                System.out.println(">>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                 solutionApproachChecker.setTargetProjectPath(syntaxAnalyseReport.getPath().toString());
                 solutionApproachFeedbacks = solutionApproachChecker.check();
             }
