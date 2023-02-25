@@ -5,6 +5,7 @@ import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.defaultfeedback.StoredFeedbackDirectoryProvider;
 import eu.qped.framework.feedback.hint.Hint;
+import eu.qped.framework.feedback.hint.HintType;
 import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static eu.qped.framework.QpedQfFilesUtility.DEFAULT_ANSWER_CLASS;
+import static eu.qped.framework.feedback.template.TemplateTextProvider.KEY_CODE_EXAMPLE;
 import static eu.qped.java.utils.markdown.MarkdownFormatterUtility.*;
 
 @Setter
@@ -37,7 +39,7 @@ public class TemplateBuilder {
         String feedbackHeader = getTemplateFormattedHeader(feedback, templateTextByLanguage);
         String feedbackRelatedLocation = getTemplateFormattedRelatedLocation(feedback.getRelatedLocation(), templateTextByLanguage);
         String feedbackCause = getTemplateFormattedCause(feedback.getReadableCause());
-        String feedbackHints = getTemplateFormattedHints(feedback.getHints());
+        String feedbackHints = getTemplateFormattedHints(feedback.getHints(), templateTextByLanguage);
         String feedbackReference = getTemplateFormattedReference(feedback.getReference(), templateTextByLanguage);
         return "" +
                 feedbackHeader +
@@ -64,11 +66,20 @@ public class TemplateBuilder {
                 + NEW_Double_LINE;
     }
 
-    private String getTemplateFormattedHints(List<Hint> hints) {
+    private String getTemplateFormattedHints(List<Hint> hints, Map<String, String> templateTextByLanguage) {
         StringBuilder feedbackHints = new StringBuilder();
         if (hints == null) hints = Collections.emptyList();
         for (var hint : hints) {
-            feedbackHints.append(hint.getContent()).append(NEW_Double_LINE);
+            if (hint.getType().equals(HintType.CODE_EXAMPLE)) {
+                feedbackHints
+                        .append(templateTextByLanguage.get(KEY_CODE_EXAMPLE))
+                        .append(NEW_Double_LINE)
+                        .append(hint.getContent())
+                        .append(NEW_Double_LINE)
+                ;
+            } else {
+                feedbackHints.append(hint.getContent()).append(NEW_Double_LINE);
+            }
         }
         return feedbackHints.toString();
     }
