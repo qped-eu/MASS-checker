@@ -43,7 +43,8 @@ public class SolutionApproachAnalyser {
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemanticSettings(qfSemanticSettings).build();
 
         var settings = reader.groupByFileName();
-
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println(settings.keySet());
         // per File
         settings.forEach((filePath, semanticSettingItems) -> {
             String path = getRelatedPath(filePath);
