@@ -16,13 +16,13 @@
 
     <rule name="ClassNamingConventions" ref="category/java/codestyle.xml/ClassNamingConventions">
         <properties>
-            <property name="classPattern" value="[a-zA-Z0-9]*" />
-            <property name="abstractClassPattern" value="[a-zA-Z0-9]*" />
-            <property name="interfacePattern" value="[a-zA-Z0-9]*" />
-            <property name="enumPattern" value="[a-zA-Z0-9]*" />
-            <property name="annotationPattern" value="[a-zA-Z0-9]*" />
+            <property name="classPattern" value="[A-Z][a-zA-Z0-9]*" />
+            <property name="abstractClassPattern" value="[A-Z][a-zA-Z0-9]*" />
+            <property name="interfacePattern" value="[A-Z][a-zA-Z0-9]*" />
+            <property name="enumPattern" value="[A-Z][a-zA-Z0-9]*" />
+            <property name="annotationPattern" value="[A-Z][a-zA-Z0-9]*" />
             <property name="utilityClassPattern"
-                      value="[a-zA-Z0-9]+(Utils?|Helper|Constants)" />
+                      value="[A-Z][a-zA-Z0-9]*" />
         </properties>
     </rule>
 
