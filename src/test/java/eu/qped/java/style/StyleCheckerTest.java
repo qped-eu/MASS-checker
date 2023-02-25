@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class StyleCheckerTest {
 
-    private static final String METHOD_FAIL_FEEDBACK = "Your method name does not match the rules that are given.";
+    private static final String METHOD_FAIL_FEEDBACK = "methods in your code do not follow the recommended conventions";
     private StyleChecker styleChecker;
 
     @BeforeEach

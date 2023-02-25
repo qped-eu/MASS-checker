@@ -6,11 +6,13 @@ import eu.qped.java.checkers.mass.MainSettings;
 import eu.qped.java.checkers.mass.MassExecutor;
 import eu.qped.java.checkers.mass.QfMainSettings;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
+import eu.qped.java.checkers.syntax.SyntaxSetting;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,7 +45,11 @@ class MassSyntaxTest {
         System.out.println(solutionRoot);
         QpedQfFilesUtility.createFileFromAnswerString(solutionRoot, code);
 
-        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).build();
+        var syntaxSetting = SyntaxSetting.builder()
+                .language(Locale.ENGLISH.getLanguage())
+                .checkLevel(CheckLevel.BEGINNER)
+                .build();
+        SyntaxChecker syntaxChecker = SyntaxChecker.builder().targetProject(solutionRoot).syntaxSetting(syntaxSetting).build();
 
         MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf);
         MassExecutor massE = MassExecutor.builder().syntaxChecker(syntaxChecker).mainSettings(mainSettingsConfiguratorConf).build();
