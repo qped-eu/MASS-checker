@@ -54,7 +54,7 @@ public class TemplateBuilder {
     private String getTemplateFormattedCause(String cause) {
         return Arrays.stream(cause.split(NEW_LINE))
                 .map(String::trim)
-                .collect(Collectors.joining(DOT + NEW_LINE)) + DOT + NEW_LINE;
+                .collect(Collectors.joining( NEW_LINE)) + NEW_LINE;
     }
 
     private String getTemplateFormattedHeader(Feedback feedback, Map<String, String> templateTextByLanguage) {
@@ -72,6 +72,7 @@ public class TemplateBuilder {
         for (var hint : hints) {
             if (hint.getType().equals(HintType.CODE_EXAMPLE)) {
                 feedbackHints
+                        .append(NEW_Double_LINE)
                         .append(templateTextByLanguage.get(KEY_CODE_EXAMPLE))
                         .append(NEW_Double_LINE)
                         .append(hint.getContent())
