@@ -43,7 +43,7 @@ public class SemanticSettingReader {
                     if (semanticSettingItem.getIfElseStmt() == null) {
                         semanticSettingItem.setIfElseStmt(MAX_STMT_DEFAULT);
                     }
-                    if(semanticSettingItem.getTaskSpecificFeedbacks() == null) {
+                    if (semanticSettingItem.getTaskSpecificFeedbacks() == null) {
                         semanticSettingItem.setTaskSpecificFeedbacks(Collections.emptyList());
                     }
                 }
