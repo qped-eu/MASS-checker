@@ -1,10 +1,13 @@
 package eu.qped.java.checkers.mass;
 
+import eu.qped.framework.feedback.taskspecificfeedback.TaskSpecificFeedback;
 import eu.qped.framework.qf.QfObjectBase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -29,4 +32,5 @@ public class QfStyleSettings extends QfObjectBase {
 
     private String language;
     private Boolean isCorrection;
+    private List<TaskSpecificFeedback> taskSpecificFeedbacks;
 }

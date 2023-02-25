@@ -43,6 +43,7 @@ public class SolutionApproachAnalyser {
         SemanticSettingReader reader = SemanticSettingReader.builder().qfSemanticSettings(qfSemanticSettings).build();
 
         var settings = reader.groupByFileName();
+
         // per File
         settings.forEach((filePath, semanticSettingItems) -> {
             String path = getRelatedPath(filePath);
@@ -51,6 +52,10 @@ public class SolutionApproachAnalyser {
             semanticSettingItems.forEach(
                     semanticSettingItem -> {
                         try {
+                            System.out.println(">>>>>>>>>>>>>>>>");
+                            System.out.println(filePath);
+                            System.out.println(semanticSettingItem);
+                            System.out.println(">>>>>>>>>>>>>>>>");
                             // analytics phase
                             SolutionApproachReportItem basicReportEntry = SolutionApproachReportItem.builder().relatedSemanticSettingItem(semanticSettingItem).build();
                             BlockStmt targetedMethod = getTargetedMethod(compilationUnit, basicReportEntry); // get target method and the return type of the target method

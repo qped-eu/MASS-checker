@@ -41,6 +41,11 @@ public class StyleConfigurationReader {
                             ? qfStyleSettings.getIsCorrection()
                             : false
             );
+            styleSettings.setTaskSpecificFeedbacks(
+                    qfStyleSettings.getTaskSpecificFeedbacks() != null
+                            ? qfStyleSettings.getTaskSpecificFeedbacks()
+                            : null
+            );
             styleSettings.setMethodParameterNamesRegEx(
                     qfStyleSettings.getMethodParameterNamePattern() != null
                             ? qfStyleSettings.getMethodParameterNamePattern()

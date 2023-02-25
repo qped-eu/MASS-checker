@@ -49,6 +49,9 @@ public class StyleFeedbackGenerator {
                     , settings.getLanguage() + FileExtensions.JSON
             );
         }
+        if (settings.getTaskSpecificFeedbacks() != null) {
+            feedbacksStore.customizeStore(settings.getTaskSpecificFeedbacks());
+        }
         List<Violation> violations = report.getFileEntries().stream()
                 .flatMap(fileEntry ->
                         fileEntry.getViolations().stream().peek(violation -> violation.setFileName(fileEntry.getFileName()))
@@ -62,16 +65,8 @@ public class StyleFeedbackGenerator {
             feedbackBuilder.relatedLocation(
                     RelatedLocation.builder()
                             .fileName(file.getName())
-                            .startLine(
-                                    file.getName().contains("TestClass")
-                                            ? violation.getBeginLine() - 3
-                                            : violation.getBeginLine()
-                            )
-                            .endLine(
-                                    file.getName().contains("TestClass")
-                                            ? violation.getEndLine() - 3
-                                            : violation.getEndLine()
-                            )
+                            .startLine(violation.getBeginLine())
+                            .endLine(violation.getEndLine())
                             .build()
             );
             var defaultFeedback = feedbacksStore.getRelatedFeedbackByTechnicalCause(violation.getRule());
