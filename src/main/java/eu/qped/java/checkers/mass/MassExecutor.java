@@ -52,7 +52,7 @@ public class MassExecutor {
      */
     public void execute() {
         init();
-
+        System.out.println(">>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         boolean styleNeeded = mainSettings.isStyleNeeded();
         boolean semanticNeeded = mainSettings.isSemanticNeeded();
         boolean metricsNeeded = mainSettings.isMetricsNeeded();
