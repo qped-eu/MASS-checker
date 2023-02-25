@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.style.feedback;
 
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackManager;
 import eu.qped.framework.feedback.RelatedLocation;
@@ -17,6 +18,7 @@ import lombok.Data;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,7 +84,11 @@ public class StyleFeedbackGenerator {
     }
 
     private List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, StyleSettings styleSettings) {
-        return feedbacks;
+        if (styleSettings.getCheckLevel().equals(CheckLevel.BEGINNER)) {
+            return feedbacks;
+        } else {
+            return feedbacks.stream().peek(feedback -> feedback.setHints(Collections.emptyList())).collect(Collectors.toList());
+        }
     }
 
 

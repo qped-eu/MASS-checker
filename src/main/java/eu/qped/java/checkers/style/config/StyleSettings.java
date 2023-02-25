@@ -33,5 +33,6 @@ public class StyleSettings {
 
     private String language;
     private Boolean isCorrection;
+    private CheckLevel checkLevel;
     private List<TaskSpecificFeedback> taskSpecificFeedbacks;
 }

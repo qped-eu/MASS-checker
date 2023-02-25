@@ -32,5 +32,6 @@ public class QfStyleSettings extends QfObjectBase {
 
     private String language;
     private Boolean isCorrection;
+    private String checkLevel;
     private List<TaskSpecificFeedback> taskSpecificFeedbacks;
 }
