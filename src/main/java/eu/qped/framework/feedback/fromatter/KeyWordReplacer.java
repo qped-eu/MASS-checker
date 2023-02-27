@@ -94,31 +94,5 @@ public class KeyWordReplacer {
         return result;
     }
 
-//    public static void main(String[] args) {
-//        TestLevel2 testLevel2 = TestLevel2.builder()
-//                .listToIgnore(new ArrayList<>())
-//                .mapTestLevel2(new HashMap<>() {{
-//                    put("key5", 5);
-//                    put("key6", 6);
-//                }})
-//                .key3("3")
-//                .key4(4)
-//                .build();
-//        TestLevel1 testLevel1 = TestLevel1.builder()
-//                .testLevel2(testLevel2)
-//                .key1("1")
-//                .key2(2)
-//                .listToIgnore(null)
-//                .mapTestLevel1(new HashMap<>() {{
-//                    put("key7", "7");
-//                    put("key8", "8");
-//                }})
-//                .build();
-//        String target = " {$key1} {$key2} {$key3} {$key4} {$key5} {$key6} {$key7} {$key8} {$key1} {$key2} {$} ";
-//        KeyWordReplacer keyWordReplacer = KeyWordReplacer.builder().build();
-//        String result = keyWordReplacer.replace(target, testLevel1);
-////        String result = keyWordReplacer.replace(target, "key1" , "11111");
-//        System.out.println(result);
-//    }
 
 }
