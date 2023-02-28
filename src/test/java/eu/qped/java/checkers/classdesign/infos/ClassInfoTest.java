@@ -1,6 +1,6 @@
 package eu.qped.java.checkers.classdesign.infos;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import eu.qped.java.checkers.classdesign.config.*;
 

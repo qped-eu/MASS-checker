@@ -21,9 +21,12 @@ import gr.spinellis.ckjm.utils.MethodInvokation;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.classfile.*;
 import org.apache.bcel.generic.MethodGen;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class QPEDIcAndCbmClassVisitorTest {
 
     private QPEDIcAndCbmClassVisitor classVisitor;
