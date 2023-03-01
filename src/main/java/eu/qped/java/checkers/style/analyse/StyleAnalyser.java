@@ -45,7 +45,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 public class StyleAnalyser {
 
     private String targetPath;
-
+    private String undefined = "undefined";
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private StyleSettings styleSettings;
@@ -106,6 +106,9 @@ public class StyleAnalyser {
         }
     }
 
+    /**
+     * This method apply the settings on the main rule set
+     */
     private void applySettingsOnMainRuleset() {
         try {
             if (styleSettings.getMaxClassLength() != -1) {
@@ -122,19 +125,19 @@ public class StyleAnalyser {
             if (styleSettings.getMaxCycloComplexity() != -1) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.CYCLOMATIC_COMPLEXITY, String.valueOf(styleSettings.getMaxCycloComplexity()), "methodReportLevel");
             }
-            if (!styleSettings.getVarNamesRegEx().equals("undefined") && !styleSettings.getVarNamesRegEx().equals("-1")) {
+            if (!styleSettings.getVarNamesRegEx().equals(undefined) && !styleSettings.getVarNamesRegEx().equals("-1")) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.LOCAL_VARIABLE_NAMING_CONVENTIONS, String.valueOf(styleSettings.getVarNamesRegEx()), "localVarPattern");
             }
-            if (!styleSettings.getMethodParameterNamesRegEx().equals("undefined")) {
+            if (!styleSettings.getMethodParameterNamesRegEx().equals(undefined)) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_PARAMETER_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "methodParameterPattern");
             }
-            if (!styleSettings.getMethodParameterNamesRegEx().equals("undefined")) {
+            if (!styleSettings.getMethodParameterNamesRegEx().equals(undefined)) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_PARAMETER_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "finalMethodParameterPattern");
             }
-            if (!styleSettings.getMethodNamesRegEx().equals("undefined") && !styleSettings.getMethodNamesRegEx().equals("-1")) {
+            if (!styleSettings.getMethodNamesRegEx().equals(undefined) && !styleSettings.getMethodNamesRegEx().equals("-1")) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodNamesRegEx()), "methodPattern");
             }
-            if (!styleSettings.getClassNameRegEx().equals("undefined") && !styleSettings.getClassNameRegEx().equals("-1")) {
+            if (!styleSettings.getClassNameRegEx().equals(undefined) && !styleSettings.getClassNameRegEx().equals("-1")) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.CLASS_NAMING_CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "classPattern");
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.CLASS_NAMING_CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "abstractClassPattern");
             }
@@ -144,6 +147,9 @@ public class StyleAnalyser {
     }
 
 
+    /**
+     * This method add the new rules from xmlFileManager to the PMD Configuration, which contains all configuration
+     */
     private void executePMD() {
         final PMDConfiguration configuration = new PMDConfiguration();
         configuration.setInputPaths(targetPath);
