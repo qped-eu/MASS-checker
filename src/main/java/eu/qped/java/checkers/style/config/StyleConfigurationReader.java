@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Style checker configs manager.
@@ -28,8 +29,6 @@ public class StyleConfigurationReader {
 
     private QfStyleSettings qfStyleSettings;
 
-    String undefined ="undefined";
-
     public StyleSettings getStyleSettings() {
         StyleSettings styleSettings = new StyleSettings();
         try {
@@ -41,7 +40,7 @@ public class StyleConfigurationReader {
             styleSettings.setMethodParameterNamesRegEx(
                     qfStyleSettings.getMethodParameterNamePattern() != null
                             ? qfStyleSettings.getMethodParameterNamePattern()
-                            : undefined
+                            : "undefined"
             );
             styleSettings.setMaxClassLength(
                     qfStyleSettings.getClassLength() != null
@@ -66,17 +65,17 @@ public class StyleConfigurationReader {
             styleSettings.setVarNamesRegEx(
                     qfStyleSettings.getVariableNamePattern() != null
                             ? qfStyleSettings.getVariableNamePattern()
-                            : undefined
+                            : "undefined"
             );
             styleSettings.setMethodNamesRegEx(
                     qfStyleSettings.getMethodNamePattern() != null
                             ? qfStyleSettings.getMethodNamePattern()
-                            : undefined
+                            : "undefined"
             );
             styleSettings.setClassNameRegEx(
                     qfStyleSettings.getClassNamePattern() != null
                             ? qfStyleSettings.getClassNamePattern()
-                            : undefined
+                            : "undefined"
             );
             styleSettings.setNamesLevel(
                     isCheckLevel(qfStyleSettings.getNamesLevel())
@@ -99,13 +98,18 @@ public class StyleConfigurationReader {
         return styleSettings;
     }
 
+    /**
+     * his method checks if the given String `checkLevel` is a valid value for
+     * an enumerated type `CheckLevel`. It returns `true` if the value is valid, and `false` otherwise.
+     * @param checkLevel The String to check against the enumerated values.
+     * @return `true` if the value is valid, `false` otherwise.
+     */
     private boolean isCheckLevel(String checkLevel) {
         try {
-            List<CheckLevel> checkLevels = List.of(CheckLevel.BEGINNER, CheckLevel.INTERMEDIATE, CheckLevel.ADVANCED);
-            return checkLevels.contains(CheckLevel.valueOf(checkLevel));
+            Set<CheckLevel> checkLevels = Set.of(CheckLevel.BEGINNER, CheckLevel.INTERMEDIATE, CheckLevel.ADVANCED);
+            return checkLevels.contains(CheckLevel. valueOf(checkLevel));
         } catch (IllegalArgumentException e) {
             return false;
         }
     }
 }
-
