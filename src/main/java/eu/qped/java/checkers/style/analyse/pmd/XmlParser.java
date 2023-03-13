@@ -11,14 +11,29 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 
+/**
+
+ The XmlParser class provides functionality to parse an XML file and extract information from it.
+ */
+
 public class XmlParser {
 
     private final String path;
 
+    /**
+     * Constructs a new XmlParser object with the specified path.
+     *
+     * @param path the path to the XML file to be parsed
+     */
     public XmlParser(String path) {
         this.path = path;
     }
 
+    /**
+     * Parses the XML file specified in the path field and returns a NodeList containing all 'rule' elements.
+     *
+     * @return a NodeList containing all 'rule' elements in the XML file
+     */
     public NodeList parse() {
 
         // Make an  instance of the DocumentBuilderFactory

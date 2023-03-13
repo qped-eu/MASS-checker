@@ -22,8 +22,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
+/**
+
+ The XmlFileManager class provides methods to create, read, and modify XML files
+ for PMD static code analysis tool.
+ */
+
 public class XmlFileManager {
 
+    /**
+     * Template of the main PMD ruleset XML file, in the format specified by PMD.
+     */
     private static final String MAIN_RULESET_TEMPLATE =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                     + "<ruleset xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
@@ -36,6 +45,10 @@ public class XmlFileManager {
     private Document document;
     private File mainRulesetFile;
 
+    /**
+     * Constructs an XmlFileManager object and initializes the document field
+     * by parsing the MAIN_RULESET_TEMPLATE.
+     */
     public XmlFileManager() {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -47,12 +60,22 @@ public class XmlFileManager {
         }
     }
 
+    /**
+     * Adds the rules in the specified XML file to the main PMD ruleset XML file.
+     *
+     * @param path the path of the XML file to be added to the main ruleset
+     */
     public void addToMainRuleset(String path) {
         XmlParser xmlParser = new XmlParser(path);
         NodeList rules = xmlParser.parse();
         writeIntoMainRuleset(rules);
     }
 
+    /**
+     * Writes the specified node list into the main PMD ruleset document.
+     *
+     * @param nodeList the node list to be written into the main ruleset document
+     */
     private void writeIntoMainRuleset(NodeList nodeList) {
         Element root = document.getDocumentElement();
         int length = nodeList.getLength();
@@ -64,6 +87,14 @@ public class XmlFileManager {
         }
     }
 
+    /**
+
+     Edits the value of a property for a given rule in the PMD configuration document.
+     @param ruleName The name of the rule to edit the property for.
+     @param newValue The new value for the property.
+     @param propName The name of the property to edit.
+     @throws PmdConfigException If either the ruleName or propName is null or if the rule or property is not found.
+     */
     public void editProperty(String ruleName, String newValue, String propName)
             throws PmdConfigException {
 
@@ -108,6 +139,12 @@ public class XmlFileManager {
 
     }
 
+    /**
+
+     Gets the file name for the main PMD ruleset file. If it has not been set yet,
+     it generates a temporary file using the current PMD configuration document.
+     @return The file path of the main PMD ruleset file.
+     */
     public String getFilename() {
         if (mainRulesetFile == null) {
             try {
