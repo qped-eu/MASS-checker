@@ -10,7 +10,7 @@ public class RacketChecker implements Checker {
 
         String[] feedback = new String[1];
 
-        feedback[0] = "Hallo Welt";
+        feedback[0] = "# Hallo Welt";
 
         qfObject.setFeedback(feedback);
     }
