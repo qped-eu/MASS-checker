@@ -2,6 +2,8 @@ package eu.qped.racket.interpret;
 
 import java.util.*;
 
+import eu.qped.racket.DrRacketLexer;
+import eu.qped.racket.DrRacketParser;
 import eu.qped.racket.functions.CustomFunction;
 import eu.qped.racket.functions.booleans.*;
 import eu.qped.racket.functions.numbers.*;
@@ -11,23 +13,50 @@ import eu.qped.racket.test.Parameter;
 import eu.qped.racket.test.Number;
 import eu.qped.racket.test.Boolean;
 import net.sf.saxon.Configuration;
-import org.antlr.v4.runtime.*;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.stream.Collectors;
+
+import org.antlr.v4.runtime.ANTLRErrorStrategy;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DefaultErrorStrategy;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.RecognitionException;
+
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
+import net.sf.saxon.s9api.DocumentBuilder;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XQueryCompiler;
+import net.sf.saxon.s9api.XQueryEvaluator;
+import net.sf.saxon.s9api.XQueryExecutable;
+import net.sf.saxon.s9api.XdmNode;
 
 public class DrRacketInterpreter {
 
