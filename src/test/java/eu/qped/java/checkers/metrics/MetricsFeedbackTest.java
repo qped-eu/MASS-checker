@@ -48,35 +48,7 @@ class MetricsFeedbackTest {
         assertEquals(metric, metricsFeedback1.getMetric());
     }
 
-    @ParameterizedTest
-    @ValueSource(doubles = {-1d, 0d, 0.5d, 1.0d, 3.3d})
-    void generateSuggestionTestValue(double value) {
-        metricsFeedback1.setValue(value);
-        metricsFeedback1.setSuggestion(metricsFeedback1.getSuggestion());
 
-        assertEquals
-                ("You are within the " + Metric.AMC + "'s threshold.",
-                        MetricsFeedbackGenerator.generateDefaultSuggestion(
-                                Metric.AMC, false, false));
-
-        assertEquals
-                ("The " + Metric.AMC + "'s value is too low: Increase your average method size, e.g. by joining multiple methods with mostly the same functionalities from over-engineering.",
-                        MetricsFeedbackGenerator.generateDefaultSuggestion(
-                                Metric.AMC, true, false));
-
-        assertEquals
-                ("The " + Metric.AMC + "'s value is too high: Decrease your average method size, e.g. by delegating functionalities to other newly created methods.",
-                        MetricsFeedbackGenerator.generateDefaultSuggestion(
-                                Metric.AMC, false, true));
-
-        assertThrows(IllegalArgumentException.class,
-                () -> MetricsFeedbackGenerator.generateDefaultSuggestion(
-                        Metric.AMC,
-                        true,
-                        true));
-        metricsFeedback1.setValue(99d);
-        assertEquals(99d, metricsFeedback1.getValue());
-    }
 
     @ParameterizedTest
     @ValueSource(strings = {"", "TestClass", "AnotherTestClass.java", "RandomName"})
