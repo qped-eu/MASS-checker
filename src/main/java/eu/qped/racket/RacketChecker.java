@@ -13,6 +13,7 @@ public class RacketChecker implements Checker {
 
         try {
             DrRacketInterpreter inter = new DrRacketInterpreter(answer);
+            inter.master();
             message = inter.evaluateExpressions();
 
         } catch (Exception e) {
