@@ -2,8 +2,8 @@ package eu.qped.racket.interpret;
 
 import java.util.*;
 
-import eu.qped.racket.DrRacketLexer;
-import eu.qped.racket.DrRacketParser;
+import eu.qped.Temp.DrRacketLexer;
+import eu.qped.Temp.DrRacketParser;
 import eu.qped.racket.functions.CustomFunction;
 import eu.qped.racket.functions.booleans.*;
 import eu.qped.racket.functions.numbers.*;
@@ -13,6 +13,7 @@ import eu.qped.racket.test.Parameter;
 import eu.qped.racket.test.Number;
 import eu.qped.racket.test.Boolean;
 import net.sf.saxon.Configuration;
+import org.antlr.v4.runtime.*;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -36,27 +37,15 @@ import org.antlr.v4.runtime.RecognitionException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
-import net.sf.saxon.s9api.DocumentBuilder;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.XQueryCompiler;
-import net.sf.saxon.s9api.XQueryEvaluator;
-import net.sf.saxon.s9api.XQueryExecutable;
-import net.sf.saxon.s9api.XdmNode;
+import java.util.stream.Collectors;
 
 public class DrRacketInterpreter {
 
@@ -141,6 +130,7 @@ public class DrRacketInterpreter {
 	 * @return
 	 * @throws Exception
 	 */
+	/*
 	public String interpretWithXQuery() throws Exception {
 		// read the XQuery expression from a file on the class path (e.g., the src/main/resources folder)
 		String query = IOUtils.toString(ClassLoader.getSystemResourceAsStream(DEFAULT_XQUERY_FILE), Charset.defaultCharset());
@@ -148,11 +138,14 @@ public class DrRacketInterpreter {
 		return interpretWithXQuery(query);
 	}
 
+	 */
+
 	/**
 	 * Interpret the Racket program with the passed XQuery expression.
 	 * @return
 	 * @throws Exception
 	 */
+	/*
 	public String interpretWithXQuery(String query) throws SaxonApiException, Exception, IOException {
 		// prepare query execution with Saxon:
 		Processor processor = new Processor(Configuration.newConfiguration());
@@ -192,6 +185,8 @@ public class DrRacketInterpreter {
 		// done
 		return result;
 	}
+
+	 */
 
 	public String getInput() {
 		return rktFile;
