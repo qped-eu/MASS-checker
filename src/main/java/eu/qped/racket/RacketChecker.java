@@ -12,19 +12,20 @@ public class RacketChecker implements Checker {
         String message = "EMPTY";
 
         try {
-            //DrRacketInterpreter inter = new DrRacketInterpreter(answer);
-            //message = inter.evaluateExpressions();
+            DrRacketInterpreter inter = new DrRacketInterpreter(answer);
+            message = inter.evaluateExpressions();
 
         } catch (Exception e) {
-            //System.out.println(e);
+            System.out.println(e);
             message = e.getMessage();
         }
 
 
-        String[] feedback = new String[2];
+        String[] feedback = new String[3];
 
         feedback[0] = "# Hallo Welt";
         feedback[1] = answer;
+        feedback[2] = message;
 
         qfObject.setFeedback(feedback);
     }
