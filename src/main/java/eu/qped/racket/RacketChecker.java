@@ -12,8 +12,8 @@ public class RacketChecker implements Checker {
         String message = "EMPTY";
 
         try {
-            DrRacketInterpreter inter = new DrRacketInterpreter(answer);
-            message = inter.evaluateExpressions();
+            //DrRacketInterpreter inter = new DrRacketInterpreter(answer);
+            //message = inter.evaluateExpressions();
 
         } catch (Exception e) {
             //System.out.println(e);
@@ -24,7 +24,7 @@ public class RacketChecker implements Checker {
         String[] feedback = new String[2];
 
         feedback[0] = "# Hallo Welt";
-        feedback[1] = message;
+        feedback[1] = answer;
 
         qfObject.setFeedback(feedback);
     }
