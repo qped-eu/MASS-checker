@@ -317,7 +317,7 @@ public class SyntaxChecker {
         if (Arrays.stream(array).allMatch(x -> x == 0)) {
             return syntaxCheck(rktString);
         }
-        //divisionByZeroCheck();
+
         return "Klammer Fehler gefunden";
     }
 
@@ -330,7 +330,7 @@ public class SyntaxChecker {
      *                  {Round, Square, Curly, Angle}
      */
     public int[] bracketCheck(String rktString) {
-        int[] count = new int[4];
+        int[] count = new int[3];
         int countIndex = 0;
 
         String openingBracket = "";
@@ -359,11 +359,6 @@ public class SyntaxChecker {
                     closingBracket = "}";
                     countIndex = 2;
                     break;
-                }
-                case ANGLE : {
-                    openingBracket = "<";
-                    closingBracket = ">";
-                    countIndex = 3;
                 }
             }
             
