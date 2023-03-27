@@ -12,8 +12,8 @@ public class RacketChecker implements Checker {
         String message = "EMPTY";
 
         try {
-            DrRacketInterpreter inter = new DrRacketInterpreter(answer);
-            message = inter.evaluateExpressions();
+            //DrRacketInterpreter inter = new DrRacketInterpreter(answer);
+            //message = inter.evaluateExpressions();
 
         } catch (Exception e) {
             System.out.println(e);
