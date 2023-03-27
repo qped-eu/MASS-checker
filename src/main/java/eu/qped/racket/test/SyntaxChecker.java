@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -311,10 +312,13 @@ public class SyntaxChecker {
     }
 
 
-    public void check(String rktString) {
-        bracketCheck(rktString);
-        divisionByZeroCheck();
-        syntaxCheck(rktString);
+    public String check(String rktString) {
+        int[] array = bracketCheck(rktString);
+        if (Arrays.stream(array).allMatch(x -> x == 0)) {
+            return syntaxCheck(rktString);
+        }
+        //divisionByZeroCheck();
+        return "Klammer Fehler gefunden";
     }
 
     /**

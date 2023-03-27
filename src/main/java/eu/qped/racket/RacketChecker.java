@@ -14,7 +14,7 @@ public class RacketChecker implements Checker {
 
         try {
             SyntaxChecker syntaxChecker = new SyntaxChecker();
-            message = syntaxChecker.syntaxCheck(answer);
+            message = syntaxChecker.check(answer);
 
             if (message.equals("")) {
                 DrRacketInterpreter inter = new DrRacketInterpreter(answer);
