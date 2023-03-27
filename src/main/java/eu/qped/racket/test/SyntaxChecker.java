@@ -336,31 +336,34 @@ public class SyntaxChecker {
             int openingPosition = 0;
             int closingPosition = 0;
             boolean openQuotationMarks = false;
-/*
+
             switch (bracketType) {
-                case ROUND -> {
+                case ROUND : {
                     openingBracket = "(";
                     closingBracket = ")";
                     countIndex = 0;
+                    break;
                 }
-                case SQUARE -> {
+                case SQUARE : {
                     openingBracket = "[";
                     closingBracket = "]";
                     countIndex = 1;
+                    break;
                 }
-                case CURLY -> {
+                case CURLY : {
                     openingBracket = "{";
                     closingBracket = "}";
                     countIndex = 2;
+                    break;
                 }
-                case ANGLE -> {
+                case ANGLE : {
                     openingBracket = "<";
                     closingBracket = ">";
                     countIndex = 3;
                 }
             }
             
- */
+
 
             while (checkFromIndex<rktString.length() &&
                     (rktString.substring(checkFromIndex, rktString.length()).contains(openingBracket) ||
