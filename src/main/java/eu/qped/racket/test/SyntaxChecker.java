@@ -336,7 +336,7 @@ public class SyntaxChecker {
             int openingPosition = 0;
             int closingPosition = 0;
             boolean openQuotationMarks = false;
-
+/*
             switch (bracketType) {
                 case ROUND -> {
                     openingBracket = "(";
@@ -359,6 +359,8 @@ public class SyntaxChecker {
                     countIndex = 3;
                 }
             }
+            
+ */
 
             while (checkFromIndex<rktString.length() &&
                     (rktString.substring(checkFromIndex, rktString.length()).contains(openingBracket) ||
