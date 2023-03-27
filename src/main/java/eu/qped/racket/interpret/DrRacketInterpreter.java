@@ -2,6 +2,8 @@ package eu.qped.racket.interpret;
 
 import java.util.*;
 
+import eu.qped.Temp.DrRacketLexer;
+import eu.qped.Temp.DrRacketParser;
 import eu.qped.racket.functions.CustomFunction;
 import eu.qped.racket.functions.booleans.*;
 import eu.qped.racket.functions.numbers.*;
@@ -112,6 +114,7 @@ public class DrRacketInterpreter {
 	 * @return
 	 * @throws Exception
 	 */
+	/*
 	public String interpretWithXQuery() throws Exception {
 		// read the XQuery expression from a file on the class path (e.g., the src/main/resources folder)
 		String query = IOUtils.toString(ClassLoader.getSystemResourceAsStream(DEFAULT_XQUERY_FILE), Charset.defaultCharset());
@@ -119,11 +122,14 @@ public class DrRacketInterpreter {
 		return interpretWithXQuery(query);
 	}
 
+	 */
+
 	/**
 	 * Interpret the Racket program with the passed XQuery expression.
 	 * @return
 	 * @throws Exception
 	 */
+	/*
 	public String interpretWithXQuery(String query) throws SaxonApiException, Exception, IOException {
 		// prepare query execution with Saxon:
 		Processor processor = new Processor(Configuration.newConfiguration());
@@ -163,6 +169,8 @@ public class DrRacketInterpreter {
 		// done
 		return result;
 	}
+
+	 */
 
 	public String getInput() {
 		return rktFile;
