@@ -3,6 +3,7 @@ package eu.qped.racket;
 import eu.qped.framework.Checker;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.racket.interpret.DrRacketInterpreter;
+import eu.qped.racket.test.SyntaxChecker;
 
 public class RacketChecker implements Checker {
     @Override
@@ -12,9 +13,14 @@ public class RacketChecker implements Checker {
         String message = "EMPTY";
 
         try {
-            DrRacketInterpreter inter = new DrRacketInterpreter(answer);
-            inter.master();
-            message = inter.evaluateExpressions();
+            SyntaxChecker syntaxChecker = new SyntaxChecker();
+            message = syntaxChecker.syntaxCheck(answer);
+
+            if (message.equals("")) {
+                DrRacketInterpreter inter = new DrRacketInterpreter(answer);
+                inter.master();
+                message = inter.evaluateExpressions();
+            }
 
         } catch (Exception e) {
             System.out.println(e);
