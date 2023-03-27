@@ -21,10 +21,10 @@ public class RacketChecker implements Checker {
         }
 
 
-        String[] feedback = new String[2];
+        String[] feedback = new String[1];
 
         feedback[0] = "# Hallo Welt";
-        feedback[1] = message;
+        //feedback[1] = message;
 
         qfObject.setFeedback(feedback);
     }
