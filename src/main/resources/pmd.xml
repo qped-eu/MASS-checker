@@ -6,7 +6,7 @@
 
     <description>My custom PMD ruleset</description>
 
-    <rule name="ConfusingTernary" language="java" >
+    <rule name="ConfusingTernary" language="java" class="net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule" >
         <description>Identify confusing ternary statements</description>
         <priority>3</priority>
         <properties>
@@ -14,12 +14,12 @@
         </properties>
     </rule>
 
-    <rule name="LocalVariableCouldBeFinal" language="java">
+    <rule name="LocalVariableCouldBeFinal" language="java" class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule">
         <description>Detects local variables that could be declared final</description>
         <priority>2</priority>
     </rule>
 
-    <rule name="CognitiveComplexity" language="java">
+    <rule name="CognitiveComplexity" language="java" class="net.sourceforge.pmd.lang.java.rule.design.CognitiveComplexityRule">
         <description>Detects methods with high cognitive complexity</description>
         <priority>3</priority>
         <properties>
@@ -27,22 +27,18 @@
         </properties>
     </rule>
 
-    <rule name="LawOfDemeter" language="java">
+    <rule name="LawOfDemeter" language="java" class="net.sourceforge.pmd.lang.java.rule.coupling.LawOfDemeterRule">
         <description>Flags violations of the Law Of Demeter</description>
         <priority>4</priority>
     </rule>
 
-    <rule name="UnusedImports" language="java">
+    <rule name="UnusedImports" language="java" class="net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule">
         <description>Flags unused imports</description>
         <priority>3</priority>
     </rule>
 
-    <rule name="CollapsibleIfStatements" language="java">
-        <description>Identify unnecessarily nested 'if' statements</description>
-        <priority>2</priority>
-    </rule>
 
-    <rule name="UseStringBufferForStringAppends" language="java">
+    <rule name="UseStringBufferForStringAppends" language="java" class="net.sourceforge.pmd.lang.java.rule.optimizations.UseStringBufferForStringAppendsRule">
         <description>Flags concatenation of Strings with '+' operator</description>
         <priority>3</priority>
     </rule>
