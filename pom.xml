@@ -88,7 +88,7 @@
                     <sourceEncoding>UTF-8</sourceEncoding>
                     <minimumTokens>50</minimumTokens>
                     <rulesets>
-                        <ruleset>pmd.xml</ruleset>
+                        <ruleset>src/main/resources/pmd.xml</ruleset>
                     </rulesets>
                     <format>html</format>
                     <linkXRef>false</linkXRef>
