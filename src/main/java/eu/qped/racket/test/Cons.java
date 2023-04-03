@@ -2,22 +2,22 @@ package eu.qped.racket.test;
 
 import com.ibm.icu.impl.Pair;
 
-public class Cons extends Expression {
-    private final Pair<Expression, Expression> value;
+import java.util.List;
 
-    public Cons(Pair value) {
-        this.value = value;
+public class Cons extends Expression {
+    @Override
+    public String evaluate(Expression e) {
+        return evaluate(e.getRest(super.getId()));
+        //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
     @Override
-    public String evaluate(Expression e) {
-        String s1 = value.first.evaluate(this);
-        String s2 = value.second.evaluate(this);
-        return s2 == "" ? "'(" + s1 + ")" : "'(" + s1 + " . " + s2 + ")";
+    public String evaluate(List<Expression> list) {
+        return "(cons " + list.get(0).evaluate(this) + " " + list.get(1).evaluate(this) + ")";
     }
 
     @Override
     public String toString() {
-        return "Cons " + value + " (" + super.getId() + ")";
+        return "Cons "  + " (" + super.getId() + ")";
     }
 }

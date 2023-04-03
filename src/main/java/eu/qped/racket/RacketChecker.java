@@ -9,6 +9,7 @@ public class RacketChecker implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
         String answer = qfObject.getAnswer();
+        String solution = qfObject.getCheckerClass();
 
         String message = "EMPTY";
 
@@ -28,11 +29,13 @@ public class RacketChecker implements Checker {
         }
 
 
-        String[] feedback = new String[3];
+        String[] feedback = new String[5];
 
-        feedback[0] = "# Hallo Welt";
+        feedback[0] = "# Your Input was:";
         feedback[1] = answer;
-        feedback[2] = message;
+        feedback[2] = "# The Output is:";
+        feedback[3] = message;
+        feedback[4] = "# The Answer is:" + solution;
 
         qfObject.setFeedback(feedback);
     }

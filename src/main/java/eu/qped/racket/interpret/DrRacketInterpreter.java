@@ -6,12 +6,13 @@ import eu.qped.Temp.DrRacketLexer;
 import eu.qped.Temp.DrRacketParser;
 import eu.qped.racket.functions.CustomFunction;
 import eu.qped.racket.functions.booleans.*;
+import eu.qped.racket.functions.lists.Append;
+import eu.qped.racket.functions.lists.Empty;
 import eu.qped.racket.functions.numbers.*;
 import eu.qped.racket.functions.numbers.Random;
-import eu.qped.racket.test.Expression;
-import eu.qped.racket.test.Parameter;
-import eu.qped.racket.test.Number;
+import eu.qped.racket.test.*;
 import eu.qped.racket.test.Boolean;
+import eu.qped.racket.test.Number;
 import net.sf.saxon.Configuration;
 import org.antlr.v4.runtime.*;
 import org.apache.commons.io.IOUtils;
@@ -243,14 +244,10 @@ public class DrRacketInterpreter {
 
 			if (typeString.compareTo("type=\"Name\"") == 0) {
 				if (!typeName(valueString, expression)) {	//Prüfen, ob es einen Typen gibt
-					if (customFunctionList.stream().map(x -> x.getFunName()).noneMatch(x -> x != valueString)) {	//Ist es keine Custom Function, dann ist es ein Parameter
+					if (customFunctionList.stream().filter(x -> x.getFunName().compareTo(valueString.substring(7,valueString.length()-1)) == 0).findFirst().orElse(null) == null) {	//Ist es keine Custom Function, dann ist es ein Parameter
 						expression.addPart(new Parameter(valueString.substring(7, valueString.length() - 1)));
 					} else { //Ansosnten customFunction
-						System.out.println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-						System.out.println(valueString.substring(7,valueString.length()-1));
-						customFunctionList.stream().forEach(x -> System.out.println(x.getFunName()));
-						System.out.println(customFunctionList.stream().filter(x -> x.getFunName().compareTo(valueString.substring(7,valueString.length()-1)) == 0).findFirst().orElse(null));
-						expression.addPart(customFunctionList.stream().filter(x -> x.getFunName() != valueString).findFirst().orElse(null));
+						expression.addPart(customFunctionList.stream().filter(x -> x.getFunName().compareTo(valueString.substring(7,valueString.length()-1)) == 0).findFirst().orElse(null));
 					}
 
 				}
@@ -397,6 +394,19 @@ public class DrRacketInterpreter {
 		}
 		if (valueString.compareTo("value=\"not\"") == 0) {	//Not
 			expression.addPart(new Not());
+			return true;
+		}
+		//Lists
+		if (valueString.compareTo("value=\"cons\"") == 0) {	//Cons
+			expression.addPart(new Cons());
+			return true;
+		}
+		if (valueString.compareTo("value=\"append\"") == 0) {	//Append
+			expression.addPart(new Append());
+			return true;
+		}
+		if (valueString.compareTo("value=\"empty\"") == 0) {	//Empty
+			expression.addPart(new Empty());
 			return true;
 		}
 		return false;
