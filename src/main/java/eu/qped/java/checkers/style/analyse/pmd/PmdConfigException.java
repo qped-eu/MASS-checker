@@ -28,9 +28,9 @@ public class PmdConfigException extends Exception {
      * @param ruleName The name of the PMD rule that caused the exception.
      * @param propName The name of the PMD rule property that caused the exception.
      */
-    public PmdConfigException(String ruleName, String propName) {
+    public PmdConfigException(final String ruleName, final String propName) {
         super((ruleName == null ? "ruleName must not be null"
-                : (propName == null ? "propertyName must not be null" : "Element not found"))
+                : propName == null ? "propertyName must not be null" : "Element not found")
                 + " (ruleName: " + ruleName + ", propName: " + propName + ")");
         this.ruleName = ruleName;
         this.propName = propName;
@@ -43,7 +43,7 @@ public class PmdConfigException extends Exception {
      * @param ruleName The name of the PMD rule that caused the exception.
      * @param propName The name of the PMD rule property that caused the exception.
      */
-    public PmdConfigException(String message, String ruleName, String propName) {
+    public PmdConfigException(final String message, final String ruleName, final String propName) {
         super(message + " (ruleName: " + ruleName + ", propName: " + propName + ")");
         this.ruleName = ruleName;
         this.propName = propName;

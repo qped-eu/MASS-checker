@@ -25,7 +25,7 @@ public class XmlParser {
      *
      * @param path the path to the XML file to be parsed
      */
-    public XmlParser(String path) {
+    public XmlParser(final String path) {
         this.path = path;
     }
 
@@ -37,18 +37,18 @@ public class XmlParser {
     public NodeList parse() {
 
         // Make an  instance of the DocumentBuilderFactory
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         NodeList nodeList = null;
         try {
             // use the Builder to take an instance of the document builder
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            final DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
             // addToMainRuleset using the builder to get the DOM mapping of the
             // XML file
             Document inputDom;
 
             if (path != null) {
-                inputDom = db.parse(this.getClass().getClassLoader().getResourceAsStream(path));
-                Element doc = inputDom.getDocumentElement();
+                inputDom = documentBuilder.parse(this.getClass().getClassLoader().getResourceAsStream(path));
+                final Element doc = inputDom.getDocumentElement();
                 nodeList = doc.getElementsByTagName("rule");
             } else {
                 LogManager.getLogger(getClass()).error("No such ruleset: " + path);

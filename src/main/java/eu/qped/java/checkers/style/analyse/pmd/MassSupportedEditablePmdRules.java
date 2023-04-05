@@ -14,22 +14,22 @@ public final class MassSupportedEditablePmdRules {
 
      The name of the PMD rule that checks for excessive class length.
      */
-    public final static String EXCESSIVE_CLASS_LENGTH = "ExcessiveClassLength";
+    public final static String CLASS_LENGTH = "ExcessiveClassLength";
     /**
 
      The name of the PMD rule that checks for adherence to class naming conventions.
      */
-    public final static String CLASS_NAMING_CONVENTIONS = "ClassNamingConventions";
+    public final static String CONVENTIONS = "ClassNamingConventions";
     /**
 
      The name of the PMD rule that checks for excessive method length.
      */
-    public final static String EXCESSIVE_METHOD_LENGTH = "ExcessiveMethodLength";
+    public final static String METHOD_LENGTH = "ExcessiveMethodLength";
     /**
 
      The name of the PMD rule that checks for adherence to method naming conventions.
      */
-    public final static String METHOD_NAMING_CONVENTIONS = "MethodNamingConventions";
+    public final static String CONVENTIONS1 = "MethodNamingConventions";
     /**
 
      The name of the PMD rule that checks for too many fields in a class.
@@ -39,16 +39,16 @@ public final class MassSupportedEditablePmdRules {
 
      The name of the PMD rule that checks for adherence to local variable naming conventions.
      */
-    public final static String LOCAL_VARIABLE_NAMING_CONVENTIONS = "LocalVariableNamingConventions";
+    public final static String CONVENTIONS2 = "LocalVariableNamingConventions";
     /**
 
      The name of the PMD rule that checks for high cyclomatic complexity in methods.
      */
-    public final static String CYCLOMATIC_COMPLEXITY = "CyclomaticComplexity";
+    public final static String COMPLEXITY = "CyclomaticComplexity";
     /**
 
      The name of the PMD rule that checks for adherence to method parameter naming conventions.
      */
-    public final static String METHOD_PARAMETER_NAMING_CONVENTIONS = "MethodParameterNamingConventions";
+    public final static String CONVENTIONS3 = "MethodParameterNamingConventions";
 
 }
