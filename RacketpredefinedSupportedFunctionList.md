@@ -39,12 +39,15 @@ The "" are only for formating purposes and can be ignored
 - false?
 - not
 
+## On Lists
+- append
+- cons
+- empty
+
 # A List of the functions we are planing to Support
 The "" are only for formating purposes and can be ignored
 
 ## On Lists
-- append
-- cons
 - empty?
 - first
 - length
