@@ -303,34 +303,40 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * case3 counter.
      */
     private void countCase3() {
-        boolean isFromParents = false;
         for (final MethodInvokation mi : invFromCClass) {
             if (mi.isNotConstructorInvocation() && !isRedefinedInCurrentClass(mi)) {
-                for (int i = 0; i < parentMethods.size(); i++) {
-                    final Method[] get = parentMethods.get(i);
-                    int pointer = 0;
-                    while (pointer < get.length) {
-                        final Method method = get[pointer];
-                        isFromParents = isInvocationOfTheMethod(method, mi);
-                        if (isFromParents) {
-                            mi.setDestClass(parents[i].getClassName());
-                            final MethodCoupling methodCoupling = new MethodCoupling(mi.getDestClass(), mi.getDestMethod(),
-                                    mi.getSrcClass(), mi.getSrcMethod());
-                            if (methodCouplings.add(methodCoupling)) {
-                                break;
-                            }
-                        }
-                        pointer++;
-                    }
-                    if (isFromParents) {
-                        break;
-                    }
-                }
+                boolean isFromParents = checkParentMethods(mi);
                 if (isFromParents) {
                     case3++;
                 }
             }
         }
+    }
+
+    private boolean checkParentMethods(MethodInvokation mi) {
+        boolean isFromParents = false;
+        for (int i = 0; i < parentMethods.size(); i++) {
+            final Method[] get = parentMethods.get(i);
+            if (matchParentMethod(get, mi)) {
+                isFromParents = true;
+                break;
+            }
+        }
+        return isFromParents;
+    }
+
+    private boolean matchParentMethod(Method[] parentMethod, MethodInvokation mi) {
+        for (int i = 0; i < parentMethod.length; i++) {
+            if (isInvocationOfTheMethod(parentMethod[i], mi)) {
+                mi.setDestClass(parents[i].getClassName());
+                final MethodCoupling methodCoupling = new MethodCoupling(mi.getDestClass(), mi.getDestMethod(),
+                        mi.getSrcClass(), mi.getSrcMethod());
+                if (methodCouplings.add(methodCoupling)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
