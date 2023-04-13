@@ -30,7 +30,7 @@ public class SyntaxError extends AbstractReportEntry {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SyntaxError)) return false;
-        SyntaxError that = (SyntaxError) o;
+        final SyntaxError that = (SyntaxError) o;
         return getLine() == that.getLine()
                 && getStartPos() == that.getStartPos()
                 && getEndPos() == that.getEndPos()
@@ -41,4 +41,8 @@ public class SyntaxError extends AbstractReportEntry {
                 && Objects.equals(getFileName(), that.getFileName());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(errorCode, errorMessage, errorTrigger, fileName, line, startPos, endPos, columnNumber);
+    }
 }

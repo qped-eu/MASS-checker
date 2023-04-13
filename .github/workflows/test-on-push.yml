@@ -1,0 +1,25 @@
+name: Test on Push
+on:
+  push:
+    branches: ["Working"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
+      - name: Run Tests
+        run: mvn test
+

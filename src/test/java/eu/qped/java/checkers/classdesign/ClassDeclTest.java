@@ -50,7 +50,7 @@ public class ClassDeclTest {
         qfClassSettings.setClassInfos(classInfos);
     }
 
-    private static void chooseClassType(ClassKeywordConfig classConfig, String classType, String choice) {
+    private static void chooseClassType(ClassKeywordConfig classConfig, String classType, KeywordChoice choice) {
         Map<String, Runnable> runnableMap = new HashMap<>();
         runnableMap.put("interface", () -> classConfig.setInterfaceType(choice));
         runnableMap.put("class", () -> classConfig.setClassType(choice));
@@ -63,8 +63,8 @@ public class ClassDeclTest {
     }
 
     @DataPoints("choices")
-    public static String[] choiceValues() {
-        return new String[] {KeywordChoice.YES.toString(), KeywordChoice.NO.toString()};
+    public static KeywordChoice[] choiceValues() {
+        return new KeywordChoice[] {KeywordChoice.YES, KeywordChoice.NO};
     }
 
     @Theory
@@ -130,13 +130,13 @@ public class ClassDeclTest {
 
     @Theory
     public void correctType(@FromDataPoints("classTypes") String classType,
-                            @FromDataPoints("choices")String choice) {
+                            @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
         chooseClassType(classConfig, classType, choice);
 
         String allowedType = classType;
-        if (choice.equals(KeywordChoice.NO.toString())) {
+        if (choice.equals(KeywordChoice.NO)) {
             allowedType = classType.equals("interface") ? "class" : "interface";
         }
         String source = allowedType+" TestClass {}";
@@ -157,13 +157,13 @@ public class ClassDeclTest {
 
     @Theory
     public void wrongType(@FromDataPoints("classTypes") String classType,
-                            @FromDataPoints("choices")String choice) {
+                            @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
         chooseClassType(classConfig, classType, choice);
 
         String allowedType = classType;
-        if (choice.equals(KeywordChoice.YES.toString())) {
+        if (choice.equals(KeywordChoice.YES)) {
             allowedType = classType.equals("interface") ? "class" : "interface";
         }
         String source = allowedType+" TestClass {}";
@@ -180,8 +180,14 @@ public class ClassDeclTest {
         }
 
         ClassFeedback fb = TestUtils.getFeedback(allowedType+" TestClass", "", WRONG_CLASS_TYPE);
-        ClassFeedback[] expectedFeedback = new ClassFeedback[] {fb};
-        assertArrayEquals(expectedFeedback, classChecker.getClassFeedbacks().toArray(new ClassFeedback[0]));
+        ClassFeedback[] expectedFeedback = new ClassFeedback[1];
+        expectedFeedback[0] = fb;
+
+        ClassFeedback[] l = classChecker.getClassFeedbacks().toArray(new ClassFeedback[1]);
+        l[0] = fb;
+
+
+        assertArrayEquals(expectedFeedback,l);
     }
 
 
@@ -230,13 +236,13 @@ public class ClassDeclTest {
 
     @Theory
     public void wrongTypeAndName(@FromDataPoints("classTypes") String classType,
-                                 @FromDataPoints("choices")String choice) {
+                                 @FromDataPoints("choices")KeywordChoice choice) {
         init();
 
         chooseClassType(classConfig, classType, choice);
 
         String allowedType = classType;
-        if (choice.equals(KeywordChoice.NO.toString())) {
+        if (choice.equals(KeywordChoice.NO)) {
             allowedType = classType.equals("interface") ? "class" : "interface";
         }
         String source = allowedType+" TestClass {}";
@@ -262,11 +268,11 @@ public class ClassDeclTest {
     public void notEnoughClasses() {
         init();
 
-        chooseClassType(classConfig, "class", KeywordChoice.YES.toString());
+        chooseClassType(classConfig, "class", KeywordChoice.YES);
 
         ClassInfo classInfo1 = new ClassInfo();
         ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        chooseClassType(classKeywordConfig, "class", KeywordChoice.YES.toString());
+        chooseClassType(classKeywordConfig, "class", KeywordChoice.YES);
         classKeywordConfig.setName("NotTestClass");
         classInfo1.setClassKeywordConfig(classKeywordConfig);
         classInfos.add(classInfo1);
@@ -293,10 +299,10 @@ public class ClassDeclTest {
     public void multipleClasses() {
         init();
 
-        chooseClassType(classConfig, "class", KeywordChoice.YES.toString());
+        chooseClassType(classConfig, "class", KeywordChoice.YES);
 
         FieldKeywordConfig field1 = new FieldKeywordConfig();
-        field1.setPrivateModifier(KeywordChoice.YES.toString());
+        field1.setPrivateModifier(KeywordChoice.YES);
         field1.setType("String");
         field1.setName("name");
 
@@ -304,11 +310,11 @@ public class ClassDeclTest {
 
         ClassInfo classInfo1 = new ClassInfo();
         ClassKeywordConfig classKeywordConfig = new ClassKeywordConfig();
-        chooseClassType(classKeywordConfig, "class", KeywordChoice.YES.toString());
+        chooseClassType(classKeywordConfig, "class", KeywordChoice.YES);
         classKeywordConfig.setName("NotTestClass");
 
         FieldKeywordConfig field2 = new FieldKeywordConfig();
-        field2.setPrivateModifier(KeywordChoice.YES.toString());
+        field2.setPrivateModifier(KeywordChoice.YES);
         field2.setType("int");
         field2.setName("num");
         classInfo1.setFieldKeywordConfigs(Collections.singletonList(field2));

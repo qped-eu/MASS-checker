@@ -28,15 +28,17 @@ public class SyntaxFeedbackGenerator {
     private DefaultFeedbacksStore defaultFeedbacksStore;
     private FeedbackManager feedbackManager;
 
-    public List<String> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
+    public List<String> generateFeedbacks(final List<SyntaxError> errors, final SyntaxSetting syntaxSetting) {
         List<Feedback> nakedFeedbacks = generateNakedFeedbacks(errors, syntaxSetting);
         nakedFeedbacks = adaptFeedbackByCheckLevel(syntaxSetting, nakedFeedbacks);
-        if (feedbackManager == null) feedbackManager = FeedbackManager.builder().build();
+        if (feedbackManager == null) {
+            feedbackManager = FeedbackManager.builder().build();
+        }
         feedbackManager.setFeedbacks(nakedFeedbacks);
         return feedbackManager.buildFeedbackInTemplate(syntaxSetting.getLanguage());
     }
 
-    private List<Feedback> adaptFeedbackByCheckLevel(SyntaxSetting syntaxSetting, List<Feedback> feedbacks) {
+    private List<Feedback> adaptFeedbackByCheckLevel(final SyntaxSetting syntaxSetting, final List<Feedback> feedbacks) {
         if (syntaxSetting.getCheckLevel().equals(CheckLevel.BEGINNER)) {
             return feedbacks;
         } else {
@@ -44,8 +46,8 @@ public class SyntaxFeedbackGenerator {
         }
     }
 
-    private List<Feedback> generateNakedFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
-        List<Feedback> result = new ArrayList<>();
+    private List<Feedback> generateNakedFeedbacks(final List<SyntaxError> errors, final SyntaxSetting syntaxSetting) {
+        final List<Feedback> result = new ArrayList<>();
         if (defaultFeedbacksStore == null) {
             defaultFeedbacksStore = new DefaultFeedbacksStore(
                     provideDefaultFeedbackDirectory(SyntaxChecker.class)
@@ -53,8 +55,8 @@ public class SyntaxFeedbackGenerator {
             );
         }
 
-        for (SyntaxError error : errors) {
-            var feedback = Feedback.builder().build();
+        for (final SyntaxError error : errors) {
+            final var feedback = Feedback.builder().build();
             feedback.setType(Type.CORRECTION);
             feedback.setCheckerName(SyntaxChecker.class.getSimpleName());
             if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
@@ -69,7 +71,7 @@ public class SyntaxFeedbackGenerator {
                     .startLine((int) error.getLine())
                     .methodName("")
                     .fileName(
-                            error.getFileName() != null && error.getFileName().equals("TestClass.java") ? "" : error.getFileName()
+                            error.getFileName() != null && "TestClass.java".equals(error.getFileName()) ? "" : error.getFileName()
                     )
                     .build()
             );

@@ -97,46 +97,44 @@ public class StyleAnalyser {
     }
 
     private void addBasicRules(final CheckLevel level) {
-        if (level.equals(CheckLevel.INTERMEDIATE)) {
-            xmlFileManager.addToMainRuleset(PmdRulesSets.ADVANCED_BASIC_RULES_SET);
-        } else if (level.equals(CheckLevel.ADVANCED)) {
-            xmlFileManager.addToMainRuleset(PmdRulesSets.PROFESSIONAL_BASIC_RULES_SET);
-        } else {
-            xmlFileManager.addToMainRuleset(PmdRulesSets.BEGINNER_BASIC_RULES_SET);
-        }
+        xmlFileManager.addToMainRuleset(level == CheckLevel.INTERMEDIATE ?
+                PmdRulesSets.ADVANCED_BASIC_RULES_SET :
+                level == CheckLevel.ADVANCED ?
+                        PmdRulesSets.PROFESSIONAL_BASIC_RULES_SET :
+                        PmdRulesSets.BEGINNER_BASIC_RULES_SET);
     }
 
     private void applySettingsOnMainRuleset() {
         try {
             if (styleSettings.getMaxClassLength() != -1) {
                 xmlFileManager.editProperty(
-                        MassSupportedEditablePmdRules.EXCESSIVE_CLASS_LENGTH, String.valueOf(styleSettings.getMaxClassLength()
+                        MassSupportedEditablePmdRules.CLASS_LENGTH, String.valueOf(styleSettings.getMaxClassLength()
                         ), "minimum");
             }
             if (styleSettings.getMaxMethodLength() != -1) {
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.EXCESSIVE_METHOD_LENGTH, String.valueOf(styleSettings.getMaxMethodLength()), "minimum");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_LENGTH, String.valueOf(styleSettings.getMaxMethodLength()), "minimum");
             }
             if (styleSettings.getMaxFieldsCount() != -1) {
                 xmlFileManager.editProperty(MassSupportedEditablePmdRules.TOO_MANY_FIELDS, String.valueOf(styleSettings.getMaxFieldsCount()), "maxfields");
             }
             if (styleSettings.getMaxCycloComplexity() != -1) {
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CYCLOMATIC_COMPLEXITY, String.valueOf(styleSettings.getMaxCycloComplexity()), "methodReportLevel");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.COMPLEXITY, String.valueOf(styleSettings.getMaxCycloComplexity()), "methodReportLevel");
             }
             if (!styleSettings.getVarNamesRegEx().equals("undefined") && !styleSettings.getVarNamesRegEx().equals("-1")) {
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.LOCAL_VARIABLE_NAMING_CONVENTIONS, String.valueOf(styleSettings.getVarNamesRegEx()), "localVarPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CONVENTIONS2, String.valueOf(styleSettings.getVarNamesRegEx()), "localVarPattern");
             }
             if (!styleSettings.getMethodParameterNamesRegEx().equals("undefined")) {
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_PARAMETER_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "methodParameterPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CONVENTIONS3, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "methodParameterPattern");
             }
             if (!styleSettings.getMethodParameterNamesRegEx().equals("undefined")) {
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_PARAMETER_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "finalMethodParameterPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CONVENTIONS3, String.valueOf(styleSettings.getMethodParameterNamesRegEx()), "finalMethodParameterPattern");
             }
             if (!styleSettings.getMethodNamesRegEx().equals("undefined") && !styleSettings.getMethodNamesRegEx().equals("-1")) {
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.METHOD_NAMING_CONVENTIONS, String.valueOf(styleSettings.getMethodNamesRegEx()), "methodPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CONVENTIONS1, String.valueOf(styleSettings.getMethodNamesRegEx()), "methodPattern");
             }
             if (!styleSettings.getClassNameRegEx().equals("undefined") && !styleSettings.getClassNameRegEx().equals("-1")) {
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CLASS_NAMING_CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "classPattern");
-                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CLASS_NAMING_CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "abstractClassPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "classPattern");
+                xmlFileManager.editProperty(MassSupportedEditablePmdRules.CONVENTIONS, String.valueOf(styleSettings.getClassNameRegEx()), "abstractClassPattern");
             }
         } catch (PmdConfigException e) {
             LogManager.getLogger(getClass()).throwing(e);

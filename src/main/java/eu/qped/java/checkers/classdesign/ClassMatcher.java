@@ -27,10 +27,10 @@ class ClassMatcher {
      * @param classInfos expected class information
      * @param classDecls provided classes
      */
-    public ClassFeedback checkClassAmount(List<ClassInfo> classInfos, List<ClassOrInterfaceDeclaration> classDecls) {
+    public static ClassFeedback checkClassAmount(List<ClassInfo> classInfos, List<ClassOrInterfaceDeclaration> classDecls) {
         ClassFeedback fb = null;
         if(classInfos.size() > classDecls.size()) {
-            fb = ClassFeedbackGenerator.generateFeedback("", "", ClassFeedbackType.MISSING_CLASSES, "");
+            fb = ClassFeedbackGenerator.generateFeedback("", "", MISSING_CLASSES, ""); //ClassFeedbackType.MISSING_CLASSES ist unnötig, man kann einfach MISSING_CLASSES schreiben, da die Klasse in import enthalten ist
         }
         return fb;
     }
@@ -43,8 +43,8 @@ class ClassMatcher {
      * @param classInfos expected class infos
      * @return Map with matches class declarations and class infos
      */
-    public Map<ClassInfo, ClassOrInterfaceDeclaration> matchClassNames(List<ClassOrInterfaceDeclaration> classDecls,
-                                                                       List<ClassInfo> classInfos) throws ClassNameException {
+    public static Map<ClassInfo, ClassOrInterfaceDeclaration> matchClassNames(List<ClassOrInterfaceDeclaration> classDecls,
+                                                                              List<ClassInfo> classInfos) throws ClassNameException {
 
 
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = matchWithName(classDecls, classInfos);
@@ -70,24 +70,28 @@ class ClassMatcher {
      * @param classInfos provided expected class infos
      * @return matched declarations and class infos with provided fully qualified names
      */
-    private Map<ClassInfo, ClassOrInterfaceDeclaration> matchWithName(List<ClassOrInterfaceDeclaration> classDecls,
-                                                                      List<ClassInfo> classInfos) throws ClassNameException {
+    private static Map<ClassInfo, ClassOrInterfaceDeclaration> matchWithName(List<ClassOrInterfaceDeclaration> classDecls,
+                                                                             List<ClassInfo> classInfos) throws ClassNameException {
 
         Map<ClassInfo, ClassOrInterfaceDeclaration> matchedInfoDecl = new HashMap<>();
         Iterator<ClassOrInterfaceDeclaration> declIterator = classDecls.iterator();
+        boolean matchFound;
+        String className="";
+        boolean nameMatch;
+        String fullyQualifiedName="";
         while(declIterator.hasNext()) {
             ClassOrInterfaceDeclaration classDecl = declIterator.next();
             Iterator<ClassInfo> infoIterator = classInfos.iterator();
 
             while (infoIterator.hasNext()) {
-                boolean matchFound = false;
+                matchFound = false;
                 ClassInfo classInfo = infoIterator.next();
 
                 ClassKeywordConfig classKeywordConfig = classInfo.getClassKeywordConfig();
-                String className = classKeywordConfig.getName();
-                boolean nameMatch = isClassNameMatch(classDecl, className);
+                className = classKeywordConfig.getName();
+                nameMatch = isClassNameMatch(classDecl, className);
 
-                String fullyQualifiedName = classInfo.getFullyQualifiedName();
+                fullyQualifiedName = classInfo.getFullyQualifiedName();
                 Optional<String> actualQualifiedName = classDecl.getFullyQualifiedName();
                 if(actualQualifiedName.isPresent() && fullyQualifiedName.equals(actualQualifiedName.get())) {
                     matchFound = true;
@@ -106,22 +110,23 @@ class ClassMatcher {
         }
         return matchedInfoDecl;
     }
-
     /**
      * All remaining class declarations have mismatched names, so that we generated them here
      * @param classDecls class declarations to generate feedback for
      * @return list of all generated feedback for the class declarations
      */
-    public List<ClassFeedback> generateClassNameFeedback(List<ClassOrInterfaceDeclaration> classDecls) {
+    public static List<ClassFeedback> generateClassNameFeedback(List<ClassOrInterfaceDeclaration> classDecls) {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
 
         Iterator<ClassOrInterfaceDeclaration> classDeclIterator = classDecls.iterator();
-
+        String className="";
+        String classType="";
+        String classTypeName ="";
         while(classDeclIterator.hasNext()) {
             ClassOrInterfaceDeclaration classDecl = classDeclIterator.next();
-            String className = classDecl.getNameAsString();
-            String classType = classDecl.isInterface() ? "interface" : "class";
-            String classTypeName = classType + " " + className;
+            className = classDecl.getNameAsString();
+            classType = classDecl.isInterface() ? "interface" : "class";
+            classTypeName = classType + " " + className;
             collectedFeedback.add(ClassFeedbackGenerator.generateFeedback(classTypeName, "",
                     WRONG_CLASS_NAME, ""));
             classDeclIterator.remove();
@@ -146,6 +151,14 @@ class ClassMatcher {
         return findViolation(accessMatch, nonAccessMatch, typeMatch, classDecl, customFeedback);
     }
 
+    /** check if the class have a Violation
+     * @param accessMatch a boolean type describe the modifier like public
+     * @param nonAccessMatch a boolean type describe the modifier like private and protected
+     * @param typeMatch a boolean type describe the class type
+     * @param classDecl an object which have two types either Class or Interface
+     * @param customFeedback a list of feedback that describe a class or interface
+     * @return a list of feedbacks with violation
+     */
     private List<ClassFeedback> findViolation(boolean accessMatch, boolean nonAccessMatch, boolean typeMatch, ClassOrInterfaceDeclaration classDecl,
                                              List<String> customFeedback) {
         List<ClassFeedback> collectedFeedback = new ArrayList<>();
@@ -180,20 +193,24 @@ class ClassMatcher {
      */
     private boolean isClassTypeMatch(ClassOrInterfaceDeclaration classDecl, List<String> classTypes) {
         for (String classType: classTypes) {
-            if(classType.equals(ClassType.INTERFACE.toString())) {
-                if(classDecl.isInterface()) {
-                    return true;
-                }
-            } else if (classType.equals(ClassType.CLASS.toString())) {
-                if(!classDecl.isInterface()) {
-                    return true;
-                }
+            if((classType.equals(ClassType.INTERFACE.toString())) && (classDecl.isInterface())) {
+                return true;
+            }
+            else if ((classType.equals(ClassType.CLASS.toString())) &&(!classDecl.isInterface())) {
+                return true;
             }
         }
         return false;
     }
 
-    private boolean isClassNameMatch(ClassOrInterfaceDeclaration classDecl, String className) throws ClassNameException {
+    /**
+     * check if the provided class name equals the actual interface or class name
+     * @param classDecl an object which have two types either Class or Interface
+     * @param className a String which have the name of the class
+     * @return true if the provided class name equals the actual interface or class name
+     * @throws ClassNameException
+     */
+    private static boolean isClassNameMatch(ClassOrInterfaceDeclaration classDecl, String className) throws ClassNameException {
         if(className.isBlank()) {
             throw new ClassNameException();
         }
