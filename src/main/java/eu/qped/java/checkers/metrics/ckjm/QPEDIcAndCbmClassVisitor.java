@@ -253,23 +253,36 @@ public class QPEDIcAndCbmClassVisitor extends AbstractClassVisitor {
      * If a parent method reads a field that is defined in a new/redefined method, the method coupling is added to the set and case1 is incremented.
      */
     private void countCase1() {
-        for (final FieldAccess fap : parentsReaders) {
-            if (!isFieldDefinedInCurrentClass(fap.getFieldName())) {
-                for (final FieldAccess fac : cClassSetters) {
-                    if (fap.getFieldName().equals(fac.getFieldName())) {
-                        final MethodCoupling methodCoupling = new MethodCoupling(fap.getAccessorClass().getClassName(),
-                                fap.getAccessor().getName(),
-                                fac.getAccessorClass().getClassName(),
-                                fac.getAccessor().getName());
-                        if (methodCouplings.add(methodCoupling)) {
-                            case1++;
-                            break;
-                        }
-                    }
-                }
+        for (final FieldAccess parentReader : parentsReaders) {
+            if (isFieldDefinedInCurrentClass(parentReader.getFieldName())) {
+                continue;
             }
+            processParentReader(parentReader);
         }
     }
+
+    private void processParentReader(FieldAccess parentReader) {
+        for (final FieldAccess cClassSetter : cClassSetters) {
+            if (!parentReader.getFieldName().equals(cClassSetter.getFieldName())) {
+                continue;
+            }
+            processMatchingCClassSetter(parentReader, cClassSetter);
+        }
+    }
+
+    private void processMatchingCClassSetter(FieldAccess parentReader, FieldAccess cClassSetter) {
+        final MethodCoupling methodCoupling = new MethodCoupling(
+                parentReader.getAccessorClass().getClassName(),
+                parentReader.getAccessor().getName(),
+                cClassSetter.getAccessorClass().getClassName(),
+                cClassSetter.getAccessor().getName()
+        );
+        if (!methodCouplings.add(methodCoupling)) {
+            return;
+        }
+        case1++;
+    }
+
 
     /**
      * Counts the number of inherited methods that call a redefined method
