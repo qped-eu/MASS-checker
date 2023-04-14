@@ -1236,4 +1236,321 @@ public class RacketEvaluationTests {
 
     }
 
+    @Test
+    void testEmptyQ() throws Exception {
+        String s = "(empty? (cons 1 empty))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(empty? empty)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(empty? (cons 1 (cons 2 empty)))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+    }
+
+    @Test
+    void testFirst() throws Exception {
+        String s = "(first (cons 1 (cons 2 empty)))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(1), inter.evaluateExpressions());
+
+        s = "(first (cons (+ 1 1) (cons 3 empty)))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(first (cons 1 empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(1), inter.evaluateExpressions());
+    }
+
+    @Test
+    void testLength() throws Exception {
+        String s = "(length (cons 1 (cons 2 empty)))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(length (cons (+ 1 1) (cons 3 empty)))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(length (cons 1 empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(1), inter.evaluateExpressions());
+
+        s = "(length empty)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(0), inter.evaluateExpressions());
+
+        s = "(length (cons 1 (cons 2 (cons 3 (cons 4 empty)))))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(4), inter.evaluateExpressions());
+    }
+
+    @Test
+    void testList() throws Exception {
+        String s = "(list 1)";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 '())", inter.evaluateExpressions());
+
+        s = "(list 1 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 2.0 '()))", inter.evaluateExpressions());
+
+        s = "(list 1 2 3 4)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 2.0 (cons 3.0 (cons 4.0 '()))))", inter.evaluateExpressions());
+
+        s = "(list (+ 1 3) 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 4.0 (cons 2.0 '()))", inter.evaluateExpressions());
+
+        s = "(list empty)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons '() '())", inter.evaluateExpressions());
+    }
+
+    @Test
+    void testMember() throws Exception {
+        String s = "(member 1 (list 1 2 3))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(member 4 (list 1 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(member (+ 1 1) (list 1 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(member 1 (cons 1 empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+    }
+
+    @Test
+    void testMemberQ() throws Exception {
+        String s = "(member? 1 (list 1 2 3))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(member? 4 (list 1 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(member? (+ 1 1) (list 1 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(member? 1 (cons 1 empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+    }
+
+    @Test
+    void testRange() throws Exception {
+        String s = "(range 0 10 2)";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 0.0 (cons 2.0 (cons 4.0 (cons 6.0 (cons 8.0 '())))))", inter.evaluateExpressions());
+
+        s = "(range 0 1 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 0.0 '())", inter.evaluateExpressions());
+
+        s = "(range 0 1 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 0.0 '())", inter.evaluateExpressions());
+
+        s = "(range 0 2 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 0.0 (cons 1.0 '()))", inter.evaluateExpressions());
+
+        s = "(range 0 0 0)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("'()", inter.evaluateExpressions());
+
+        s = "(range 5 10 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 5.0 (cons 7.0 (cons 9.0 '())))", inter.evaluateExpressions());
+    }
+
+    @Test
+    void testRemove() throws Exception {
+        String s = "(remove 2 (list 1 2 3 2))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 3.0 (cons 2.0 '())))", inter.evaluateExpressions());
+
+        s = "(remove 1 (list 1 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 2.0 (cons 3.0 '()))", inter.evaluateExpressions());
+
+        s = "(remove 2 (list 1 4 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 4.0 (cons 3.0 '())))", inter.evaluateExpressions());
+
+        s = "(remove 2 (list 1 4 3 2))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 4.0 (cons 3.0 '())))", inter.evaluateExpressions());
+
+        s = "(remove (list 1 2) (list 1 2 3 2))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 2.0 (cons 3.0 (cons 2.0 '()))))", inter.evaluateExpressions());
+
+        s = "(remove (+ 1 1) (list 1 2 3 2))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 3.0 (cons 2.0 '())))", inter.evaluateExpressions());
+    }
+    @Test
+    void testRemoveAll() throws Exception {
+        String s = "(remove-all 2 (list 1 2 3 2))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 3.0 '()))", inter.evaluateExpressions());
+
+        s = "(remove-all 1 (list 1 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 2.0 (cons 3.0 '()))", inter.evaluateExpressions());
+
+        s = "(remove-all 2 (list 1 4 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 4.0 (cons 3.0 '())))", inter.evaluateExpressions());
+
+        s = "(remove-all 2 (list 1 4 3 2))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 4.0 (cons 3.0 '())))", inter.evaluateExpressions());
+
+        s = "(remove-all (list 1 2) (list 1 2 3 2))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 2.0 (cons 3.0 (cons 2.0 '()))))", inter.evaluateExpressions());
+
+        s = "(remove-all (+ 1 1) (list 1 2 3 2))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 3.0 '()))", inter.evaluateExpressions());
+    }
+
+    @Test
+    void testRest() throws Exception {
+        String s = "(rest (cons 1 empty))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("'()", inter.evaluateExpressions());
+
+        s = "(rest (cons 1 (cons 2 empty)))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 2.0 '())", inter.evaluateExpressions());
+
+        s = "(rest (list 1 2 3 4))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 2.0 (cons 3.0 (cons 4.0 '())))", inter.evaluateExpressions());
+    }
+
+    @Test
+    void testReverse() throws Exception {
+        String s = "((reverse (cons 1 empty)))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 '())", inter.evaluateExpressions());
+
+        s = "(reverse (cons 1 (cons 2 empty)))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 2.0 (cons 1.0 '()))", inter.evaluateExpressions());
+
+        s = "(reverse (list 1 2 3 4))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 4.0 (cons 3.0 (cons 2.0 (cons 1.0 '()))))", inter.evaluateExpressions());
+
+        s = "(reverse empty)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("'()", inter.evaluateExpressions());
+    }
+
+    @Test
+    void testSecond() throws Exception {
+        String s = "(second (cons 1 (cons 2 empty)))";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(second (cons (+ 1 1) (cons 3 empty)))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(3), inter.evaluateExpressions());
+
+        s = "(second (cons 1 (cons 2 (cons 3 empty))))";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+    }
+
+    @Test
+    void testMakeList() throws Exception {
+        String s = "(make-list 2 2)";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 2.0 (cons 2.0 '()))", inter.evaluateExpressions());
+
+        s = "(make-list 0 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("'()", inter.evaluateExpressions());
+
+        s = "(make-list 1 5)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 5.0 '())", inter.evaluateExpressions());
+
+        s = "(make-list 3 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.master();
+        assertEquals("(cons 1.0 (cons 1.0 (cons 1.0 '())))", inter.evaluateExpressions());
+    }
 }

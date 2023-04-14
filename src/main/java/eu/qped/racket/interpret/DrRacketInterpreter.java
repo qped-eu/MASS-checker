@@ -6,8 +6,7 @@ import eu.qped.Temp.DrRacketLexer;
 import eu.qped.Temp.DrRacketParser;
 import eu.qped.racket.functions.CustomFunction;
 import eu.qped.racket.functions.booleans.*;
-import eu.qped.racket.functions.lists.Append;
-import eu.qped.racket.functions.lists.Empty;
+import eu.qped.racket.functions.lists.*;
 import eu.qped.racket.functions.numbers.*;
 import eu.qped.racket.functions.numbers.Random;
 import eu.qped.racket.test.*;
@@ -407,6 +406,58 @@ public class DrRacketInterpreter {
 		}
 		if (valueString.compareTo("value=\"empty\"") == 0) {	//Empty
 			expression.addPart(new Empty());
+			return true;
+		}
+		if (valueString.compareTo("value=\"empty?\"") == 0) {	//Empty?
+			expression.addPart(new EmptyQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"first\"") == 0) {	//First
+			expression.addPart(new First());
+			return true;
+		}
+		if (valueString.compareTo("value=\"length\"") == 0) {	//Length
+			expression.addPart(new Length());
+			return true;
+		}
+		if (valueString.compareTo("value=\"list\"") == 0) {	//List
+			expression.addPart(new eu.qped.racket.functions.lists.List());
+			return true;
+		}
+		if (valueString.compareTo("value=\"member\"") == 0) {	//Member
+			expression.addPart(new Member());
+			return true;
+		}
+		if (valueString.compareTo("value=\"member?\"") == 0) {	//Member?
+			expression.addPart(new Member());
+			return true;
+		}
+		if (valueString.compareTo("value=\"range\"") == 0) {	//Range
+			expression.addPart(new Range());
+			return true;
+		}
+		if (valueString.compareTo("value=\"remove\"") == 0) {	//Remove
+			expression.addPart(new Remove());
+			return true;
+		}
+		if (valueString.compareTo("value=\"remove-all\"") == 0) {	//RemoveAll
+			expression.addPart(new RemoveAll());
+			return true;
+		}
+		if (valueString.compareTo("value=\"rest\"") == 0) {	//Rest
+			expression.addPart(new Rest());
+			return true;
+		}
+		if (valueString.compareTo("value=\"reverse\"") == 0) {	//Reverse
+			expression.addPart(new Reverse());
+			return true;
+		}
+		if (valueString.compareTo("value=\"second\"") == 0) {	//Second
+			expression.addPart(new Second());
+			return true;
+		}
+		if (valueString.compareTo("value=\"make-list\"") == 0) {	//Make-List
+			expression.addPart(new MakeList());
 			return true;
 		}
 		return false;
