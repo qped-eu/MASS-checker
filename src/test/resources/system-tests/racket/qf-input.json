@@ -1,5 +1,5 @@
 {
-   "answer":"class TestClass {\n public int num;\n}",
+   "answer":"(+ 1 1)",
    "attemptCount":1,
    "answers":[
       "class TestClass {\n public int num;\n}"

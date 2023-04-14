@@ -29,13 +29,12 @@ public class RacketChecker implements Checker {
         }
 
 
-        String[] feedback = new String[5];
+        String[] feedback = new String[4];
 
         feedback[0] = "# Your Input was:";
         feedback[1] = answer;
         feedback[2] = "# The Output is:";
         feedback[3] = message;
-        feedback[4] = "# The Answer is:" + solution;
 
         qfObject.setFeedback(feedback);
     }
