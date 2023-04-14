@@ -43,11 +43,6 @@ The "" are only for formating purposes and can be ignored
 - append
 - cons
 - empty
-
-# A List of the functions we are planing to Support
-The "" are only for formating purposes and can be ignored
-
-## On Lists
 - empty?
 - first
 - length
@@ -61,6 +56,10 @@ The "" are only for formating purposes and can be ignored
 - reverse
 - second
 - make-list
+
+# A List of the functions we are planing to Support
+The "" are only for formating purposes and can be ignored
+
 ## Posns
 - make-posn
 - posn-x
