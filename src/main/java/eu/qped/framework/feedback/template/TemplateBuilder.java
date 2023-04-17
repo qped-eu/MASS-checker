@@ -50,7 +50,7 @@ public class TemplateBuilder {
         return feedbacks.stream().map(feedback -> buildFeedbackInTemplate(feedback, language)).collect(Collectors.toList());
     }
 
-    private String buildFeedbackInTemplate(Feedback feedback, String language) {
+    public String buildFeedbackInTemplate(Feedback feedback, String language) {
         var templateTextByLanguage = getTemplateKeyWords(language);
         String feedbackHeader = getTemplateFormattedHeader(feedback, templateTextByLanguage);
         String feedbackRelatedLocation = getTemplateFormattedRelatedLocation(feedback.getRelatedLocation(), templateTextByLanguage);

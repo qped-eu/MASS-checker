@@ -1,1 +1,0 @@
-=== QPED - Feedback tools for Python
