@@ -65,7 +65,13 @@ public class Mass implements Checker {
     public void check(QfObject qfObject) throws Exception {
     	
         MassExecutor.MassExecutorBuilder massExecutorBuilder = MassExecutor.builder();
-        MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
+
+        String preferredLanguage = "en";
+        
+        if (qfObject.getUser() != null) {
+            preferredLanguage =  qfObject.getUser().getLanguage();
+        } 
+        MainSettings mainSettings = new MainSettings(mass, preferredLanguage);
         
         massExecutorBuilder.mainSettings(mainSettings);
         
@@ -150,11 +156,7 @@ public class Mass implements Checker {
         // FIXME: why are there two settings objects? the one built here and mass.getSemantic()?
         if (mass.isSemanticSelected()) {
 	        var solutionApproachGeneralSettings = SolutionApproachGeneralSettings.builder().
-	                language(
-	                		qfObject.getUser() != null ?
-	                		qfObject.getUser().getLanguage() :
-	                		Locale.ENGLISH.getLanguage()
-	                		).
+	                language(preferredLanguage).
 	                checkLevel(CheckLevel.BEGINNER).
 	                build();
 	        
