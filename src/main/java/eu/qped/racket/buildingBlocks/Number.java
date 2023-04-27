@@ -1,4 +1,4 @@
-package eu.qped.racket.test;
+package eu.qped.racket.buildingBlocks;
 
 public class Number extends Expression {
     private final float value;
