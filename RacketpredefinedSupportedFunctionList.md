@@ -57,7 +57,7 @@ The "" are only for formating purposes and can be ignored
 - second
 - make-list
 
-# A List of the functions we are planing to Support
+# A List of the functions that would be usefull to Support
 The "" are only for formating purposes and can be ignored
 
 ## Posns
