@@ -67,21 +67,21 @@ public class SyntaxChecker {
             switch (bracketType) {
                 case 0:
                     if (bracketErrors[bracketType] < 0) {
-                        return "unexpected `)`";
+                        return "unexpected )";
                     } else if (bracketErrors[bracketType] > 0) {
-                        return "expected a `)` to close `(`";
+                        return "expected a ) to close (";
                     }
                 case 1:
                     if (bracketErrors[bracketType] < 0) {
-                        return "unexpected `]`";
+                        return "unexpected ]";
                     } else  if (bracketErrors[bracketType] > 0){
-                        return "expected a `]` to close `[`";
+                        return "expected a ] to close [";
                     }
                 case 2:
                     if (bracketErrors[bracketType] < 0) {
-                        return "unexpected `}`";
+                        return "unexpected }";
                     } else  if (bracketErrors[bracketType] > 0){
-                        return "expected a `}` to close `{`";
+                        return "expected a } to close {";
                     }
             }
         }
