@@ -1,4 +1,4 @@
-package eu.qped.java.racket;
+package eu.qped.racket.test;
 
 import eu.qped.racket.interpret.DrRacketInterpreter;
 import org.junit.jupiter.api.Test;

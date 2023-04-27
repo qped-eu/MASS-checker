@@ -1,5 +1,6 @@
 package eu.qped.racket.test;
 
+import eu.qped.racket.buildingBlocks.SyntaxChecker;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

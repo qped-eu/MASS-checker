@@ -1,4 +1,4 @@
-package eu.qped.java.racket;
+package eu.qped.racket.test;
 
 import com.google.gson.JsonParser;
 import eu.qped.framework.qf.QFQuestion;
