@@ -1,9 +1,7 @@
 package eu.qped.racket.functions.lists;
 
-import eu.qped.racket.test.Expression;
+import eu.qped.racket.buildingBlocks.Expression;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
 public class Reverse extends Expression {

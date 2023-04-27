@@ -1,7 +1,7 @@
 package eu.qped.racket.functions;
 
-import eu.qped.racket.test.Expression;
-import eu.qped.racket.test.Parameter;
+import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.Parameter;
 
 import java.util.HashMap;
 import java.util.List;

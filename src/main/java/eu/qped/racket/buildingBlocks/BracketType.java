@@ -1,4 +1,4 @@
-package eu.qped.racket.test;
+package eu.qped.racket.buildingBlocks;
 
 public enum BracketType {
 

@@ -1,6 +1,6 @@
 package eu.qped.racket.functions.numbers;
 
-import eu.qped.racket.test.Expression;
+import eu.qped.racket.buildingBlocks.Expression;
 
 import java.util.List;
 

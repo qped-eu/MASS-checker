@@ -1,6 +1,7 @@
 package eu.qped.java.racket;
 
 import com.google.gson.JsonParser;
+import eu.qped.framework.qf.QFQuestion;
 import eu.qped.framework.qf.QfObject;
 import eu.qped.racket.RacketChecker;
 import eu.qped.racket.interpret.DrRacketInterpreter;
@@ -30,6 +31,7 @@ public class RacketMassTest {
     void testMass() throws Exception {
         JSONParser parser = new JSONParser();
         String answer = "";
+        String questionSolution = "";
         List expectedFeedback = new LinkedList();
 
         try {
@@ -39,6 +41,9 @@ public class RacketMassTest {
 
             answer = (String) jsonObject.get("answer");
             System.out.println(answer);
+
+            questionSolution = ((JSONObject)jsonObject.get("question")).get("solution").toString();
+            System.out.println(questionSolution);
 
             Object expected = parser.parse(new FileReader("src/test/resources/system-tests/racket/qf-expected.json"));
 
@@ -57,12 +62,20 @@ public class RacketMassTest {
 
         QfObject qfObject = new QfObject();
         qfObject.setAnswer(answer);
+        QFQuestion qfq = new QFQuestion();
+        qfq.setSolution(questionSolution);
+        qfObject.setQuestion(qfq);
 
         RacketChecker racketChecker = new RacketChecker();
         racketChecker.check(qfObject);
 
         List<String> actualFeedback = Arrays.stream(qfObject.getFeedback()).collect(Collectors.toList());
         Arrays.stream(qfObject.getFeedback()).forEach(x -> System.out.println(x));
+
+        System.out.println("WWWWWWWWWWWWWWWWW");
+        expectedFeedback.forEach(y -> System.out.println(y));
+        System.out.println("WWWWWWWWWWWWWWWWW");
+        actualFeedback.forEach(y -> System.out.println(y));
 
         assertEquals(expectedFeedback.size(), actualFeedback.size());
 

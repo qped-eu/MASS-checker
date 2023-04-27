@@ -1,6 +1,6 @@
 package eu.qped.racket.functions.lists;
 
-import eu.qped.racket.test.Expression;
+import eu.qped.racket.buildingBlocks.Expression;
 
 public class Member extends Expression {
     @Override

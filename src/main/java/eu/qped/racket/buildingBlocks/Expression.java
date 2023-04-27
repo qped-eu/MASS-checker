@@ -1,4 +1,4 @@
-package eu.qped.racket.test;
+package eu.qped.racket.buildingBlocks;
 
 import java.util.LinkedList;
 import java.util.List;

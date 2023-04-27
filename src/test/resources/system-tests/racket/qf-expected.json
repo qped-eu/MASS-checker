@@ -1,9 +1,9 @@
 {
-   "answer":"class TestClass {\n public int num;\n}",
+   "answer":"(+ 1 1)",
    "attemptCount":1,
 
    "answers":[
-      "class TestClass {\n public int num;\n}"
+      "(+ 1 1)"
    ],
    "showSolution":false,
    "user":{
@@ -20,6 +20,7 @@
    "question":{
       "id":"626aa854769943907f5506ea",
       "text":"Include the public class TestClass",
+      "solution": "2.0",
       "programmingLanguage":"java"
    },
    "files":[
@@ -64,5 +65,5 @@
          ]
       }
    },
-   "feedback":[ "# Your Input was:", "(+ 1 1)", "# The Output is:", "2.0" ]
+   "feedback":[ "## Your Input was:", "# (+ 1 1)", "## The Output is:", "# 2.0", "# Your Answer is correct!" ]
 }

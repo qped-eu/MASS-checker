@@ -1,6 +1,6 @@
 package eu.qped.racket.functions.numbers;
 
-import eu.qped.racket.test.Expression;
+import eu.qped.racket.buildingBlocks.Expression;
 
 import java.util.List;
 
@@ -33,6 +33,6 @@ public class GreaterOrEqualThan extends Expression {
 
     @Override
     public String toString() {
-        return "GreaterThan" + "(" + super.getId() + ")";
+        return "GreaterThanOrEqualThan" + "(" + super.getId() + ")";
     }
 }

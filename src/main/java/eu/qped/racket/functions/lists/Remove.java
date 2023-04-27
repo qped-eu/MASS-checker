@@ -1,8 +1,6 @@
 package eu.qped.racket.functions.lists;
 
-import eu.qped.racket.test.Expression;
-
-import java.util.Arrays;
+import eu.qped.racket.buildingBlocks.Expression;
 
 public class Remove extends Expression {
     @Override

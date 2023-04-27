@@ -2,7 +2,7 @@
    "answer":"(+ 1 1)",
    "attemptCount":1,
    "answers":[
-      "class TestClass {\n public int num;\n}"
+      "(+ 1 1)"
    ],
    "showSolution":false,
    "user":{
@@ -19,6 +19,7 @@
    "question":{
       "id":"626aa854769943907f5506ea",
       "text":"Include the public class TestClass",
+      "solution": "2.0",
       "programmingLanguage":"java"
    },
    "files":[

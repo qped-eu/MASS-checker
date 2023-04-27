@@ -1,7 +1,5 @@
 package eu.qped.racket.interpret;
 
-import java.util.*;
-
 import eu.qped.Temp.DrRacketLexer;
 import eu.qped.Temp.DrRacketParser;
 import eu.qped.racket.functions.CustomFunction;
@@ -9,12 +7,9 @@ import eu.qped.racket.functions.booleans.*;
 import eu.qped.racket.functions.lists.*;
 import eu.qped.racket.functions.numbers.*;
 import eu.qped.racket.functions.numbers.Random;
-import eu.qped.racket.test.*;
-import eu.qped.racket.test.Boolean;
-import eu.qped.racket.test.Number;
-import net.sf.saxon.Configuration;
-import org.antlr.v4.runtime.*;
-import org.apache.commons.io.IOUtils;
+import eu.qped.racket.buildingBlocks.*;
+import eu.qped.racket.buildingBlocks.Boolean;
+import eu.qped.racket.buildingBlocks.Number;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -25,7 +20,6 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ANTLRErrorStrategy;
@@ -39,13 +33,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DrRacketInterpreter {
 
@@ -54,7 +44,6 @@ public class DrRacketInterpreter {
 	private String errorOutput;
 	private String xml;
 	private String rktFile;
-	//Provisorisch
 	private Expression expression;
 	private List<Expression> expressionList;	//alle expressions, die gegeben wurden
 	private List<CustomFunction> customFunctionList = new LinkedList<>();
@@ -97,8 +86,6 @@ public class DrRacketInterpreter {
 		// pretty printing
 		xml = prettyPrint(parser.xml.toString());
 
-		//Code Updates
-
 	}
 
 	public String evaluateExpressions() {
@@ -124,6 +111,8 @@ public class DrRacketInterpreter {
 		transformer.transform(new DOMSource(document), new StreamResult(out));
 		return out.toString();
 	}
+
+	//Everything we commented "out" is not used in this version ,but it might be helpful for future Addons
 
 	/**
 	 * Interpret the Racket program with the XQuery expression from the default file.
@@ -508,7 +497,11 @@ public class DrRacketInterpreter {
 		return customFunction;
 	}
 
-	public void master() throws Exception{
+	/**
+	 * Builds and Evaluates the expression
+	 * @throws Exception
+	 */
+	public void evaluate() throws Exception{
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
 		Document document = builder.parse(new InputSource(new StringReader(xml)));

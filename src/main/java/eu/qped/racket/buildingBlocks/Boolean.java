@@ -1,4 +1,4 @@
-package eu.qped.racket.test;
+package eu.qped.racket.buildingBlocks;
 
 public class Boolean extends Expression {
     private final java.lang.Boolean value;
