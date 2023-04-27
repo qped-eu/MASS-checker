@@ -18,12 +18,19 @@ import java.util.Objects;
 
 public class SyntaxChecker {
 
+    // contains the names of all pre-defined functions of BSL and is later expanded by function Names, that are defined in the given answer rktString
     ArrayList<String> knownFunctionsList;
+    // contains the names of all pre-defined variables of BSL and is later expanded by variable Names, that are defined in the given answer rktString
     ArrayList<String> knownVariablesList;
 
-    /** Jedem Funktionsnamen wird ein Array zugeordnet mit Angaben zu den Parametern und dem Rückgabetyp.
-     *  Das Array hat die Form {Rückgabetyp, Parametertyp_1, ..., Parametertyp_n, (INFINITE)}.
-     *  INFINITE nur dann, wenn der vorherige Parametertyp unendlich oft vorkommen kann.
+    /**
+     * a function name is the key and its value is a String array, which contains the return-Type of the function as its first element,
+     * and the attributes of the function as the following elements of the array.
+     *
+     * Example:
+     * functionNameAndAttributes.put("<=", new String[]{"Boolean", "Number", "Number"});
+     *
+     * In this Example, the function name is "<=", the return-Type is Boolean and the expected Attributes are Number and Number.
      */
     HashMap<String, String[]> functionNameAndAttributes;
     HashMap<String, String> variableNameAndValue;
@@ -32,294 +39,55 @@ public class SyntaxChecker {
      * Creates the Parameter-Arrays for every Function and assigns them to the function name
      */
     public SyntaxChecker() {
-        PreDefinedFunctionsAndVariables fv = new PreDefinedFunctionsAndVariables();
-        knownFunctionsList = fv.getPreDefinedFunctionsList();
-        knownVariablesList = fv.getPreDefinedVariablesList();
-        functionNameAndAttributes = new HashMap<>();
-        variableNameAndValue = new HashMap<>();
-
-        // special
-        String[] parameterANYNameINIFINITE = {"ANY", "Name", "INFINITE"};
-        functionNameAndAttributes.put("cond", parameterANYNameINIFINITE);
-
-        // pre-defined Variables
-        variableNameAndValue.put("empty", "List");
-        variableNameAndValue.put("pi", "Number");
-        variableNameAndValue.put("null", "List");
-        variableNameAndValue.put("e", "HashName");
-
-        // On numbers
-        String[] parameterNumberNumberNumberInfinite = {"Number", "Number", "Number", "INFINITE"};
-        String[] parameterBooleanNumberNumberInfinite = {"Boolean", "Number", "Number", "INFINITE"};
-        String[] parameterNumberNumberINFINITE = {"Number", "Number", "INFINITE"};
-        String[] parameterNumberNumber = {"Number", "Number"};
-        String[] parameterBooleanNumber = {"Boolean", "Number"};
-        String[] parameterNumber = {"Number"};
-        String[] parameterHashnameNumber = {"HashName", "Number"};
-        String[] parameterNumberNumberNumber = {"Number", "Number", "Number"};
-        String[] parameterCharacterNumber = {"Character", "Number"};
-        String[] parameterBooleanANY = {"Boolean", "ANY"};
-        String[] parameterHashnameHashname = {"HashName", "HashName"};
-        String[] parameterHashnameNumberNumber = {"HashName", "Number", "Number"};
-        String[] parameterStringNumber = {"String", "Number"};
-        String[] parameterStringNumberNumber = {"String", "Number", "Number"};
-        functionNameAndAttributes.put("+", parameterNumberNumberNumberInfinite);
-        functionNameAndAttributes.put("*", parameterNumberNumberNumberInfinite);
-        functionNameAndAttributes.put("/", parameterNumberNumberNumberInfinite);
-        functionNameAndAttributes.put("-", parameterNumberNumberINFINITE);
-        functionNameAndAttributes.put("<", parameterBooleanNumberNumberInfinite);
-        functionNameAndAttributes.put("<=", parameterBooleanNumberNumberInfinite);
-        functionNameAndAttributes.put(">", parameterBooleanNumberNumberInfinite);
-        functionNameAndAttributes.put(">=", parameterBooleanNumberNumberInfinite);
-        functionNameAndAttributes.put("=", parameterBooleanNumberNumberInfinite);
-        functionNameAndAttributes.put("abs", parameterNumberNumber);
-        functionNameAndAttributes.put("acos", parameterNumberNumber);
-        functionNameAndAttributes.put("add1", parameterNumberNumber);
-        functionNameAndAttributes.put("angle", parameterNumberNumber);
-        functionNameAndAttributes.put("asin", parameterNumberNumber);
-        functionNameAndAttributes.put("atan", parameterNumberNumber);
-        functionNameAndAttributes.put("ceiling", parameterNumberNumber);
-        functionNameAndAttributes.put("complex?", parameterBooleanANY);
-        functionNameAndAttributes.put("conjugate", parameterNumberNumber);
-        functionNameAndAttributes.put("cos", parameterNumberNumber);
-        functionNameAndAttributes.put("cosh", parameterNumberNumber);
-        functionNameAndAttributes.put("current-seconds", parameterNumber);
-        functionNameAndAttributes.put("denominator", parameterNumberNumber);
-        functionNameAndAttributes.put("even?", parameterBooleanNumber);
-        functionNameAndAttributes.put("exact->inexact", parameterNumberNumber);
-        functionNameAndAttributes.put("exact?", parameterBooleanNumber);
-        functionNameAndAttributes.put("exp", parameterHashnameNumber);
-        functionNameAndAttributes.put("expt", parameterNumberNumberNumber);
-        functionNameAndAttributes.put("floor", parameterNumberNumber);
-        functionNameAndAttributes.put("gcd", parameterNumberNumberINFINITE);
-        functionNameAndAttributes.put("imag-part", parameterNumberNumber);
-        functionNameAndAttributes.put("inexact->exact", parameterNumberNumber);
-        functionNameAndAttributes.put("inexact?", parameterBooleanNumber);
-        functionNameAndAttributes.put("integer->char", parameterCharacterNumber);
-        functionNameAndAttributes.put("integer-sqrt", parameterNumberNumber);       // complex ist Name !!!!!!!!!!!!
-        functionNameAndAttributes.put("integer?", parameterBooleanANY);
-        functionNameAndAttributes.put("lcm", parameterNumberNumberINFINITE);
-        functionNameAndAttributes.put("log", parameterHashnameNumber);
-        functionNameAndAttributes.put("magnitude", parameterHashnameHashname);
-        functionNameAndAttributes.put("make-polar", parameterHashnameNumberNumber);
-        functionNameAndAttributes.put("make-rectangular", parameterHashnameNumberNumber);
-        functionNameAndAttributes.put("max", parameterNumberNumberINFINITE);
-        functionNameAndAttributes.put("min", parameterNumberNumberINFINITE);
-        functionNameAndAttributes.put("modulo", parameterNumberNumberNumber);
-        functionNameAndAttributes.put("negative?", parameterBooleanNumber);
-        functionNameAndAttributes.put("number->string", parameterStringNumber);
-        functionNameAndAttributes.put("number->string-digits", parameterStringNumberNumber);
-        functionNameAndAttributes.put("number?", parameterBooleanANY);
-        functionNameAndAttributes.put("numerator", parameterNumberNumber);
-        functionNameAndAttributes.put("odd?", parameterBooleanNumber);
-        functionNameAndAttributes.put("positive?", parameterBooleanNumber);
-        functionNameAndAttributes.put("quotient", parameterNumberNumberNumber);
-        functionNameAndAttributes.put("random", parameterNumberNumber);
-        functionNameAndAttributes.put("rational?", parameterBooleanANY);
-        functionNameAndAttributes.put("real-part", parameterNumberNumber);
-        functionNameAndAttributes.put("real?", parameterBooleanANY);
-        functionNameAndAttributes.put("remainder", parameterNumberNumberNumber);
-        functionNameAndAttributes.put("round", parameterNumberNumber);
-        functionNameAndAttributes.put("sgn", parameterNumberNumber);
-        functionNameAndAttributes.put("sin", parameterNumberNumber);
-        functionNameAndAttributes.put("sinh", parameterNumberNumber);
-        functionNameAndAttributes.put("sqr", parameterNumberNumber);
-        functionNameAndAttributes.put("sqrt", parameterNumberNumber);
-        functionNameAndAttributes.put("sub1", parameterNumberNumber);
-        functionNameAndAttributes.put("tan", parameterNumberNumber);
-        functionNameAndAttributes.put("zero?", parameterBooleanNumber);
-
-
-        // on Booleans
-        String[] parameterStringBoolean = {"String", "Boolean"};
-        String[] parameterBooleanBooleanBoolean = {"Boolean", "Boolean", "Boolean"};
-        String[] parameterBooleanBoolean = {"Boolean", "Boolean"};
-        functionNameAndAttributes.put("boolean->string", parameterStringBoolean);
-        functionNameAndAttributes.put("boolean=?", parameterBooleanBooleanBoolean);
-        functionNameAndAttributes.put("boolean?", parameterBooleanANY);
-        functionNameAndAttributes.put("false?", parameterBooleanANY);
-        functionNameAndAttributes.put("not", parameterBooleanBoolean);
-
-        String[] parameterBooleanBooleanBooleanINFNITE = {"Boolean", "Boolean", "Boolean", "INFINITE"};
-        String[] parameterANYBooleanANYANY = {"ANY", "Boolean", "ANY", "ANY"};
-        functionNameAndAttributes.put("and", parameterBooleanBooleanBooleanINFNITE);
-        functionNameAndAttributes.put("or", parameterBooleanBooleanBooleanINFNITE);
-        functionNameAndAttributes.put("if", parameterANYBooleanANYANY);
-
-
-        // on Symbols
-        String[] parameterStringSymbol = {"String", "Symbol"};
-        String[] parameterBooleanSymbolSymbol = {"Boolean", "Symbol", "Symbol"};
-        functionNameAndAttributes.put("symbol->string", parameterStringSymbol);
-        functionNameAndAttributes.put("symbol=?", parameterBooleanSymbolSymbol);
-        functionNameAndAttributes.put("symbol?", parameterBooleanANY);
-
-
-        // on Lists
-        String[] parameterListListListINFINITE = new String[]{"List", "List", "List", "INFINITE"};
-        String[] parameterListANYList = new String[]{"List", "ANY", "List"};
-        String[] parameterANYList = {"ANY", "List"};
-        String[] parameterListANYINFINITEList = {"List", "ANY", "INFINITE", "List"};
-        String[] parameterNumberList = {"Number", "List"};
-        String[] parameterListANYINFINITE = {"List", "ANY", "INFINITE"};
-        String[] parameterBooleanANYList = {"Boolean", "ANY", "List"};
-        String[] parameterListNumberNumberNumber = {"List", "Number", "Number", "Number"};
-        String[] parameterANYListNumber = {"ANY", "List", "Number"};
-        String[] parameterListNumberANY = {"List", "Number", "ANY"};
-        String[] parameterListList = {"List", "List"};
-        functionNameAndAttributes.put("append", parameterListListListINFINITE);
-        functionNameAndAttributes.put("assoc", parameterListANYList);    // maybe not checkable -->
-        functionNameAndAttributes.put("assq", parameterListANYList);
-        functionNameAndAttributes.put("caaar", parameterANYList);
-        functionNameAndAttributes.put("caadr", parameterANYList);
-        functionNameAndAttributes.put("caar", parameterANYList);
-        functionNameAndAttributes.put("cadar", parameterANYList);
-        functionNameAndAttributes.put("cadddr", parameterANYList);
-        functionNameAndAttributes.put("caddr", parameterANYList);
-        functionNameAndAttributes.put("cadr", parameterANYList);     // <-- maybe not checkable, has to be checked if the program is executed
-        functionNameAndAttributes.put("car", parameterANYList);
-        functionNameAndAttributes.put("cdaar", parameterANYList);    // maybe not checkable in syntaxCheck -->
-        functionNameAndAttributes.put("cdadr", parameterANYList);
-        functionNameAndAttributes.put("cdar", parameterListList);
-        functionNameAndAttributes.put("cddar", parameterANYList);
-        functionNameAndAttributes.put("cdddr", parameterANYList);
-        functionNameAndAttributes.put("cddr", parameterListList);
-        functionNameAndAttributes.put("cdr", parameterANYList);      // <-- maybe not checkable in syntaxCheck
-        functionNameAndAttributes.put("cons", parameterListANYList);
-        functionNameAndAttributes.put("cons?", parameterBooleanANY);
-        functionNameAndAttributes.put("eighth", parameterANYList);
-        functionNameAndAttributes.put("empty?", parameterBooleanANY);
-        functionNameAndAttributes.put("fifth", parameterANYList);
-        functionNameAndAttributes.put("first", parameterANYList);
-        functionNameAndAttributes.put("fourth", parameterANYList);
-        functionNameAndAttributes.put("length", parameterNumberList);
-        functionNameAndAttributes.put("list", parameterListANYINFINITE);
-        functionNameAndAttributes.put("list*", parameterListANYINFINITEList);        // Hier gibts noch ein großes Problem
-        functionNameAndAttributes.put("list-ref", parameterANYListNumber);
-        functionNameAndAttributes.put("list?", parameterBooleanANY);
-        functionNameAndAttributes.put("make-list", parameterListNumberANY);
-        functionNameAndAttributes.put("member", parameterBooleanANYList);
-        functionNameAndAttributes.put("member?", parameterBooleanANYList);
-        functionNameAndAttributes.put("memq", parameterBooleanANYList);
-        functionNameAndAttributes.put("memq?", parameterBooleanANYList);
-        functionNameAndAttributes.put("memv", parameterBooleanANYList);         // kann sowohl Boolean als auch List ausgeben
-        functionNameAndAttributes.put("null?", parameterBooleanANY);
-        functionNameAndAttributes.put("range", parameterListNumberNumberNumber);
-        functionNameAndAttributes.put("remove", parameterListANYList);
-        functionNameAndAttributes.put("remove-all", parameterListANYList);
-        functionNameAndAttributes.put("rest", parameterANYList);
-        functionNameAndAttributes.put("reverse", parameterListList);
-        functionNameAndAttributes.put("second", parameterANYList);
-        functionNameAndAttributes.put("seventh", parameterANYList);
-        functionNameAndAttributes.put("sixth", parameterANYList);
-        functionNameAndAttributes.put("third", parameterANYList);
-
-
-        // on Posns
-        String[] parameterPosnANYANY = {"Name", "ANY", "ANY"};
-        String[] parameterANYPosn = {"ANY", "Name"};
-        functionNameAndAttributes.put("make-posn", parameterPosnANYANY);
-        functionNameAndAttributes.put("posn-x", parameterANYPosn);
-        functionNameAndAttributes.put("posn-y", parameterANYPosn);
-        functionNameAndAttributes.put("posn?", parameterBooleanANY);
-
-
-        // on Characters
-        String[] parameterNumberCharacter = {"Number", "Character"};
-        String[] parameterBooleanCharacter = {"Boolean", "Character"};
-        String[] parameterBooleanCharacterINFINITE = {"Boolean", "Character", "INFINITE"};
-        String[] parameterCharacterCharacter = {"Character", "Character"};
-        functionNameAndAttributes.put("char->integer", parameterNumberCharacter);
-        functionNameAndAttributes.put("char-alphabetic?", parameterBooleanCharacter);
-        functionNameAndAttributes.put("char-ci<=?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char-ci<?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char-ci=?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char-ci>=?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char-ci>?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char-downcase", parameterCharacterCharacter);
-        functionNameAndAttributes.put("char-lower-case?", parameterBooleanCharacter);
-        functionNameAndAttributes.put("char-numeric?", parameterBooleanCharacter);
-        functionNameAndAttributes.put("char-upcase", parameterCharacterCharacter);
-        functionNameAndAttributes.put("char-upper-case?", parameterBooleanCharacter);
-        functionNameAndAttributes.put("char-whitespace?", parameterBooleanCharacter);
-        functionNameAndAttributes.put("char<=?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char<?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char=?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char>=?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char>?", parameterBooleanCharacterINFINITE);
-        functionNameAndAttributes.put("char?", parameterBooleanANY);
-
-
-        // on Strings
-        String[] parameterListString = {"List", "String"};
-        String[] parameterStringStringANYINFINITE = {"String", "String", "ANY", "INFINITE"};
-        String[] parameterStringList = {"String", "List"};
-        String[] parameterStringNumberCharacter = {"String", "Number", "Character"};
-        String[] parameterStringNumberString = {"String", "Number", "String"};
-        String[] parameterStringCharacterINFINITE = {"String", "Character", "INFINITE"};
-        String[] parameterNumberString = {"Number", "String"};
-        String[] parameterSymbolString = {"Symbol", "String"};
-        String[] parameterBooleanString = {"Boolean", "String"};
-        String[] parameterStringStringStringINFINITE = {"String", "String", "String", "INFINITE"};
-        String[] parameterBooleanStringString = {"Boolean", "String", "String"};
-        String[] parameterStringString = {"String", "String"};
-        String[] parameterStringStringNumber = {"String", "String", "Number"};
-        String[] parameterCharacterStringNumber = {"Character", "String", "Number"};
-        String[] parameterStringStringNumberNumber = {"String", "String", "Number", "Number"};
-        functionNameAndAttributes.put("explode", parameterListString);
-        functionNameAndAttributes.put("format", parameterStringStringANYINFINITE);
-        functionNameAndAttributes.put("implode", parameterStringList);
-        functionNameAndAttributes.put("int->string", parameterStringNumber);
-        functionNameAndAttributes.put("list->string", parameterStringList);
-        functionNameAndAttributes.put("make-string", parameterStringNumberCharacter);
-        functionNameAndAttributes.put("replicate", parameterStringNumberString);
-        functionNameAndAttributes.put("string", parameterStringCharacterINFINITE);
-        functionNameAndAttributes.put("string->int", parameterNumberString);
-        functionNameAndAttributes.put("string->list", parameterListString);
-        functionNameAndAttributes.put("string->number", parameterNumberString);
-        functionNameAndAttributes.put("string->symbol", parameterSymbolString);
-        functionNameAndAttributes.put("string-alphabetic?", parameterBooleanString);
-        functionNameAndAttributes.put("string-append", parameterStringStringStringINFINITE);
-        functionNameAndAttributes.put("string-ci<=?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string-ci<?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string-ci=?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string-ci>=?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string-ci>?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string-contains-ci?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string-contains?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string-copy", parameterStringString);
-        functionNameAndAttributes.put("string-downcase", parameterStringString);
-        functionNameAndAttributes.put("string-ith", parameterStringStringNumber);
-        functionNameAndAttributes.put("string-length", parameterNumberString);
-        functionNameAndAttributes.put("string-lower-case?", parameterBooleanString);
-        functionNameAndAttributes.put("string-numeric?", parameterBooleanString);
-        functionNameAndAttributes.put("string-ref", parameterCharacterStringNumber);
-        functionNameAndAttributes.put("string-upcase", parameterStringString);
-        functionNameAndAttributes.put("string-upper-case?", parameterBooleanString);
-        functionNameAndAttributes.put("string-whitespace?", parameterBooleanString);
-        functionNameAndAttributes.put("string<=?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string<?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string=?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string>=?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string>?", parameterBooleanStringString);
-        functionNameAndAttributes.put("string?", parameterBooleanANY);
-        functionNameAndAttributes.put("substring", parameterStringStringNumberNumber);       // Hier gehen entweder 1 Number oder zwei Number
-
-
-        // TODO Images fehlt noch und MISC fehlt noch
-
-
+        SyntaxCheckerSetup syntaxCheckerSetup = new SyntaxCheckerSetup();
+        knownFunctionsList = syntaxCheckerSetup.getPreDefinedFunctionsList();
+        knownVariablesList = syntaxCheckerSetup.getPreDefinedVariablesList();
+        functionNameAndAttributes = syntaxCheckerSetup.getFunctionNameAndAttributes();
+        variableNameAndValue = syntaxCheckerSetup.getVariableNameAndValue();
     }
 
 
     public String check(String rktString) {
-        int[] array = bracketCheck(rktString);
-        if (Arrays.stream(array).allMatch(x -> x == 0)) {
-            return syntaxCheck(rktString);
-        }
+        int[] bracketErrors = bracketCheck(rktString);  // Check bracketCheck() description for more information on bracketErrors
+        if (! Arrays.stream(bracketErrors).allMatch(x -> x == 0)) {
 
-        return "Klammer Fehler gefunden";
+            return getBracketError(bracketErrors);  // This will return the error message of a bracket mistake
+
+        } else {
+
+            return syntaxCheck(rktString);          // This will return the error message of a syntax error
+
+        }
     }
+
+
+    public String getBracketError(int[] bracketErrors) {
+        for (int bracketType = 0; bracketType < bracketErrors.length; bracketType++) {
+            switch (bracketType) {
+                case 0:
+                    if (bracketErrors[bracketType] < 0) {
+                        return "unexpected `)`";
+                    } else if (bracketErrors[bracketType] > 0) {
+                        return "expected a `)` to close `(`";
+                    }
+                case 1:
+                    if (bracketErrors[bracketType] < 0) {
+                        return "unexpected `]`";
+                    } else  if (bracketErrors[bracketType] > 0){
+                        return "expected a `]` to close `[`";
+                    }
+                case 2:
+                    if (bracketErrors[bracketType] < 0) {
+                        return "unexpected `}`";
+                    } else  if (bracketErrors[bracketType] > 0){
+                        return "expected a `}` to close `{`";
+                    }
+            }
+        }
+        return "unexpected bracket return";
+    }
+
+
 
     /**
      * Counts the brackets in a String.
@@ -365,8 +133,12 @@ public class SyntaxChecker {
 
 
             while (checkFromIndex<rktString.length() &&
-                    (rktString.substring(checkFromIndex, rktString.length()).contains(openingBracket) ||
-                            rktString.substring(checkFromIndex, rktString.length()).contains(closingBracket))) {
+                    (rktString.substring(checkFromIndex).contains(openingBracket) ||
+                            rktString.substring(checkFromIndex).contains(closingBracket))) {
+
+                if (Arrays.stream(count).anyMatch(x -> x < 0)) {
+                    return count;
+                }
 
                 openingPosition = rktString.indexOf(openingBracket, checkFromIndex);       // positive zahl oder -1
                 closingPosition = rktString.indexOf(closingBracket, checkFromIndex);       // positive zahl oder -1
@@ -412,6 +184,7 @@ public class SyntaxChecker {
                 }
             }
         }
+
         return count;
     }
 
@@ -431,8 +204,6 @@ public class SyntaxChecker {
         }
         return count % 2 != 0;
     }
-
-    public void divisionByZeroCheck() {}
 
 
     /**
@@ -535,11 +306,6 @@ public class SyntaxChecker {
                 return "";
             }
         }
-        /*
-        if (knownVariablesList.contains(expressionValue)) {
-            return expressionValue + ": this variable is not defined";
-        }
-         */
 
         NodeList expressionChildren = expression.getChildNodes();
         expressionChildren = removeEmptyText(expressionChildren);                         // expressionChildren = functionName + functionAttributes
@@ -729,7 +495,6 @@ public class SyntaxChecker {
                 } else {
                     if (parameterType.equals("Name") && ! knownVariablesList.contains(parameterValue)
                             && ! Character.isDigit(parameterValue.charAt(0)) && ! (parameterValue.charAt(0) == '-' && Character.isDigit(parameterValue.charAt(1)))) {
-                        System.out.println("hier");
                         return parameterValue + ": this variable is not defined";
                     }
                 }
@@ -747,7 +512,7 @@ public class SyntaxChecker {
         NodeList definitionChildren = removeEmptyText(definition.getChildNodes());
 
         if (definitionChildren.getLength() != 3) {
-            return "define: expects 2 argument, but found " + (definitionChildren.getLength() - 1);     // in a definition there must always be define, name/expression, expression
+            return "define: expects 2 argument, but found " + (definitionChildren.getLength() - 1);     // in a definition there must always be "define", name/expression, expression
         }                                                                                               // if there are less or more than these 3 elements, it cant be a valid definition
 
         Element defineElement = (Element) definitionChildren.item(0);
