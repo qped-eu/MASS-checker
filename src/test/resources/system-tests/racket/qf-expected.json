@@ -1,0 +1,69 @@
+{
+   "answer":"(+ 1 1)",
+   "attemptCount":1,
+
+   "answers":[
+      "(+ 1 1)"
+   ],
+   "showSolution":false,
+   "user":{
+      "id":"5fd0de0f30795372827b0f2a",
+      "language":"en"
+   },
+   "assignment":{
+      "id":"6261560949496205f2430680",
+      "title":"Test Class",
+      "files":[
+
+      ]
+   },
+   "question":{
+      "id":"626aa854769943907f5506ea",
+      "text":"Include the public class TestClass",
+      "solution": "2.0",
+      "programmingLanguage":"java"
+   },
+   "files":[
+
+   ],
+   "file":{
+      "id":"TestClass",
+      "label":"Test Class",
+      "extension":".zip",
+      "path":"",
+      "mimetype":"application/zip",
+      "url":"file:./src/test/resources/system-tests/framework/class-checker-test/TestClass.zip"
+   },
+   "comment":"",
+   "score":null,
+   "stop":false,
+   "checkerClass":"eu.qped.racket.RacketChecker",
+   "mass":{
+      "styleSelected": false,
+      "semanticSelected": false,
+      "metricsSelected": false,
+      "coverageSelected": false,
+      "classSelected": true,
+      "classes": {
+         "classInfos": [
+            {
+               "fullyQualifiedName": "TestClass",
+               "classKeywordConfig": {
+                  "packagePrivateModifier": "yes",
+                  "emptyNonAccessModifier": "yes",
+                  "classType": "yes",
+                  "name": "TestClass"
+               },
+               "fieldKeywordConfigs":  [
+                  {
+                     "privateModifier": "yes",
+                     "type": "int",
+                     "name": "?"
+                  }
+               ]
+            }
+         ]
+      }
+   },
+   "feedback":[ "## Your Input was:", "# (+ 1 1)", "## The Output is:", "# 2.0", "# Your Answer is correct!" ]
+}
