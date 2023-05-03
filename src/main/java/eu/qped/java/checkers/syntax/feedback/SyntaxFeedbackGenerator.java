@@ -1,10 +1,11 @@
 package eu.qped.java.checkers.syntax.feedback;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackManager;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Type;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbacksStore;
+import eu.qped.framework.feedback.defaultfeedback.FeedbacksStore;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
 import eu.qped.java.checkers.syntax.analyser.SyntaxError;
@@ -18,14 +19,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory;
+import static eu.qped.framework.feedback.defaultfeedback.StoredFeedbackDirectoryProvider.provideStoredFeedbackDirectory;
 
 @Data
 @AllArgsConstructor
 @Builder
 public class SyntaxFeedbackGenerator {
 
-    private DefaultFeedbacksStore defaultFeedbacksStore;
+    private FeedbacksStore feedbacksStore;
     private FeedbackManager feedbackManager;
 
     public List<String> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
@@ -46,34 +47,30 @@ public class SyntaxFeedbackGenerator {
 
     private List<Feedback> generateNakedFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
         List<Feedback> result = new ArrayList<>();
-        if (defaultFeedbacksStore == null) {
-            defaultFeedbacksStore = new DefaultFeedbacksStore(
-                    provideDefaultFeedbackDirectory(SyntaxChecker.class)
+        if (feedbacksStore == null) {
+            feedbacksStore = new FeedbacksStore(
+                    provideStoredFeedbackDirectory(SyntaxChecker.class)
                     , syntaxSetting.getLanguage() + FileExtensions.JSON
             );
         }
-
         for (SyntaxError error : errors) {
-            var feedback = Feedback.builder().build();
-            feedback.setType(Type.CORRECTION);
-            feedback.setCheckerName(SyntaxChecker.class.getSimpleName());
-            if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
-                feedback.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()));
-            } else if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()) != null) {
-                feedback.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()));
-            } else {
-                feedback.setTechnicalCause(error.getErrorMessage());
-                feedback.setReadableCause(error.getErrorMessage());
-            }
-            feedback.setRelatedLocation(RelatedLocation.builder()
+            var feedbackBuilder = Feedback.builder();
+            feedbackBuilder.type(Type.CORRECTION);
+            feedbackBuilder.checkerName(SyntaxChecker.class.getSimpleName());
+            feedbackBuilder.relatedLocation(RelatedLocation.builder()
                     .startLine((int) error.getLine())
-                    .methodName("")
-                    .fileName(
-                            error.getFileName() != null && error.getFileName().equals("TestClass.java") ? "" : error.getFileName()
-                    )
+                    .fileName(error.getFileName())
                     .build()
             );
-            result.add(feedback);
+            if (feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
+                feedbackBuilder.updateFeedback(feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorMessage()));
+            } else if (feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorCode()) != null) {
+                feedbackBuilder.updateFeedback(feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorCode()));
+            } else {
+                feedbackBuilder.technicalCause(error.getErrorMessage());
+                feedbackBuilder.readableCause(error.getErrorMessage());
+            }
+            result.add(feedbackBuilder.build());
         }
         return result;
     }

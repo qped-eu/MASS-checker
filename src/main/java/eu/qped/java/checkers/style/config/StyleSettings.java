@@ -1,10 +1,13 @@
 package eu.qped.java.checkers.style.config;
 
 import eu.qped.framework.CheckLevel;
+import eu.qped.framework.feedback.taskspecificfeedback.TaskSpecificFeedback;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -29,4 +32,7 @@ public class StyleSettings {
     private CheckLevel basisLevel;
 
     private String language;
+    private Boolean isCorrection;
+    private CheckLevel checkLevel;
+    private List<TaskSpecificFeedback> taskSpecificFeedbacks;
 }

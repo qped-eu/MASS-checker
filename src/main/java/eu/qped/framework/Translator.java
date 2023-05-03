@@ -3,7 +3,6 @@ package eu.qped.framework;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.hint.HintType;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
-import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.utils.SupportedLanguages;
 import org.apache.logging.log4j.LogManager;
 

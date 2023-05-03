@@ -13,11 +13,20 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Hint {
+public class Hint implements Cloneable{
 
     @NonNull
     private HintType type;
     @NonNull
     private String content;
+
+    @Override
+    public Hint clone() {
+        try {
+            return (Hint) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new InternalError(e);
+        }
+    }
 
 }

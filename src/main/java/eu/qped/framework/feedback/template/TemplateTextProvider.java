@@ -32,6 +32,8 @@ public class TemplateTextProvider {
     // Keys Feedback types
     public final static String KEY_CORRECTION = String.valueOf(Type.CORRECTION);
     public final static String KEY_IMPROVEMENT = String.valueOf(Type.IMPROVEMENT);
+    // Hint
+    public final static String KEY_CODE_EXAMPLE = "CODE_EXAMPLE";
 
 
     // EN
@@ -51,6 +53,9 @@ public class TemplateTextProvider {
     // EN Feedback types
     public final static String EN_MUST_BE_CORRECTED = "(must be corrected)";
     public final static String EN_TO_IMPROVEMENT = "(to improvement)";
+    // Hint
+    public final static String EN_CODE_EXAMPLE = "Code Example:";
+
 
     // DE
     private final static String DE_TITLE_SYNTAX = "Syntaktische Fehler";
@@ -67,8 +72,10 @@ public class TemplateTextProvider {
     private final static String DE_AND = "und";
     private final static String DE_LINE = "Zeile";
     // DE Feedback types
-    public final static String DE_MUST_BE_CORRECTED = "(muss korrrigiert werden)";
+    public final static String DE_MUST_BE_CORRECTED = "(muss korrigiert werden)";
     public final static String DE_TO_IMPROVEMENT = "(zu Verbesserung)";
+    // Hint
+    public final static String DE_CODE_EXAMPLE = "Codebeispiel :";
 
     public Map<String, String> provide(String language) {
         Map<String, String> enTemplateKeyWord = new HashMap<>() {{
@@ -85,6 +92,7 @@ public class TemplateTextProvider {
             put(KEY_LINE, EN_LINE);
             put(KEY_CORRECTION, EN_MUST_BE_CORRECTED);
             put(KEY_IMPROVEMENT, EN_TO_IMPROVEMENT);
+            put(KEY_CODE_EXAMPLE, EN_CODE_EXAMPLE);
         }};
         Map<String, String> deTemplateKeyWord = new HashMap<>() {{
             put(KEY_TITLE_SYNTAX, DE_TITLE_SYNTAX);
@@ -100,6 +108,7 @@ public class TemplateTextProvider {
             put(KEY_LINE, DE_LINE);
             put(KEY_CORRECTION, DE_MUST_BE_CORRECTED);
             put(KEY_IMPROVEMENT, DE_TO_IMPROVEMENT);
+            put(KEY_CODE_EXAMPLE, DE_CODE_EXAMPLE);
         }};
         Map<String, Map<String, String>> templateKeyWordMapByLanguage = new HashMap<>() {{
             put(SupportedLanguages.ENGLISH, enTemplateKeyWord);

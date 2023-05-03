@@ -43,9 +43,11 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
 public class QpedQfFilesUtility {
-	
+
+
     private static final String DEFAULT_ANSWER_METHOD = "$answerMethod";
-	private static final String DEFAULT_ANSWER_CLASS = "$AnswerClass";
+	// Change To Public
+	public static final String DEFAULT_ANSWER_CLASS = "$AnswerClass";
 	
 	private static final boolean QPED_QF_FILES_DEBUG = Boolean.getBoolean("QPED_QF_FILES_DEBUG");
 
@@ -420,6 +422,8 @@ public class QpedQfFilesUtility {
 		private ASTNode ast;
 		
 	}
+
+
 	
 	
 }

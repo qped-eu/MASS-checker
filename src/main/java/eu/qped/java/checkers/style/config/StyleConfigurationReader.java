@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -35,6 +36,21 @@ public class StyleConfigurationReader {
                     qfStyleSettings.getLanguage() != null
                             ? qfStyleSettings.getLanguage()
                             : SupportedLanguages.ENGLISH
+            );
+            styleSettings.setIsCorrection(
+                    qfStyleSettings.getIsCorrection() != null
+                            ? qfStyleSettings.getIsCorrection()
+                            : false
+            );
+            styleSettings.setTaskSpecificFeedbacks(
+                    qfStyleSettings.getTaskSpecificFeedbacks() != null
+                            ? qfStyleSettings.getTaskSpecificFeedbacks()
+                            : null
+            );
+            styleSettings.setCheckLevel(
+                    qfStyleSettings.getCheckLevel() != null && EnumSet.allOf(CheckLevel.class).contains(CheckLevel.valueOf(qfStyleSettings.getCheckLevel()))
+                            ? CheckLevel.valueOf(qfStyleSettings.getCheckLevel())
+                            : CheckLevel.BEGINNER
             );
             styleSettings.setMethodParameterNamesRegEx(
                     qfStyleSettings.getMethodParameterNamePattern() != null

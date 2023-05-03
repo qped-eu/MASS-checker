@@ -1,5 +1,6 @@
 package eu.qped.java.checkers.mass;
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.qf.QfObjectBase;
 import eu.qped.java.checkers.solutionapproach.configs.SemanticSettingItem;
 import lombok.AllArgsConstructor;
@@ -16,5 +17,9 @@ import java.util.List;
 public class QfSemanticSettings extends QfObjectBase {
 
     private List<SemanticSettingItem> semantics;
+
+    private String language;
+
+    private CheckLevel checkLevel;
 
 }
