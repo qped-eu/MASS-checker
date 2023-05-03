@@ -23,4 +23,5 @@ public abstract class ClassMetricsMessage implements Comparable<ClassMetricsMess
     public int compareTo(ClassMetricsMessage otherClassMetricsMessage) {
         return this.metric.toString().compareTo(otherClassMetricsMessage.getMetric().toString());
     }
+
 }

@@ -6,13 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler;
+import eu.qped.java.checkers.metrics.data.feedback.LowerAndUpperBound;
+import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackSuggestion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import eu.qped.java.checkers.metrics.ckjm.MetricCheckerEntryHandler.Metric;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator;
-import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedbackGenerator.DefaultMetricSuggestion;
+import eu.qped.java.checkers.metrics.data.feedback.DefaultMetricSuggestion;
 import eu.qped.java.checkers.metrics.settings.MetricSettings;
 
 /**
@@ -22,55 +25,15 @@ import eu.qped.java.checkers.metrics.settings.MetricSettings;
  */
 class MetricsFeedbackGeneratorTest {
 
-    @ParameterizedTest
-    @EnumSource(Metric.class)
-    void generateSuggestion(Metric metric) {
-        assertEquals("You are within the " + metric.toString() + "'s threshold.", MetricsFeedbackGenerator.generateDefaultSuggestion(metric, false, false));
-        assertEquals("The " + metric + "'s value is too low: " + MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, true), MetricsFeedbackGenerator.generateDefaultSuggestion(metric, true, false));
-        assertEquals("The " + metric + "'s value is too high: " + MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, false), MetricsFeedbackGenerator.generateDefaultSuggestion(metric, false, true));
-        assertThrows(IllegalArgumentException.class, () -> MetricsFeedbackGenerator.generateDefaultSuggestion(metric, true, true));
-    }
 
     @ParameterizedTest
-    @EnumSource(Metric.class)
-    void generateMetricSpecificSuggestion(Metric metric) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Method generateMetricSpecificSuggestionLowerMethod = MetricsFeedbackGenerator.class.getDeclaredMethod("generateMetricSpecificSuggestionLower", Metric.class);
-        generateMetricSpecificSuggestionLowerMethod.setAccessible(true);
-        assertEquals(MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, true), generateMetricSpecificSuggestionLowerMethod.invoke(null, metric));
-        generateMetricSpecificSuggestionLowerMethod.setAccessible(false);
-
-        Method generateMetricSpecificSuggestionUpperMethod = MetricsFeedbackGenerator.class.getDeclaredMethod("generateMetricSpecificSuggestionUpper", Metric.class);
-        generateMetricSpecificSuggestionUpperMethod.setAccessible(true);
-        assertEquals(MetricsFeedbackGenerator.generateMetricSpecificSuggestion(metric, false), generateMetricSpecificSuggestionUpperMethod.invoke(null, metric));
-        generateMetricSpecificSuggestionUpperMethod.setAccessible(false);
+    @EnumSource(MetricCheckerEntryHandler.Metric.class)
+    void generateMetricSpecificSuggestionLowerOrUpper(MetricCheckerEntryHandler.Metric metric) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        assertEquals(getSuggestionByMetric(metric).getLowerBoundReachedSuggestion(), MetricsFeedbackGenerator.generateMetricSpecificSuggestionLower(metric));
+        assertEquals(getSuggestionByMetric(metric).getUpperBoundReachedSuggestion(), MetricsFeedbackGenerator.generateMetricSpecificSuggestionUpper(metric));
     }
 
-    @ParameterizedTest
-    @EnumSource(Metric.class)
-    void generateMetricSpecificSuggestionLower(Metric metric) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Method generateMetricSpecificSuggestionLowerMethod = MetricsFeedbackGenerator.class.getDeclaredMethod("generateMetricSpecificSuggestionLower", Metric.class);
-        generateMetricSpecificSuggestionLowerMethod.setAccessible(true);
-        DefaultMetricSuggestion defaultMetricSuggestionByMetric = getSuggestionByMetric(metric);
-        assert defaultMetricSuggestionByMetric != null;
-        assertEquals(defaultMetricSuggestionByMetric.getLowerBoundReachedSuggestion(), generateMetricSpecificSuggestionLowerMethod.invoke(null, metric));
-        InvocationTargetException illegalArgument = assertThrows(InvocationTargetException.class, () -> generateMetricSpecificSuggestionLowerMethod.invoke(null, new Object[]{null}));
-        assertEquals(IllegalArgumentException.class.getName(), illegalArgument.getTargetException().getClass().getName());
-        generateMetricSpecificSuggestionLowerMethod.setAccessible(false);
 
-    }
-
-    @ParameterizedTest
-    @EnumSource(Metric.class)
-    void generateMetricSpecificSuggestionUpper(Metric metric) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Method generateMetricSpecificSuggestionUpperMethod = MetricsFeedbackGenerator.class.getDeclaredMethod("generateMetricSpecificSuggestionUpper", Metric.class);
-        generateMetricSpecificSuggestionUpperMethod.setAccessible(true);
-        DefaultMetricSuggestion defaultMetricSuggestionByMetric = getSuggestionByMetric(metric);
-        assert defaultMetricSuggestionByMetric != null;
-        assertEquals(defaultMetricSuggestionByMetric.getUpperBoundReachedSuggestion(), generateMetricSpecificSuggestionUpperMethod.invoke(null, metric));
-        InvocationTargetException illegalArgument = assertThrows(InvocationTargetException.class, () -> generateMetricSpecificSuggestionUpperMethod.invoke(null, new Object[]{null}));
-        assertEquals(IllegalArgumentException.class.getName(), illegalArgument.getTargetException().getClass().getName());
-        generateMetricSpecificSuggestionUpperMethod.setAccessible(false);
-    }
 
     // Method generateDesignFeedbacks() already covered in DesignCheckerTest.java
 
@@ -118,13 +81,4 @@ class MetricsFeedbackGeneratorTest {
         return null;
     }
 
-    @Test
-    void isThresholdReachedMetricNull() throws NoSuchMethodException {
-        Method isThresholdReachedMethod = MetricsFeedbackGenerator.class.getDeclaredMethod("isThresholdReached", Metric.class, MetricSettings.class, double.class, boolean.class);
-        isThresholdReachedMethod.setAccessible(true);
-        InvocationTargetException illegalArgument = assertThrows(InvocationTargetException.class, () -> isThresholdReachedMethod.invoke(null, null, null, 0d, false));
-        assertEquals(IllegalArgumentException.class.getName(), illegalArgument.getTargetException().getClass().getName());
-
-        isThresholdReachedMethod.setAccessible(false);
-    }
 }

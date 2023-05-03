@@ -29,15 +29,17 @@ public class SyntaxFeedbackGenerator {
     private FeedbacksStore feedbacksStore;
     private FeedbackManager feedbackManager;
 
-    public List<String> generateFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
+    public List<String> generateFeedbacks(final List<SyntaxError> errors, final SyntaxSetting syntaxSetting) {
         List<Feedback> nakedFeedbacks = generateNakedFeedbacks(errors, syntaxSetting);
         nakedFeedbacks = adaptFeedbackByCheckLevel(syntaxSetting, nakedFeedbacks);
-        if (feedbackManager == null) feedbackManager = FeedbackManager.builder().build();
+        if (feedbackManager == null) {
+            feedbackManager = FeedbackManager.builder().build();
+        }
         feedbackManager.setFeedbacks(nakedFeedbacks);
         return feedbackManager.buildFeedbackInTemplate(syntaxSetting.getLanguage());
     }
 
-    private List<Feedback> adaptFeedbackByCheckLevel(SyntaxSetting syntaxSetting, List<Feedback> feedbacks) {
+    private List<Feedback> adaptFeedbackByCheckLevel(final SyntaxSetting syntaxSetting, final List<Feedback> feedbacks) {
         if (syntaxSetting.getCheckLevel().equals(CheckLevel.BEGINNER)) {
             return feedbacks;
         } else {
@@ -45,21 +47,33 @@ public class SyntaxFeedbackGenerator {
         }
     }
 
-    private List<Feedback> generateNakedFeedbacks(List<SyntaxError> errors, SyntaxSetting syntaxSetting) {
-        List<Feedback> result = new ArrayList<>();
-        if (feedbacksStore == null) {
-            feedbacksStore = new FeedbacksStore(
-                    provideStoredFeedbackDirectory(SyntaxChecker.class)
+    private List<Feedback> generateNakedFeedbacks(final List<SyntaxError> errors, final SyntaxSetting syntaxSetting) {
+        final List<Feedback> result = new ArrayList<>();
+        if (defaultFeedbacksStore == null) {
+            defaultFeedbacksStore = new DefaultFeedbacksStore(
+                    provideDefaultFeedbackDirectory(SyntaxChecker.class)
                     , syntaxSetting.getLanguage() + FileExtensions.JSON
             );
         }
-        for (SyntaxError error : errors) {
-            var feedbackBuilder = Feedback.builder();
-            feedbackBuilder.type(Type.CORRECTION);
-            feedbackBuilder.checkerName(SyntaxChecker.class.getSimpleName());
-            feedbackBuilder.relatedLocation(RelatedLocation.builder()
+
+        for (final SyntaxError error : errors) {
+            final var feedback = Feedback.builder().build();
+            feedback.setType(Type.CORRECTION);
+            feedback.setCheckerName(SyntaxChecker.class.getSimpleName());
+            if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
+                feedback.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorMessage()));
+            } else if (defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()) != null) {
+                feedback.updateFeedback(defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(error.getErrorCode()));
+            } else {
+                feedback.setTechnicalCause(error.getErrorMessage());
+                feedback.setReadableCause(error.getErrorMessage());
+            }
+            feedback.setRelatedLocation(RelatedLocation.builder()
                     .startLine((int) error.getLine())
-                    .fileName(error.getFileName())
+                    .methodName("")
+                    .fileName(
+                            error.getFileName() != null && "TestClass.java".equals(error.getFileName()) ? "" : error.getFileName()
+                    )
                     .build()
             );
             if (feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorMessage()) != null) {

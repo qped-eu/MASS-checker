@@ -25,4 +25,5 @@ public class ClassMetricsMessageSingle extends ClassMetricsMessage {
         super(metric);
         this.metricValue = metricValue;
     }
+
 }

@@ -1,6 +1,7 @@
 package eu.qped.java.checkers.syntax;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import eu.qped.framework.CheckLevel;
@@ -29,7 +30,7 @@ public class SyntaxChecker {
 
     private SyntaxAnalysisReport analyseReport;
 
-    public List<String> check() {
+    public List<String> check(){
         buildSyntaxSettings();
         if (syntaxErrorAnalyser == null) {
             syntaxErrorAnalyser = SyntaxErrorAnalyser

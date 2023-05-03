@@ -105,21 +105,28 @@ class ClassMemberChecker<T extends Node> {
 
         Map<NodeWithModifiers<T>, ExpectedElement> matches = performMatching(presentElements, expectedElements);
 
+        // Objekte vor for-schleife deklarieren
+        NodeWithModifiers<T> presentElement;
+        ExpectedElement expectedElement;
+        List<Boolean> matchingResult;
+        ClassFeedbackType violationFound;
+        StringBuilder elementName;
+
         for (Map.Entry<NodeWithModifiers<T>, ExpectedElement> match : matches.entrySet()) {
-            NodeWithModifiers<T> presentElement = match.getKey();
-            ExpectedElement expectedElement = match.getValue();
-            List<Boolean> matchingResult = getMatchingResult(presentElement, expectedElement);
-            ClassFeedbackType violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(matchingResult);
-            String elementName = getVariableName(presentElement);
+            presentElement = match.getKey();
+            expectedElement = match.getValue();
+            matchingResult = getMatchingResult(presentElement, expectedElement);
+            violationFound = ClassFeedbackGenerator.VIOLATION_CHECKS.get(matchingResult);
+            elementName = new StringBuilder(getVariableName(presentElement));
             if (CHECKER_TYPE.equals(ClassMemberType.METHOD)) {
-                if (!elementName.contains("()")) {
-                    elementName += "()";
+                if ((elementName.indexOf("()")) == -1) {
+                    elementName.append("()");
                 }
                 if (violationFound.equals(MISSING_FIELDS)) {
                     violationFound = MISSING_METHODS;
                 }
             }
-            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(classTypeName, elementName, violationFound, String.join("\n", customFeedback));
+            ClassFeedback fb = ClassFeedbackGenerator.generateFeedback(classTypeName, elementName.toString(), violationFound, String.join("\n", customFeedback));
             collectedFeedback.add(fb);
         }
         return collectedFeedback;
@@ -451,7 +458,7 @@ class ClassMemberChecker<T extends Node> {
             }
 
         }
-        return expectedTypes.contains(presentType.toLowerCase());
+        return expectedTypes.contains(presentType.toLowerCase(Locale.ROOT));
     }
 
     /**
@@ -497,13 +504,13 @@ class ClassMemberChecker<T extends Node> {
     private void unrollVariableDeclarations(List<FieldDeclaration> elements) {
         final int MAX_ALLOWED_VARIABLES = 1;
         ListIterator<FieldDeclaration> elemIterator = elements.listIterator();
-
+        FieldDeclaration fd, field =null;
         while(elemIterator.hasNext()) {
-            FieldDeclaration fd = elemIterator.next();
+            fd = elemIterator.next();
             if(fd.getVariables().size() > MAX_ALLOWED_VARIABLES) {
                 elemIterator.remove();
                 for (VariableDeclarator variable: fd.getVariables()) {
-                    FieldDeclaration field = new FieldDeclaration(fd.getModifiers(), variable);
+                    field = new FieldDeclaration(fd.getModifiers(), variable);
                     elemIterator.add(field);
                 }
             }

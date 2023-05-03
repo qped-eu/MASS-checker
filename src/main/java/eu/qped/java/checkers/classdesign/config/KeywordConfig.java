@@ -1,42 +1,47 @@
 package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
+@Setter
+
 public abstract class KeywordConfig {
 
     private boolean allowExactModifierMatching;
 
-    private String publicModifier;
-    private String protectedModifier;
-    private String privateModifier;
-    private String packagePrivateModifier;
+    private KeywordChoice publicModifier;
+    private KeywordChoice protectedModifier;
+    private KeywordChoice privateModifier;
+    private KeywordChoice packagePrivateModifier;
 
-    private String emptyNonAccessModifier;
-    private String staticModifier;
-    private String finalModifier;
+    private KeywordChoice emptyNonAccessModifier;
+    private KeywordChoice staticModifier;
+    private KeywordChoice finalModifier;
 
     private String name;
 
     public KeywordConfig() {
         allowExactModifierMatching = false;
-        publicModifier = KeywordChoice.DONTCARE.toString();
-        protectedModifier = KeywordChoice.DONTCARE.toString();
-        privateModifier = KeywordChoice.DONTCARE.toString();
-        packagePrivateModifier = KeywordChoice.DONTCARE.toString();
+        publicModifier = KeywordChoice.DONTCARE;
+        protectedModifier = KeywordChoice.DONTCARE;
+        privateModifier = KeywordChoice.DONTCARE;
+        packagePrivateModifier = KeywordChoice.DONTCARE;
 
-        emptyNonAccessModifier = KeywordChoice.DONTCARE.toString();
-        staticModifier = KeywordChoice.DONTCARE.toString();
-        finalModifier = KeywordChoice.DONTCARE.toString();
+        emptyNonAccessModifier = KeywordChoice.DONTCARE;
+        staticModifier = KeywordChoice.DONTCARE;
+        finalModifier = KeywordChoice.DONTCARE;
 
         name = "";
     }
 
-    public Map<String, String> getAccessModifierMap() {
-        Map<String, String> keywordChoiceMap = new HashMap<>();
+    public Map<String, KeywordChoice> getAccessModifierMap() {
+        Map<String, KeywordChoice> keywordChoiceMap = new HashMap<>();
         keywordChoiceMap.put("public", getPublicModifier());
         keywordChoiceMap.put("protected", getProtectedModifier());
         keywordChoiceMap.put("private", getPrivateModifier());
@@ -44,8 +49,8 @@ public abstract class KeywordConfig {
         return keywordChoiceMap;
     }
 
-    public Map<String, String> getNonAccessModifierMap() {
-        Map<String, String> keywordChoiceMap = new HashMap<>();
+    public Map<String, KeywordChoice> getNonAccessModifierMap() {
+        Map<String, KeywordChoice> keywordChoiceMap = new HashMap<>();
         keywordChoiceMap.put("static", getStaticModifier());
         keywordChoiceMap.put("final", getFinalModifier());
         keywordChoiceMap.put("", getEmptyNonAccessModifier());
@@ -58,73 +63,7 @@ public abstract class KeywordConfig {
         return allowExactModifierMatching;
     }
 
-    public void setAllowExactModifierMatching(boolean allowExactModifierMatching) {
-        this.allowExactModifierMatching = allowExactModifierMatching;
-    }
-
-    public String getPublicModifier() {
-        return publicModifier;
-    }
-
-    public void setPublicModifier(String publicModifier) {
-        this.publicModifier = publicModifier;
-    }
-
-    public String getProtectedModifier() {
-        return protectedModifier;
-    }
-
-    public void setProtectedModifier(String protectedModifier) {
-        this.protectedModifier = protectedModifier;
-    }
-
-    public String getPrivateModifier() {
-        return privateModifier;
-    }
-
-    public void setPrivateModifier(String privateModifier) {
-        this.privateModifier = privateModifier;
-    }
-
-    public String getPackagePrivateModifier() {
-        return packagePrivateModifier;
-    }
-
-    public void setPackagePrivateModifier(String packagePrivateModifier) {
-        this.packagePrivateModifier = packagePrivateModifier;
-    }
-
-    public String getEmptyNonAccessModifier() {
-        return emptyNonAccessModifier;
-    }
-
-    public void setEmptyNonAccessModifier(String emptyNonAccessModifier) {
-        this.emptyNonAccessModifier = emptyNonAccessModifier;
     }
 
 
 
-    public String getStaticModifier() {
-        return staticModifier;
-    }
-
-    public void setStaticModifier(String staticModifier) {
-        this.staticModifier = staticModifier;
-    }
-
-    public String getFinalModifier() {
-        return finalModifier;
-    }
-
-    public void setFinalModifier(String finalModifier) {
-        this.finalModifier = finalModifier;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-}

@@ -13,6 +13,10 @@ import java.io.IOException;
 @Builder
 public class StyleAnalysisReportParser {
 
+    /**
+     * this method create a new jsonFile, which contains a report of the analysis
+     * @return A final report of analyse of the style
+     */
     public StyleAnalysisReport parse() {
         ObjectMapper jacksonMapper = new ObjectMapper();
         File jsonFile = new File("src/main/java/eu/qped/java/checkers/style/resources/report.json").getAbsoluteFile();

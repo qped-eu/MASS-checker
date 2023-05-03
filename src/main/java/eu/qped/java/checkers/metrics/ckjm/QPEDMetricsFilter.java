@@ -15,17 +15,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Convert a list of classes into their metrics.
- * Given metrics are defined in {@link MetricCheckerEntryHandler.Metric}.
- *
- * @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a> (from CKJM-extended tool)
- * @author Jannik Seus (edited)
+
+ Convert a list of classes into their metrics using CKJM library.
+
+ This class is an implementation of the {@link ICountingProperities} interface from CKJM library.
+
+ The given metrics are defined in {@link MetricCheckerEntryHandler.Metric} and are calculated using the {@link MoaClassVisitor} class.
+
+ The metrics are stored in a {@link IClassMetricsContainer} instance.
+
+ @author <a href="http://www.spinellis.gr">Diomidis Spinellis</a> (from CKJM-extended tool)
+
+ @author Jannik Seus (edited)
+
+ @see MoaClassVisitor
+
+ @see IClassMetricsContainer
+
+ @see MetricCheckerEntryHandler.Metric
  */
 @RequiredArgsConstructor
 public class QPEDMetricsFilter implements ICountingProperities {
 
     /**
-     * The same instance of MoaClassVisitor must be used to process all class, so it must be a class field.
+     The same instance of MoaClassVisitor must be used to process all class, so it must be a class field.
      */
     private final MoaClassVisitor moaVisitor;
 
@@ -36,6 +49,12 @@ public class QPEDMetricsFilter implements ICountingProperities {
     private final boolean includeJdk;
     private final boolean onlyPublicClasses;
 
+    /**
+
+     Creates a new instance of QPEDMetricsFilter.
+     @param includeJdk true if the measurements should include calls to the Java JDK into account
+     @param onlyPublicClasses true if the measurements should include all classes
+     */
     public QPEDMetricsFilter(boolean includeJdk, boolean onlyPublicClasses) {
         metricsContainer = new ClassMetricsContainer(this);
         moaVisitor = new MoaClassVisitor(metricsContainer);
@@ -44,7 +63,7 @@ public class QPEDMetricsFilter implements ICountingProperities {
     }
 
     /**
-     * @return true if the measurements should include calls to the Java JDK into account
+     @return true if the measurements should include calls to the Java JDK into account
      */
     public boolean isJdkIncluded() {
         return includeJdk;

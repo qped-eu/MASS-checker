@@ -28,4 +28,12 @@ public class ClassMetricsEntry implements Comparable<ClassMetricsEntry> {
     public int compareTo(ClassMetricsEntry otherClassMetricsEntry) {
         return this.className.compareTo(otherClassMetricsEntry.getClassName());
     }
+
+    public String getName() {
+        return this.className;
+    }
+
+    public List<ClassMetricsMessage> getMetrics() {
+        return this.metricsForClass;
+    }
 }

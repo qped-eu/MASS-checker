@@ -2,27 +2,32 @@ package eu.qped.java.checkers.classdesign.config;
 
 import eu.qped.java.checkers.classdesign.enums.ClassType;
 import eu.qped.java.checkers.classdesign.enums.KeywordChoice;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Getter
+@Setter
+
 public class ClassKeywordConfig extends KeywordConfig {
 
-    private String abstractModifier;
-    private String classType;
-    private String interfaceType;
+    private KeywordChoice abstractModifier;
+    private KeywordChoice classType;
+    private KeywordChoice interfaceType;
 
     public ClassKeywordConfig() {
-        abstractModifier = KeywordChoice.DONTCARE.toString();
-        classType = KeywordChoice.DONTCARE.toString();
-        interfaceType = KeywordChoice.DONTCARE.toString();
+        abstractModifier = KeywordChoice.DONTCARE;
+        classType = KeywordChoice.DONTCARE;
+        interfaceType = KeywordChoice.DONTCARE;
         setName("TestClass");
     }
 
     @Override
-    public Map<String, String> getNonAccessModifierMap() {
-        Map<String, String> keywordChoiceMap = super.getNonAccessModifierMap();
+    public Map<String, KeywordChoice> getNonAccessModifierMap() {
+        Map<String, KeywordChoice> keywordChoiceMap = super.getNonAccessModifierMap();
         keywordChoiceMap.put("abstract", getAbstractModifier());
         return keywordChoiceMap;
     }
@@ -31,47 +36,25 @@ public class ClassKeywordConfig extends KeywordConfig {
     public List<String> getPossibleTypes() {
         List<String> possibleTypes = new ArrayList<>();
         boolean containsYes = false;
-        if(getInterfaceType().equals(KeywordChoice.YES.toString())) {
+        if(getInterfaceType().equals(KeywordChoice.YES)) {
             containsYes = true;
             possibleTypes.add(ClassType.INTERFACE.toString());
         }
-        if(getClassType().equals(KeywordChoice.YES.toString())) {
+        if(getClassType().equals(KeywordChoice.YES)) {
             containsYes = true;
             possibleTypes.add(ClassType.CLASS.toString());
         }
 
         if(!containsYes) {
-            if(!getInterfaceType().equals(KeywordChoice.NO.toString())) {
+            if(!getInterfaceType().equals(KeywordChoice.NO)) {
                 possibleTypes.add(ClassType.INTERFACE.toString());
             }
-            if(!getClassType().equals(KeywordChoice.NO.toString())) {
+            if(!getClassType().equals(KeywordChoice.NO)) {
                 possibleTypes.add(ClassType.CLASS.toString());
             }
         }
         return possibleTypes;
     }
 
-    public String getAbstractModifier() {
-        return abstractModifier;
-    }
 
-    public void setAbstractModifier(String abstractModifier) {
-        this.abstractModifier = abstractModifier;
-    }
-
-    public String getClassType() {
-        return classType;
-    }
-
-    public void setClassType(String choice) {
-        this.classType = choice;
-    }
-
-    public String getInterfaceType() {
-        return interfaceType;
-    }
-
-    public void setInterfaceType(String interfaceType) {
-        this.interfaceType = interfaceType;
-    }
 }

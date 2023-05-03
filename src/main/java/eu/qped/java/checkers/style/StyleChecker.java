@@ -27,6 +27,11 @@ public class StyleChecker {
     private StyleFeedbackGenerator styleFeedbackGenerator;
 
 
+    /**
+     * Checks the style settings for a particular path, runs an analysis on the style and then generates feedbacks based
+     * on the report of the analysis and the style settings.
+     * @return a List of Strings containing the feedbacks generated from the analysis
+     */
     public List<String> check() {
         styleSettings = readStyleSettings();
         if (styleAnalyser == null) {
