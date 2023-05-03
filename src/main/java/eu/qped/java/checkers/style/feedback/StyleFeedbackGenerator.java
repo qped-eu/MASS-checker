@@ -91,47 +91,7 @@ public class StyleFeedbackGenerator {
         }
         return result;
     }
-
-         */
         // store violations in map to optimize iteration
-        Map<String, List<Violation>> violationsMap = report.getFileEntries().stream()
-                .map(fileEntry -> fileEntry.getViolations().stream().map(violation -> {
-                    violation.setFileName(fileEntry.getFileName());
-                    return violation;
-                }).collect(Collectors.toList()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.groupingBy(Violation::getRule));
-        for (List<Violation> violations : violationsMap.values()) {
-            var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(violations.get(0).getRule());
-            if (defaultFeedback != null) {
-                for (Violation violation : violations) {
-                    Feedback feedback = Feedback.builder().build();
-                    // Default feedback type to IMPROVEMENT, but can be changed by the user later
-                    feedback.setType(Type.IMPROVEMENT);
-                    feedback.setCheckerName(StyleChecker.class.getSimpleName());
-                    feedback.updateFeedback(defaultFeedback);
-                    File file = new File(violation.getFileName());
-                    feedback.setRelatedLocation(
-                            RelatedLocation.builder()
-                                    .fileName(file.getName())
-                                    .startLine(
-                                            file.getName().contains("TestClass")
-                                                    ? violation.getBeginLine() - 3
-                                                    : violation.getBeginLine()
-                                    )
-                                    .endLine(
-                                            file.getName().contains("TestClass")
-                                                    ? violation.getEndLine() - 3
-                                                    : violation.getEndLine()
-                                    )
-                                    .build()
-                    );
-                    result.add(feedback);
-                }
-            }
-        }
-        return result;
-    }
 
     private List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, StyleSettings styleSettings) {
         if (styleSettings.getCheckLevel().equals(CheckLevel.BEGINNER)) {
