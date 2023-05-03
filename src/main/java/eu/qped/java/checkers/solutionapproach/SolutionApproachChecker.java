@@ -1,12 +1,13 @@
 package eu.qped.java.checkers.solutionapproach;
 
 
-import eu.qped.framework.feedback.Feedback;
 import eu.qped.java.checkers.mass.QfSemanticSettings;
 import eu.qped.java.checkers.solutionapproach.analyser.SolutionApproachAnalyser;
-import eu.qped.java.checkers.solutionapproach.configs.SolutionApproachGeneralSettings;
 import eu.qped.java.checkers.solutionapproach.feedback.SolutionApproachFeedbackGenerator;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -24,12 +25,10 @@ import java.util.List;
 @Builder
 public class SolutionApproachChecker {
 
-//    @NonNull
+    //    @NonNull
     private QfSemanticSettings qfSemanticSettings;
     private SolutionApproachAnalyser solutionApproachAnalyser;
     private SolutionApproachFeedbackGenerator solutionApproachFeedbackGenerator;
-//    @NonNull
-    private SolutionApproachGeneralSettings solutionApproachGeneralSettings;
 
     private String targetProjectPath;
 
@@ -41,13 +40,12 @@ public class SolutionApproachChecker {
                     .targetProjectPath(targetProjectPath)
                     .build();
         }
-        var solutionApproachReportEntries = solutionApproachAnalyser.check();
-
+        var solutionApproachReportEntries = solutionApproachAnalyser.analyse();
 
         if (solutionApproachFeedbackGenerator == null) {
             solutionApproachFeedbackGenerator = SolutionApproachFeedbackGenerator.builder().build();
         }
-        return solutionApproachFeedbackGenerator.generateFeedbacks(solutionApproachReportEntries, solutionApproachGeneralSettings);
+        return solutionApproachFeedbackGenerator.generateFeedbacks(solutionApproachReportEntries, qfSemanticSettings);
     }
 
 

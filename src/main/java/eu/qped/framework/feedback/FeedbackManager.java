@@ -4,6 +4,9 @@ import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Getter
@@ -47,6 +50,20 @@ public class FeedbackManager {
                 .map(feedback -> feedback.buildFeedbackInTemplate(language))
                 .collect(Collectors.toList())
                 ;
+    }
+
+    public List<Feedback> filter(Predicate<Feedback> filter) {
+        return feedbacks.stream().filter(filter).collect(Collectors.toList());
+    }
+
+    public <K> Map<K, List<Feedback>> groupBy(Function<Feedback, K> groupByFunction) {
+        return feedbacks.stream().collect(Collectors.groupingBy(groupByFunction, Collectors.toList()));
+    }
+
+    public Map<String, List<Feedback>> groupByFileName() {
+        return groupBy(feedback -> (feedback.getRelatedLocation() != null && !feedback.getRelatedLocation().getFileName().isEmpty()) ?
+                feedback.getRelatedLocation().getFileName()
+                : "");
     }
 
 

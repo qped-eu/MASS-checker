@@ -1,13 +1,16 @@
 package eu.qped.framework.feedback;
 
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedback;
+import eu.qped.framework.feedback.defaultfeedback.StoredFeedback;
+import eu.qped.framework.feedback.fromatter.KeyWordReplacer;
 import eu.qped.framework.feedback.fromatter.MarkdownFeedbackFormatter;
 import eu.qped.framework.feedback.hint.Hint;
 import eu.qped.framework.feedback.template.TemplateBuilder;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * representation of a feedback for the student. <br/>
@@ -28,6 +31,7 @@ public class Feedback {
     /**
      * Contains the system designation of the relevant error for which this feedback is generated
      */
+    @NonNull
     private String technicalCause;
     /**
      * Provides information whether the error for which this feedback is generated needs to be corrected or improvement.
@@ -38,6 +42,7 @@ public class Feedback {
      * Thus, this field contains information about the cause of the detected error, which must be understandable for the student. <br/>
      * This feedback component named <b>knowledge about mistakes [KM]</b> in @see <a href="https://www.waxmann.com/waxmann-buecher/?no_cache=1&tx_p2waxmann_pi2%5Bbuchnr%5D=1641&tx_p2waxmann_pi2%5Baction%5D=show&tx_p2waxmann_pi2%5Bcontroller%5D=Buch&cHash=70094cfe0fbda759e008598052dbe275">Narciss, Susanne. Informatives tutorielles Feedback</a>
      */
+    @NonNull
     private String readableCause;
     /**
      * This feedback component also focuses on the errors in a submitted solution. <br/>
@@ -62,12 +67,31 @@ public class Feedback {
     @Setter(AccessLevel.PACKAGE)
     private boolean isFormatted = false;
 
-    public void updateFeedback(@NonNull DefaultFeedback defaultFeedback) {
-        this.technicalCause = defaultFeedback.getTechnicalCause();
-        this.readableCause = defaultFeedback.getReadableCause();
-        if (defaultFeedback.getHints() != null) {
-            this.hints = defaultFeedback.getHints();
+    public static class FeedbackBuilder {
+        public void updateFeedback(@NonNull StoredFeedback storedFeedback) {
+            this.technicalCause = storedFeedback.getTechnicalCause();
+            this.readableCause = storedFeedback.getReadableCause();
+            if (storedFeedback.getHints() != null) {
+                this.hints = storedFeedback.getHints();
+            }
         }
+
+        public void replaceKeyWords(@NonNull Object replacement) {
+            var keyWordReplacer = KeyWordReplacer.builder().build();
+            this.readableCause = keyWordReplacer.replace(this.readableCause, replacement);
+            if (this.hints != null) {
+                this.hints = this.hints.stream().peek(hint ->
+                        hint.setContent(keyWordReplacer.replace(
+                                hint.getContent(),
+                                replacement
+                        ))
+                ).collect(Collectors.toList());
+            }
+        }
+    }
+
+    public List<Hint> getHints() {
+        return hints == null ? Collections.emptyList() : hints.stream().map(Hint::clone).collect(Collectors.toList());
     }
 
     protected Feedback format() {

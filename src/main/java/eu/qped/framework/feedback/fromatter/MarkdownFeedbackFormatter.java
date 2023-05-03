@@ -26,11 +26,6 @@ public class MarkdownFeedbackFormatter implements IFeedbackFormatter {
 
 
     @Override
-    public List<Feedback> format(List<Feedback> feedbacks) {
-        return feedbacks.stream().map(this::format).collect(Collectors.toList());
-    }
-
-    @Override
     public Feedback format(Feedback feedback) {
         feedback.setTechnicalCause(feedback.getTechnicalCause());
         feedback.setReadableCause(formatReadableCause(feedback.getReadableCause()));

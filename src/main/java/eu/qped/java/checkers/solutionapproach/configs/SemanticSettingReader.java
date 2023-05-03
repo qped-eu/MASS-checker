@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +42,9 @@ public class SemanticSettingReader {
                     }
                     if (semanticSettingItem.getIfElseStmt() == null) {
                         semanticSettingItem.setIfElseStmt(MAX_STMT_DEFAULT);
+                    }
+                    if (semanticSettingItem.getTaskSpecificFeedbacks() == null) {
+                        semanticSettingItem.setTaskSpecificFeedbacks(Collections.emptyList());
                     }
                 }
         );

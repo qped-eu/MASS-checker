@@ -1,11 +1,12 @@
 package eu.qped.java.checkers.style.feedback;
 
 
+import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackManager;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Type;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbacksStore;
+import eu.qped.framework.feedback.defaultfeedback.FeedbacksStore;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.style.analyse.reportModel.StyleAnalysisReport;
 import eu.qped.java.checkers.style.analyse.reportModel.Violation;
@@ -18,18 +19,19 @@ import lombok.Data;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory;
+import static eu.qped.framework.feedback.defaultfeedback.StoredFeedbackDirectoryProvider.provideStoredFeedbackDirectory;
 
 @AllArgsConstructor
 @Builder
 @Data
 public class StyleFeedbackGenerator {
 
-    private DefaultFeedbacksStore defaultFeedbacksStore;
+    private FeedbacksStore feedbacksStore;
     private FeedbackManager feedbackManager;
 
     /**
@@ -52,45 +54,40 @@ public class StyleFeedbackGenerator {
      */
     public List<Feedback> generateNakedFeedback(StyleAnalysisReport report, StyleSettings settings) {
         List<Feedback> result = new ArrayList<>();
-        if (defaultFeedbacksStore == null) {
-            defaultFeedbacksStore = new DefaultFeedbacksStore(
-                    provideDefaultFeedbackDirectory(StyleChecker.class)
+        if (feedbacksStore == null) {
+            feedbacksStore = new FeedbacksStore(
+                    provideStoredFeedbackDirectory(StyleChecker.class)
                     , settings.getLanguage() + FileExtensions.JSON
             );
         }
-        /*
+        if (settings.getTaskSpecificFeedbacks() != null) {
+            feedbacksStore.customizeStore(settings.getTaskSpecificFeedbacks());
+        }
         List<Violation> violations = report.getFileEntries().stream()
                 .flatMap(fileEntry ->
                         fileEntry.getViolations().stream().peek(violation -> violation.setFileName(fileEntry.getFileName()))
                 )
                 .collect(Collectors.toList());
         for (Violation violation : violations) {
-            var defaultFeedback = defaultFeedbacksStore.getRelatedDefaultFeedbackByTechnicalCause(violation.getRule());
+            var feedbackBuilder = Feedback.builder();
+            feedbackBuilder.type((!settings.getIsCorrection()) ? Type.IMPROVEMENT : Type.CORRECTION);
+            feedbackBuilder.checkerName(StyleChecker.class.getSimpleName());
+            File file = new File(violation.getFileName());
+            feedbackBuilder.relatedLocation(
+                    RelatedLocation.builder()
+                            .fileName(file.getName())
+                            .startLine(violation.getBeginLine())
+                            .endLine(violation.getEndLine())
+                            .build()
+            );
+            var defaultFeedback = feedbacksStore.getRelatedFeedbackByTechnicalCause(violation.getRule());
             if (defaultFeedback != null) {
-                Feedback feedback = Feedback.builder().build();
-                // TODO: can change
-                feedback.setType(Type.IMPROVEMENT);
-                feedback.setCheckerName(StyleChecker.class.getSimpleName());
-                feedback.updateFeedback(defaultFeedback);
-                File file = new File(violation.getFileName());
-                feedback.setRelatedLocation(
-                        RelatedLocation.builder()
-                                .fileName(file.getName())
-                                .startLine(
-                                        file.getName().contains("TestClass")
-                                                ? violation.getBeginLine() - 3
-                                                : violation.getBeginLine()
-                                )
-                                .endLine(
-                                        file.getName().contains("TestClass")
-                                                ? violation.getEndLine() - 3
-                                                : violation.getEndLine()
-                                )
-                                .build()
-                );
-                result.add(feedback);
-
+                feedbackBuilder.updateFeedback(defaultFeedback);
+            } else {
+                feedbackBuilder.readableCause(((violation.getDescription() != null) ? violation.getDescription() : violation.getRule()));
+                feedbackBuilder.technicalCause(violation.getRule());
             }
+            result.add(feedbackBuilder.build());
         }
         return result;
     }
@@ -137,7 +134,11 @@ public class StyleFeedbackGenerator {
     }
 
     private List<Feedback> adaptFeedbackByCheckerSetting(List<Feedback> feedbacks, StyleSettings styleSettings) {
-        return feedbacks;
+        if (styleSettings.getCheckLevel().equals(CheckLevel.BEGINNER)) {
+            return feedbacks;
+        } else {
+            return feedbacks.stream().peek(feedback -> feedback.setHints(Collections.emptyList())).collect(Collectors.toList());
+        }
     }
 
 

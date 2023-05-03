@@ -8,10 +8,8 @@ import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.style.StyleChecker;
-import eu.qped.java.checkers.style.StyleFeedback;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.utils.SupportedLanguages;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,7 +53,6 @@ public class MassExecutor {
      */
     public void execute() {
         init();
-
         boolean styleNeeded = mainSettings.isStyleNeeded();
         boolean semanticNeeded = mainSettings.isSemanticNeeded();
         boolean metricsNeeded = mainSettings.isMetricsNeeded();

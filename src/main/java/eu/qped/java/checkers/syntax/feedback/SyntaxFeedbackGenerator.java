@@ -1,10 +1,11 @@
 package eu.qped.java.checkers.syntax.feedback;
+
 import eu.qped.framework.CheckLevel;
 import eu.qped.framework.feedback.Feedback;
 import eu.qped.framework.feedback.FeedbackManager;
 import eu.qped.framework.feedback.RelatedLocation;
 import eu.qped.framework.feedback.Type;
-import eu.qped.framework.feedback.defaultfeedback.DefaultFeedbacksStore;
+import eu.qped.framework.feedback.defaultfeedback.FeedbacksStore;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
 import eu.qped.java.checkers.syntax.SyntaxSetting;
 import eu.qped.java.checkers.syntax.analyser.SyntaxError;
@@ -18,14 +19,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static eu.qped.framework.feedback.defaultfeedback.DefaultFeedbackDirectoryProvider.provideDefaultFeedbackDirectory;
+import static eu.qped.framework.feedback.defaultfeedback.StoredFeedbackDirectoryProvider.provideStoredFeedbackDirectory;
 
 @Data
 @AllArgsConstructor
 @Builder
 public class SyntaxFeedbackGenerator {
 
-    private DefaultFeedbacksStore defaultFeedbacksStore;
+    private FeedbacksStore feedbacksStore;
     private FeedbackManager feedbackManager;
 
     public List<String> generateFeedbacks(final List<SyntaxError> errors, final SyntaxSetting syntaxSetting) {
@@ -75,7 +76,15 @@ public class SyntaxFeedbackGenerator {
                     )
                     .build()
             );
-            result.add(feedback);
+            if (feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorMessage()) != null) {
+                feedbackBuilder.updateFeedback(feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorMessage()));
+            } else if (feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorCode()) != null) {
+                feedbackBuilder.updateFeedback(feedbacksStore.getRelatedFeedbackByTechnicalCause(error.getErrorCode()));
+            } else {
+                feedbackBuilder.technicalCause(error.getErrorMessage());
+                feedbackBuilder.readableCause(error.getErrorMessage());
+            }
+            result.add(feedbackBuilder.build());
         }
         return result;
     }

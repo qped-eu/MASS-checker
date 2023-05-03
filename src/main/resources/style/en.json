@@ -1,15 +1,15 @@
 [
   {
-    "technicalCause": "NoPackage",
-    "readableCause": "Feedback for CommentRequired"
+    "technicalCause": "CommentRequired",
+    "readableCause": "A style violation is caused when a code section is missing a required comment."
   },
   {
     "technicalCause": "MethodNamingConventions",
-    "readableCause": "Your method name does not match the rules that are given.\nJava code conventions recommend: any Method should start with a small letter and the name should describe the function.",
+    "readableCause": "The names of methods in your code do not follow the recommended conventions. Methods should have clear and concise names that describe what they do, and start with a lowercase letter.",
     "hints": [
       {
-        "type": "TEXT",
-        "content": "example: run() , canRun() ,..."
+        "type": "CODE_EXAMPLE",
+        "content": "// old Code \npublic int AddNumbers(int x, int y) {\n    return x + y;\n}\n// new Code \npublic int addNumbers(int x, int y) {\n    return x + y;\n}\n"
       }
     ]
   },
@@ -45,11 +45,11 @@
   },
   {
     "technicalCause": "LocalVariableNamingConventions",
-    "readableCause": "Your local variable name does not match the rules that are given\nJava code conventions recommend: any variable name should start with a small letter and the name should be clear and in english.",
+    "readableCause": "The names of variables in a code block do not follow the recommended rules. Variable names should be clear and unambiguous, and generally start with a lowercase letter.",
     "hints": [
       {
-        "type": "TEXT",
-        "content": "example: String color;"
+        "type": "CODE_EXAMPLE",
+        "content": "// old Code\nString MyString = \"Hello\";\n// new Code\nString myString = \"Hello\";"
       }
     ]
   },

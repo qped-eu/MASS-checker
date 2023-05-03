@@ -1,7 +1,6 @@
 package eu.qped.java.checkers.syntax.analyser;
 
 
-import eu.qped.java.checkers.checkerabstract.AbstractReportEntry;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SyntaxError extends AbstractReportEntry {
+public class SyntaxError {
 
     private String errorCode;
     private String errorMessage;
