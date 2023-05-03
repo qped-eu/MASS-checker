@@ -49,8 +49,12 @@ public class Mass implements Checker {
     @Override
     public void check(QfObject qfObject) throws Exception {
         MassExecutor.MassExecutorBuilder massExecutorBuilder = MassExecutor.builder();
-        MainSettings mainSettings = new MainSettings(mass, qfObject.getUser().getLanguage());
-
+        String preferredLanguage = "en";
+        
+        if (qfObject.getUser() != null) {
+            preferredLanguage =  qfObject.getUser().getLanguage();
+        } 
+        MainSettings mainSettings = new MainSettings(mass, preferredLanguage);
         massExecutorBuilder.mainSettings(mainSettings);
 
         Map<String, Integer> filenameToLineOffset = new HashMap<>();
