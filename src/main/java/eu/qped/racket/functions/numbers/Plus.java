@@ -16,11 +16,11 @@ public class Plus extends Expression {
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
         float result = 0;
-        for (Object e : list) {
-            if(e instanceof Number) {
+        for (Expression e : list) {
+            if(e instanceof Number || e.getParts().get(0) instanceof Plus) {        //workaround für tiefere schachtelung
                 //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 //System.out.println(e.evaluate(new Expression()));
-                result += (float) ((Number) e).evaluate(this);
+                result += (float) e.evaluate(this);
                 //result += (e.evaluate(this));
             } else {
                 throw new Exception("Expression isnt instance of Number");
