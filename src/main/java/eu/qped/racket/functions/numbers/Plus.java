@@ -17,7 +17,7 @@ public class Plus extends Expression {
     public Object evaluate(List<Expression> list) throws Exception {
         float result = 0;
         for (Expression e : list) {
-            if(e instanceof Number || e.getParts().get(0) instanceof Plus) {        //workaround für tiefere schachtelung
+            if(e instanceof Number || e.getParts().get(0) instanceof Plus) {        //workaround für tiefere schachtelung e.getParts().get(0) instanceof
                 //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 //System.out.println(e.evaluate(new Expression()));
                 result += (float) e.evaluate(this);
