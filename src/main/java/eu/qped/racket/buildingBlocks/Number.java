@@ -8,8 +8,8 @@ public class Number extends Expression {
     }
 
     @Override
-    public String evaluate(Expression e) {
-        return Float.toString(value);
+    public Object evaluate(Expression e) {
+        return value;
     }
 
     @Override

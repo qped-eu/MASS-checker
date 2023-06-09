@@ -7,15 +7,15 @@ import java.util.List;
 public class Negative extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
-        int value = (int)(float)Float.valueOf(list.get(0).evaluate(this));    //Because Racket only accepts Integers in even?
-        return Boolean.toString(value < 0);
+    public Object evaluate(List<Expression> list) throws Exception {
+        int value = (int) list.get(0).evaluate(this);    //Because Racket only accepts Integers in even?
+        return value < 0;
     }
 
     @Override

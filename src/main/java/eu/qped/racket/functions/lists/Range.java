@@ -2,18 +2,20 @@ package eu.qped.racket.functions.lists;
 
 import eu.qped.racket.buildingBlocks.Expression;
 
+import java.util.List;
+
 public class Range extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(java.util.List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         String s = "";
-        float startpoint = Float.valueOf(list.get(0).evaluate(this));
-        float end = Float.valueOf(list.get(1).evaluate(this));
-        float stepsize = Float.valueOf(list.get(2).evaluate(this));
+        float startpoint = (float) list.get(0).evaluate(this);
+        float end = (float) list.get(1).evaluate(this);
+        float stepsize = (float) list.get(2).evaluate(this);
 
         int i = 0;
         while (startpoint < end) {

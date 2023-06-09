@@ -7,14 +7,14 @@ import java.util.List;
 public class BooleanEQ extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         for (Expression e : list) {
-            if (!Boolean.valueOf(e.evaluate(this)))
+            if (!(Boolean) e.evaluate(this))
                 return Boolean.toString(false);
         }
         return Boolean.toString(true);

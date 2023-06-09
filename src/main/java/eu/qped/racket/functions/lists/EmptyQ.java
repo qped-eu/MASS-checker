@@ -7,12 +7,12 @@ import java.util.List;
 public class EmptyQ extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) {
         return Boolean.toString(list.get(0).getClass().equals(new Empty().getClass()));
     }
 

@@ -6,15 +6,15 @@ import java.util.List;
 
 public class MakeList extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         String s = "";
-        float number = Float.valueOf(list.get(0).evaluate(this));
-        String value = list.get(1).evaluate(this);
+        float number = (float) list.get(0).evaluate(this);
+        String value = (String) list.get(1).evaluate(this);
         int counter = 0;
         while (number > 0) {
             s += "(cons " + value + " ";

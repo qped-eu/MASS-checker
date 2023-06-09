@@ -2,16 +2,18 @@ package eu.qped.racket.functions.lists;
 
 import eu.qped.racket.buildingBlocks.Expression;
 
+import java.util.List;
+
 public class Rest extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(java.util.List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         String output = "";
-        String s = list.get(0).evaluate(this);
+        String s = (String) list.get(0).evaluate(this);
         s = s.substring(1, s.length());
         Boolean rest = false;
         Boolean empty = false;

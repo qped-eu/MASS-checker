@@ -14,20 +14,31 @@ public class Expression {
 
     /**
      * Evaluiert die Expression, wenn man diese Auffruft, soll man immer sich selber als verweis übergeben
+     *
      * @param e the Parent Expression
      * @return Auswertung des ersten Wertes, eigentlich sollte der erste Wert ein Opperator sein,
      * der die anderen indierrekt abfragt deswegen sollte der erste reichen
      */
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {  //Expression
         if (parts.isEmpty()) {
             return "";
         }
         String s = "";
+        System.out.println("print parts : " + parts.get(0).getParts().toString());
         return parts.get(0).evaluate(this);
         //return parts.stream().map(x -> x.evaluate(this)).reduce((x,y) -> x + " , " + y).orElse(" FEHLER ");
     }
 
-    public String evaluate(List<Expression> list) {
+//    public Float evaluateFloat(Expression e) {
+//        if (parts.isEmpty()) {
+//            return "";
+//        }
+//        String s = "";
+//        return parts.get(0).evaluate(this);
+//        //return parts.stream().map(x -> x.evaluate(this)).reduce((x,y) -> x + " , " + y).orElse(" FEHLER ");
+//    }
+
+    public Object evaluate(List<Expression> list) throws Exception {
         return null;
     }
 

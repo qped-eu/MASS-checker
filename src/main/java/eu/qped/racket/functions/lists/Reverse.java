@@ -2,20 +2,21 @@ package eu.qped.racket.functions.lists;
 
 import eu.qped.racket.buildingBlocks.Expression;
 
+import java.util.List;
 import java.util.Stack;
 
 public class Reverse extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(java.util.List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         String output = "";
         //List<String> inputs = new LinkedList<>();
         Stack<String> inputs = new Stack<>();
-        String s = list.get(0).evaluate(this);
+        String s = (String) list.get(0).evaluate(this);
         boolean next;
         String temp = "";
         for (String string : s.split(" ")) {

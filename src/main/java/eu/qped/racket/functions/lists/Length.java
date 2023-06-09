@@ -6,14 +6,14 @@ import java.util.List;
 
 public class Length extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
-        return Float.toString(list.get(0).evaluate(this).split("cons").length - 1);
+    public Object evaluate(List<Expression> list) throws Exception {
+        return Float.toString(list.get(0).evaluate(this).toString().split("cons").length - 1);
     }
 
     @Override

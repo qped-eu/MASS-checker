@@ -1,27 +1,43 @@
 package eu.qped.racket.functions.numbers;
 
 import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.Number;
 
 import java.util.List;
 
 public class Plus extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         float result = 0;
-        for (Expression e : list) {
-            //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            //System.out.println(e.evaluate(new Expression()));
-            result += Float.valueOf(e.evaluate(this));
+        for (Object e : list) {
+            if(e instanceof Number) {
+                //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                //System.out.println(e.evaluate(new Expression()));
+                result += (float) ((Number) e).evaluate(this);
+                //result += (e.evaluate(this));
+            } else {
+                throw new Exception("Expression isnt instance of Number");
+            }
         }
-        return Float.toString(result);
+        return result;
+        //return result;
     }
+
+//    public GenericType evaluate(List<Expression> list) {
+//        float result = 0;
+//        for (Expression e : list) {
+//            result += e.number
+//        }
+//        return Float.toString(result);
+//        //return result;
+//    }
 
     @Override
     public String toString() {

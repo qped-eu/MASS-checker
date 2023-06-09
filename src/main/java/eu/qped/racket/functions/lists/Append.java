@@ -7,16 +7,16 @@ import java.util.List;
 public class Append extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         Expression c1 = list.get(0);
         Expression c2 = list.get(1);
 
-        return c1.evaluate(this).replace("'()", c2.evaluate(this));
+        return c1.evaluate(this).toString().replace("'()",(String) c2.evaluate(this));
     }
 
     @Override

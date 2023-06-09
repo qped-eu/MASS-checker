@@ -7,14 +7,14 @@ import java.util.List;
 public class Absolute extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
-        return Float.toString(Math.abs(Float.valueOf(list.get(0).evaluate(this))));
+    public Object evaluate(List<Expression> list) throws Exception {
+        return (Math.abs((Float) list.get(0).evaluate(this)));
     }
 
     @Override

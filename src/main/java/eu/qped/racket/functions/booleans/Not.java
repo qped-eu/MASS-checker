@@ -7,12 +7,12 @@ import java.util.List;
 public class Not extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         for (Expression e : list) {
             if (e.evaluate(this).equals("false"))
                 return Boolean.toString(true);

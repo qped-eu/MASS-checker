@@ -88,12 +88,26 @@ public class DrRacketInterpreter {
 
 	}
 
-	public String evaluateExpressions() {
-		return expression.evaluate(new Expression());
+//	public String evaluateExpressions() {
+//		return expression.evaluate(new Expression());
+//	}
+
+	public String evaluateExpressions() throws Exception {
+		return expression.evaluate(new Expression()).toString();
 	}
 
-	public List<String> getAllExpressionEvaluations() {
-		return expressionList.stream().map(x -> x.evaluate(new Expression())).collect(Collectors.toList());
+//	public List<String> getAllExpressionEvaluations() {
+//		return expressionList.stream().map(x -> x.evaluate(new Expression())).collect(Collectors.toList());
+//	}
+
+	public List<Object> getAllExpressionEvaluations() {
+		return expressionList.stream().map(x -> {
+			try {
+				return x.evaluate(new Expression());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}).collect(Collectors.toList());
 	}
 
 	private String prettyPrint(String xml) throws SAXException, IOException, ParserConfigurationException,
@@ -251,6 +265,82 @@ public class DrRacketInterpreter {
 		}
 
 		return expression;
+	}
+
+
+	private Expression customFunction(Node node, int number) {
+		System.out.println("Start Custom Function");
+		Expression expression = new Expression();
+		String funName = "";
+		List<Parameter> parameterList = new LinkedList<>();
+		Expression body = new Expression();
+
+		NodeList nodeList = node.getChildNodes();
+		removeText(nodeList);
+
+		NodeList headerNodeChildren = nodeList.item(number+1).getChildNodes();
+		removeText(headerNodeChildren);
+		NodeList bodyNodeChildren = nodeList.item(number+2).getChildNodes();
+		removeText(bodyNodeChildren);
+
+
+		System.out.println("Headder: ");
+
+		for (int i = 0; i < headerNodeChildren.getLength(); i++) {
+			NamedNodeMap inside = headerNodeChildren.item(i).getAttributes();
+			String valueString = inside.getNamedItem("value").toString();
+			String typeString = inside.getNamedItem("type").toString();
+			System.out.println("\tname is : " + headerNodeChildren.item(i).getNodeName() + "( " + typeString + " | " + valueString + " )");
+			if (funName == "") {
+				funName = valueString.substring(7,valueString.length()-1);
+			} else {
+				parameterList.add(new Parameter(valueString.substring(7,valueString.length()-1)));
+			}
+		}
+
+		System.out.println("Body: ");
+
+		body = goDeeper(bodyNodeChildren);
+
+
+
+
+		System.out.println("FunName: " + funName);
+		System.out.println("ParameterList: " + parameterList);
+		System.out.println("Body: " + body);
+		CustomFunction customFunction = new CustomFunction(funName, parameterList, body);
+		this.customFunctionList.add(customFunction);
+		return customFunction;
+	}
+
+	/**
+	 * Builds and Evaluates the expression
+	 * @throws Exception
+	 */
+	public void evaluate() throws Exception{
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
+		Document document = builder.parse(new InputSource(new StringReader(xml)));
+
+		Element root = document.getDocumentElement();
+		NodeList children = root.getChildNodes();
+
+		removeText(children);
+		Expression rootExpression = new Expression();
+
+		for (int i = 0; i < children.getLength(); i++) {
+			System.out.println("name is : " + children.item(i).getNodeName());
+			NodeList c2 = children.item(i).getChildNodes();
+			removeText(c2);
+			if (!goDeeper(c2).getParts().isEmpty())
+				rootExpression.addPart(goDeeper(c2));
+		}
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(rootExpression);
+		//System.out.println(rootExpression.evaluate(new Expression()));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		expression = rootExpression;
+		expressionList = rootExpression.getParts();
 	}
 
 	private static boolean typeName(String valueString, Expression expression) {
@@ -450,80 +540,5 @@ public class DrRacketInterpreter {
 			return true;
 		}
 		return false;
-	}
-
-	private Expression customFunction(Node node, int number) {
-		System.out.println("Start Custom Function");
-		Expression expression = new Expression();
-		String funName = "";
-		List<Parameter> parameterList = new LinkedList<>();
-		Expression body = new Expression();
-
-		NodeList nodeList = node.getChildNodes();
-		removeText(nodeList);
-
-		NodeList headerNodeChildren = nodeList.item(number+1).getChildNodes();
-		removeText(headerNodeChildren);
-		NodeList bodyNodeChildren = nodeList.item(number+2).getChildNodes();
-		removeText(bodyNodeChildren);
-
-
-		System.out.println("Headder: ");
-
-		for (int i = 0; i < headerNodeChildren.getLength(); i++) {
-			NamedNodeMap inside = headerNodeChildren.item(i).getAttributes();
-			String valueString = inside.getNamedItem("value").toString();
-			String typeString = inside.getNamedItem("type").toString();
-			System.out.println("\tname is : " + headerNodeChildren.item(i).getNodeName() + "( " + typeString + " | " + valueString + " )");
-			if (funName == "") {
-				funName = valueString.substring(7,valueString.length()-1);
-			} else {
-				parameterList.add(new Parameter(valueString.substring(7,valueString.length()-1)));
-			}
-		}
-
-		System.out.println("Body: ");
-
-		body = goDeeper(bodyNodeChildren);
-
-
-
-
-		System.out.println("FunName: " + funName);
-		System.out.println("ParameterList: " + parameterList);
-		System.out.println("Body: " + body);
-		CustomFunction customFunction = new CustomFunction(funName, parameterList, body);
-		this.customFunctionList.add(customFunction);
-		return customFunction;
-	}
-
-	/**
-	 * Builds and Evaluates the expression
-	 * @throws Exception
-	 */
-	public void evaluate() throws Exception{
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
-		Document document = builder.parse(new InputSource(new StringReader(xml)));
-
-		Element root = document.getDocumentElement();
-		NodeList children = root.getChildNodes();
-
-		removeText(children);
-		Expression rootExpression = new Expression();
-
-		for (int i = 0; i < children.getLength(); i++) {
-			System.out.println("name is : " + children.item(i).getNodeName());
-			NodeList c2 = children.item(i).getChildNodes();
-			removeText(c2);
-			if (!goDeeper(c2).getParts().isEmpty())
-				rootExpression.addPart(goDeeper(c2));
-		}
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(rootExpression);
-		//System.out.println(rootExpression.evaluate(new Expression()));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		expression = rootExpression;
-		expressionList = rootExpression.getParts();
 	}
 }

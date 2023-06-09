@@ -6,13 +6,13 @@ import java.util.List;
 
 public class First extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
-        return list.get(0).evaluate(this).substring(5).split("\\s")[1];
+    public Object evaluate(List<Expression> list) throws Exception {
+        return list.get(0).evaluate(this).toString().substring(5).split("\\s")[1];
     }
 
     @Override

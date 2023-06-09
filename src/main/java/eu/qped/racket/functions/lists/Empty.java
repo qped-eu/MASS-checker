@@ -7,12 +7,12 @@ import java.util.List;
 public class Empty extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) {
         return "'()";
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) {
 
         return "";
     }

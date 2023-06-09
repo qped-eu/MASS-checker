@@ -8,7 +8,7 @@ public class Boolean extends Expression {
     }
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) {
         return java.lang.Boolean.toString(value);
     }
 
