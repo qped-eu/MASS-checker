@@ -19,17 +19,23 @@ public class Plus extends Expression {
     public Object evaluate(List<Expression> list) throws Exception {
         OperatorNumbers opNum = new OperatorNumbers();
         float result = 0;
+        int count = 0;
         for (Expression e : list) {
 
                 for (Class<?> clazz : opNum.arrayList) {
+                    count++;
                     System.out.println("Class: " + clazz.getName());
                     if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
                         System.out.println("Yes");
                         result += (float) e.evaluate(this);
                         break;
                     } else {
-                        throw new Exception("Expression isnt instance of Number");
+                        if (opNum.arrayList.size() == count) {
+                            System.out.println("dshdfsfhaldh" + opNum.arrayList.size());
+                            throw new Exception("Expression isnt instance of Number");
+                        }
                     }
+                    break;
                 }
         }
         return result;
