@@ -18,17 +18,24 @@ public class Minus extends Expression {
         OperatorNumbers opNum = new OperatorNumbers();
         boolean first = true;
         float result = 0;
+        boolean isNumberOp = false;
         for (Expression e : list) {
             for (Class<?> clazz : opNum.arrayList) {
                 System.out.println("Class: " + clazz.getName());
-                if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
-                    if (first) {
-                        result = (float) e.evaluate(this);
-                        first = false;
-                        System.out.println("Yes");
-                    } else
-                        result -= (float) e.evaluate(this);
+                if(e instanceof Number || clazz.isInstance(e.getParts().get(0))){
+                    isNumberOp = true;
+                    break;
                 }
+            }
+            if (e instanceof Number || isNumberOp) {
+                if (first) {
+                    result = (float) e.evaluate(this);
+                    first = false;
+                    System.out.println("Yes");
+                } else
+                    result -= (float) e.evaluate(this);
+            } else {
+                throw new Exception("Expression isnt instance of Number");
             }
         }
         return result;
