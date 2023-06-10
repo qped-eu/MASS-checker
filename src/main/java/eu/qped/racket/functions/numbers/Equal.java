@@ -18,6 +18,8 @@ public class Equal extends Expression {
         float value = 0;
         for (Expression e : list) {
             float valueNow = (float) (e.evaluate(this));
+
+            System.out.println(valueNow);
             if (first) {
                 value = valueNow;
                 first = false;

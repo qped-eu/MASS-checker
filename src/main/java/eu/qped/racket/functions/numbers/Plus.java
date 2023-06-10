@@ -3,9 +3,11 @@ package eu.qped.racket.functions.numbers;
 import eu.qped.racket.buildingBlocks.Expression;
 import eu.qped.racket.buildingBlocks.Number;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Plus extends Expression {
+
 
     @Override
     public Object evaluate(Expression e) throws Exception {
@@ -15,16 +17,20 @@ public class Plus extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        OperatorNumbers opNum = new OperatorNumbers();
         float result = 0;
         for (Expression e : list) {
-            if(e instanceof Number || e.getParts().get(0) instanceof Plus) {        //workaround für tiefere schachtelung e.getParts().get(0) instanceof
-                //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                //System.out.println(e.evaluate(new Expression()));
-                result += (float) e.evaluate(this);
-                //result += (e.evaluate(this));
-            } else {
-                throw new Exception("Expression isnt instance of Number");
-            }
+
+                for (Class<?> clazz : opNum.arrayList) {
+                    System.out.println("Class: " + clazz.getName());
+                    if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
+                        System.out.println("Yes");
+                        result += (float) e.evaluate(this);
+                        break;
+                    } else {
+                        throw new Exception("Expression isnt instance of Number");
+                    }
+                }
         }
         return result;
         //return result;

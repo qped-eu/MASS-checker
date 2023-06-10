@@ -369,7 +369,7 @@ public class DrRacketInterpreter {
 			expression.addPart(new GreaterThan());
 			return true;
 		}
-		if (valueString.compareTo("value=\"=\"") == 0) {	//Equal
+		if ((valueString.compareTo("value=\"=\"") == 0) || (valueString.compareTo("value=\"equal?\"") == 0)) {	//Equal
 			expression.addPart(new Equal());
 			return true;
 		}

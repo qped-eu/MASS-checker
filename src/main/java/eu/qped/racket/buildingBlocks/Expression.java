@@ -24,7 +24,9 @@ public class Expression {
             return "";
         }
         String s = "";
+        System.out.println(parts);
         System.out.println("print parts : " + parts.get(0).getParts().toString());
+        System.out.println("Evaluate: " + parts.get(0).evaluate(this));
         return parts.get(0).evaluate(this);
         //return parts.stream().map(x -> x.evaluate(this)).reduce((x,y) -> x + " , " + y).orElse(" FEHLER ");
     }

@@ -15,14 +15,21 @@ public class Minus extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        OperatorNumbers opNum = new OperatorNumbers();
         boolean first = true;
         float result = 0;
         for (Expression e : list) {
-            if (first) {
-                result = (float) e.evaluate(this);
-                first = false;
-            } else
-                result -= (float) e.evaluate(this);
+            for (Class<?> clazz : opNum.arrayList) {
+                System.out.println("Class: " + clazz.getName());
+                if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
+                    if (first) {
+                        result = (float) e.evaluate(this);
+                        first = false;
+                        System.out.println("Yes");
+                    } else
+                        result -= (float) e.evaluate(this);
+                }
+            }
         }
         return result;
     }
