@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Cons extends Expression {
     @Override
-    public Object evaluate(Expression e) {
-        return evaluate((Expression) e.getRest(super.getId()));
+    public Object evaluate(Expression e) throws Exception {
+        return evaluate( e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
