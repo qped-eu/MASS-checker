@@ -23,7 +23,7 @@ public class Random extends Expression {
         for (Class<?> clazz : opNum.arrayList) {
             count++;
             if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {
-                max = (int) list.get(0).evaluate(this);
+                max = (int)(float) list.get(0).evaluate(this);
                 break;
             } else {
                 if (opNum.arrayList.size() == count) {
@@ -31,7 +31,7 @@ public class Random extends Expression {
                 }
             }
         }
-        return (float) (new java.util.Random().nextInt(max));
+        return (new java.util.Random().nextInt(max));
     }
 
     @Override

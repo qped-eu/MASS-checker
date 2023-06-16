@@ -23,7 +23,7 @@ public class Odd extends Expression {
         for (Class<?> clazz : opNum.arrayList) {
             count++;
             if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {
-                value = (int) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
+                value = (int)(float) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
                 resultBoolean = value % 2 != 0;
                 break;
             } else {

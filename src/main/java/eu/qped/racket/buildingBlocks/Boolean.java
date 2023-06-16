@@ -9,7 +9,7 @@ public class Boolean extends Expression {
 
     @Override
     public Object evaluate(Expression e) {
-        return java.lang.Boolean.toString(value);
+        return value;
     }
 
     @Override
