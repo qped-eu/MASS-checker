@@ -1,4 +1,6 @@
-package eu.qped.racket.functions.numbers;
+package eu.qped.racket.buildingBlocks;
+
+import eu.qped.racket.functions.numbers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
