@@ -1,6 +1,8 @@
 package eu.qped.racket.functions.booleans;
 
 import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.Number;
+import eu.qped.racket.buildingBlocks.OperatorNumbers;
 
 import java.util.List;
 
@@ -15,9 +17,9 @@ public class BooleanEQ extends Expression {
     public Object evaluate(List<Expression> list) throws Exception {
         for (Expression e : list) {
             if (!(Boolean) e.evaluate(this))
-                return Boolean.toString(false);
+                return false;
         }
-        return Boolean.toString(true);
+        return true;
     }
 
     @Override

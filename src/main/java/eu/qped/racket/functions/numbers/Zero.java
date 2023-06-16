@@ -1,6 +1,8 @@
 package eu.qped.racket.functions.numbers;
 
 import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.Number;
+import eu.qped.racket.buildingBlocks.OperatorNumbers;
 
 import java.util.List;
 
@@ -14,7 +16,21 @@ public class Zero extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        return (boolean) ((float) (list.get(0).evaluate(this)) == 0);
+        boolean returnBoolean = false;
+        OperatorNumbers opNum = new OperatorNumbers();
+        int count = 0;
+        for (Class<?> clazz : opNum.arrayList) {
+            count++;
+            if(list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {
+                returnBoolean = ((float) (list.get(0).evaluate(this)) == 0);
+                break;
+            } else {
+                if (opNum.arrayList.size() == count) {
+                    throw new Exception("Expression isnt instance of Number");
+                }
+            }
+        }
+        return returnBoolean;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package eu.qped.racket.functions.numbers;
 
 import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.Number;
+import eu.qped.racket.buildingBlocks.OperatorNumbers;
+
 import java.util.List;
 
 public class Positive extends Expression {
@@ -13,7 +16,20 @@ public class Positive extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        int value = (int) list.get(0).evaluate(this);    //Because Racket only accepts Integers in even?
+        OperatorNumbers opNum = new OperatorNumbers();
+        int count = 0;
+        int value = 0;
+        for (Class<?> clazz : opNum.arrayList) {
+            count++;
+            if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {
+                value = (int) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
+                break;
+            } else {
+                if (opNum.arrayList.size() == count) {
+                    throw new Exception("Expression isnt instance of Number");
+                }
+            }
+        }
         return value > 0;
     }
 
