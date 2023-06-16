@@ -27,9 +27,12 @@ public class LessThan extends Expression {
                 count++;
                 if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
                     float valueNow = (float) e.evaluate(this);
+                    System.out.println("valueNow: " +valueNow);
+                    System.out.println("value: " + value);
                     if (first) {
                         value = valueNow;
                         first = false;
+                        break;
                     }
                     if (!(value < valueNow)) {
                         return false;

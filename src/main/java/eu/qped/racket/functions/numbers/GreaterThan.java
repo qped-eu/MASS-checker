@@ -30,6 +30,7 @@ public class GreaterThan extends Expression {
                     if (first) {
                         value = valueNow;
                         first = false;
+                        break;
                     }
                     if (!(value > valueNow)) {
                         return false;
