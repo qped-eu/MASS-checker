@@ -21,6 +21,7 @@ public class Division extends Expression {
         boolean first = true;
         float result = 0;
         for (Expression e : list) {
+            count = 0;
             for (Class<?> clazz : opNum.arrayList) {
                 count++;
                 if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
@@ -37,7 +38,6 @@ public class Division extends Expression {
                         throw new Exception("Expression isnt instance of Number");
                     }
                 }
-                break;
             }
         }
         return result;

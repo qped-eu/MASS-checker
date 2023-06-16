@@ -21,6 +21,7 @@ public class Min extends Expression {
         float result = 0;
         int count = 0;
         for (Expression e : list) {
+            count = 0;
             for (Class<?> clazz : opNum.arrayList) {
                 count++;
                 if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
