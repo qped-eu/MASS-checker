@@ -163,7 +163,6 @@ public class RacketEvaluationTests {
         String s = "(+ 1 1)";
         List answer = Arrays.stream("2".split("[ ]"))
                 .map(x -> Float.valueOf(x))
-                .map(x -> x.toString())
                 .collect(Collectors.toList());
         DrRacketInterpreter inter = new DrRacketInterpreter(s);
         inter.evaluate();
@@ -172,7 +171,6 @@ public class RacketEvaluationTests {
         s = "(+ 1 1) (+ 1 1)";
         answer = Arrays.stream("2 2".split("[ ]"))
                 .map(x -> Float.valueOf(x))
-                .map(x -> x.toString())
                 .collect(Collectors.toList());
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
@@ -181,7 +179,6 @@ public class RacketEvaluationTests {
         s = "(+ 1 1) (+ 1 1) \n(+ (+ 2 2) (+ 1 (+ 3 2)))";
         answer = Arrays.stream("2 2 10".split("[ ]"))
                 .map(x -> Float.valueOf(x))
-                .map(x -> x.toString())
                 .collect(Collectors.toList());
         inter = new DrRacketInterpreter(s);
         inter.evaluate();

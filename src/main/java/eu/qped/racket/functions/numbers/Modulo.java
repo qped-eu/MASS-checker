@@ -23,7 +23,7 @@ public class Modulo extends Expression {
         int count = 0;
         for (Class<?> clazz : opNum.arrayList) {
             count++;
-            if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {
+            if ((list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) || (list.get(1) instanceof Number || clazz.isInstance(list.get(1).getParts().get(0)))) {
                 value1 = (float) list.get(0).evaluate(this);
                 value2 = (float) list.get(1).evaluate(this);
                 result = value1 % value2;
