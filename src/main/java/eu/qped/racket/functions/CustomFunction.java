@@ -35,7 +35,7 @@ public class CustomFunction extends Expression {
         for (int i = 0 ; i < list.size(); i++) {
             //System.out.println(list.get(i).evaluate(this) + " in " + parameters.get(i));
             hMap.put(list.get(i).evaluate(this), parameters.get(i));
-            parameters.get(i).setValue((String) list.get(i).evaluate(this));
+            parameters.get(i).setValue(String.valueOf(list.get(i).evaluate(this)));
         }
 
         //System.out.println(hMap);

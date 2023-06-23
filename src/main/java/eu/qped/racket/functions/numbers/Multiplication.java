@@ -23,7 +23,7 @@ public class Multiplication extends Expression {
             count = 0;
             for (Class<?> clazz : opNum.arrayList) {
                 count++;
-                if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
+                if (e instanceof Number || e.getParts().size() > 0 && clazz.isInstance(e.getParts().get(0))) {
                     result *= (float) e.evaluate(this);
                     break;
                 } else {
