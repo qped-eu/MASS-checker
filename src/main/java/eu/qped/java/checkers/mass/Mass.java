@@ -8,6 +8,7 @@ import eu.qped.java.checkers.classdesign.ClassConfigurator;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
+import eu.qped.java.checkers.mutation.MutationChecker;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -182,6 +183,12 @@ public class Mass implements Checker {
             massExecutorBuilder.coverageChecker(coverageChecker);
         }
 
+        // Coverage Checker
+        if (mass.isMutationSelected()) {
+            MutationChecker mutationChecker = new MutationChecker(mass.getMutation(), solutionRoot);
+            massExecutorBuilder.mutationChecker(mutationChecker);
+        }
+
         //Mass
         MassExecutor massExecutor = massExecutorBuilder.build();
         massExecutor.execute();
@@ -194,14 +201,16 @@ public class Mass implements Checker {
         var styleFeedbacks = massExecutor.getStyleFeedbacks();
         var solutionApproachFeedbacks = massExecutor.getSolutionApproachFeedbacks();
         var metricsFeedbacks = massExecutor.getMetricsFeedbacks();
-        var coverageFeedacks = massExecutor.getCoverageFeedbacks();
+        var coverageFeedbacks = massExecutor.getCoverageFeedbacks();
+        var mutationFeedbacks = massExecutor.getMutationFeedbacks();
 
         var resultArray = mergeFeedbacks(
                 syntaxFeedbacks,
                 styleFeedbacks,
                 solutionApproachFeedbacks,
                 metricsFeedbacks,
-                coverageFeedacks,
+                coverageFeedbacks,
+                mutationFeedbacks,
                 qfObject,
                 solutionRoot
         );
@@ -215,6 +224,7 @@ public class Mass implements Checker {
             @NonNull List<String> semanticFeedbacks,
             @NonNull List<MetricsFeedback> metricsFeedbacks,
             @NonNull List<String> coverageFeedbacks,
+            @NonNull List<String> mutationFeedbacks,
             @NonNull QfObject qfObject, File solutionRoot
     ) {
 
@@ -256,6 +266,11 @@ public class Mass implements Checker {
                 resultArrayAsList.add("## Coverage feedbacks");
             }
             resultArrayAsList.addAll(coverageFeedbacks);
+
+            if (!mutationFeedbacks.isEmpty()) {
+                resultArrayAsList.add("## Mutation feedbacks");
+            }
+            resultArrayAsList.addAll(mutationFeedbacks);
 
         }
         if (resultArrayAsList.size() <= 1) {

@@ -32,6 +32,7 @@ public class QfMass extends QfObjectBase {
     private boolean metricsSelected;
     private boolean coverageSelected;
     private boolean classSelected;
+    private boolean mutationSelected;
     
     /**
      * Private Base Implementation
@@ -43,4 +44,6 @@ public class QfMass extends QfObjectBase {
     @JsonPropertyDescription("Specify the URL of a ZIP-file containing instructor resources that should be added to the root directory of student resources.")
     private String instructorResources;
 
+    
+    private QfMutationSettings mutation;
 }

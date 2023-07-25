@@ -2,7 +2,6 @@ package eu.qped.racket.buildingBlocks;
 
 
 import eu.qped.racket.interpret.DrRacketInterpreter;
-import eu.qped.racket.test.SyntaxCheckerSetup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

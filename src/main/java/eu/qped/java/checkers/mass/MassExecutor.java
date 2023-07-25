@@ -6,6 +6,7 @@ import eu.qped.java.checkers.classdesign.feedback.ClassFeedback;
 import eu.qped.java.checkers.coverage.CoverageChecker;
 import eu.qped.java.checkers.metrics.MetricsChecker;
 import eu.qped.java.checkers.metrics.data.feedback.MetricsFeedback;
+import eu.qped.java.checkers.mutation.MutationChecker;
 import eu.qped.java.checkers.solutionapproach.SolutionApproachChecker;
 import eu.qped.java.checkers.style.StyleChecker;
 import eu.qped.java.checkers.syntax.SyntaxChecker;
@@ -38,6 +39,7 @@ public class MassExecutor {
     private List<ClassFeedback> classFeedbacks;
     private List<MetricsFeedback> metricsFeedbacks;
     private List<String> coverageFeedbacks;
+    private List<String> mutationFeedbacks;
 
 
     private final StyleChecker styleChecker;
@@ -46,6 +48,7 @@ public class MassExecutor {
     private final ClassChecker classChecker;
     private final MetricsChecker metricsChecker;
     private final CoverageChecker coverageChecker;
+    private final MutationChecker mutationChecker;
 
 
     /**
@@ -58,7 +61,7 @@ public class MassExecutor {
         boolean metricsNeeded = mainSettings.isMetricsNeeded();
         boolean classNeeded = mainSettings.isClassNeeded();
         boolean coverageNeeded = mainSettings.isCoverageNeeded();
-
+        boolean mutationNeeded = mainSettings.isMutationNeeded();
 
         syntaxFeedbacks = syntaxChecker.check();
         var syntaxAnalyseReport = syntaxChecker.getAnalyseReport();
@@ -92,6 +95,9 @@ public class MassExecutor {
                 // the syntaxChecker always fails.
                 coverageFeedbacks = coverageChecker.check();
             }
+            if (mutationNeeded) {
+            	mutationFeedbacks = mutationChecker.check();
+            }
         }
 
         // translate Feedback body if needed
@@ -107,6 +113,7 @@ public class MassExecutor {
         metricsFeedbacks = new ArrayList<>();
         classFeedbacks = new ArrayList<>();
         coverageFeedbacks = new ArrayList<>();
+        mutationFeedbacks = new ArrayList<>();
     }
 
 

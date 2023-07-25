@@ -30,6 +30,7 @@ public class MainSettings {
     private boolean metricsNeeded;
     private boolean classNeeded;
     private boolean coverageNeeded;
+    private boolean mutationNeeded;
 
     private QfMainSettings qfMainSettings;
     private QfMass mass;
@@ -52,6 +53,7 @@ public class MainSettings {
         this.setSemanticNeeded(mass.isSemanticSelected());
         this.setCoverageNeeded(mass.isCoverageSelected());
         this.setClassNeeded(mass.isClassSelected());
+        this.setMutationNeeded(mass.isMutationSelected());
         boolean isLanguageApplicable = this.preferredLanguage != null && !"".equals(this.preferredLanguage);
         this.setPreferredLanguage(isLanguageApplicable ? preferredLanguage : SupportedLanguages.ENGLISH);
         var syntaxLevel = extractSyntaxLevel(this.mass.getSyntax().getLevel());
