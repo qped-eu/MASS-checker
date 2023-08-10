@@ -1,7 +1,12 @@
 package eu.qped.racket.functions.lists;
 
+import eu.qped.racket.buildingBlocks.Boolean;
 import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.Number;
+import eu.qped.racket.buildingBlocks.OperatorNumbers;
+import eu.qped.racket.buildingBlocks.Parameter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Remove extends Expression {
@@ -12,17 +17,93 @@ public class Remove extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        OperatorNumbers opNum = new OperatorNumbers();
+        ArrayList<Class> arrayListAll = new ArrayList<>();
+        arrayListAll.addAll(opNum.arrayList);
+        arrayListAll.addAll(opNum.boolArrayList);
+        int count = 0;
         String s = "";
-        String toRemove = (String) list.get(0).evaluate(this);
-        String inputList = (String) list.get(1).evaluate(this);
 
-        if (!inputList.contains(toRemove)) {
-            return inputList;
+        for (Class<?> clazz : arrayListAll) {
+            count++;
+
+            if (list.get(0) instanceof Parameter || list.get(0) instanceof Boolean || list.get(0) instanceof eu.qped.racket.buildingBlocks.Number || clazz.isInstance(list.get(0).getParts().get(0))) {
+                if(list.get(0) instanceof Parameter) {      //String
+                    String toRemove = (String) list.get(0).evaluate(this);
+                    String inputList = (String) list.get(1).evaluate(this);
+
+                    if (!inputList.contains(toRemove)) {
+                        return inputList;
+                    }
+
+                    s = inputList.replaceFirst("cons " + toRemove + " ", "WÄASFASNJF123"); //Placeholder to remove (
+                    s = s.replace("(WÄASFASNJF123", "");
+                    s = s.substring(0, s.length() - 1);
+                    return s;
+                }
+                if(list.get(0) instanceof Boolean || list.get(0).getParts().size() > 0 && opNum.boolArrayList.contains(list.get(0).getParts().get(0).getClass())) {        //Boolean
+                    boolean toRemoveBoolean = (boolean) list.get(0).evaluate(this);
+                    String toRemove = String.valueOf(toRemoveBoolean);
+                    String inputList = (String) list.get(1).evaluate(this);
+
+                    if (!inputList.contains(toRemove)) {
+                        return inputList;
+                    }
+
+                    s = inputList.replaceFirst("cons " + toRemove + " ", "WÄASFASNJF123"); //Placeholder to remove (
+                    s = s.replace("(WÄASFASNJF123", "");
+                    s = s.substring(0, s.length() - 1);
+                    return s;
+                }
+                if(list.get(0) instanceof Number || list.get(0).getParts().size() > 0 && opNum.arrayList.contains(list.get(0).getParts().get(0).getClass())) {         //Number
+                    float toRemoveFloat = (float) list.get(0).evaluate(this);
+                    String toRemove = String.valueOf(toRemoveFloat);
+                    String inputList = (String) list.get(1).evaluate(this);
+
+                    if (!inputList.contains(toRemove)) {
+                        return inputList;
+                    }
+
+                    s = inputList.replaceFirst("cons " + toRemove + " ", "WÄASFASNJF123"); //Placeholder to remove (
+                    s = s.replace("(WÄASFASNJF123", "");
+                    s = s.substring(0, s.length() - 1);
+                    return s;
+                }
+            } else {
+                if (arrayListAll.size() == count) {
+                    try{
+                        if(list.get(0).getParts().get(0) instanceof eu.qped.racket.functions.lists.List) {      //String
+                            String toRemove = (String) list.get(0).evaluate(this);
+                            String inputList = (String) list.get(1).evaluate(this);
+
+                            if (!inputList.contains(toRemove)) {
+                                return inputList;
+                            }
+
+                            s = inputList.replaceFirst("cons " + toRemove + " ", "WÄASFASNJF123"); //Placeholder to remove (
+                            s = s.replace("(WÄASFASNJF123", "");
+                            s = s.substring(0, s.length() - 1);
+                            return s;
+                        }
+                    }catch(IndexOutOfBoundsException e){
+                        throw new Exception("Expression isnt instance of Number");
+                    }
+                }
+            }
         }
-        s = inputList.replaceFirst("cons " + toRemove + " ", "WÄASFASNJF123"); //Placeholder to remove (
-        s = s.replace("(WÄASFASNJF123", "");
-        s = s.substring(0, s.length() - 1);
         return s;
+
+//        String s = "";
+//        String toRemove = (String) list.get(0).evaluate(this);
+//        String inputList = (String) list.get(1).evaluate(this);
+//
+//        if (!inputList.contains(toRemove)) {
+//            return inputList;
+//        }
+//        s = inputList.replaceFirst("cons " + toRemove + " ", "WÄASFASNJF123"); //Placeholder to remove (
+//        s = s.replace("(WÄASFASNJF123", "");
+//        s = s.substring(0, s.length() - 1);
+//        return s;
     }
 
     @Override
