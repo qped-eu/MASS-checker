@@ -1,5 +1,6 @@
 package eu.qped.racket.functions.lists;
 
+import eu.qped.racket.buildingBlocks.Cons;
 import eu.qped.racket.buildingBlocks.Expression;
 
 import java.util.List;
@@ -12,22 +13,26 @@ public class Rest extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        String output = "";
-        String s = (String) list.get(0).evaluate(this);
-        s = s.substring(1, s.length());
-        Boolean rest = false;
-        Boolean empty = false;
-        for (Character c : s.toCharArray()) {
-            if (rest) {
-                output += c;
-            } else {
-                if (c == '(' || c == '\'') {
-                    rest = true;
+        if((list.get(0).getParts().get(0) instanceof eu.qped.racket.functions.lists.List || list.get(0).getParts().get(0) instanceof Cons)) {
+            String output = "";
+            String s = (String) list.get(0).evaluate(this);
+            s = s.substring(1);
+            boolean rest = false;
+            boolean empty = false;
+            for (Character c : s.toCharArray()) {
+                if (rest) {
                     output += c;
+                } else {
+                    if (c == '(' || c == '\'') {
+                        rest = true;
+                        output += c;
+                    }
                 }
             }
+            return output.substring(0, output.length() - 1);
+        } else {
+            throw new Exception("Expression isnt instance of List");
         }
-        return output.substring(0,output.length() - 1);
     }
 
     @Override

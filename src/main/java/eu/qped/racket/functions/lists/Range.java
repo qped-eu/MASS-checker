@@ -13,9 +13,26 @@ public class Range extends Expression {
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
         String s = "";
-        float startpoint = (float) list.get(0).evaluate(this);
-        float end = (float) list.get(1).evaluate(this);
-        float stepsize = (float) list.get(2).evaluate(this);
+        float startpoint;
+        float end;
+        try {                                                               //1 Statement vs 2 Statements handling
+            startpoint = (float) list.get(0).evaluate(this);
+            end = (float) list.get(1).evaluate(this);
+        } catch (IndexOutOfBoundsException e){
+            startpoint = 0;
+            end = (float) list.get(0).evaluate(this);
+        } catch (ClassCastException e){
+            throw new Exception("Expression(Start/End) isnt Instance of Number");
+        }
+
+        float stepsize;
+        try {                                                               //standard Stepsize versus 3rd Statement
+            stepsize = (float) list.get(2).evaluate(this);
+        } catch (IndexOutOfBoundsException e){
+            stepsize = 1;
+        } catch (ClassCastException e){
+            throw new Exception("Expression(Stepsize) isnt Instance of Number");
+        }
 
         int i = 0;
         while (startpoint < end) {

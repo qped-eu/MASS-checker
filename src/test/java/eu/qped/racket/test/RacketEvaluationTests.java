@@ -1,13 +1,16 @@
 package eu.qped.racket.test;
 
 import eu.qped.racket.interpret.DrRacketInterpreter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.osgi.service.application.ApplicationException;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RacketEvaluationTests {
 
@@ -1231,6 +1234,16 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals("(cons 1.0 (cons 2.0 (cons 3.0 (cons 1.0 '()))))", inter.evaluateExpressions());
 
+        s = "(append (cons 1 (cons 2 (cons 3 empty))) (list 1))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("(cons 1.0 (cons 2.0 (cons 3.0 (cons 1.0 '()))))", inter.evaluateExpressions());
+
+        s = "(append (cons 1 (cons 2 (cons 3 empty))) (list #true))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("(cons 1.0 (cons 2.0 (cons 3.0 (cons true '()))))", inter.evaluateExpressions());
+
     }
 
     @Test
@@ -1291,6 +1304,11 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(0), inter.evaluateExpressions());
 
+//        s = "(length '())";
+//        inter = new DrRacketInterpreter(s);
+//        inter.evaluate();
+//        assertEquals(Float.toString(0), inter.evaluateExpressions());     //TODO '() NullPointer in goDeeper etc
+
         s = "(length (cons 1 (cons 2 (cons 3 (cons 4 empty)))))";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
@@ -1308,6 +1326,11 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("(cons 1.0 (cons 2.0 '()))", inter.evaluateExpressions());
+
+        s = "(list 1 #true)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("(cons 1.0 (cons true '()))", inter.evaluateExpressions());
 
         s = "(list 1 2 3 4)";
         inter = new DrRacketInterpreter(s);
@@ -1377,6 +1400,24 @@ public class RacketEvaluationTests {
         DrRacketInterpreter inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("(cons 0.0 (cons 2.0 (cons 4.0 (cons 6.0 (cons 8.0 '())))))", inter.evaluateExpressions());
+
+        s = "(range 0 5)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("(cons 0.0 (cons 1.0 (cons 2.0 (cons 3.0 (cons 4.0 '())))))", inter.evaluateExpressions());
+
+        s = "(range 5)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("(cons 0.0 (cons 1.0 (cons 2.0 (cons 3.0 (cons 4.0 '())))))", inter.evaluateExpressions());
+
+        s = "(range #true)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression(Start/End) isnt Instance of Number", thrown.getMessage());
+        System.out.println("Exceptiontest ?????????????????????????????????????????????????????????????");
 
         s = "(range 0 1 2)";
         inter = new DrRacketInterpreter(s);
@@ -1508,6 +1549,11 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("'()", inter.evaluateExpressions());
+
+//        s = "(reverse '())";
+//        inter = new DrRacketInterpreter(s);
+//        inter.evaluate();
+//        assertEquals("'()", inter.evaluateExpressions());             //TODO NullPointer in goDeeper etc
     }
 
     @Test
