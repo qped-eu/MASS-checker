@@ -24,24 +24,29 @@ public class Modulo extends Expression {
     public Object evaluate(List<Expression> list) throws Exception {
         OperatorNumbers opNum = new OperatorNumbers();      //Liste mit Operatoren, die eine Number zurückgeben
         float result = 0;
-        float value1 = 0;
-        float value2 = 0;
+        Float value1 = null;
+        Float value2 = null;
         int count = 0;                  //Zähler, der die Anzahl der überprüften Operatoren mitzählt
         for (Class<?> clazz : opNum.arrayList) {
             count++;
-            if ((list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) || (list.get(1) instanceof Number || clazz.isInstance(list.get(1).getParts().get(0)))) {     //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
+            if ((list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0)))) {     //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
                 value1 = (float) list.get(0).evaluate(this);
+            }
+            if ((list.get(1) instanceof Number || clazz.isInstance(list.get(1).getParts().get(0)))) {     //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
                 value2 = (float) list.get(1).evaluate(this);
+            }
+            if(value1!=null && value2!=null) {
                 result = value1 % value2;
                 break;
-            } else {                    //Falls ein Operator innerhalb der list keine Number zurückgibt, also ein falscher Parameter übergeben wurde(!Number)
-                if (opNum.arrayList.size() == count) {
-                    throw new Exception("Expression isnt instance of Number");
-                }
+            }
+            if (opNum.arrayList.size() == count) {                                          //Falls ein Operator innerhalb der list keine Number zurückgibt, also ein falscher Parameter übergeben wurde(!Number)
+                throw new Exception("Expression isnt instance of Number");
             }
         }
         return result == -0f ? 0 : result;      //Because java has -0 and Racket does not
     }
+
+
 
     @Override
     public String toString() {
