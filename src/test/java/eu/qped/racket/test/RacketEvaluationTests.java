@@ -1280,6 +1280,21 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(1), inter.evaluateExpressions());
+
+        s = "(first (cons true empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(first (cons #f empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(first (cons hello empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("hello", inter.evaluateExpressions());
     }
 
     @Test
@@ -1457,6 +1472,11 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals("(cons 2.0 (cons 3.0 '()))", inter.evaluateExpressions());
 
+        s = "(remove 1 (list 1 (+ 1 1) 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("(cons 2.0 (cons 3.0 '()))", inter.evaluateExpressions());
+
         s = "(remove 2 (list 1 4 3))";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
@@ -1572,6 +1592,21 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(second (cons 1 (cons true (cons 3 empty))))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(second (cons 1 (cons #f (cons 3 empty))))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(second (cons 1 (cons hello (cons 3 empty))))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("hello", inter.evaluateExpressions());
     }
 
     @Test

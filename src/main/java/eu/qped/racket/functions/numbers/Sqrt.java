@@ -28,7 +28,11 @@ public class Sqrt extends Expression {
         for (Class<?> clazz : opNum.arrayList) {
             count++;
             if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {             //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
-                result = (float) Math.sqrt((float) list.get(0).evaluate(this));
+                if(((float) list.get(0).evaluate(this)) >= 0) {
+                    result = (float) Math.sqrt((float) list.get(0).evaluate(this));
+                } else {
+                    throw new Exception("Number is negative");                          //Racket verwendet komplexe Zahlen?
+                }
                 break;
             } else {                                            //Falls ein Operator innerhalb der list keine Number zurückgibt, also ein falscher Parameter übergeben wurde(!Number)
                 if (opNum.arrayList.size() == count) {

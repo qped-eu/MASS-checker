@@ -23,21 +23,42 @@ public class Random extends Expression {
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
         OperatorNumbers opNum = new OperatorNumbers();          //Liste mit Operatoren, die eine Number zurückgeben
-        float result = 0;
         int count = 0;                                      //Zähler, der die Anzahl der überprüften Operatoren mitzählt
-        int max = 0;
+        float result = 0;
+        float min = 0;
+        float max = 0;
         for (Class<?> clazz : opNum.arrayList) {
             count++;
             if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {                     //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
-                max = (int)(float) list.get(0).evaluate(this);
-                break;
+                try{                                                                                            //2 Statements
+                    min = (float) list.get(0).evaluate(this);
+                    max = (float) list.get(1).evaluate(this);
+                    if(min < max && (min % 1 == 0) && (max % 1 == 0)){
+//                        return min+(int)(Math.random()*((max-min)));
+                        return (int) (min + (new java.util.Random().nextInt((int) (max-min))));
+                    } else {
+                        throw new Exception("MaxValue/MinValue has decimals or !(min < max)");
+                    }
+                } catch (IndexOutOfBoundsException e){
+                    try{                                                                                        //1 Statement
+                        max = (float) list.get(0).evaluate(this);
+                        if(max > 0 && (max % 1 == 0)){
+//                            return (int) (Math.random()*(max));
+                            return (int) (new java.util.Random().nextInt((int) (max)));
+                        } else {
+                            throw new Exception("MaxValue has decimals or is <=0");
+                        }
+                    } catch (IndexOutOfBoundsException ee){                                                     //0 Statements
+                        result = (float) Math.random();
+                    }
+                }
             } else {                                                    //Falls ein Operator innerhalb der list keine Number zurückgibt, also ein falscher Parameter übergeben wurde(!Number)
                 if (opNum.arrayList.size() == count) {
                     throw new Exception("Expression isnt instance of Number");
                 }
             }
         }
-        return (new java.util.Random().nextInt(max));
+        return result;
     }
 
     @Override

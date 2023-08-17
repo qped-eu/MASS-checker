@@ -19,6 +19,10 @@ public class main {
             interpreter.evaluate();
             System.out.println(interpreter.evaluateExpressions());
 
+            double d = Math.sqrt(-16);
+            System.out.println(d);
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
