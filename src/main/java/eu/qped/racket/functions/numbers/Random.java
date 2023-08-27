@@ -29,7 +29,6 @@ public class Random extends Expression {
         float max = 0;
         for (Class<?> clazz : opNum.arrayList) {
             count++;
-            if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {                     //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
                 try{                                                                                            //2 Statements
                     min = (float) list.get(0).evaluate(this);
                     max = (float) list.get(1).evaluate(this);
@@ -50,13 +49,12 @@ public class Random extends Expression {
                         }
                     } catch (IndexOutOfBoundsException ee){                                                     //0 Statements
                         result = (float) Math.random();
+                    } catch (ClassCastException cc){
+                        throw new Exception("Expression isnt instance of Number");
                     }
-                }
-            } else {                                                    //Falls ein Operator innerhalb der list keine Number zurückgibt, also ein falscher Parameter übergeben wurde(!Number)
-                if (opNum.arrayList.size() == count) {
+                } catch (ClassCastException cc){
                     throw new Exception("Expression isnt instance of Number");
                 }
-            }
         }
         return result;
     }
