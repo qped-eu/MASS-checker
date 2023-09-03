@@ -16,32 +16,24 @@ public class LessOrEqualThan extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();
         float result = 0;
-        int count = 0;
         Boolean first = true;
         float value = 0;
         for (Expression e : list) {
-            count = 0;
-            for (Class<?> clazz : opNum.arrayList) {
-                count++;
-                if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
-                    float valueNow = (float) e.evaluate(this);
-                    if (first) {
-                        value = valueNow;
-                        first = false;
-                        break;
-                    }
-                    if (!(value <= valueNow)) {
-                        return false;
-                    }
+            try {
+                float valueNow = (float) e.evaluate(this);
+                if (first) {
                     value = valueNow;
-                    break;
-                } else {
-                    if (opNum.arrayList.size() == count) {
-                        throw new Exception("Expression isnt instance of Number");
-                    }
+                    first = false;
+                    continue;
                 }
+                if (!(value <= valueNow)) {
+                    return false;
+                }
+                value = valueNow;
+            } catch (ClassCastException ee) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
             }
         }
         return true;

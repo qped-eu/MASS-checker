@@ -16,25 +16,19 @@ public class Sub1 extends Expression {
 
     /**
      * Das Ergebnis einer Subtraktion um 1 der übergebenen Number wird berechnet. Es werden ausschließlich Numbers angenommen.
-     * @param list  Liste der Operanden
-     * @return  Ergebnis der Subtraktion um 1
-     * @throws Exception    Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     *
+     * @param list Liste der Operanden
+     * @return Ergebnis der Subtraktion um 1
+     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();              //Liste mit Operatoren, die eine Number zurückgeben
         float result = 0;
-        int count = 0;                                      //Zähler, der die Anzahl der überprüften Operatoren mitzählt
-        for (Class<?> clazz : opNum.arrayList) {
-            count++;
-            if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {         //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
-                result = (float) list.get(0).evaluate(this) - (float) 1;
-                break;
-            } else {                                    //Falls ein Operator innerhalb der list keine Number zurückgibt, also ein falscher Parameter übergeben wurde(!Number)
-                if (opNum.arrayList.size() == count) {
-                    throw new Exception("Expression isnt instance of Number");
-                }
-            }
+        try {
+            result = (float) list.get(0).evaluate(this) - (float) 1;
+        } catch (ClassCastException e) {
+            String stException = "Expression isnt instance of Number/expects a float";
+            throw new Exception(stException);
         }
         return result;
     }

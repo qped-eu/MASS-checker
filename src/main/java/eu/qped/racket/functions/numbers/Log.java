@@ -16,21 +16,14 @@ public class Log extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();
         float result = 0;
-        int count = 0;
         float value = 0;
-        for (Class<?> clazz : opNum.arrayList) {
-            count++;
-            if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {
-                value = (float) list.get(0).evaluate(this);
-                result = (float)Math.log(value);
-                break;
-            } else {
-                if (opNum.arrayList.size() == count) {
-                    throw new Exception("Expression isnt instance of Number");
-                }
-            }
+        try {
+            value = (float) list.get(0).evaluate(this);
+            result = (float) Math.log(value);
+        } catch (ClassCastException e) {
+            String stException = "Expression isnt instance of Number/expects a float";
+            throw new Exception(stException);
         }
         return result;
     }

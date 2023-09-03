@@ -16,27 +16,21 @@ public class Odd extends Expression {
 
     /**
      * Überprüft, ob die übergebene Number ungerade ist. Es werden ausschließlich Numbers angenommen.
-     * @param list  Liste der Operanden
-     * @return  Boolean, ob die Number ungerade ist
-     * @throws Exception    Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     *
+     * @param list Liste der Operanden
+     * @return Boolean, ob die Number ungerade ist
+     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();      //Liste mit Operatoren, die eine Number zurückgeben
         boolean resultBoolean = false;
-        int count = 0;                                      //Zähler, der die Anzahl der überprüften Operatoren mitzählt
         int value = 0;
-        for (Class<?> clazz : opNum.arrayList) {
-            count++;
-            if (list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {                     //Liste mit "NumberOperatoren" wird durchlaufen und überprüft, ob der vorliegende Operator eine Number zurückgeben würde
-                value = (int)(float) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
-                resultBoolean = value % 2 != 0;
-                break;
-            } else {                                                //Falls ein Operator innerhalb der list keine Number zurückgibt, also ein falscher Parameter übergeben wurde(!Number)
-                if (opNum.arrayList.size() == count) {
-                    throw new Exception("Expression isnt instance of Number");
-                }
-            }
+        try {
+            value = (int) (float) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
+            resultBoolean = value % 2 != 0;
+        } catch (ClassCastException e) {
+            String stException = "Expression isnt instance of Number/expects a float";
+            throw new Exception(stException);
         }
         return resultBoolean;
     }

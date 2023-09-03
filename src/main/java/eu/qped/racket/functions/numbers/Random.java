@@ -16,45 +16,41 @@ public class Random extends Expression {
 
     /**
      * Es wird eine zufällige Number innerhalb der gegebenen Schranken berechnet. Es werden ausschließlich Numbers angenommen.
-     * @param list  Liste der Operanden
-     * @return  zufällige Number
-     * @throws Exception    Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     *
+     * @param list Liste der Operanden
+     * @return zufällige Number
+     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();          //Liste mit Operatoren, die eine Number zurückgeben
-        int count = 0;                                      //Zähler, der die Anzahl der überprüften Operatoren mitzählt
         float result = 0;
         float min = 0;
         float max = 0;
-        for (Class<?> clazz : opNum.arrayList) {
-            count++;
-                try{                                                                                            //2 Statements
-                    min = (float) list.get(0).evaluate(this);
-                    max = (float) list.get(1).evaluate(this);
-                    if(min < max && (min % 1 == 0) && (max % 1 == 0)){
+        try {                                                                                            //2 Statements
+            min = (float) list.get(0).evaluate(this);
+            max = (float) list.get(1).evaluate(this);
+            if (min < max && (min % 1 == 0) && (max % 1 == 0)) {
 //                        return min+(int)(Math.random()*((max-min)));
-                        return (int) (min + (new java.util.Random().nextInt((int) (max-min))));
-                    } else {
-                        throw new Exception("MaxValue/MinValue has decimals or !(min < max)");
-                    }
-                } catch (IndexOutOfBoundsException e){
-                    try{                                                                                        //1 Statement
-                        max = (float) list.get(0).evaluate(this);
-                        if(max > 0 && (max % 1 == 0)){
+                return (int) (min + (new java.util.Random().nextInt((int) (max - min))));
+            } else {
+                throw new Exception("MaxValue/MinValue has decimals or !(min < max)");
+            }
+        } catch (IndexOutOfBoundsException e) {
+            try {                                                                                        //1 Statement
+                max = (float) list.get(0).evaluate(this);
+                if (max > 0 && (max % 1 == 0)) {
 //                            return (int) (Math.random()*(max));
-                            return (int) (new java.util.Random().nextInt((int) (max)));
-                        } else {
-                            throw new Exception("MaxValue has decimals or is <=0");
-                        }
-                    } catch (IndexOutOfBoundsException ee){                                                     //0 Statements
-                        result = (float) Math.random();
-                    } catch (ClassCastException cc){
-                        throw new Exception("Expression isnt instance of Number");
-                    }
-                } catch (ClassCastException cc){
-                    throw new Exception("Expression isnt instance of Number");
+                    return (int) (new java.util.Random().nextInt((int) (max)));
+                } else {
+                    throw new Exception("MaxValue has decimals or is <=0");
                 }
+            } catch (IndexOutOfBoundsException ee) {                                                     //0 Statements
+                result = (float) Math.random();
+            } catch (ClassCastException cc) {
+                throw new Exception("Expression isnt instance of Number/expects a float");
+            }
+        } catch (ClassCastException cc) {
+            throw new Exception("Expression isnt instance of Number/expects a float");
         }
         return result;
     }

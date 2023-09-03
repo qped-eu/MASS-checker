@@ -16,28 +16,19 @@ public class Division extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();
-        int count = 0;
         boolean first = true;
         float result = 0;
         for (Expression e : list) {
-            count = 0;
-            for (Class<?> clazz : opNum.arrayList) {
-                count++;
-                if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
-                    if (first) {
-                        result = (float) e.evaluate(this);
-                        first = false;
-                        break;
-                    } else {
-                        result = result / (float) e.evaluate(this);
-                        break;
-                    }
+            try {
+                if (first) {
+                    result = (float) e.evaluate(this);
+                    first = false;
                 } else {
-                    if (opNum.arrayList.size() == count) {
-                        throw new Exception("Expression isnt instance of Number");
-                    }
+                    result = result / (float) e.evaluate(this);
                 }
+            } catch (ClassCastException ee) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
             }
         }
         return result;

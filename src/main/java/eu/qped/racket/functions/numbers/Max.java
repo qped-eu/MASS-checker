@@ -16,15 +16,10 @@ public class Max extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();
         Boolean first = true;
         float result = 0;
-        int count = 0;
         for (Expression e : list) {
-            count = 0;
-            for (Class<?> clazz : opNum.arrayList) {
-                count++;
-                if (e instanceof Number || clazz.isInstance(e.getParts().get(0))) {
+            try {
                     float currentValue = (float) e.evaluate(this);
                     if (first) {
                         result = currentValue;
@@ -33,12 +28,9 @@ public class Max extends Expression {
                     if (result < currentValue) {
                         result = currentValue;
                     }
-                    break;
-                } else {
-                    if (opNum.arrayList.size() == count) {
-                        throw new Exception("Expression isnt instance of Number");
-                    }
-                }
+                } catch (ClassCastException ee){
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
             }
         }
         return result;

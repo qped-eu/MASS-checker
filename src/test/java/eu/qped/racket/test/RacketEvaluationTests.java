@@ -1291,6 +1291,11 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
 
+        s = "(first (cons #f 1.0))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
         s = "(first (cons hello empty))";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
