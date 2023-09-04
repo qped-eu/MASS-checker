@@ -67,8 +67,16 @@ public class MutationChecker {
 		// List of messages (in Markdown) that will be displayed to students.
 		// Leave list empty for no feeback.
 		List<String> messages = new ArrayList<>();
-		
+
+		// if the report settings are set to false, show empty message
+		if(!settings.getShowFullMutationReport()) {
+			return messages;
+		}
+
+
+
 		List<String> testClassNames = testClasses.stream().map(CoverageFacade::className).collect(Collectors.toList());
+
 		// Loop over variants
 		// (replace with proper loop condition
 		for (int i = 0; i < 1; i++) {
@@ -76,12 +84,22 @@ public class MutationChecker {
 			
 			// run all tests
 			List<String> testResults = test.testing(testClassNames, memoryLoader);
+			if(!testResults.isEmpty()) {
+				//if tests fail, show empty message
+				return messages;
+			}
+
+			// System.out.println(MutationInfrastructure.compute(() -> false));
+			messages.add("### Test Coverage Feedback");
+			messages.add("- Was ist mit Zahlen wie 2, 4, etc.?");
+
 			// if testResults is empty, all tests succeeded (or there were no tests)
 			// depending on the type of variant (is it the correct implementation, or a mutant with a defect)
 			// generate appropriate feedback message (i.e., the message configured by the instructor for this case)
 			// and add it to 'messages'.
 		}
 		// end loop
+
 
 		return messages;
 	}
