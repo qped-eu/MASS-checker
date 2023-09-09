@@ -17,18 +17,13 @@ public class MakeList extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-
         String s = "";
         int counter = 0;
-
         OperatorNumbers opNum = new OperatorNumbers();
         ArrayList<Class> arrayListAll = new ArrayList<>();
         arrayListAll.addAll(opNum.arrayList);
         arrayListAll.addAll(opNum.boolArrayList);
-        int count = 0;
-        for (Class<?> clazz : arrayListAll) {
-            count++;
-            if ((list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) && (list.get(1) instanceof Parameter || list.get(1) instanceof Boolean || list.get(1) instanceof Number || clazz.isInstance(list.get(1).getParts().get(0)))) {
+        try {
                 float number = (float) list.get(0).evaluate(this);
                 System.out.println(number);
                 if(list.get(1) instanceof Boolean || list.get(1).getParts().size() > 0 && opNum.boolArrayList.contains(list.get(1).getParts().get(0).getClass())) {
@@ -43,7 +38,6 @@ public class MakeList extends Expression {
                         s += ")";
                         counter--;
                     }
-                    break;
                 }
                 if(list.get(1) instanceof Number || list.get(1).getParts().size() > 0 && opNum.arrayList.contains(list.get(1).getParts().get(0).getClass())) {
                     while (number > 0) {
@@ -57,7 +51,6 @@ public class MakeList extends Expression {
                         s += ")";
                         counter--;
                     }
-                    break;
                 }
                 if(list.get(1) instanceof Parameter) {
                     while (number > 0) {
@@ -71,13 +64,10 @@ public class MakeList extends Expression {
                         s += ")";
                         counter--;
                     }
-                    break;
                 }
-            } else {
-                if (arrayListAll.size() == count) {
-                    throw new Exception("Expression isnt instance of Number/Parameter/Boolean");
-                }
-            }
+            } catch (ClassCastException ee) {
+            String stException = "Expression isnt instance of Boolean/expects a boolean";
+            throw new Exception(stException);
         }
         return s;
 

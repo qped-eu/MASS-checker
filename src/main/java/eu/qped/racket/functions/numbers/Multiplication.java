@@ -15,11 +15,11 @@ public class Multiplication extends Expression {
     }
 
     /**
-     * Das Ergebnis einer Multiplikation der angebenen Numbers wird zurückgegeben. Es werden ausschließlich Numbers angenommen.
+     * Returns the result of multiplying the specified Numbers. Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return Multiplikation der übergebenen Liste
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Multiplication of the given list
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

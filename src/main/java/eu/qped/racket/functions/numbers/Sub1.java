@@ -15,11 +15,11 @@ public class Sub1 extends Expression {
     }
 
     /**
-     * Das Ergebnis einer Subtraktion um 1 der übergebenen Number wird berechnet. Es werden ausschließlich Numbers angenommen.
+     * Calculates the result of subtracting 1 from the given Number. Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return Ergebnis der Subtraktion um 1
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Result of the subtraction by 1
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

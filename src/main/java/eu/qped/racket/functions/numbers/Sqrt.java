@@ -15,11 +15,11 @@ public class Sqrt extends Expression {
     }
 
     /**
-     * Die Quadratwurzel der übergebenen Number wird berechnet. Es werden ausschließlich Numbers angenommen.
+     * Calculates the square root of the given Number. Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return Quadratwurzel der Number
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Square root of the Number
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

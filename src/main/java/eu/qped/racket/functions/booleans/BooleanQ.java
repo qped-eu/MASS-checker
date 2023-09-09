@@ -25,19 +25,12 @@ public class BooleanQ extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();
         for (Expression e : list) {
-            int count = 0;
-            for (Class<?> clazz : opNum.boolArrayList) {
-                count++;
-                if (e instanceof Boolean || e.getParts().size() > 0 && clazz.isInstance(e.getParts().get(0))) {
-                    if ((boolean) e.evaluate(this) || !(boolean) e.evaluate(this))        // (boolean)e.evaluate(this) == true || (boolean) e.evaluate(this) == false
-                        return true;
-                } else {
-                    if (opNum.boolArrayList.size() == count) {
-                        return false;
-                    }
-                }
+            try {
+                if ((boolean) e.evaluate(this) || !(boolean) e.evaluate(this))        // (boolean)e.evaluate(this) == true || (boolean) e.evaluate(this) == false
+                    return true;
+            } catch (ClassCastException ee) {
+                return false;
             }
         }
         return false;

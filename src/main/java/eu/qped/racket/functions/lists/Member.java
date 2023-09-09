@@ -15,15 +15,11 @@ public class Member extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-
         OperatorNumbers opNum = new OperatorNumbers();
         ArrayList<Class> arrayListAll = new ArrayList<>();
         arrayListAll.addAll(opNum.arrayList);
         arrayListAll.addAll(opNum.boolArrayList);
-        int count = 0;
-        for (Class<?> clazz : arrayListAll) {
-            count++;
-            if (list.get(0) instanceof Parameter || list.get(0) instanceof Boolean || list.get(0) instanceof Number || clazz.isInstance(list.get(0).getParts().get(0))) {
+        try {
                 if(list.get(0) instanceof Parameter) {      //String
                     String s = (String) list.get(0).evaluate(this);
                     return list.get(1).evaluate(this).toString().contains(s);
@@ -36,11 +32,9 @@ public class Member extends Expression {
                     Float f = (Float) list.get(0).evaluate(this);
                     return list.get(1).evaluate(this).toString().contains(f.toString());
                 }
-            } else {
-                if (arrayListAll.size() == count) {
-                    throw new Exception("Expression isnt instance of Number");
-                }
-            }
+            } catch (ClassCastException ee) {
+            String stException = "Expression isnt instance of Boolean/expects a boolean";
+            throw new Exception(stException);
         }
         return false;
 

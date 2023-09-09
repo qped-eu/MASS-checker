@@ -18,7 +18,6 @@ public class Rest extends Expression {
             String s = (String) list.get(0).evaluate(this);
             s = s.substring(1);
             boolean rest = false;
-            boolean empty = false;
             for (Character c : s.toCharArray()) {
                 if (rest) {
                     output += c;

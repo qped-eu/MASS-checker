@@ -15,10 +15,11 @@ public class Min extends Expression {
     }
 
     /**
-     * Das Minimum von den angebenen Numbers wird zurückgegeben. Es werden ausschließlich Numbers angenommen.
-     * @param list  Liste der zu überprüfenden Numbers
-     * @return  Minimum aus der übergebenen Liste
-     * @throws Exception    Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * Returns the minimum of the specified Numbers. Only Numbers are accepted as input.
+     *
+     * @param list List of Numbers to check
+     * @return Minimum from the given list
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

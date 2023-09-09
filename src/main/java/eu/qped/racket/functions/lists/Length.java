@@ -17,14 +17,13 @@ public class Length extends Expression {
         try {
             if ((list.get(0).getParts().get(0) instanceof eu.qped.racket.functions.lists.List || list.get(0).getParts().get(0) instanceof Cons)) {      //String
                 String st1 = (String) list.get(0).evaluate(this);
-
                 return (float) st1.split("cons").length - 1;
             } else {
                 throw new Exception("Expression isnt instance of List");
             }
 
 //        return Float.toString(list.get(0).evaluate(this).toString().split("cons").length - 1);
-        } catch(IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             if ((list.get(0) instanceof eu.qped.racket.functions.lists.List || list.get(0) instanceof Cons) || list.get(0) instanceof Empty) {      //String
                 String st1 = (String) list.get(0).evaluate(this);
 
@@ -37,6 +36,6 @@ public class Length extends Expression {
 
     @Override
     public String toString() {
-        return "Length "  + " (" + super.getId() + ")";
+        return "Length " + " (" + super.getId() + ")";
     }
 }

@@ -15,25 +15,18 @@ public class Not extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        OperatorNumbers opNum = new OperatorNumbers();
         for (Expression e : list) {
-            int count = 0;
-            for (Class<?> clazz : opNum.boolArrayList) {
-                count++;
-                if (e instanceof Boolean || (e.getParts().size() > 0 && clazz.isInstance(e.getParts().get(0)))) {
-                    Object result = e.evaluate(this);
-                    System.out.println("Heyyy 1: " + result);
-                    if (!(boolean) result) {
-                        System.out.println(result.getClass());
-                        return true;
-                    } else {
-                        return false;
-                    }
+            try {
+                Object result = e.evaluate(this);
+                if (!(boolean) result) {
+                    System.out.println(result.getClass());
+                    return true;
                 } else {
-                    if (opNum.boolArrayList.size() == count) {
-                        throw new Exception("Expression isn't instance of Boolean");
-                    }
+                    return false;
                 }
+            } catch (ClassCastException ee) {
+                String stException = "Expression isnt instance of Boolean/expects a boolean";
+                throw new Exception(stException);
             }
         }
         return false;

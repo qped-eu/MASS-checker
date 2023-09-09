@@ -15,11 +15,11 @@ public class Round extends Expression {
     }
 
     /**
-     * Eine Rundung der übergebenen Number wird berechnet(zu einem Integer). Es werden ausschließlich Numbers angenommen.
+     * Calculates the rounding of the given Number (to an Integer). Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return Ergebnis der Rundung
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Result of the rounding
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

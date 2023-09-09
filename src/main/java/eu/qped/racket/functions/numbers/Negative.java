@@ -15,11 +15,11 @@ public class Negative extends Expression {
     }
 
     /**
-     * Überprüft, ob die Zahl negativ ist. Es werden ausschließlich Numbers angenommen.
+     * Checks if the number is negative. Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return Boolean, ob Number negativ ist
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Boolean indicating if the Number is negative
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

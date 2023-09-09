@@ -15,11 +15,11 @@ public class Random extends Expression {
     }
 
     /**
-     * Es wird eine zufällige Number innerhalb der gegebenen Schranken berechnet. Es werden ausschließlich Numbers angenommen.
+     * Calculates a random Number within the given bounds. Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return zufällige Number
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Random Number
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

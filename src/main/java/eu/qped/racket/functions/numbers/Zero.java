@@ -15,11 +15,11 @@ public class Zero extends Expression {
     }
 
     /**
-     * Überprüft, ob die übergebene Number 0 ist. Es werden ausschließlich Numbers angenommen.
+     * Checks whether the given Number is 0. Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return Boolean, ob Number 0 ist
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Boolean indicating if the Number is 0
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

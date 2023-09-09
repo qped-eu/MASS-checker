@@ -15,10 +15,11 @@ public class Minus extends Expression {
     }
 
     /**
-     * Das Ergebnis einer Subtraktion der übergebenen Numbers wird berechnet. Es werden ausschließlich Numbers angenommen.
-     * @param list  Liste der Operanden
-     * @return  Ergebnis der Subtraktion
-     * @throws Exception    Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * Calculates the result of subtracting the given Numbers. Only Numbers are accepted as input.
+     *
+     * @param list List of operands
+     * @return Result of the subtraction
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {

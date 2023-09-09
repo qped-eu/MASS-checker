@@ -15,11 +15,11 @@ public class Modulo extends Expression {
     }
 
     /**
-     * Der Rest einer ganzzahligen Division von den beiden angebenen Numbers wird zurückgegeben(Modulo-Rechnung). Es werden ausschließlich Numbers angenommen.
+     * Returns the remainder of an integer division between the two specified Numbers (Modulo operation). Only Numbers are accepted as input.
      *
-     * @param list Liste der Operanden
-     * @return Rest einer ganzzahligen Division
-     * @throws Exception Es wird ein Listeneintrag, der keine Number, also zb ein Boolean oder String, ist, gefunden.
+     * @param list List of operands
+     * @return Remainder of the integer division
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
