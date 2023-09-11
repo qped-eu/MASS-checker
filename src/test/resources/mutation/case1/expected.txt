@@ -1,2 +1,2 @@
-### Test Coverage Feedback
-- Was ist mit Zahlen wie 2, 4, etc.?
+### Mutation Coverage Feedback
+- Add the message which you get from the variant
