@@ -1,36 +1,31 @@
 package eu.qped.java.checkers.mutation;
 
-import eu.qped.racket.main;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MutationInfrastructure {
+    private static List<Pair<?>> listOfPairs = new ArrayList<>();
+    private static boolean correctVariant=true;
 
-    @SafeVarargs
-    public static <R> R compute(MutationInterface<R>... s) {
-        System.out.println("first method");
-        return s[0].doit();
+
+    public static <R> R compute(Pair<R> variants) {
+        listOfPairs.add(variants);
+        if (correctVariant) {
+            return variants.getCorrectVariant().doit();
+        } else {
+            return variants.getMutationVariant().getMutation().doit();
+        }
     }
 
-    @SafeVarargs
-    public static <R> R compute(MutationInterface<R> correctVariant, Variant<R>... s) {
-        System.out.println(s[0].variant().doit());
-        return s[0].variant().doit();
+    public static List<Pair<?>> getListOfPairs() {
+        return listOfPairs;
     }
+
 
     void m() {
-        int i = compute(
-                () -> 1,
-                new Variant<>(() -> 2, null),
-                new Variant<>(() -> 3, null));
-
-        int i2 = compute(
-                () -> 1,
-                () -> 2,
-                () -> 3);
+        int i = compute(new Pair<>(() -> 1, new Variant<>(() -> 2, null)));
 
 
-        long l = compute(
-                () -> 1,
-                new Variant<>(() -> 2, "Wrong"),
-                new Variant<>(() -> 3, "Also Wrong"));
+        long l = compute(new Pair<>(() -> 1, new Variant<>(() -> 2, "Wrong")));
     }
 }
