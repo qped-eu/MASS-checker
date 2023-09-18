@@ -4,43 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MutationInfrastructure {
-    private static List<List<?>> listOfLists = new ArrayList<>();
+    private static List<Pair<?>> listOfPairs = new ArrayList<>();
 
-    @SafeVarargs
-    public static <R> R compute(MutationInterface<R>... s) {
-        System.out.println("first method");
-        return s[0].doit();
-    }
 
-    @SafeVarargs
-    public static <R> R compute(Variant<R>... s) {
-        List<Variant<R>> newList = new ArrayList<>();
-        for (Variant<R> variant : s) {
-            newList.add(variant);
+
+    private static List<Boolean> correctVariants= new ArrayList<>();
+    private static boolean firstTest = true;
+    private static int currentIndex = 0;
+
+
+    public static <R> R compute(Pair<R> variants) {
+        listOfPairs.add(variants);
+        if(firstTest) {
+            return variants.getCorrectVariant().doit();
+        } else {
+            if (currentIndex < listOfPairs.size()) {
+                boolean currentVariant = correctVariants.get(currentIndex);
+                currentIndex++; // Increment the index for the next call
+                if (currentVariant) {
+                    return variants.getCorrectVariant().doit();
+                } else {
+                    return variants.getMutationVariant().getMutation().doit();
+                }
+            } else {
+                // Handle the case when there are no more elements in the list
+                throw new IllegalStateException("No more elements in the list.");
+            }
         }
-        listOfLists.add(newList);
-        return s[0].getMutation().doit();
     }
 
-    public static List<List<?>> getListOfLists() {
-        return listOfLists;
+    public static List<Pair<?>> getListOfPairs() {
+        return listOfPairs;
+    }
+
+    public static List<Boolean> getCorrectVariants() {
+        return correctVariants;
+    }
+
+    public static void setCorrectVariants(List<Boolean> correctVariants) {
+        MutationInfrastructure.correctVariants = correctVariants;
     }
 
 
     void m() {
-        int i = compute(
-                new Variant<>(() -> 2, null),
-                new Variant<>(() -> 3, null));
+        int i = compute(new Pair<>(() -> 1, new Variant<>(() -> 2, null)));
 
 
-        int i2 = compute(
-                () -> 1,
-                () -> 2,
-                () -> 3);
-
-
-        long l = compute(
-                new Variant<>(() -> 2, "Wrong"),
-                new Variant<>(() -> 3, "Also Wrong"));
+        long l = compute(new Pair<>(() -> 1, new Variant<>(() -> 2, "Wrong")));
     }
 }
