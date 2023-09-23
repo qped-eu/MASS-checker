@@ -23,6 +23,11 @@ public class Random extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() >= 3) {
+            String stException = "expects between 0 and 2 arguments, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         float result = 0;
         float min = 0;
         float max = 0;

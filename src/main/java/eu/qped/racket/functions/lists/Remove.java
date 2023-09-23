@@ -1,10 +1,8 @@
 package eu.qped.racket.functions.lists;
 
+import eu.qped.racket.buildingBlocks.*;
 import eu.qped.racket.buildingBlocks.Boolean;
-import eu.qped.racket.buildingBlocks.Expression;
 import eu.qped.racket.buildingBlocks.Number;
-import eu.qped.racket.buildingBlocks.OperatorNumbers;
-import eu.qped.racket.buildingBlocks.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,11 @@ public class Remove extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() != 2) {
+            String stException = "expects only 2 arguments, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         OperatorNumbers opNum = new OperatorNumbers();
         ArrayList<Class> arrayListAll = new ArrayList<>();
         arrayListAll.addAll(opNum.arrayList);
@@ -27,8 +30,8 @@ public class Remove extends Expression {
         for (Class<?> clazz : arrayListAll) {
             count++;
 
-            if (list.get(0) instanceof Parameter || list.get(0) instanceof Boolean || list.get(0) instanceof eu.qped.racket.buildingBlocks.Number || clazz.isInstance(list.get(0).getParts().get(0))) {
-                if(list.get(0) instanceof Parameter) {      //String
+            if (list.get(0) instanceof StringR || list.get(0) instanceof Boolean || list.get(0) instanceof eu.qped.racket.buildingBlocks.Number || clazz.isInstance(list.get(0).getParts().get(0))) {
+                if(list.get(0) instanceof StringR) {      //String
                     String toRemove = (String) list.get(0).evaluate(this);
                     String inputList = (String) list.get(1).evaluate(this);
 

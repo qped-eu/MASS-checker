@@ -23,9 +23,14 @@ public class Modulo extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        float result = 0;
-        Float value1 = null;
-        Float value2 = null;
+        if (list.size() != 2) {
+            String stException = "expects only 2 arguments, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        float result;
+        Float value1;
+        Float value2;
         try {
             value1 = (float) list.get(0).evaluate(this);
             value2 = (float) list.get(1).evaluate(this);

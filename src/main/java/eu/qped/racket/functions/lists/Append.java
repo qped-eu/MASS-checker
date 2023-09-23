@@ -15,13 +15,18 @@ public class Append extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        if ((list.get(0).getParts().get(0) instanceof eu.qped.racket.functions.lists.List || list.get(0).getParts().get(0) instanceof Cons) && (list.get(1).getParts().get(0) instanceof eu.qped.racket.functions.lists.List || list.get(1).getParts().get(0) instanceof Cons)) {      //String
-            String st1 = (String) list.get(0).evaluate(this);
-            String st2 = (String) list.get(1).evaluate(this);
-            return st1.replace("'()", st2);
-        } else {
-            throw new Exception("Expression isnt instance of List");
+        String returnString = "'()";
+        String st1;
+        System.out.println(list.size());
+        for (Expression e : list) {
+            if ((e.getParts().get(0) instanceof eu.qped.racket.functions.lists.List || e.getParts().get(0) instanceof Cons)) {
+                st1 = (String) e.evaluate(this);
+                returnString = returnString.replace("'()", st1);
+            } else {
+                throw new Exception("Expression isnt instance of List");
+            }
         }
+        return returnString;
 
 //        Expression c1 = list.get(0);
 //        Expression c2 = list.get(1);

@@ -24,6 +24,11 @@ public class Plus extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() == 0) {
+            String stException = "expects atleast 1 argument, but found 0";
+            throw new Exception(stException);
+        }
+
         float result = 0;
         for (Expression e : list) {
             try {

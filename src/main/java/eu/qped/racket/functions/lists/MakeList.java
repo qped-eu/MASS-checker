@@ -1,10 +1,8 @@
 package eu.qped.racket.functions.lists;
 
+import eu.qped.racket.buildingBlocks.*;
 import eu.qped.racket.buildingBlocks.Boolean;
-import eu.qped.racket.buildingBlocks.Expression;
 import eu.qped.racket.buildingBlocks.Number;
-import eu.qped.racket.buildingBlocks.OperatorNumbers;
-import eu.qped.racket.buildingBlocks.Parameter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,11 @@ public class MakeList extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() != 2) {
+            String stException = "expects only 2 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         String s = "";
         int counter = 0;
         OperatorNumbers opNum = new OperatorNumbers();
@@ -52,7 +55,7 @@ public class MakeList extends Expression {
                         counter--;
                     }
                 }
-                if(list.get(1) instanceof Parameter) {
+                if(list.get(1) instanceof StringR) {
                     while (number > 0) {
                         String valueS = (String) list.get(1).evaluate(this);
                         s += "(cons " + valueS + " ";

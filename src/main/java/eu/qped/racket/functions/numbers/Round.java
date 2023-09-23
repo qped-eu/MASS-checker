@@ -23,7 +23,12 @@ public class Round extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        float result = 0;
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        float result;
         try {
             float value1 = (float) list.get(0).evaluate(this);
             int value2 = (int) value1;

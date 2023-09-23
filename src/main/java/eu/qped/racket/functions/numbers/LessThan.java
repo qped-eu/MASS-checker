@@ -16,7 +16,11 @@ public class LessThan extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        float result = 0;
+        if (list.size() == 0) {
+            String stException = "expects atleast 1 argument, but found 0";
+            throw new Exception(stException);
+        }
+
         Boolean first = true;
         float value = 0;
         for (Expression e : list) {

@@ -10,6 +10,7 @@ import eu.qped.racket.functions.numbers.Random;
 import eu.qped.racket.buildingBlocks.*;
 import eu.qped.racket.buildingBlocks.Boolean;
 import eu.qped.racket.buildingBlocks.Number;
+import eu.qped.racket.functions.strings.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -257,6 +258,9 @@ public class DrRacketInterpreter {
 			}
 			if (typeString.compareTo("type=\"Number\"") == 0) {
 				expression.addPart(new Number(Float.valueOf(valueString.substring(7,valueString.length()-1))));
+			}
+			if (typeString.compareTo("type=\"String\"") == 0) {
+				expression.addPart(new StringR(java.lang.String.valueOf(valueString.substring(7,valueString.length()-1))));
 			}
 			if (typeString.compareTo("type=\"Boolean\"") == 0) {
 				expression.addPart(new Boolean(java.lang.Boolean.valueOf(valueString.substring(7,valueString.length()-1))));
@@ -537,6 +541,43 @@ public class DrRacketInterpreter {
 		}
 		if (valueString.compareTo("value=\"make-list\"") == 0) {	//Make-List
 			expression.addPart(new MakeList());
+			return true;
+		}
+		//Strings
+		if (valueString.compareTo("value=\"string=?\"") == 0) {	//StringEQ
+			expression.addPart(new StringEQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string?\"") == 0) {	//StringQ
+			expression.addPart(new StringQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-append\"") == 0) {	//StringAppend
+			expression.addPart(new StringAppend());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-contains?\"") == 0) {	//StringContains
+			expression.addPart(new StringContains());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-downcase\"") == 0) {	//StringDowncase
+			expression.addPart(new StringDowncase());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-upcase\"") == 0) {	//StringUpcase
+			expression.addPart(new StringUpcase());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-lower-case?\"") == 0) {	//StringLowerCaseQ
+			expression.addPart(new StringLowerCaseQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-upper-case?\"") == 0) {	//StringUpperCaseQ
+			expression.addPart(new StringUpperCaseQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-length\"") == 0) {	//StringLength
+			expression.addPart(new StringLength());
 			return true;
 		}
 		return false;

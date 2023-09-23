@@ -57,6 +57,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(-8), inter.evaluateExpressions());
+
+        s = "(* )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -82,6 +89,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(0), inter.evaluateExpressions());
+
+        s = "(- )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -117,6 +131,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(-3), inter.evaluateExpressions());
+
+        s = "(+ )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -157,6 +178,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString((float)-0.5), inter.evaluateExpressions());
+
+        s = "(/ )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -226,6 +254,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(< )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -266,6 +301,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(> )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -341,6 +383,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(<= )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -381,6 +430,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(>= )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -407,10 +463,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(0.5f), inter.evaluateExpressions());
 
-        s = "(abs 4 7 8)";
+        s = "(abs )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(4), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(abs 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -437,10 +502,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(0.5f), inter.evaluateExpressions());
 
-        s = "(add1 4 7 8)";
+        s = "(add1 )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(5), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(add1 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -487,10 +561,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(0), inter.evaluateExpressions());
 
-        s = "(ceiling 4.8 3 1)";
+        s = "(ceiling )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(5), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(ceiling 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -525,10 +608,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Boolean.toString(true), inter.evaluateExpressions());
 
-        s = "(even? 9 10 1)";
+        s = "(even? )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(even? 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -553,10 +645,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(2), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
 
-        s = "(exp 2 1 2)";
+        s = "(exp )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(7), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(exp 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -603,10 +704,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(-1), inter.evaluateExpressions());
 
-        s = "(floor 4.8 3 1)";
+        s = "(floor )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(4), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(floor 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -631,10 +741,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(-1), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
 
-        s = "(log 2 1 2)";
+        s = "(log )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(1), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(log 2 3 4)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 3", thrown.getMessage());
     }
 
     @Test
@@ -663,6 +782,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(20), inter.evaluateExpressions());
+
+        s = "(max )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -691,6 +817,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(1), inter.evaluateExpressions());
+
+        s = "(min )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
@@ -734,6 +867,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(0), inter.evaluateExpressions());
+
+        s = "(modulo 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 arguments, but found 1", thrown.getMessage());
+
+        s = "(modulo 3 2 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 arguments, but found 3", thrown.getMessage());
     }
 
     @Test
@@ -763,10 +910,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
 
-        s = "(negative? 9 10 1)";
+        s = "(negative? )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(negative? 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -796,10 +952,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
 
-        s = "(odd? 9 10 1)";
+        s = "(odd? )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(odd? 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -824,15 +989,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
 
-        s = "(positive? -0)";
+        s = "(positive? )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
 
-        s = "(positive? 9 10 1)";
+        s = "(positive? 2 3)";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -841,6 +1010,13 @@ public class RacketEvaluationTests {
         DrRacketInterpreter inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Integer.toString(0), inter.evaluateExpressions());
+
+        s = "(random 5 10 2 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects between 0 and 2 arguments, but found 4", thrown.getMessage());
     }
 
     @Test
@@ -894,6 +1070,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(4), inter.evaluateExpressions());
+
+        s = "(round )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(round 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -932,6 +1122,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(64), inter.evaluateExpressions());
+
+        s = "(sqr )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(sqr 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -950,6 +1154,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(3), inter.evaluateExpressions());
+
+        s = "(sqrt )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(sqrt 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -974,10 +1192,19 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(-1.5f), inter.evaluateExpressions());
 
-        s = "(sub1 4 7 8)";
+        s = "(sub1 )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(3), inter.evaluateExpressions());
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(sub1 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -1001,6 +1228,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(zero? )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(zero? 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -1064,6 +1305,27 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(boolean=? true true true true true)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 5", thrown.getMessage());
+
+        s = "(boolean=? 123 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of Boolean/expects a boolean", thrown.getMessage());
+
+        s = "(boolean=? 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 1", thrown.getMessage());
     }
 
     @Test
@@ -1107,6 +1369,13 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(boolean? true true)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -1140,6 +1409,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(false? true true)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
+
+        s = "(false? 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of Boolean/expects a boolean", thrown.getMessage());
     }
 
     @Test
@@ -1173,6 +1456,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(not true true)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
+
+        s = "(not 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of Boolean/expects a boolean", thrown.getMessage());
     }
 
     @Test
@@ -1244,6 +1541,16 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals("(cons 1.0 (cons 2.0 (cons 3.0 (cons true '()))))", inter.evaluateExpressions());
 
+        s = "(append (cons 1 empty)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("(cons 1.0 '())", inter.evaluateExpressions());
+
+        s = "(append )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("'()", inter.evaluateExpressions());
+
     }
 
     @Test
@@ -1262,6 +1569,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(empty? )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(empty? empty empty)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -1296,10 +1617,29 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
 
-        s = "(first (cons hello empty))";
+        s = "(first (list #f 1.0))";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals("hello", inter.evaluateExpressions());
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(first (cons \"hello\" empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"hello\"", inter.evaluateExpressions());
+
+        s = "(first )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(first (cons #f 1.0) (cons #f 1.0))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -1333,6 +1673,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(4), inter.evaluateExpressions());
+
+        s = "(length )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(length (cons #f 1.0) (cons #f 1.0))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -1389,6 +1743,25 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(member \"hello\" (cons \"hello\" empty))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(member 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 1", thrown.getMessage());
+
+        s = "(member 2 (list 1 2 3) (list 2 3 4))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 3", thrown.getMessage());
     }
 
     @Test
@@ -1437,7 +1810,6 @@ public class RacketEvaluationTests {
         DrRacketInterpreter finalInter = inter;
         Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
         Assertions.assertEquals("Expression(Start/End) isnt Instance of Number", thrown.getMessage());
-        System.out.println("Exceptiontest ?????????????????????????????????????????????????????????????");
 
         s = "(range 0 1 2)";
         inter = new DrRacketInterpreter(s);
@@ -1463,6 +1835,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("(cons 5.0 (cons 7.0 (cons 9.0 '())))", inter.evaluateExpressions());
+
+        s = "(range )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects between 1 and 3 arguments, but found 0", thrown.getMessage());
+
+        s = "(range 5 10 2 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects between 1 and 3 arguments, but found 4", thrown.getMessage());
     }
 
     @Test
@@ -1501,6 +1887,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("(cons 1.0 (cons 3.0 (cons 2.0 '())))", inter.evaluateExpressions());
+
+        s = "(remove )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 arguments, but found 0", thrown.getMessage());
+
+        s = "(remove 2 (list 1 2) (list 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 arguments, but found 3", thrown.getMessage());
     }
     @Test
     void testRemoveAll() throws Exception {
@@ -1533,6 +1933,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("(cons 1.0 (cons 3.0 '()))", inter.evaluateExpressions());
+
+        s = "(remove-all )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 arguments, but found 0", thrown.getMessage());
+
+        s = "(remove-all 2 (list 1 2) (list 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 arguments, but found 3", thrown.getMessage());
     }
 
     @Test
@@ -1551,6 +1965,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("(cons 2.0 (cons 3.0 (cons 4.0 '())))", inter.evaluateExpressions());
+
+        s = "(rest )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(rest 2 (list 1 2) (list 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 3", thrown.getMessage());
     }
 
     @Test
@@ -1574,6 +2002,20 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("'()", inter.evaluateExpressions());
+
+        s = "(reverse )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(reverse (list 1 2) (list 2 3))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
 
 //        s = "(reverse '())";
 //        inter = new DrRacketInterpreter(s);
@@ -1608,10 +2050,24 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Boolean.toString(false), inter.evaluateExpressions());
 
-        s = "(second (cons 1 (cons hello (cons 3 empty))))";
+        s = "(second (cons 1 (cons \"hello\" (cons 3 empty))))";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals("hello", inter.evaluateExpressions());
+        assertEquals("\"hello\"", inter.evaluateExpressions());
+
+        s = "(second )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 0", thrown.getMessage());
+
+        s = "(second (cons #f 1.0) (cons #f 1.0))";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
     }
 
     @Test
@@ -1635,5 +2091,419 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals("(cons 1.0 (cons 1.0 (cons 1.0 '())))", inter.evaluateExpressions());
+
+        s = "(make-list 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 1", thrown.getMessage());
+
+        s = "(make-list 2 2 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 3", thrown.getMessage());
+    }
+
+    @Test
+    void testStringEQ() throws Exception {
+        //String rktFile = IOUtils.toString(ClassLoader.getSystemResourceAsStream("Demo.rkt"), Charset.defaultCharset());
+
+        String s = "(string=? \"hello\" \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string=? \"hellow\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string=? \"hello\" \"hellow\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string=? \"Hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string=? \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string=? \"hello\" \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string=? \"hello\" \"hello\" \"hellow\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+//        s = "(string=? hello \"hello\")";
+//        inter = new DrRacketInterpreter(s);
+//        inter.evaluate();
+//        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string=? hello \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+    }
+
+    @Test
+    void testStringQ() throws Exception {
+        String s = "(string? \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string? hello)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string? \"HellO\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string? \"HellO 2345 7 \")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string? \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 2", thrown.getMessage());
+
+        s = "(string? \"hello\" \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 5", thrown.getMessage());
+    }
+
+    @Test
+    void testStringAppend() throws Exception {
+        String s = "(string-append \"hello\" \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"hellohello\"", inter.evaluateExpressions());
+
+        s = "(string-append \"hello\" \" hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"hello hello\"", inter.evaluateExpressions());
+
+        s = "(string-append \"hello\" \" hello\" \"123hello\" \"123hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"hello hello123hello123hello\"", inter.evaluateExpressions());
+
+        s = "(string-append \"hello\" 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+
+        s = "(string-append \"hello\" 123  \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+    }
+
+    @Test
+    void testStringContains() throws Exception {
+        String s = "(string-contains? \"hello\" \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string-contains? \"ll\" \" hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string-contains? \"lwl\" \" hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string-contains? \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 4", thrown.getMessage());
+
+        s = "(string-contains? \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 2 argument, but found 1", thrown.getMessage());
+
+        s = "(string-contains? ll \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+    }
+
+    @Test
+    void testStringDowncase() throws Exception {
+        String s = "(string-downcase \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"hello\"", inter.evaluateExpressions());
+
+        s = "(string-downcase \"Hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"hello\"", inter.evaluateExpressions());
+
+        s = "(string-downcase \"HeLlOß?123\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"helloß?123\"", inter.evaluateExpressions());
+
+        s = "(string-downcase \"HeLlOß?123 123aSd\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"helloß?123 123asd\"", inter.evaluateExpressions());
+
+        s = "(string-downcase \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 4", thrown.getMessage());
+
+        s = "(string-downcase 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+
+        s = "(string-downcase ll)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+    }
+
+    @Test
+    void testStringUpcase() throws Exception {
+        String s = "(string-upcase \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"HELLO\"", inter.evaluateExpressions());
+
+        s = "(string-upcase \"Hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"HELLO\"", inter.evaluateExpressions());
+
+        s = "(string-upcase \"HeLlOß?123\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"HELLOSS?123\"", inter.evaluateExpressions());
+
+        s = "(string-upcase \"HeLlOß?123 123aSd\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals("\"HELLOSS?123 123ASD\"", inter.evaluateExpressions());
+
+        s = "(string-upcase \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 4", thrown.getMessage());
+
+        s = "(string-upcase 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+
+        s = "(string-upcase ll)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+    }
+
+    @Test
+    void testStringLowerCaseQ() throws Exception {
+        String s = "(string-lower-case? \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string-lower-case? \"Hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string-lower-case? \"HeLlOß?123\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string-lower-case? \"helloß?123 123asd\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string-lower-case? \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 4", thrown.getMessage());
+
+        s = "(string-lower-case? 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+
+        s = "(string-lower-case? ll)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+    }
+
+    @Test
+    void testStringUpperCaseQ() throws Exception {
+        String s = "(string-upper-case? \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string-upper-case? \"HellO\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string-upper-case? \"HELLO\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string-upper-case? \"HeLlOß?123\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string-upper-case? \"helloß?123 123asd\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(string-upper-case? \"HELLOSS?123 123ASD\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(string-upper-case? \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 4", thrown.getMessage());
+
+        s = "(string-upper-case? 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+
+        s = "(string-upper-case? ll)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+    }
+
+    @Test
+    void testStringLength() throws Exception {
+        String s = "(string-length \"hello\")";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(5), inter.evaluateExpressions());
+
+        s = "(string-length \"HellO123\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(8), inter.evaluateExpressions());
+
+        s = "(string-length \"HELLO\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(5), inter.evaluateExpressions());
+
+        s = "(string-length \"HeLlOß?123\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(10), inter.evaluateExpressions());
+
+        s = "(string-length \"helloß?123 123asd\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(17), inter.evaluateExpressions());
+
+        s = "(string-length \"HELLOSS?123 123ASD\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(18), inter.evaluateExpressions());
+
+        s = "(string-length \"hello\" \"hello\" \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects only 1 argument, but found 4", thrown.getMessage());
+
+        s = "(string-length 123)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
+
+        s = "(string-length ll)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
     }
 }

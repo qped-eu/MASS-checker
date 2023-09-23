@@ -16,6 +16,11 @@ public class Ceiling extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         float result = 0;
         try {
             result = (float) Math.ceil((float) list.get(0).evaluate(this));

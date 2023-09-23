@@ -18,6 +18,12 @@ public class BooleanEQ extends Expression {
     public Object evaluate(List<Expression> list) throws Exception {
         boolean firstBoolean = false;
         boolean first = true;
+
+        if (list.size() != 2) {
+            String stException = "expects only 2 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         for (Expression e : list) {
             try {
                 if (first) {
@@ -25,16 +31,15 @@ public class BooleanEQ extends Expression {
                     first = false;
                     continue;
                 }
-                if (firstBoolean == (boolean) e.evaluate(this)) {
-                    return true;
+                if (!(firstBoolean == (boolean) e.evaluate(this))) {
+                    return false;
                 }
             } catch (ClassCastException ee) {
                 String stException = "Expression isnt instance of Boolean/expects a boolean";
                 throw new Exception(stException);
             }
         }
-
-        return false;
+        return true;
     }
 
     @Override

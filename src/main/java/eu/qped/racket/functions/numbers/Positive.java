@@ -23,7 +23,12 @@ public class Positive extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        int value = 0;
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        int value;
         try {
             value = (int) (float) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
         } catch (ClassCastException e) {

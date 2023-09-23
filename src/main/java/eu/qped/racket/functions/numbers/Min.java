@@ -23,6 +23,11 @@ public class Min extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() == 0) {
+            String stException = "expects atleast 1 argument, but found 0";
+            throw new Exception(stException);
+        }
+
         Boolean first = true;
         float result = 0;
         for (Expression e : list) {

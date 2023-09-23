@@ -23,7 +23,12 @@ public class Sqrt extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        float result = 0;
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        float result;
         try {
             if (((float) list.get(0).evaluate(this)) >= 0) {
                 result = (float) Math.sqrt((float) list.get(0).evaluate(this));

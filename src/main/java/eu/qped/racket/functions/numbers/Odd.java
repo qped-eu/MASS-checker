@@ -23,8 +23,13 @@ public class Odd extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        boolean resultBoolean = false;
-        int value = 0;
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        boolean resultBoolean;
+        int value;
         try {
             value = (int) (float) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
             resultBoolean = value % 2 != 0;

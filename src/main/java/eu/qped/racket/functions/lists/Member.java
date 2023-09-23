@@ -15,12 +15,17 @@ public class Member extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() != 2) {
+            String stException = "expects only 2 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         OperatorNumbers opNum = new OperatorNumbers();
         ArrayList<Class> arrayListAll = new ArrayList<>();
         arrayListAll.addAll(opNum.arrayList);
         arrayListAll.addAll(opNum.boolArrayList);
         try {
-                if(list.get(0) instanceof Parameter) {      //String
+                if(list.get(0) instanceof StringR) {      //String
                     String s = (String) list.get(0).evaluate(this);
                     return list.get(1).evaluate(this).toString().contains(s);
                 }

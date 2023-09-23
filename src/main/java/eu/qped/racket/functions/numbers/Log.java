@@ -16,8 +16,13 @@ public class Log extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        float result = 0;
-        float value = 0;
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        float result;
+        float value;
         try {
             value = (float) list.get(0).evaluate(this);
             result = (float) Math.log(value);

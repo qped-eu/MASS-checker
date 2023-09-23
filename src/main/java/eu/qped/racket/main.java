@@ -7,7 +7,7 @@ public class main {
     public static void main(String[] args) {
         try {
 
-            String rktString = "(random 5 23)";
+            String rktString = "(append (cons 1 empty) (cons 2 empty) (cons 3 empty))";
             //String rktString = "(number? 1)";
             //String rktString = "(equal? 6 \"half dozen\")";
             //String rktString = "(= abc \"8\")";

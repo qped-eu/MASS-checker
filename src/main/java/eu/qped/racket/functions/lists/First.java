@@ -1,10 +1,8 @@
 package eu.qped.racket.functions.lists;
 
+import eu.qped.racket.buildingBlocks.*;
 import eu.qped.racket.buildingBlocks.Boolean;
-import eu.qped.racket.buildingBlocks.Cons;
-import eu.qped.racket.buildingBlocks.Expression;
 import eu.qped.racket.buildingBlocks.Number;
-import eu.qped.racket.buildingBlocks.Parameter;
 
 import java.util.List;
 
@@ -16,6 +14,11 @@ public class First extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         if((list.get(0).getParts().get(0) instanceof eu.qped.racket.functions.lists.List || list.get(0).getParts().get(0) instanceof Cons)) {
             String st1 = (String) list.get(0).evaluate(this);
 
@@ -31,8 +34,8 @@ public class First extends Expression {
             if(list.get(0).getParts().get(1) instanceof Number){        //Number
                 return (float) list.get(0).getParts().get(1).evaluate(this);
             }
-            if(list.get(0).getParts().get(1) instanceof Parameter){        //String
-                return ((Parameter) list.get(0).getParts().get(1)).getParaName();
+            if(list.get(0).getParts().get(1) instanceof StringR){        //String
+                return (String) list.get(0).getParts().get(1).evaluate(this);
             }
             return st1.substring(5).split("\\s")[1];            //String
         } else {

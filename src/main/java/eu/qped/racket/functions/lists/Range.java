@@ -12,6 +12,11 @@ public class Range extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() > 3 || list.size() < 1) {
+            String stException = "expects between 1 and 3 arguments, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         String s = "";
         float startpoint;
         float end;

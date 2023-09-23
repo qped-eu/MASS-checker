@@ -23,7 +23,12 @@ public class Zero extends Expression {
      */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        boolean returnBoolean = false;
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        boolean returnBoolean;
         try {
             returnBoolean = ((float) (list.get(0).evaluate(this)) == 0);
         } catch (ClassCastException e) {

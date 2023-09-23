@@ -25,14 +25,18 @@ public class BooleanQ extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
-        for (Expression e : list) {
-            try {
-                if ((boolean) e.evaluate(this) || !(boolean) e.evaluate(this))        // (boolean)e.evaluate(this) == true || (boolean) e.evaluate(this) == false
-                    return true;
-            } catch (ClassCastException ee) {
-                return false;
-            }
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
         }
+
+        try {
+            if ((boolean) list.get(0).evaluate(this) || !(boolean) list.get(0).evaluate(this))        // (boolean)e.evaluate(this) == true || (boolean) e.evaluate(this) == false
+                return true;
+        } catch (ClassCastException ee) {
+            return false;
+        }
+
         return false;
     }
 

@@ -14,6 +14,11 @@ public class Reverse extends Expression {
 
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         String output = "";
         //List<String> inputs = new LinkedList<>();
         Stack<String> inputs = new Stack<>();
