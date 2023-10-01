@@ -21,19 +21,23 @@ public class Equal extends Expression {
             throw new Exception(stException);
         }
 
-        Boolean first = true;
+        boolean first = true;
         float value = 0;
+        float valueNow;
+        boolean resultBoolean = false;
         for (Expression e : list) {
             try {
-                float valueNow = (float) e.evaluate(this);
+                valueNow = (float) e.evaluate(this);
+                System.out.println(valueNow);
                 if (first) {
                     value = valueNow;
                     first = false;
+                    resultBoolean = true;
                     continue;
                 }
                 float epsilon = 1 * (float) Math.pow(10, -10); //The accepted deviation for Float Values here 1*10^-10
                 if (!(Math.abs(value - valueNow) < epsilon)) {
-                    return false;
+                    resultBoolean = false;
                 }
                 value = valueNow;
             } catch (ClassCastException ee) {
@@ -41,7 +45,7 @@ public class Equal extends Expression {
                 throw new Exception(stException);
             }
         }
-        return true;
+        return resultBoolean;
     }
 
     @Override

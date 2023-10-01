@@ -741,6 +741,21 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(-1), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
 
+        s = "(log 8 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(3), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
+
+        s = "(log 32 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(5), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
+
+        s = "(/ (log 8) (log 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(3), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
+
         s = "(log )";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
@@ -754,6 +769,62 @@ public class RacketEvaluationTests {
         finalInter = inter;
         thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
         Assertions.assertEquals("expects only 1 argument, but found 3", thrown.getMessage());
+    }
+
+    @Test
+    void testEqual() throws Exception {
+        String s = "(= 1 1)";
+        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(= 1 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(= 1 2 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(= true true)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        DrRacketInterpreter finalInter = inter;
+        Exception thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of Number/expects a float", thrown.getMessage());
+
+        s = "(= \"hello\" \"hello\")";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of Number/expects a float", thrown.getMessage());
+
+        s = "(= 3 3 3 3 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(= 3 4 3 3 4 3 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(= 3 4 3 3 \"hello\" true 3)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("Expression isnt instance of Number/expects a float", thrown.getMessage());
+
+        s = "(= )";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        finalInter = inter;
+        thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
+        Assertions.assertEquals("expects atleast 1 argument, but found 0", thrown.getMessage());
     }
 
     @Test
