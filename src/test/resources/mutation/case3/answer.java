@@ -6,9 +6,10 @@ public class EvenTest {
 
 	@Test
 	public void test() {
+		Even even = new Even();
 
-		assertTrue(new Even().isTrue(2));
-		//assertFalse(new Even().isTrue(1));
+		assertTrue(even.isTrue(2));
+		assertFalse(even.isTrue(1));
 	}
 
 }

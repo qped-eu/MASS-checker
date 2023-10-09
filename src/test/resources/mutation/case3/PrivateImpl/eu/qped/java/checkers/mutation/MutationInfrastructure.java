@@ -18,7 +18,6 @@ public class MutationInfrastructure {
     private static int currentIndex = 0;
     private static String currentMessage = "";
 
-
     public static <R> R compute(Pair<R> variants) {
         if(firstTest) {
             return variants.getCorrectVariant().doit();
