@@ -3,15 +3,18 @@ package eu.qped.java.checkers.mutation;
 public class Variant<R> {
     private final MutationInterface<R> mutation;
     private final String msg;
+    private final int order;
 
-    public Variant(MutationInterface<R> mutation, String msg) {
+    public Variant(MutationInterface<R> mutation, String msg, int order) {
         this.mutation = mutation;
         this.msg = msg;
+        this.order = order;
     }
 
     public Variant(MutationInterface<R> mutation) {
         this.mutation = mutation;
         this.msg = null;
+        this.order = -1;
     }
 
     public MutationInterface<R> getMutation() {
@@ -20,6 +23,10 @@ public class Variant<R> {
 
     public String getMsg() {
         return msg;
+    }
+
+    public int getOrder() {
+        return order;
     }
 
     @Override
