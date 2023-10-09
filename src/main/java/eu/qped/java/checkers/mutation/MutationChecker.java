@@ -4,26 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import eu.qped.framework.QpedQfFilesUtility;
-import eu.qped.java.checkers.coverage.FeedbackMessage;
 import eu.qped.java.checkers.coverage.MemoryLoader;
 import eu.qped.java.checkers.coverage.framework.coverage.CoverageFacade;
-import eu.qped.java.checkers.coverage.framework.coverage.Jacoco;
 import eu.qped.java.checkers.coverage.framework.test.JUnit5;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
-import eu.qped.java.checkers.mass.QfCoverageSettings;
 import eu.qped.java.checkers.mass.QfMutationSettings;
-import eu.qped.java.checkers.mass.ShowFor;
+import eu.qped.racket.functions.numbers.Even;
 
 public class MutationChecker<R> implements MutationInterface<R> {
 
@@ -48,14 +39,8 @@ public class MutationChecker<R> implements MutationInterface<R> {
             throw new RuntimeException("Could not create lists of test and application classes.", e);
         }
 
-        // Create a classloader for the student and instructor classes
         MemoryLoader memoryLoader = new MemoryLoader(this.getClass().getClassLoader());
-        for (CoverageFacade testClass : testClasses) {
-            memoryLoader.upload(testClass.className(), testClass.byteCode());
-        }
-        for (CoverageFacade clazz : classes) {
-            memoryLoader.upload(clazz.className(), clazz.byteCode());
-        }
+        loadClassesIntoMemory(testClasses, classes, memoryLoader);
 
         // create a runner for the tests, currently only JUnit 5 supported
         TestFramework test = new JUnit5();
@@ -69,21 +54,22 @@ public class MutationChecker<R> implements MutationInterface<R> {
             return messages;
         }
 
-
         List<String> testClassNames = testClasses.stream().map(CoverageFacade::className).collect(Collectors.toList());
 
-        Class<?> MutationInfrastructureClass;
-        Class<?> VariantClass;
-        List<Pair<?>> resultList = new ArrayList<>();
+        Class<?> mutationInfrastructureClass;
+        Class<?> variantClass;
+        Class<?> pairClass;
+        List<?> resultList = new ArrayList<>();
+
 
         try {
             // Create an instance of the loaded class (assuming it has a default constructor)
-            MutationInfrastructureClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.MutationInfrastructure");
-            VariantClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.Variant");
+            mutationInfrastructureClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.MutationInfrastructure");
+            variantClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.Variant");
+            pairClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.Pair");
 
             // get the list of MutationInfrastructure inside Privateimpl
-            resultList = (List<Pair<?>>) MutationInfrastructureClass.getDeclaredMethod("getListOfPairs").invoke(MutationInfrastructureClass.getDeclaredConstructor().newInstance());
-
+            //     resultList = (List<?>) mutationInfrastructureClass.getDeclaredMethod("getListOfPairs").invoke(mutationInfrastructureClass.getDeclaredConstructor().newInstance());
 
 
         } catch (Exception e) {
@@ -92,71 +78,97 @@ public class MutationChecker<R> implements MutationInterface<R> {
 
 
         // run all tests
+        System.out.println("FIRST TEST BEGIN");
         List<String> testResults = test.testing(testClassNames, memoryLoader);
+        System.out.println("FIRST TEST END");
+        System.out.println("-------------------");
+        System.out.println("");
+
         if (!testResults.isEmpty()) {
-            //if tests fail, show empty message
+            System.out.println("Der erste Test ist fehlgeschlagen" + testResults);
             return messages;
         }
 
-        for (int j=0;j<resultList.size();j++) {
-            System.out.println("MutationList:" + j + "Correct Variant: " + resultList.get(j));
+        for (int i = 0; i < 0; i++) {
+            try {
+                System.out.println(variantClass.getDeclaredMethod("getMsg").invoke(pairClass.getDeclaredMethod("getMutationVariant").invoke(resultList.get(i))));
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         }
+        int mutationPossibilities;
+        try {
+            Field fieldMessage = mutationInfrastructureClass.getDeclaredField("mutationMessageList");
+            // Make the field accessible if it's not public
+            fieldMessage.setAccessible(true);
 
-        int mutationPossibilities = calculatePossibilities(resultList);
-        // Create an immutable list with 8 true values
-        List<Boolean> immutableList = Collections.nCopies(resultList.size(), true);
+            // Get the value of the field from the instance
+            List<String> message = (List<String>) fieldMessage.get(mutationInfrastructureClass.getDeclaredConstructor().newInstance());
 
-        // Convert the immutable list to a mutable ArrayList
-        List<Boolean> correctVariants = new ArrayList<>(immutableList);
-        try  {
-            Field field = MutationInfrastructureClass.getDeclaredField("firstTest");
-            field.setAccessible(true);
-            field.set(null,  false);
-
-
-            // Create an instance of MutationInfrastructureClass using the no-argument constructor
-            Object mutationInfrastructureInstance = MutationInfrastructureClass.getDeclaredConstructor().newInstance();
-
-            // Get the setCorrectVariants method with the correct signature
-            MutationInfrastructureClass.getDeclaredMethod("setCorrectVariants", List.class).invoke(mutationInfrastructureInstance, correctVariants);
-
-
-
-        } catch (NoSuchFieldException | IllegalAccessException | InvocationTargetException | NoSuchMethodException |
-                 InstantiationException e) {
+            mutationPossibilities = message.size();
+        } catch (NoSuchFieldException | InvocationTargetException | InstantiationException | IllegalAccessException |
+                 NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
 
-
-        // Loop over variants
-        // (replace with proper loop condition
+        System.out.println("Mutation possibilities: " + mutationPossibilities);
         for (int i = 0; i < mutationPossibilities; i++) {
-            // run all tests
-        //    List<String> testResults = test.testing(testClassNames, memoryLoader);
-
             // Iterate through the list, toggling one element to false in each iteration
-            for (int k = 0; k < correctVariants.size(); k++) {
-                for (int j = 0; j < correctVariants.size(); j++) {
-                    correctVariants.set(j, k != j);
+            List<Boolean> tmpList = new ArrayList<>(Collections.nCopies(mutationPossibilities, true));
+            tmpList.set(i, false);
+            try {
+                // Create a classloader for the student and instructor classes
+                memoryLoader = new MemoryLoader(this.getClass().getClassLoader());
+                loadClassesIntoMemory(testClasses, classes, memoryLoader);
+
+                // Create an instance of the loaded class (assuming it has a default constructor)
+                mutationInfrastructureClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.MutationInfrastructure");
+                variantClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.Variant");
+                pairClass = memoryLoader.loadClass("eu.qped.java.checkers.mutation.Pair");
+                Object mutationInfrastructureInstance;
+
+                Field field = mutationInfrastructureClass.getDeclaredField("firstTest");
+                field.setAccessible(true);
+                field.set(null, false);
+
+                // get the list of MutationInfrastructure inside Privateimpl
+                //      resultList = (List<?>) mutationInfrastructureClass.getDeclaredMethod("getListOfPairs").invoke(mutationInfrastructureClass.getDeclaredConstructor().newInstance());
+
+                // Create an instance of MutationInfrastructureClass using the no-argument constructor
+                mutationInfrastructureInstance = mutationInfrastructureClass.getDeclaredConstructor().newInstance();
+
+                // Get the setCorrectVariants method with the correct signature
+                mutationInfrastructureClass.getDeclaredMethod("setCorrectVariants", List.class).invoke(mutationInfrastructureInstance, tmpList);
+
+
+
+                    System.out.println("OUTSIDE CLASS: " + mutationInfrastructureClass.getDeclaredMethod("getCorrectVariants").invoke(mutationInfrastructureInstance));
+
+                //      System.out.println(mutationInfrastructureClass.getDeclaredMethod("isFirstTest").invoke(mutationInfrastructureInstance));
+
+                List<String> testResultstmp = test.testing(testClassNames, memoryLoader);
+                //   System.out.println((Boolean) variantClass.getDeclaredMethod("getActive").invoke(pairClass.getDeclaredMethod("getMutationVariant").invoke(resultList.get(i))));
+
+                // Falls Test nicht fehlschlägt, ist es ein Mutant mit einem Defekt
+                if (testResultstmp.isEmpty()) {
+                    System.out.println("Wir haben ein Mutant mit der Defektnachricht:");
+                    System.out.println(testResultstmp);
+                    // String message = (String) variantClass.getDeclaredMethod("getMsg").invoke(pairClass.getDeclaredMethod("getMutationVariant").invoke(resultList.get(i)));
+                    Field fieldMessage = mutationInfrastructureClass.getDeclaredField("mutationMessageList");
+                    // Make the field accessible if it's not public
+                    fieldMessage.setAccessible(true);
+
+                    // Get the value of the field from the instance
+                    List<String> message = (List<String>) fieldMessage.get(mutationInfrastructureInstance);
+                    System.out.println(message.get(i));
+                    messages.add(message.get(i));
+                    return messages;
                 }
-                try {
-                    // Create an instance of MutationInfrastructureClass using the no-argument constructor
-                    Object mutationInfrastructureInstance = MutationInfrastructureClass.getDeclaredConstructor().newInstance();
-
-                    // Get the setCorrectVariants method with the correct signature
-                    MutationInfrastructureClass.getDeclaredMethod("setCorrectVariants", List.class).invoke(mutationInfrastructureInstance, correctVariants);
-
-                    System.out.println(MutationInfrastructureClass.getDeclaredMethod("getCorrectVariants").invoke(mutationInfrastructureInstance));
-
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                    throw new RuntimeException(e);
-                }
-                System.out.println(correctVariants);
-               test.testing(testClassNames,memoryLoader);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
+                     InstantiationException | ClassNotFoundException | NoSuchFieldException e) {
+                throw new RuntimeException(e);
             }
 
-            messages.add("### Mutation Coverage Feedback");
-            messages.add("- Add the message which you get from the variant");
 
             // if testResults is empty, all tests succeeded (or there were no tests)
             // depending on the type of variant (is it the correct implementation, or a mutant with a defect)
@@ -209,16 +221,25 @@ public class MutationChecker<R> implements MutationInterface<R> {
         }
     }
 
+    private void loadClassesIntoMemory(List<CoverageFacade> testClasses, List<CoverageFacade> classes, MemoryLoader memoryLoader) {
+        for (CoverageFacade testClass : testClasses) {
+            memoryLoader.upload(testClass.className(), testClass.byteCode());
+        }
+        for (CoverageFacade clazz : classes) {
+            memoryLoader.upload(clazz.className(), clazz.byteCode());
+        }
+    }
+
     @Override
     public R doit() {
         System.out.println("DID IT");
         return null;
     }
 
-    public int calculatePossibilities(List<Pair<?>> listOfLists) {
+    public int calculatePossibilities(List<?> listOfLists) {
 
 
-        return (int) Math.pow(2,listOfLists.size());
+        return listOfLists.size();
     }
 
     public void reloadTestingClasses() {
