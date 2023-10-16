@@ -55,12 +55,11 @@ public class MutationChecker<R> implements MutationInterface<R> {
         }
 
         List<String> testClassNames = testClasses.stream().map(CoverageFacade::className).collect(Collectors.toList());
-
+System.out.println(classes.stream().map(CoverageFacade::className).collect(Collectors.toList()));
         Class<?> mutationInfrastructureClass;
         Class<?> variantClass;
         Class<?> pairClass;
         List<?> resultList = new ArrayList<>();
-
 
         try {
             // Create an instance of the loaded class (assuming it has a default constructor)
@@ -78,11 +77,7 @@ public class MutationChecker<R> implements MutationInterface<R> {
 
 
         // run all tests
-        System.out.println("FIRST TEST BEGIN");
         List<String> testResults = test.testing(testClassNames, memoryLoader);
-        System.out.println("FIRST TEST END");
-        System.out.println("-------------------");
-        System.out.println("");
 
         if (!testResults.isEmpty()) {
             System.out.println("Der erste Test ist fehlgeschlagen" + testResults);
@@ -142,17 +137,17 @@ public class MutationChecker<R> implements MutationInterface<R> {
 
 
 
-                    System.out.println("OUTSIDE CLASS: " + mutationInfrastructureClass.getDeclaredMethod("getCorrectVariants").invoke(mutationInfrastructureInstance));
+                //System.out.println("OUTSIDE CLASS: " + mutationInfrastructureClass.getDeclaredMethod("getCorrectVariants").invoke(mutationInfrastructureInstance));
 
                 //      System.out.println(mutationInfrastructureClass.getDeclaredMethod("isFirstTest").invoke(mutationInfrastructureInstance));
 
                 List<String> testResultstmp = test.testing(testClassNames, memoryLoader);
-                //   System.out.println((Boolean) variantClass.getDeclaredMethod("getActive").invoke(pairClass.getDeclaredMethod("getMutationVariant").invoke(resultList.get(i))));
+                  // System.out.println((Boolean) variantClass.getDeclaredMethod("getActive").invoke(pairClass.getDeclaredMethod("getMutationVariant").invoke(resultList.get(i))));
 
                 // Falls Test nicht fehlschlägt, ist es ein Mutant mit einem Defekt
                 if (testResultstmp.isEmpty()) {
                     System.out.println("Wir haben ein Mutant mit der Defektnachricht:");
-                    System.out.println(testResultstmp);
+
                     // String message = (String) variantClass.getDeclaredMethod("getMsg").invoke(pairClass.getDeclaredMethod("getMutationVariant").invoke(resultList.get(i)));
                     Field fieldMessage = mutationInfrastructureClass.getDeclaredField("mutationMessageList");
                     // Make the field accessible if it's not public
