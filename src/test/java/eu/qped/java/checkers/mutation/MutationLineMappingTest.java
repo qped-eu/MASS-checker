@@ -49,7 +49,7 @@ class MutationLineMappingTest {
 
 	@Test
 	void testCase6() throws IOException {
-	//	genericTest("case6", true);
+		genericTest("case6", true);
 	}
 
 	public void genericTest(String caseName, boolean startsWithInsteadOfEquals) throws IOException, JsonProcessingException, JsonMappingException {
