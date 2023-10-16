@@ -7,13 +7,15 @@ public class WordUtilsCustomTest {
     public void test() {
         WordUtilsCustom wordUtilsCustom = new WordUtilsCustom();
         // Arrange
-        String[] words = {"cherry"};
-        char c = 'c'; // Testing with a
+        String[] wordList = {"cherry"};
+        String[] bigWordList = {"Cherry"};
+        char c = 'c'; // Testing with c
+        char bigC = 'C'; // Testing with big c
 
-        // Act
-        int result = wordUtilsCustom.countWordsBeginningWith(c, words);
+        String[] emptyList = {};
 
         // Assert
-        assertEquals(1, result); // There's only one word starting with 'A' (apple)
+        assertEquals(1, wordUtilsCustom.countWordsBeginningWith(c, wordList)); 
+      // assertEquals(1, wordUtilsCustom.countWordsBeginningWith('C', bigWordList));
     }
 }

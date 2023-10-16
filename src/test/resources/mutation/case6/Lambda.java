@@ -8,9 +8,6 @@ import java.util.Comparator;
 import java.util.function.Predicate;
 
 public class Lambda<T> {
-    Lambda() {
-        MutationInfrastructure.mutationMessageList.add("use different elements in the list");
-    }
 
     // a) Methode zum Entfernen von Elementen aus der Liste basierend auf einem Filter
     public static <T> void removeIf(ArrayList<T> list, Predicate<T> filter) {
@@ -20,17 +17,6 @@ public class Lambda<T> {
     // b) Methode zum Sortieren der Liste basierend auf einem Comparator
     public static <T> void sortBy(ArrayList<T> list, Comparator<T> comparator) {
         list.sort(comparator);
-        MutationInfrastructure.compute(new Pair<>(
-            () -> {
-                list.sort(comparator);
-                return null;
-            },
-            new Variant<>(() -> {
-                return null;
-            } 
-            , "use different elements in the list", 0)
-        ));
-        
     }
 
     // c) Methode zum Konvertieren der Liste in einen String mit Zeilenumbrüchen
