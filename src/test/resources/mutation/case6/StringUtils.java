@@ -30,9 +30,10 @@ public class StringUtils {
         while ((pos = ret.indexOf(search)) > 0) {
             ret = ret.substring(0, pos) + replace + ret.substring(pos + search.length());
         }
+        final String result = ret;
         return (MutationInfrastructure.compute(new Pair<>(
-                () -> (ret),
-                new Variant<>(() -> source, "also add tests for the case where search is not in source",0)
+                () -> (result),
+                new Variant<>(() -> (!result.equals(source) ? result:"-"), "also add tests for the case where search is not in source",0)
         )));
     }
 }

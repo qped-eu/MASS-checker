@@ -3,27 +3,27 @@ import eu.qped.java.checkers.mutation.MutationInterface;
 import eu.qped.java.checkers.mutation.Pair;
 import eu.qped.java.checkers.mutation.Variant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class Even {
-	Boolean v1 = MutationInfrastructure.compute(new Pair<>(
-		() -> (true),
-		new Variant<>(() -> false, "Was ist mit Zahlen wie 2, 4, etc.?")
-	));
-	Boolean v2 = MutationInfrastructure.compute(new Pair<>(
-		() -> (false),
-		new Variant<>(() -> true, "Was ist mit Zahlen wie 1, 3, etc.?")
-));
 
-	Boolean v3 = MutationInfrastructure.compute(new Pair<>(
-		() -> (System.out.println("Hello");),
-		new Variant<>(() -> false, "Was ist mit Zahlen wie 2, 4, etc.?")
-	));
-
+static {
+	MutationInfrastructure.mutationMessageList.add("Was ist mit Zahlen wie 2, 4, etc.?");
+	MutationInfrastructure.mutationMessageList.add("Was ist mit Zahlen wie 1, 3, etc.?");
+}
 
 	public boolean isTrue(int num) {
 		if (num % 2 == 0) {
-			return v1;
+			return MutationInfrastructure.compute(new Pair<>(
+				() -> (true),
+				new Variant<>(() -> false, "Was ist mit Zahlen wie 2, 4, etc.?",0)
+			));
 		} else {
-			return v2;
+			return MutationInfrastructure.compute(new Pair<>(
+				() -> (false),
+				new Variant<>(() -> true, "Was ist mit Zahlen wie 1, 3, etc.?",1)
+		));
 		}
 	}	
 }
