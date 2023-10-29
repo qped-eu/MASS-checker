@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Round extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -38,12 +45,27 @@ public class Round extends Expression {
                 result = Math.round((float) list.get(0).evaluate(this));
             }
         } catch (ClassCastException e) {
-            String stException = "Expression isnt instance of Number/expects a float";
-            throw new Exception(stException);
+            try {
+                float value1 = (float) Float.parseFloat((String)list.get(0).evaluate(this));
+                int value2 = (int)value1;
+                if (value1 - value2 == 0.5) {
+                    result = (value2 % 2 == 0 ? value2 : value2 + 1);
+                } else {
+                    result = Math.round((float) Float.parseFloat((String)list.get(0).evaluate(this)));
+                }
+            } catch (Exception ex) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
+            }
         }
         return result;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Round" + "(" + super.getId() + ")";

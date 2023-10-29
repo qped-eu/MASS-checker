@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Random extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -55,11 +62,38 @@ public class Random extends Expression {
                 throw new Exception("Expression isnt instance of Number/expects a float");
             }
         } catch (ClassCastException cc) {
-            throw new Exception("Expression isnt instance of Number/expects a float");
+            try {                                                                                            //2 Statements
+                min = (float) Float.parseFloat((String)list.get(0).evaluate(this));
+                max = (float) Float.parseFloat((String)list.get(1).evaluate(this));
+                if (min < max && (min % 1 == 0) && (max % 1 == 0)) {
+                    return (int) (min + (new java.util.Random().nextInt((int) (max - min))));
+                } else {
+                    throw new Exception("MaxValue/MinValue has decimals or !(min < max)");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                try {                                                                                        //1 Statement
+                    max = (float) Float.parseFloat((String) list.get(0).evaluate(this));
+                    if (max > 0 && (max % 1 == 0)) {
+                        return (int) (new java.util.Random().nextInt((int) (max)));
+                    } else {
+                        throw new Exception("MaxValue has decimals or is <=0");
+                    }
+                } catch (
+                        IndexOutOfBoundsException ee) {                                                     //0 Statements
+                    result = (float) Math.random();
+                } catch (Exception ex) {
+                    throw new Exception("Expression isnt instance of Number/expects a float");
+                }
+            }
         }
         return result;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Random" + "(" + super.getId() + ")";

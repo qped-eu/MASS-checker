@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Zero extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -32,12 +39,20 @@ public class Zero extends Expression {
         try {
             returnBoolean = ((float) (list.get(0).evaluate(this)) == 0);
         } catch (ClassCastException e) {
-            String stException = "Expression isnt instance of Number/expects a float";
-            throw new Exception(stException);
+            try {
+                returnBoolean = ((float) (Float.parseFloat((String)list.get(0).evaluate(this))) == 0);
+            } catch (NumberFormatException ex) {
+                throw new Exception("Expression evaluation result is not a Number");
+            }
         }
         return returnBoolean;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Zero?" + "(" + super.getId() + ")";

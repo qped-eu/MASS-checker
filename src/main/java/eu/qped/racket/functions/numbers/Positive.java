@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Positive extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -32,12 +39,22 @@ public class Positive extends Expression {
         try {
             value = (int) (float) list.get(0).evaluate(this);       //Because Racket only accepts Integers in even?
         } catch (ClassCastException e) {
-            String stException = "Expression isnt instance of Number/expects a float";
-            throw new Exception(stException);
+            try {
+                // Evaluate the first expression and convert it to an integer
+                value = (int)(float) Float.parseFloat((String)list.get(0).evaluate(this));       //Because Racket only accepts Integers in even?
+            } catch (Exception ex) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
+            }
         }
         return value > 0;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Positive" + "(" + super.getId() + ")";

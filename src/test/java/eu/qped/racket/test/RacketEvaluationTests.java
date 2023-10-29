@@ -1546,11 +1546,109 @@ public class RacketEvaluationTests {
     @Test
     void testCustomFunction() throws Exception {
         String s = "(define (double x)\n" +
-                "(* x 2))\n" +
-                "(double 21)";
+                "(abs x))\n" +
+                "(double -21)";
         DrRacketInterpreter inter = new DrRacketInterpreter(s);
         inter.evaluate();
-        assertEquals(Float.toString(42), inter.evaluateExpressions());
+        assertEquals(Float.toString(21), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(add1 x))\n" +
+                "(double -21)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(-20), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(ceiling x))\n" +
+                "(double 1.8)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(/ x 0.25))\n" +
+                "(double 0.5)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(= x 1))\n" +
+                "(double 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(exp x))\n" +
+                "(double 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(3), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
+
+        s = "(define (double x)\n" +
+                "(floor x))\n" +
+                "(double -1.1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(-2), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(>= x 0))\n" +
+                "(double 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(> x 1))\n" +
+                "(double 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(<= x 1))\n" +
+                "(double 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(< x 1))\n" +
+                "(double 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(log x))\n" +
+                "(double 0.5)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(-1), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
+
+        s = "(define (double x)\n" +
+                "(max 1 x 3))\n" +
+                "(double 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(3), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(min -1 x -3))\n" +
+                "(double -6)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(-6), inter.evaluateExpressions());
+
+        s = "(define (double x)\n" +
+                "(- 1 (- 2 1) x (+ 0 5))\n" +
+                "(double 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(-6), inter.evaluateExpressions());
 
         s = "(define (double x)\n" +
                 "(* x 2))\n" +
@@ -1569,6 +1667,76 @@ public class RacketEvaluationTests {
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(63), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(sqr x))\n" +
+                "(calculate 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(4), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(sqrt x))\n" +
+                "(calculate 9)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(3), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(sub1 x))\n" +
+                "(calculate -0.5)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(-1.5f), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(zero? x))\n" +
+                "(calculate 109)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(modulo x 7))\n" +
+                "(calculate 23)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(2), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(negative? x))\n" +
+                "(calculate 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(odd? x))\n" +
+                "(calculate 2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(false), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(positive? x))\n" +
+                "(calculate 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Boolean.toString(true), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(random x))\n" +
+                "(calculate 1)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Integer.toString(0), inter.evaluateExpressions());
+
+        s = "(define (calculate x)\n" +
+                "(round x))\n" +
+                "(calculate 0.2)";
+        inter = new DrRacketInterpreter(s);
+        inter.evaluate();
+        assertEquals(Float.toString(0), inter.evaluateExpressions());
 
     }
 

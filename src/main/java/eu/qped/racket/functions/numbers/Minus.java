@@ -8,10 +8,16 @@ import java.util.List;
 
 public class Minus extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
-        //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
     /**
@@ -38,14 +44,29 @@ public class Minus extends Expression {
                     } else {
                         result -= (float) e.evaluate(this);
                     }
-                } catch (ClassCastException ee){
-                String stException = "Expression isnt instance of Number/expects a float";
-                throw new Exception(stException);
+            } catch (ClassCastException ee){
+                try {
+                    if (first) {
+                        // If it's the first expression, set the result to its evaluation
+                        result = (float) Float.parseFloat((String) e.evaluate(this));
+                        first = false;
+                    } else {
+                        result -= (float) Float.parseFloat((String) e.evaluate(this));
+                    }
+                } catch (Exception ex) {
+                    String stException = "Expression isnt instance of Number/expects a float";
+                    throw new Exception(stException);
+                }
             }
         }
         return result;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Minus" + "(" + super.getId() + ")";

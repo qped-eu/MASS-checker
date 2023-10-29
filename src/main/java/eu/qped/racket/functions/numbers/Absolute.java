@@ -8,12 +8,25 @@ import java.util.List;
 
 public class Absolute extends Expression {
 
+    /**
+     * This method evaluates the Absolute expression.
+     *
+     * @param e the Parent Expression
+     * @return the absolute value of the expression
+     * @throws Exception if evaluation encounters an issue
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
-        //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
+    /**
+     * This method evaluates the Absolute expression when given a list of expressions.
+     *
+     * @param list the list of expressions
+     * @return the absolute value of the first expression
+     * @throws Exception if evaluation encounters an issue
+     */
     @Override
     public Object evaluate(List<Expression> list) throws Exception {
         if (list.size() != 1) {
@@ -25,12 +38,22 @@ public class Absolute extends Expression {
         try {
             result = (float) Math.abs((float) list.get(0).evaluate(this));
         } catch (ClassCastException e) {
-            String stException = "Expression isnt instance of Number/expects a float";
-            throw new Exception(stException);
+            try {
+                result = Math.abs(Float.parseFloat((String) list.get(0).evaluate(this)));
+            } catch (NumberFormatException ex) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
+            }
+
         }
         return result;
     }
 
+    /**
+     * This method returns the string representation of the Absolute expression.
+     *
+     * @return the string representation of the expression
+     */
     @Override
     public String toString() {
         return "Absolute" + "(" + super.getId() + ")";

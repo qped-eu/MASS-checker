@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Modulo extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -36,13 +43,31 @@ public class Modulo extends Expression {
             value2 = (float) list.get(1).evaluate(this);
             result = value1 % value2;
         } catch (ClassCastException e) {
-            String stException = "Expression isnt instance of Number/expects a float";
-            throw new Exception(stException);
+            try {
+                if (list.get(0).evaluate(this) instanceof String) {
+                    value1 = (float) Float.parseFloat((String) list.get(0).evaluate(this));
+                } else {
+                    value1 = (float) list.get(0).evaluate(this);
+                }
+                if (list.get(1).evaluate(this) instanceof String) {
+                    value2 = (float) Float.parseFloat((String) list.get(1).evaluate(this));
+                } else {
+                    value2 = (float) list.get(1).evaluate(this);
+                }
+                result = value1 % value2;
+            } catch (Exception ex) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
+            }
         }
         return result == -0f ? 0 : result;      //Because java has -0 and Racket does not
     }
 
-
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Modulo" + "(" + super.getId() + ")";

@@ -9,6 +9,13 @@ import java.util.List;
 public class Plus extends Expression {
 
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -34,22 +41,23 @@ public class Plus extends Expression {
             try {
                 result += (float) e.evaluate(this);
             } catch (ClassCastException ee) {
-                String stException = "Expression isnt instance of Number/expects a float";
-                throw new Exception(stException);
+                try {
+                    result += (float) Float.parseFloat((String) e.evaluate(this));
+                } catch (Exception ex) {
+                    String stException = "Expression isnt instance of Number/expects a float";
+                    throw new Exception(stException);
+                }
             }
         }
         return result;
     }
 
-//    public GenericType evaluate(List<Expression> list) {
-//        float result = 0;
-//        for (Expression e : list) {
-//            result += e.number
-//        }
-//        return Float.toString(result);
-//        //return result;
-//    }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Plus" + "(" + super.getId() + ")";

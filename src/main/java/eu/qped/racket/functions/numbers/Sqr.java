@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Sqr extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -33,14 +40,24 @@ public class Sqr extends Expression {
         try {
             value = (float) list.get(0).evaluate(this);
             result = value * value;
-
         } catch (ClassCastException e) {
-            String stException = "Expression isnt instance of Number/expects a float";
-            throw new Exception(stException);
+            try {
+                String expressionResult = (String) list.get(0).evaluate(this); // Assuming this is how you're getting the result
+                value = Float.parseFloat(expressionResult);
+                result = value * value;
+            } catch (Exception ex) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
+            }
         }
         return result;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Sqr" + "(" + super.getId() + ")";

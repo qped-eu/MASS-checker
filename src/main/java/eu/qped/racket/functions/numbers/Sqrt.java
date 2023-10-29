@@ -8,6 +8,13 @@ import java.util.List;
 
 public class Sqrt extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
     public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
@@ -36,12 +43,21 @@ public class Sqrt extends Expression {
                 throw new Exception("Number is negative");                          //Racket verwendet komplexe Zahlen?
             }
         } catch (ClassCastException e) {
-            String stException = "Expression isnt instance of Number/expects a float";
-            throw new Exception(stException);
+            try {
+                result = (float) Math.sqrt((float) Float.parseFloat((String) list.get(0).evaluate(this)));
+            } catch (Exception ex) {
+                String stException = "Expression isnt instance of Number/expects a float";
+                throw new Exception(stException);
+            }
         }
         return result;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Sqrt" + "(" + super.getId() + ")";
