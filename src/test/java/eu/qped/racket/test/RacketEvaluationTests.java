@@ -751,7 +751,7 @@ public class RacketEvaluationTests {
         inter.evaluate();
         assertEquals(Float.toString(5), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
 
-        s = "(/ (log 8) (log 2)";
+        s = "(/ (log 8) (log 2))";
         inter = new DrRacketInterpreter(s);
         inter.evaluate();
         assertEquals(Float.toString(3), Float.toString(Math.round(Float.valueOf(inter.evaluateExpressions()))));
@@ -2745,4 +2745,18 @@ public class RacketEvaluationTests {
         thrown = assertThrows(Exception.class, finalInter::evaluateExpressions);
         Assertions.assertEquals("Expression isnt instance of String/expects a String", thrown.getMessage());
     }
+
+//    @Test
+//    void testDeklarativeProgrammierung() throws Exception {
+//        String s = "(define (lst-append l1 l2)\n" +
+//                "(cond\n" +
+//                "[(empty? l1) l2]\n" +
+//                "[else (cons (first l1) (lst-append (rest l1) l2))]))\n" +
+//                "(define (lst-reverse l)\n" +
+//                "(cond\n" +
+//                "[(empty? l) empty]\n" +
+//                "[else (lst-append (lst-reverse (rest l)) (list (first l)))]))";
+//        DrRacketInterpreter inter = new DrRacketInterpreter(s);
+//        inter.evaluate();
+//    }
 }
