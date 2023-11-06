@@ -21,6 +21,24 @@ class replaceTest {
 
     }
 
+    @Test
+    void isReverse() {
+        boolean firstResult = stringUtils.isReverse("Tobias", "Viktoria");
+        assertFalse(firstResult);
+
+        boolean secondResult = stringUtils.isReverse("Otto", "otto");
+        assertFalse(secondResult);
+
+        boolean thirdResult = stringUtils.isReverse("otto", "otto");
+        assertTrue(thirdResult);
+
+        boolean fourthResult = stringUtils.isReverse("Tobias", "saiboT");
+        assertTrue(fourthResult);
+
+        boolean fifthResult = stringUtils.isReverse(" ! § $ % & / ( ) = ", " = ) ( / & % $ § ! ");
+        assertTrue(fifthResult);
+    }
+
 }
 
 

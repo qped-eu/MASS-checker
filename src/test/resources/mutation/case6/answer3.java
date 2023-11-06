@@ -18,4 +18,14 @@ class replaceTest {
 
     }
 
+    @Test
+    void isReverse() {
+        Assertions.assertEquals(true, stringUtils.isReverse("Hallo", "ollaH")); // gespiegelt
+        Assertions.assertEquals(false, stringUtils.isReverse("Halloo", "ollaH")); // nicht gleiche Länge
+        Assertions.assertEquals(false, stringUtils.isReverse("Halloo", "ololaH")); // gleiche Buchstaben aber falsche Reihenfolge
+        Assertions.assertEquals(false, stringUtils.isReverse("Hallo", "Hallo")); // zwei mal die gleiche Reihenfolge
+        Assertions.assertEquals(true, stringUtils.isReverse("ollah", "hallo")); // doppelte spiegelung
+
+    }
+
 }

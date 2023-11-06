@@ -7,6 +7,9 @@ import org.junit.jupiter.api.Test;
 
 class replaceTest {
     StringUtils stringUtils = new StringUtils();
+    StringUtils stringUtils2 = new StringUtils();
+    StringUtils stringUtils3 = new StringUtils();
+    StringUtils stringUtils4 = new StringUtils();
 
     @Test
     void replace() {
@@ -33,6 +36,17 @@ class replaceTest {
         replace = "a";
         assertEquals(stringUtils.replace(source, search, replace), "Meine Tastatur ist kaput und ich kann kein a schreiben");
 
+        String a = "fedcba";
+        String b = "abcdef";
+        assertEquals(stringUtils.isReverse(a, b), true);
+
+        a = "abc";
+        b = "abc";
+        assertEquals(stringUtils.isReverse(a, b), false);
+
+        a = "cba ";
+        b = "abc";
+        assertEquals(stringUtils.isReverse(a, b), false);
     }
 
 }
