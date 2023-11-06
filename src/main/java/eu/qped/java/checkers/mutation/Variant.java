@@ -5,19 +5,18 @@ import lombok.Getter;
 @Getter
 public class Variant<R> {
     private final MutationInterface<R> mutation;
-    private final String msg;
-    private final int order;
+    private final MutationMessage mutationMessage;
 
-    public Variant(MutationInterface<R> mutation, String msg, int order) {
+    public Variant(MutationInterface<R> mutation, MutationMessage mutationMessage) {
         this.mutation = mutation;
-        this.msg = msg;
-        this.order = order;
+        this.mutationMessage = mutationMessage;
     }
+
     @Override
     public String toString() {
         return "Variant{" +
                 "mutation=" + mutation +
-                ", msg='" + msg + '\'' +
+                ", mutationMessage=" + mutationMessage.getMessage() +
                 '}';
     }
 }

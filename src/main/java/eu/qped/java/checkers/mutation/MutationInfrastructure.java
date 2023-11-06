@@ -15,6 +15,7 @@ public class MutationInfrastructure {
     private static List<Boolean> correctVariants = new ArrayList<>();
 
     @Getter
+    @SuppressWarnings("FieldMayBeFinal")
     private static boolean firstTest = true;
 
 
@@ -22,7 +23,7 @@ public class MutationInfrastructure {
         if (firstTest) {
             return variants.getCorrectVariant().doit();
         } else {
-            boolean currentVariant = correctVariants.get(variants.getMutationVariant().getOrder());
+            boolean currentVariant = correctVariants.get(variants.getMutationVariant().getMutationMessage().getMessageOrder());
             if (currentVariant) {
                 return variants.getCorrectVariant().doit();
             } else {
