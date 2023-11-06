@@ -3,15 +3,14 @@ package eu.qped.java.checkers.coverage.framework.coverage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import eu.qped.java.checkers.Facade;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.ICounter;
@@ -26,7 +25,6 @@ import org.jacoco.core.runtime.RuntimeData;
 
 import eu.qped.java.checkers.coverage.MemoryLoader;
 import eu.qped.java.checkers.coverage.framework.test.TestFramework;
-import eu.qped.java.checkers.mass.Mass.SolutionWorkspace;
 
 public class Jacoco {
 
@@ -48,8 +46,8 @@ public class Jacoco {
 				"ERROR::Jacoco.new() Parameter testFramework can't be null");
 	}
 
-	public void analyze(List<? extends CoverageFacade> testClasses,
-			List<? extends CoverageFacade> classes) {
+	public void analyze(List<? extends Facade> testClasses,
+			List<? extends Facade> classes) {
 		
 		if (analysisPerformed)
 			throw new IllegalStateException("The code coverage analysis has already been performed. Now it is only allowed to access the results.");
@@ -68,17 +66,17 @@ public class Jacoco {
 			// Load test and application classes using the JaCoCo in-memory classloader
 			MemoryLoader memoryLoader = new MemoryLoader(this.getClass().getClassLoader());
 			// test classes are not instrumented, as we don't want to measure coverage for them
-			for (CoverageFacade testClass : testClasses) {
+			for (Facade testClass : testClasses) {
 				memoryLoader.upload(testClass.className(), testClass.byteCode());
 			}
 			// instrument application classes so that we can measure coverage for them
-			for (CoverageFacade clazz : classes) {
+			for (Facade clazz : classes) {
 				memoryLoader.upload(clazz.className(), instrumenter.instrument(clazz.byteCode(), clazz.className()));
 			}
 			
 			// run all tests using the JaCoCo class loaded
 			testResults = testFramework.testing(
-					testClasses.stream().map(CoverageFacade::className).collect(Collectors.toList()), memoryLoader);
+					testClasses.stream().map(Facade::className).collect(Collectors.toList()), memoryLoader);
 			
 			// finalize JaCoCo
 			ExecutionDataStore executionDataStore = new ExecutionDataStore();
@@ -87,7 +85,7 @@ public class Jacoco {
 			
 			coverageBuilder = new CoverageBuilder();
 			Analyzer analyzer = new Analyzer(executionDataStore, coverageBuilder);
-			for (CoverageFacade clazz : classes) {
+			for (Facade clazz : classes) {
 				analyzer.analyzeClass(clazz.byteCode(), clazz.className());
 			}
 		} catch (Exception e) {
