@@ -1,25 +1,37 @@
 package eu.qped.racket.functions.booleans;
 
+import eu.qped.racket.buildingBlocks.Boolean;
 import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.OperatorNumbers;
 
 import java.util.List;
 
-public class FalseQ extends Expression{
+public class FalseQ extends Expression {
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
-    @Override
-    public String evaluate(List<Expression> list) {
-        for (Expression e : list) {
-            if (e.evaluate(this).equals("false"))
-                return Boolean.toString(true);
-            else
-                return Boolean.toString(false);
+
+    public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() != 1) {
+            String stException = "expects only 1 argument, but found " + list.size();
+            throw new Exception(stException);
         }
-        return Boolean.toString(false);
+
+            try {
+                Object result = list.get(0).evaluate(this);
+                if (!(boolean) result) {
+                    System.out.println(result.getClass());
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (ClassCastException ee) {
+                String stException = "Expression isnt instance of Boolean/expects a boolean";
+                throw new Exception(stException);
+        }
     }
 
     @Override

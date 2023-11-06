@@ -4,14 +4,14 @@ import java.util.List;
 
 public class Cons extends Expression {
     @Override
-    public String evaluate(Expression e) {
-        return evaluate(e.getRest(super.getId()));
+    public Object evaluate(Expression e) throws Exception {
+        return evaluate( e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
     @Override
-    public String evaluate(List<Expression> list) {
-        return "(cons " + list.get(0).evaluate(this) + " " + list.get(1).evaluate(this) + ")";
+    public Object evaluate(List<Expression> list) throws Exception {
+        return "(cons " +  list.get(0).evaluate(this) + " " + list.get(1).evaluate(this) + ")";             // (List<Expression>)
     }
 
     @Override

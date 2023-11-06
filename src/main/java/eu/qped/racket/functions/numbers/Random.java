@@ -1,23 +1,99 @@
 package eu.qped.racket.functions.numbers;
 
 import eu.qped.racket.buildingBlocks.Expression;
+import eu.qped.racket.buildingBlocks.Number;
+import eu.qped.racket.buildingBlocks.OperatorNumbers;
 
 import java.util.List;
 
 public class Random extends Expression {
 
+    /**
+     * Evaluate the expression using the parent expression as input.
+     *
+     * @param e the Parent Expression
+     * @return the maximum value obtained from evaluating the expression
+     * @throws Exception if an error occurs during evaluation
+     */
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
+    /**
+     * Calculates a random Number within the given bounds. Only Numbers are accepted as input.
+     *
+     * @param list List of operands
+     * @return Random Number
+     * @throws Exception If a list entry is found that is not a Number, such as a Boolean or String.
+     */
     @Override
-    public String evaluate(List<Expression> list) {
-        int max = (int)(float)Float.valueOf(list.get(0).evaluate(this));
-        return Integer.toString(new java.util.Random().nextInt(max));
+    public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() >= 3) {
+            String stException = "expects between 0 and 2 arguments, but found " + list.size();
+            throw new Exception(stException);
+        }
+
+        float result = 0;
+        float min = 0;
+        float max = 0;
+        try {                                                                                            //2 Statements
+            min = (float) list.get(0).evaluate(this);
+            max = (float) list.get(1).evaluate(this);
+            if (min < max && (min % 1 == 0) && (max % 1 == 0)) {
+//                        return min+(int)(Math.random()*((max-min)));
+                return (int) (min + (new java.util.Random().nextInt((int) (max - min))));
+            } else {
+                throw new Exception("MaxValue/MinValue has decimals or !(min < max)");
+            }
+        } catch (IndexOutOfBoundsException e) {
+            try {                                                                                        //1 Statement
+                max = (float) list.get(0).evaluate(this);
+                if (max > 0 && (max % 1 == 0)) {
+//                            return (int) (Math.random()*(max));
+                    return (int) (new java.util.Random().nextInt((int) (max)));
+                } else {
+                    throw new Exception("MaxValue has decimals or is <=0");
+                }
+            } catch (IndexOutOfBoundsException ee) {                                                     //0 Statements
+                result = (float) Math.random();
+            } catch (ClassCastException cc) {
+                throw new Exception("Expression isnt instance of Number/expects a float");
+            }
+        } catch (ClassCastException cc) {
+            try {                                                                                            //2 Statements
+                min = (float) Float.parseFloat((String)list.get(0).evaluate(this));
+                max = (float) Float.parseFloat((String)list.get(1).evaluate(this));
+                if (min < max && (min % 1 == 0) && (max % 1 == 0)) {
+                    return (int) (min + (new java.util.Random().nextInt((int) (max - min))));
+                } else {
+                    throw new Exception("MaxValue/MinValue has decimals or !(min < max)");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                try {                                                                                        //1 Statement
+                    max = (float) Float.parseFloat((String) list.get(0).evaluate(this));
+                    if (max > 0 && (max % 1 == 0)) {
+                        return (int) (new java.util.Random().nextInt((int) (max)));
+                    } else {
+                        throw new Exception("MaxValue has decimals or is <=0");
+                    }
+                } catch (
+                        IndexOutOfBoundsException ee) {                                                     //0 Statements
+                    result = (float) Math.random();
+                } catch (Exception ex) {
+                    throw new Exception("Expression isnt instance of Number/expects a float");
+                }
+            }
+        }
+        return result;
     }
 
+    /**
+     * Generate a string representation of the Max expression.
+     *
+     * @return a string representation of the Max expression
+     */
     @Override
     public String toString() {
         return "Random" + "(" + super.getId() + ")";

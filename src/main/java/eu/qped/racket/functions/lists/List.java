@@ -4,12 +4,12 @@ import eu.qped.racket.buildingBlocks.Expression;
 
 public class List extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(java.util.List<Expression> list) {
+    public Object evaluate(java.util.List<Expression> list) throws Exception {
         String s = "";
         int i = 0;
         for (Expression e: list) {

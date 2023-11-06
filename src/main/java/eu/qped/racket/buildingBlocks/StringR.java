@@ -1,9 +1,10 @@
 package eu.qped.racket.buildingBlocks;
 
-public class Boolean extends Expression {
-    private final java.lang.Boolean value;
+public class StringR extends Expression {
 
-    public Boolean(java.lang.Boolean value) {
+    private final String value;
+
+    public StringR(String value) {
         this.value = value;
     }
 
@@ -14,6 +15,6 @@ public class Boolean extends Expression {
 
     @Override
     public String toString() {
-        return "Boolean " + value + " (" + super.getId() + ")";
+        return "StringR " + value + " (" + super.getId() + ")";
     }
 }

@@ -23,19 +23,19 @@ public class CustomFunction extends Expression {
     }
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
         //return evaluate(e.getNext(id), e.getNext(id+1));
     }
 
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
         if (list.size() != parameters.size())
             System.out.println("FEHLER DIE ANZAHL AN PARAMETER Stimmt nicht überein");
 
         for (int i = 0 ; i < list.size(); i++) {
             //System.out.println(list.get(i).evaluate(this) + " in " + parameters.get(i));
             hMap.put(list.get(i).evaluate(this), parameters.get(i));
-            parameters.get(i).setValue(list.get(i).evaluate(this));
+            parameters.get(i).setValue(String.valueOf(list.get(i).evaluate(this)));
         }
 
         //System.out.println(hMap);

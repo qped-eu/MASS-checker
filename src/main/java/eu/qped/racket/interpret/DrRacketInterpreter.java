@@ -10,6 +10,7 @@ import eu.qped.racket.functions.numbers.Random;
 import eu.qped.racket.buildingBlocks.*;
 import eu.qped.racket.buildingBlocks.Boolean;
 import eu.qped.racket.buildingBlocks.Number;
+import eu.qped.racket.functions.strings.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -88,12 +89,26 @@ public class DrRacketInterpreter {
 
 	}
 
-	public String evaluateExpressions() {
-		return expression.evaluate(new Expression());
+//	public String evaluateExpressions() {
+//		return expression.evaluate(new Expression());
+//	}
+
+	public String evaluateExpressions() throws Exception {
+		return expression.evaluate(new Expression()).toString();
 	}
 
-	public List<String> getAllExpressionEvaluations() {
-		return expressionList.stream().map(x -> x.evaluate(new Expression())).collect(Collectors.toList());
+//	public List<String> getAllExpressionEvaluations() {
+//		return expressionList.stream().map(x -> x.evaluate(new Expression())).collect(Collectors.toList());
+//	}
+
+	public List<Object> getAllExpressionEvaluations() {
+		return expressionList.stream().map(x -> {
+			try {
+				return x.evaluate(new Expression());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}).collect(Collectors.toList());
 	}
 
 	private String prettyPrint(String xml) throws SAXException, IOException, ParserConfigurationException,
@@ -244,6 +259,9 @@ public class DrRacketInterpreter {
 			if (typeString.compareTo("type=\"Number\"") == 0) {
 				expression.addPart(new Number(Float.valueOf(valueString.substring(7,valueString.length()-1))));
 			}
+			if (typeString.compareTo("type=\"String\"") == 0) {
+				expression.addPart(new StringR(java.lang.String.valueOf(valueString.substring(7,valueString.length()-1))));
+			}
 			if (typeString.compareTo("type=\"Boolean\"") == 0) {
 				expression.addPart(new Boolean(java.lang.Boolean.valueOf(valueString.substring(7,valueString.length()-1))));
 			}
@@ -251,6 +269,82 @@ public class DrRacketInterpreter {
 		}
 
 		return expression;
+	}
+
+
+	private Expression customFunction(Node node, int number) {
+		System.out.println("Start Custom Function");
+		Expression expression = new Expression();
+		String funName = "";
+		List<Parameter> parameterList = new LinkedList<>();
+		Expression body = new Expression();
+
+		NodeList nodeList = node.getChildNodes();
+		removeText(nodeList);
+
+		NodeList headerNodeChildren = nodeList.item(number+1).getChildNodes();
+		removeText(headerNodeChildren);
+		NodeList bodyNodeChildren = nodeList.item(number+2).getChildNodes();
+		removeText(bodyNodeChildren);
+
+
+		System.out.println("Headder: ");
+
+		for (int i = 0; i < headerNodeChildren.getLength(); i++) {
+			NamedNodeMap inside = headerNodeChildren.item(i).getAttributes();
+			String valueString = inside.getNamedItem("value").toString();
+			String typeString = inside.getNamedItem("type").toString();
+			System.out.println("\tname is : " + headerNodeChildren.item(i).getNodeName() + "( " + typeString + " | " + valueString + " )");
+			if (funName == "") {
+				funName = valueString.substring(7,valueString.length()-1);
+			} else {
+				parameterList.add(new Parameter(valueString.substring(7,valueString.length()-1)));
+			}
+		}
+
+		System.out.println("Body: ");
+
+		body = goDeeper(bodyNodeChildren);
+
+
+
+
+		System.out.println("FunName: " + funName);
+		System.out.println("ParameterList: " + parameterList);
+		System.out.println("Body: " + body);
+		CustomFunction customFunction = new CustomFunction(funName, parameterList, body);
+		this.customFunctionList.add(customFunction);
+		return customFunction;
+	}
+
+	/**
+	 * Builds and Evaluates the expression
+	 * @throws Exception
+	 */
+	public void evaluate() throws Exception{
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
+		Document document = builder.parse(new InputSource(new StringReader(xml)));
+
+		Element root = document.getDocumentElement();
+		NodeList children = root.getChildNodes();
+
+		removeText(children);
+		Expression rootExpression = new Expression();
+
+		for (int i = 0; i < children.getLength(); i++) {
+			System.out.println("name is : " + children.item(i).getNodeName());
+			NodeList c2 = children.item(i).getChildNodes();
+			removeText(c2);
+			if (!goDeeper(c2).getParts().isEmpty())
+				rootExpression.addPart(goDeeper(c2));
+		}
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(rootExpression);
+		//System.out.println(rootExpression.evaluate(new Expression()));
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		expression = rootExpression;
+		expressionList = rootExpression.getParts();
 	}
 
 	private static boolean typeName(String valueString, Expression expression) {
@@ -279,7 +373,7 @@ public class DrRacketInterpreter {
 			expression.addPart(new GreaterThan());
 			return true;
 		}
-		if (valueString.compareTo("value=\"=\"") == 0) {	//Equal
+		if ((valueString.compareTo("value=\"=\"") == 0) || (valueString.compareTo("value=\"equal?\"") == 0)) {	//Equal
 			expression.addPart(new Equal());
 			return true;
 		}
@@ -449,81 +543,43 @@ public class DrRacketInterpreter {
 			expression.addPart(new MakeList());
 			return true;
 		}
+		//Strings
+		if (valueString.compareTo("value=\"string=?\"") == 0) {	//StringEQ
+			expression.addPart(new StringEQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string?\"") == 0) {	//StringQ
+			expression.addPart(new StringQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-append\"") == 0) {	//StringAppend
+			expression.addPart(new StringAppend());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-contains?\"") == 0) {	//StringContains
+			expression.addPart(new StringContains());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-downcase\"") == 0) {	//StringDowncase
+			expression.addPart(new StringDowncase());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-upcase\"") == 0) {	//StringUpcase
+			expression.addPart(new StringUpcase());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-lower-case?\"") == 0) {	//StringLowerCaseQ
+			expression.addPart(new StringLowerCaseQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-upper-case?\"") == 0) {	//StringUpperCaseQ
+			expression.addPart(new StringUpperCaseQ());
+			return true;
+		}
+		if (valueString.compareTo("value=\"string-length\"") == 0) {	//StringLength
+			expression.addPart(new StringLength());
+			return true;
+		}
 		return false;
-	}
-
-	private Expression customFunction(Node node, int number) {
-		System.out.println("Start Custom Function");
-		Expression expression = new Expression();
-		String funName = "";
-		List<Parameter> parameterList = new LinkedList<>();
-		Expression body = new Expression();
-
-		NodeList nodeList = node.getChildNodes();
-		removeText(nodeList);
-
-		NodeList headerNodeChildren = nodeList.item(number+1).getChildNodes();
-		removeText(headerNodeChildren);
-		NodeList bodyNodeChildren = nodeList.item(number+2).getChildNodes();
-		removeText(bodyNodeChildren);
-
-
-		System.out.println("Headder: ");
-
-		for (int i = 0; i < headerNodeChildren.getLength(); i++) {
-			NamedNodeMap inside = headerNodeChildren.item(i).getAttributes();
-			String valueString = inside.getNamedItem("value").toString();
-			String typeString = inside.getNamedItem("type").toString();
-			System.out.println("\tname is : " + headerNodeChildren.item(i).getNodeName() + "( " + typeString + " | " + valueString + " )");
-			if (funName == "") {
-				funName = valueString.substring(7,valueString.length()-1);
-			} else {
-				parameterList.add(new Parameter(valueString.substring(7,valueString.length()-1)));
-			}
-		}
-
-		System.out.println("Body: ");
-
-		body = goDeeper(bodyNodeChildren);
-
-
-
-
-		System.out.println("FunName: " + funName);
-		System.out.println("ParameterList: " + parameterList);
-		System.out.println("Body: " + body);
-		CustomFunction customFunction = new CustomFunction(funName, parameterList, body);
-		this.customFunctionList.add(customFunction);
-		return customFunction;
-	}
-
-	/**
-	 * Builds and Evaluates the expression
-	 * @throws Exception
-	 */
-	public void evaluate() throws Exception{
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
-		Document document = builder.parse(new InputSource(new StringReader(xml)));
-
-		Element root = document.getDocumentElement();
-		NodeList children = root.getChildNodes();
-
-		removeText(children);
-		Expression rootExpression = new Expression();
-
-		for (int i = 0; i < children.getLength(); i++) {
-			System.out.println("name is : " + children.item(i).getNodeName());
-			NodeList c2 = children.item(i).getChildNodes();
-			removeText(c2);
-			if (!goDeeper(c2).getParts().isEmpty())
-				rootExpression.addPart(goDeeper(c2));
-		}
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(rootExpression);
-		//System.out.println(rootExpression.evaluate(new Expression()));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		expression = rootExpression;
-		expressionList = rootExpression.getParts();
 	}
 }

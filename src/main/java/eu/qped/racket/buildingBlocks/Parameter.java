@@ -22,11 +22,11 @@ public class Parameter extends CustomFunction {
     }
 
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) {
         return value;
     }
 
-    public String evaluate(List<Expression> list) {
+    public Object evaluate(List<Expression> list) {
         return null;
     }
 

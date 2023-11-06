@@ -2,18 +2,42 @@ package eu.qped.racket.functions.lists;
 
 import eu.qped.racket.buildingBlocks.Expression;
 
+import java.util.List;
+
 public class Range extends Expression {
     @Override
-    public String evaluate(Expression e) {
+    public Object evaluate(Expression e) throws Exception {
         return evaluate(e.getRest(super.getId()));
     }
 
     @Override
-    public String evaluate(java.util.List<Expression> list) {
+    public Object evaluate(List<Expression> list) throws Exception {
+        if (list.size() > 3 || list.size() < 1) {
+            String stException = "expects between 1 and 3 arguments, but found " + list.size();
+            throw new Exception(stException);
+        }
+
         String s = "";
-        float startpoint = Float.valueOf(list.get(0).evaluate(this));
-        float end = Float.valueOf(list.get(1).evaluate(this));
-        float stepsize = Float.valueOf(list.get(2).evaluate(this));
+        float startpoint;
+        float end;
+        try {                                                               //1 Statement vs 2 Statements handling
+            startpoint = (float) list.get(0).evaluate(this);
+            end = (float) list.get(1).evaluate(this);
+        } catch (IndexOutOfBoundsException e){
+            startpoint = 0;
+            end = (float) list.get(0).evaluate(this);
+        } catch (ClassCastException e){
+            throw new Exception("Expression(Start/End) isnt Instance of Number");
+        }
+
+        float stepsize;
+        try {                                                               //standard Stepsize versus 3rd Statement
+            stepsize = (float) list.get(2).evaluate(this);
+        } catch (IndexOutOfBoundsException e){
+            stepsize = 1;
+        } catch (ClassCastException e){
+            throw new Exception("Expression(Stepsize) isnt Instance of Number");
+        }
 
         int i = 0;
         while (startpoint < end) {
