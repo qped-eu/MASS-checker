@@ -1,5 +1,6 @@
 import eu.qped.java.checkers.mutation.MutationInfrastructure;
 import eu.qped.java.checkers.mutation.MutationInterface;
+import eu.qped.java.checkers.mutation.MutationMessage;
 import eu.qped.java.checkers.mutation.Pair;
 import eu.qped.java.checkers.mutation.Variant;
 
@@ -8,9 +9,12 @@ import java.util.Comparator;
 import java.util.function.Predicate;
 
 public class StringUtils {
-    static {
-        MutationInfrastructure.mutationMessageList.add("also add tests for the case where search is not in source");
-    }
+    // Declare MutationMessage instances as static fields
+
+    private static final MutationMessage firstWordMutation = new MutationMessage("Bitte füge Tests hinzu die das erste Wort testen. Schau dir hierzu nochmal die Vorlesung über inkrementelle Tests an.");
+    private static final MutationMessage notFoundMutation = new MutationMessage("Bitte füge Tests hinzu, wo etwas gesucht wird, was nicht im String enthalten ist. Schau dir hierzu nochmal die Vorlesung über das Testen von Strings an.");
+    String ret;
+    Integer pos;
 
     public boolean isReverse(String a, String b) {
         if (a.length() != b.length()) {
@@ -25,15 +29,25 @@ public class StringUtils {
     }
 
     public String replace(String source, String search, String replace) {
-        String ret = source;
-        int pos;
-        while ((pos = ret.indexOf(search)) > 0) {
+         ret = source;
+
+        for(pos = ret.indexOf(search);(MutationInfrastructure.compute(new Pair<>(
+            () -> ((
+                pos >= 0
+            )),
+            new Variant<>(() -> ((
+                pos > 0
+            )), firstWordMutation)
+        )));pos = ret.indexOf(search)) {
             ret = ret.substring(0, pos) + replace + ret.substring(pos + search.length());
         }
+    
         final String result = ret;
-        return (MutationInfrastructure.compute(new Pair<>(
-                () -> (result),
-                new Variant<>(() -> (!result.equals(source) ? result:"-"), "also add tests for the case where search is not in source",0)
-        )));
+        return MutationInfrastructure.compute(new Pair<>(
+            () -> (result),
+            new Variant<>(() -> (!result.equals(source) ? result : "-"), notFoundMutation)
+        ));
     }
+
+  
 }

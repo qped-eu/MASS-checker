@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MutationInfrastructure {
-    @Getter
-    public static List<String> mutationMessageList = new ArrayList<>();
 
     @Getter
     @Setter
@@ -23,7 +21,7 @@ public class MutationInfrastructure {
         if (firstTest) {
             return variants.getCorrectVariant().doit();
         } else {
-            boolean currentVariant = correctVariants.get(variants.getMutationVariant().getOrder());
+            boolean currentVariant = correctVariants.get(variants.getMutationVariant().getMutationMessage().getMessageOrder());
             if (currentVariant) {
                 return variants.getCorrectVariant().doit();
             } else {

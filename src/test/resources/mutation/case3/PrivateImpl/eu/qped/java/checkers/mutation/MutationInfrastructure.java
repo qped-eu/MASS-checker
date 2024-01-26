@@ -7,26 +7,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MutationInfrastructure {
-    @Getter
-    public static List<String> mutationMessageList = new ArrayList<>();
 
     @Getter
     @Setter
     private static List<Boolean> correctVariants = new ArrayList<>();
 
     @Getter
+    @SuppressWarnings("FieldMayBeFinal")
     private static boolean firstTest = true;
 
 
     public static <R> R compute(Pair<R> variants) {
         if (firstTest) {
-            return variants.getCorrectVariant().doit();
+            return variants.getCorrectVariant().execute();
         } else {
-            boolean currentVariant = correctVariants.get(variants.getMutationVariant().getOrder());
+            boolean currentVariant = correctVariants.get(variants.getMutationVariant().getMutationMessage().getMessageOrder());
             if (currentVariant) {
-                return variants.getCorrectVariant().doit();
+                return variants.getCorrectVariant().execute();
             } else {
-                return variants.getMutationVariant().getMutation().doit();
+                return variants.getMutationVariant().getMutation().execute();
             }
         }
     }
