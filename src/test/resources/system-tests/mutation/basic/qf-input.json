@@ -36,7 +36,7 @@
 			"level": "BEGINNER"
 		},
 		"mutation": {
-			"hello" : "welt"
+			"showFullMutationReport" : true
 		},
 		"coverage": {
 			"showExtraMisses": false,

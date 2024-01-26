@@ -1,0 +1,2 @@
+### Test Mutation Feedback
+- Bitte füge Tests hinzu, wo etwas gesucht wird, was nicht im String enthalten ist. Schau dir hierzu nochmal die Vorlesung über das Testen von Strings an.
