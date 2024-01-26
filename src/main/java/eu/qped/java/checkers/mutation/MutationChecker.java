@@ -29,7 +29,7 @@ public class MutationChecker {
         List<Facade> testClasses = new ArrayList<>();
         List<Facade> classes = new ArrayList<>();
         try {
-            Facade.separateTestAndApplicationClasses(solutionRoot,testClasses, classes);
+            Facade.separateTestAndApplicationClasses(solutionRoot, testClasses, classes);
         } catch (IOException e) {
             throw new RuntimeException("Could not create lists of test and application classes.", e);
         }
@@ -43,11 +43,11 @@ public class MutationChecker {
         }
 
         List<String> testClassNames = testClasses.stream().map(Facade::className).collect(Collectors.toList());
-        Class<?> mutationInfrastructureClass;
+        Class<?> mutationMessageClass;
 
         try {
             // Create an instance of the loaded class (assuming it has a default constructor)
-            mutationInfrastructureClass = loadMutationInfrastructureClass(memoryLoader);
+            mutationMessageClass = loadMutationMessageClass(memoryLoader);
 
         } catch (Exception e) {
             throw new RuntimeException("Could not load class.", e);
@@ -60,18 +60,12 @@ public class MutationChecker {
         List<String> testResults = test.testing(testClassNames, memoryLoader);
 
         if (!testResults.isEmpty()) {
-            System.out.println("Der erste Test ist fehlgeschlagen" + testResults);
             return Collections.emptyList();
         }
 
         // get the number of mutation possibilities
-        int mutationPossibilities = getMutationPossibilities(mutationInfrastructureClass);
+        int mutationPossibilities = getMutationPossibilities(mutationMessageClass);
 
-        // List of messages (in Markdown) that will be displayed to students.
-        // Leave list empty for no feedback.
-        List<String> messages = new ArrayList<>();
-
-        System.out.println("Mutation possibilities: " + mutationPossibilities);
         for (int i = 0; i < mutationPossibilities; i++) {
             // Iterate through the list, toggling one element to false in each iteration
             List<Boolean> tmpList = new ArrayList<>(Collections.nCopies(mutationPossibilities, true));
@@ -82,7 +76,7 @@ public class MutationChecker {
                 loadClassesIntoMemory(testClasses, classes, memoryLoader);
 
                 // Create an instance of the loaded class (assuming it has a default constructor)
-                mutationInfrastructureClass = loadMutationInfrastructureClass(memoryLoader);
+                Class<?> mutationInfrastructureClass = loadMutationInfrastructureClass(memoryLoader);
 
                 // Create an instance of MutationInfrastructureClass using the no-argument constructor
                 Object mutationInfrastructureInstance = mutationInfrastructureClass.getDeclaredConstructor().newInstance();
@@ -100,9 +94,9 @@ public class MutationChecker {
 
                 // if mutation is not detected, report the defect
                 if (testResults.isEmpty()) {
+                    List<String> messages = new ArrayList<>();
                     messages.add("### Test Mutation Feedback");
-                    messages.add("- " + reportDefectiveMutant(mutationInfrastructureClass, i));
-                    System.out.println(messages);
+                    messages.add("- " + reportDefectiveMutant(mutationMessageClass, i));
                     return messages;
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
@@ -110,7 +104,7 @@ public class MutationChecker {
                 throw new RuntimeException(e);
             }
         }
-        return messages;
+        return Collections.emptyList();
     }
 
     private void loadClassesIntoMemory(List<Facade> testClasses, List<Facade> classes, MemoryLoader memoryLoader) {
@@ -123,27 +117,31 @@ public class MutationChecker {
     }
 
     @SuppressWarnings("unchecked")
-    private int getMutationPossibilities(Class<?> mutationInfrastructureClass) {
+    private int getMutationPossibilities(Class<?> mutationMessageClass) {
         try {
-            Field fieldMessage = mutationInfrastructureClass.getDeclaredField("mutationMessageList");
+            Field fieldMessage = mutationMessageClass.getDeclaredField("mutationMessageList");
             fieldMessage.setAccessible(true);
-            List<String> message = (List<String>) fieldMessage.get(mutationInfrastructureClass.getDeclaredConstructor().newInstance());
+            List<String> message = (List<String>) fieldMessage.get(null);
             return message.size();
-        } catch (InvocationTargetException | IllegalAccessException | InstantiationException | NoSuchMethodException |
+        } catch (IllegalAccessException |
                  NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private String reportDefectiveMutant(Class<?> mutationInfrastructureClass, int i) throws NoSuchFieldException, IllegalAccessException {
-        Field fieldMessage = mutationInfrastructureClass.getDeclaredField("mutationMessageList");
+    private String reportDefectiveMutant(Class<?> mutationMessageClass, int i) throws NoSuchFieldException, IllegalAccessException {
+        Field fieldMessage = mutationMessageClass.getDeclaredField("mutationMessageList");
         fieldMessage.setAccessible(true);
-        List<String> message = (List<String>) fieldMessage.get(mutationInfrastructureClass);
+        List<String> message = (List<String>) fieldMessage.get(null);
         return message.get(i);
     }
 
     private Class<?> loadMutationInfrastructureClass(MemoryLoader memoryLoader) throws ClassNotFoundException {
         return memoryLoader.loadClass("eu.qped.java.checkers.mutation.MutationInfrastructure");
+    }
+
+    private Class<?> loadMutationMessageClass(MemoryLoader memoryLoader) throws ClassNotFoundException {
+        return memoryLoader.loadClass("eu.qped.java.checkers.mutation.MutationMessage");
     }
 }
