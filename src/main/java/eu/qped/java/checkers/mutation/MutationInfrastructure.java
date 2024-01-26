@@ -21,13 +21,13 @@ public class MutationInfrastructure {
 
     public static <R> R compute(Pair<R> variants) {
         if (firstTest) {
-            return variants.getCorrectVariant().doit();
+            return variants.getCorrectVariant().execute();
         } else {
             boolean currentVariant = correctVariants.get(variants.getMutationVariant().getMutationMessage().getMessageOrder());
             if (currentVariant) {
-                return variants.getCorrectVariant().doit();
+                return variants.getCorrectVariant().execute();
             } else {
-                return variants.getMutationVariant().getMutation().doit();
+                return variants.getMutationVariant().getMutation().execute();
             }
         }
     }
